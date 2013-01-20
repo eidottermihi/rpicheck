@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="app_name">RPiCheck</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">RasPi Check</string>
+    <color name="rpi_main_color">#FF00FF</color>
+    <string name="cpu_temp">CPU Temperature</string>
+    <string name="cpu_freq">CPU Frequency</string>
+    <string name="host">Hostname/IP</string>
+    <string name="user">Username</string>
+    <string name="password">Password</string>
+    <string name="ssh_credentials">SSH Credentials</string>
+    <string name="button_check">Check</string>
+    <string name="tooltip_hostname">Hostname/IP of your Raspberry Pi</string>
+    <string name="tooltip_username">Username for SSH connection</string>
+    <string name="tooltip_password">Password for SSH connection</string>
+    <string name="no_connection">Network is not available. Turn on Wi-Fi!</string>
+    <string name="authentication_failed">SSH authentication failed. Please check your credentials.</string>
+    <string name="connection_failed">Connection failed. Please check hostname.</string>
+
+</resources>
