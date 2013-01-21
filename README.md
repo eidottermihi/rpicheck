@@ -7,6 +7,10 @@ The goal of this Android app is to show the user the current system status of a 
 
 To gather the information needed, RasPi Check uses a SSH connection (using https://github.com/shikhar/sshj) and vcgencmd.
 
+Issue Tracking
+------------
+Please report bugs here: https://github.com/eidottermihi/rpicheck/issues
+
 Contributing
 ------------
 
