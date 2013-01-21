@@ -18,5 +18,12 @@
     <string name="no_connection">Network is not available. Turn on Wi-Fi!</string>
     <string name="authentication_failed">SSH authentication failed. Please check your credentials.</string>
     <string name="connection_failed">Connection failed. Please check hostname.</string>
+    <string name="pref_group_title_connection">Connection</string>
+    <string name="pref_def_hostname">xbian</string>
+    <string name="pref_def_username">xbian</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="no_hostname_specified">No hostname specified. Please check your settings.</string>
+    <string name="no_username_specified">No username specified. Please check your settings.</string>
+    <string name="no_password_specified">No password specified. Please check your settings.</string>
 
 </resources>

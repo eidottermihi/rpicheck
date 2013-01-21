@@ -6,15 +6,20 @@ import org.apache.commons.lang3.StringUtils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -23,17 +28,19 @@ import android.widget.Toast;
 import de.eidottermihi.raspitools.RaspiQuery;
 import de.eidottermihi.raspitools.RaspiQueryException;
 
-public class MainActivity extends Activity implements TextWatcher {
+public class MainActivity extends Activity {
+	public static final String KEY_PREFERENCES_SHOWN = "key_prefs_preferences_shown";
+
 	private static final String LOG_TAG = "MAIN";
 
+	private Intent settingsIntent;
 	private RaspiQuery raspiQuery;
-	private TextView hostnameTextView;
-	private TextView usernameTextView;
-	private TextView passwordTextView;
 	private TextView cpuFreqTextView;
 	private TextView cpuTempTextView;
 	private ProgressBar progressBar;
 	private Button checkButton;
+
+	private SharedPreferences sharedPrefs;
 
 	private QueryBean queryData;
 
@@ -51,18 +58,32 @@ public class MainActivity extends Activity implements TextWatcher {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		hostnameTextView = (TextView) findViewById(R.id.hostnameText);
-		usernameTextView = (TextView) findViewById(R.id.usernameText);
-		passwordTextView = (TextView) findViewById(R.id.passwordText);
+
+		// assigning view elements to fields
 		cpuFreqTextView = (TextView) findViewById(R.id.cpuFreqText);
 		cpuTempTextView = (TextView) findViewById(R.id.cpuTempText);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
 		checkButton = (Button) findViewById(R.id.button1);
 
-		// assigning TextWatcher to text fields
-		hostnameTextView.addTextChangedListener(this);
-		usernameTextView.addTextChangedListener(this);
-		passwordTextView.addTextChangedListener(this);
+		// assigning Shared Preferences
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		// init settings intent
+		settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+
+		// check if preferences were already visited once for initial setup
+		checkPreferencesVisited();
+	}
+
+	private void checkPreferencesVisited() {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		boolean preferencesShown = prefs.getBoolean(KEY_PREFERENCES_SHOWN,
+				false);
+		if (!preferencesShown) {
+			// launch settings activity
+			this.startActivity(settingsIntent);
+		}
 	}
 
 	protected void updateResultsInUi() {
@@ -96,6 +117,17 @@ public class MainActivity extends Activity implements TextWatcher {
 		}
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+			this.startActivity(settingsIntent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private void doQuery() {
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -103,9 +135,23 @@ public class MainActivity extends Activity implements TextWatcher {
 		if (networkInfo != null && networkInfo.isConnected()) {
 			// show progress bar
 			progressBar.setVisibility(ProgressBar.VISIBLE);
-			new SSHQueryTask().execute(hostnameTextView.getText().toString(),
-					usernameTextView.getText().toString(), passwordTextView
-							.getText().toString());
+			// get connection settings from shared preferences
+			String host = sharedPrefs.getString(
+					SettingsActivity.KEY_PREF_HOSTNAME, null);
+			String user = sharedPrefs.getString(
+					SettingsActivity.KEY_PREF_USERNAME, null);
+			String pass = sharedPrefs.getString(
+					SettingsActivity.KEY_PREF_PASSWORD, null);
+			if (host == null) {
+				Toast.makeText(this, R.string.no_hostname_specified, Toast.LENGTH_LONG);
+			} else if (user == null) {
+				Toast.makeText(this, R.string.no_username_specified, Toast.LENGTH_LONG);
+			} else if (pass == null) {
+				Toast.makeText(this, R.string.no_password_specified, Toast.LENGTH_LONG);
+			} else {
+				// execute query
+				new SSHQueryTask().execute(host, user, pass);
+			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
@@ -162,26 +208,6 @@ public class MainActivity extends Activity implements TextWatcher {
 			// inform handler
 			mHandler.post(mUpdateResults);
 		}
-
-	}
-
-	public void afterTextChanged(Editable s) {
-		// activate Check button if all credentials are not blank
-		if (StringUtils.isNotBlank(hostnameTextView.getText())
-				&& StringUtils.isNotBlank(usernameTextView.getText())
-				&& StringUtils.isNotBlank(passwordTextView.getText())) {
-			checkButton.setEnabled(true);
-		} else {
-			checkButton.setEnabled(false);
-		}
-	}
-
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
-
-	}
-
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 	}
 
