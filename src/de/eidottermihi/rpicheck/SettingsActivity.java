@@ -1,20 +1,22 @@
 package de.eidottermihi.rpicheck;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 
-// TODO check if hostname/username/password are blank/empty string (app crashes if so)
-public class SettingsActivity extends PreferenceActivity implements
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class SettingsActivity extends SherlockPreferenceActivity implements
 		OnSharedPreferenceChangeListener {
 	private static final String LOG_TAG = "SettingsActivity";
-	public static final String KEY_PREF_HOSTNAME = "pref_hostname";
-	public static final String KEY_PREF_USERNAME = "pref_username";
-	public static final String KEY_PREF_PASSWORD = "pref_password";
+	public static final String KEY_PREF_TEMPERATURE_SCALE = "pref_temperature_scala";
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -23,40 +25,34 @@ public class SettingsActivity extends PreferenceActivity implements
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
 
-		// preferences were visited, set preferencesShown to true
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		prefs.edit().putBoolean(MainActivity.KEY_PREFERENCES_SHOWN, true)
-				.commit();
+		// ancestral navigation
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	}
 
-		// code from
-		// http://stackoverflow.com/questions/5905240/showing-preference-screen-first-time-app-is-run-and-related-questions
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.activity_settings, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
 
-		// check if prefs have value, if not then set summary to tooltip text
-		Preference prefHost = findPreference(KEY_PREF_HOSTNAME);
-		if (prefs.getString(KEY_PREF_HOSTNAME, null) == null) {
-			prefHost.setSummary(R.string.tooltip_hostname);
-		} else {
-			prefHost.setSummary(prefs.getString(KEY_PREF_HOSTNAME, null));
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// home button is pressed
+			NavUtils.navigateUpFromSameTask(this);
+			break;
 		}
-		Preference prefUser = findPreference(KEY_PREF_USERNAME);
-		if (prefs.getString(KEY_PREF_USERNAME, null) == null) {
-			prefUser.setSummary(R.string.tooltip_username);
-		} else {
-			prefUser.setSummary(prefs.getString(KEY_PREF_USERNAME, null));
-		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		Log.d(LOG_TAG, "Shared preferences: Key[" + key + "] changed.");
-		Preference pref = findPreference(key);
-		if (key.equals(KEY_PREF_HOSTNAME)) {
-			// set summary of hostname preference to user's hostname
-			pref.setSummary(sharedPreferences.getString(key, null));
-		} else if (key.equals(KEY_PREF_USERNAME)) {
-			// set summary of username preference to user-specified username
-			pref.setSummary(sharedPreferences.getString(key, null));
+		Map<String, ?> all = sharedPreferences.getAll();
+		for (Entry<String, ?> entry : all.entrySet()) {
+			Log.d(LOG_TAG, entry.getKey() + "="
+					+ (Object) entry.getValue().toString());
 		}
 	}
 

@@ -2,20 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory
-        android:key="pref_key_group_connection"
-        android:title="@string/pref_group_title_connection" >
-        <EditTextPreference
-            android:key="pref_hostname"
-            android:title="@string/host"
-            android:summary="@string/tooltip_hostname" />
-        <EditTextPreference
-            android:key="pref_username"
-            android:title="@string/user"
-            android:summary="@string/tooltip_username" />
-        <EditTextPreference
-            android:key="pref_password"
-            android:title="@string/password"
-            android:summary="@string/tooltip_password"
-            android:inputType="textPassword" />
+        android:key="pref_display_settings"
+        android:title="@string/pref_group_display_settings_title" >
+        <ListPreference android:key="pref_temperature_scala"
+            android:title="@string/pref_temp_scala_title"
+            android:summary="Temperature scala to use (Celsius, Fahrenheit)"
+            android:entries="@array/temp_scales"
+            android:entryValues="@array/temp_scales_values"
+            android:defaultValue="@string/pref_temperature_scala_default"/>
     </PreferenceCategory>
 </PreferenceScreen>

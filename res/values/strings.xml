@@ -1,29 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RPiCheck</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">RasPi Check</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_refresh">Refresh</string>
+
     <string name="title_activity_main">RasPi Check</string>
-    <color name="rpi_main_color">#FF00FF</color>
-    <string name="cpu_temp">CPU Temperature</string>
-    <string name="cpu_freq">CPU Frequency</string>
+    <string name="title_activity_new_raspi">Add Raspberry Pi</string>
+    <string name="title_activity_settings">Settings</string>
+
+
+    <string name="core_temp">CORE Temperature</string>
+    <string name="core_freq">CORE Frequency</string>
+    <string name="arm_freq">ARM Frequency</string>
+    <string name="core_volt">CORE Volt</string>
+    
     <string name="host">Hostname/IP</string>
     <string name="user">Username</string>
     <string name="password">Password</string>
     <string name="ssh_credentials">SSH Credentials</string>
-    <string name="button_check">Check</string>
-    <string name="tooltip_hostname">Hostname/IP of your Raspberry Pi</string>
-    <string name="tooltip_username">Username for SSH connection</string>
-    <string name="tooltip_password">Password for SSH connection</string>
-    <string name="no_connection">Network is not available. Turn on Wi-Fi!</string>
+    <string name="no_connection">Please turn on WiFi.</string>
     <string name="authentication_failed">SSH authentication failed. Please check your credentials.</string>
     <string name="connection_failed">Connection failed. Please check hostname.</string>
-    <string name="pref_group_title_connection">Connection</string>
-    <string name="pref_def_hostname">xbian</string>
-    <string name="pref_def_username">xbian</string>
-    <string name="title_activity_settings">Settings</string>
     <string name="no_hostname_specified">No hostname specified. Please check your settings.</string>
     <string name="no_username_specified">No username specified. Please check your settings.</string>
     <string name="no_password_specified">No password specified. Please check your settings.</string>
+    <string name="new_raspi">New RasPi</string>
+    <string name="raspi_device_name_hint">Name</string>
+    <string name="raspi_device_host_hint">Hostname / IP</string>
+    <string name="raspi_device_user_hint">SSH username</string>
+    <string name="raspi_device_password_hint">SSH password</string>
+    <string name="raspi_device_description_hint">Description (optional)</string>
+    <string name="default_ssh_port">22</string>
+    <string name="raspi_device_button_new">Save</string>
+    <string name="pref_temp_scala_title">Temperature scale</string>
+    <string name="pref_temperature_scala_default">C</string>
+    <string name="pref_group_display_settings_title">Display settings</string>
+    <string name="last_update">Last refresh</string>
+    <string name="no_device_available">Please add a Raspberry Pi first.</string>
+    <string name="new_raspi_text">Enter your Raspberry Pi device informations.</string>
+    <string name="ssh_port">SSH port</string>
+    <string name="new_raspi_description">Additional description</string>
+    <string name="new_raspi_description_hint">Add additional description here..</string>
+    <string name="new_raspi_button_save">Save</string>
+    <string name="overclocking_header">Overclocking</string>
+    <string name="system_header">System</string>
+    <string name="uptime_started">Startup</string>
+    <string name="average_load">Average load</string>
+    <string name="total_memory">Total memory</string>
+    <string name="free_memory">Free memory</string>
+    <string name="cpu_serial">Serial No</string>
+    <string name="ip_addr_label">IP address</string>
+    <string name="disk_header_filesystem">Filesystem</string>
+    <string name="disk_header_size">Size</string>
+    <string name="disk_header">Disk Usage</string>
+    <string name="disk_header_avail">Available</string>
+    <string name="disk_header_usedper">Used%</string>
+    <string name="menu_delete">Delete</string>
+    <string name="please_add_a_raspberry_pi">Please add a Raspberry Pi.</string>
+    <string name="edit_raspi">Edit Raspi</string>
+    <string name="activity_title_edit_raspi">Edit Raspberry Pi</string>
 
 </resources>
