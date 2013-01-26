@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="temp_scales">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+	<string-array name="temp_scales_values">
+	    <item>C</item>
+	    <item>F</item>
+	</string-array>        
+</resources>
