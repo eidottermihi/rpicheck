@@ -212,6 +212,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		values.put(COLUMN_MODIFIED_AT, timestamp);
 		int rowsUpdate = db.update(DEVICES_TABLE_NAME, values, COLUMN_ID + " = ?",
 				new String[] { device.getId() + "" });
+		db.close();
 		Log.d(LOG_TAG, rowsUpdate + " row afflicted from update.");
 		return read(device.getId());
 	}

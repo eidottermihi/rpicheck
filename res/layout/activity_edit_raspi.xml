@@ -150,7 +150,6 @@
                 android:layout_alignBaseline="@+id/edit_raspi_ssh_port_editText"
                 android:layout_alignBottom="@+id/edit_raspi_ssh_port_editText"
                 android:layout_alignParentLeft="true"
-                android:paddingLeft="6dp"
                 android:paddingRight="8dp"
                 android:text="@string/ssh_port"
                 android:textAppearance="?android:attr/textAppearanceMedium" />

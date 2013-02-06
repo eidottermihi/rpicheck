@@ -274,6 +274,33 @@
                 android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/distriLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/distribution"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/distriText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/distriLabel"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/distriLabel"
+                android:freezesText="true"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -383,6 +410,16 @@
                     android:paddingRight="3dp"
                     android:text="@string/disk_header_usedper"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/tableHeader5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:text="@string/disk_header_mounted_on"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
             </TableRow>
         </TableLayout>
     </LinearLayout>

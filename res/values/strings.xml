@@ -51,6 +51,7 @@
     <string name="free_memory">Free memory</string>
     <string name="cpu_serial">Serial No</string>
     <string name="ip_addr_label">IP address</string>
+    <string name="distribution">Distribution</string>
     <string name="disk_header_filesystem">Filesystem</string>
     <string name="disk_header_size">Size</string>
     <string name="disk_header">Disk Usage</string>
@@ -60,5 +61,10 @@
     <string name="please_add_a_raspberry_pi">Please add a Raspberry Pi.</string>
     <string name="edit_raspi">Edit Raspi</string>
     <string name="activity_title_edit_raspi">Edit Raspberry Pi</string>
+    <string name="disk_header_mounted_on">Mounted on</string>
+    <string name="menu_reboot">Reboot</string>
+    <string name="question_reboot">Reboot?</string>
+    <string name="cancel">Cancel</string>
+    <string name="reboot">Reboot</string>
 
 </resources>
