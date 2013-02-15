@@ -294,7 +294,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			String port = currentDevice.getPort() + "";
 			// reading temperature preference
 			String tempPref = sharedPrefs.getString(
-					SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, "C");
+					SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, "°C");
 			// get connection from current device in dropdown
 			if (host == null) {
 				Toast.makeText(this, R.string.no_hostname_specified,
@@ -328,7 +328,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				raspiQuery.connect();
 				publishProgress(10);
 				Double tempCore = raspiQuery
-						.queryCpuTemp(params[4].equals("C") ? RaspiQuery.TEMP_CELSIUS
+						.queryCpuTemp(params[4].equals("°C") ? RaspiQuery.TEMP_CELSIUS
 								: RaspiQuery.TEMP_FAHRENHEIT);
 				publishProgress(20);
 				Double armFreq = raspiQuery.queryFreq(RaspiQuery.FREQ_ARM,
