@@ -6,7 +6,7 @@
         android:title="@string/pref_group_display_settings_title" >
         <ListPreference android:key="pref_temperature_scala"
             android:title="@string/pref_temp_scala_title"
-            android:summary="Temperature scala to use (Celsius, Fahrenheit)"
+            android:summary="@string/temperature_scala_summary"
             android:entries="@array/temp_scales"
             android:entryValues="@array/temp_scales_values"
             android:defaultValue="@string/pref_temperature_scala_default"/>

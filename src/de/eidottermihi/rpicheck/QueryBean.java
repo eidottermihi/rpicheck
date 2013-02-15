@@ -3,7 +3,8 @@ package de.eidottermihi.rpicheck;
 import java.util.Date;
 import java.util.List;
 
-import de.eidottermihi.raspitools.DiskUsageBean;
+import de.eidottermihi.raspitools.beans.DiskUsageBean;
+import de.eidottermihi.raspitools.beans.MemoryBean;
 
 public class QueryBean {
 	private Double volts;
@@ -14,8 +15,8 @@ public class QueryBean {
 	private QueryStatus status;
 	private String startup;
 	private String avgLoad;
-	private Long totalMem;
-	private Long freeMem;
+	private MemoryBean totalMem;
+	private MemoryBean freeMem;
 	private String serialNo;
 	private String ipAddr;
 	private List<DiskUsageBean> disks;
@@ -85,19 +86,19 @@ public class QueryBean {
 		this.avgLoad = avgLoad;
 	}
 
-	public Long getTotalMem() {
+	public MemoryBean getTotalMem() {
 		return totalMem;
 	}
 
-	public void setTotalMem(Long totalMem) {
+	public void setTotalMem(MemoryBean totalMem) {
 		this.totalMem = totalMem;
 	}
 
-	public Long getFreeMem() {
+	public MemoryBean getFreeMem() {
 		return freeMem;
 	}
 
-	public void setFreeMem(Long freeMem) {
+	public void setFreeMem(MemoryBean freeMem) {
 		this.freeMem = freeMem;
 	}
 

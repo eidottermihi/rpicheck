@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +15,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -32,17 +29,16 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import de.eidottermihi.raspitools.DiskUsageBean;
-import de.eidottermihi.raspitools.MemoryBean;
 import de.eidottermihi.raspitools.RaspiQuery;
 import de.eidottermihi.raspitools.RaspiQueryException;
-import de.eidottermihi.raspitools.UptimeBean;
-import de.eidottermihi.rpicheck.RebootDialogFragment.RebootDialogListener;
+import de.eidottermihi.raspitools.beans.DiskUsageBean;
+import de.eidottermihi.raspitools.beans.RaspiMemoryBean;
+import de.eidottermihi.raspitools.beans.UptimeBean;
 
 // TODO reboot command
 // TODO wipe all raspis action from preferences (optional)
 public class MainActivity extends SherlockFragmentActivity implements
-		ActionBar.OnNavigationListener, RebootDialogListener {
+		ActionBar.OnNavigationListener {
 	protected static final String EXTRA_DEVICE_ID = "device_id";
 
 	public static final String KEY_PREFERENCES_SHOWN = "key_prefs_preferences_shown";
@@ -68,7 +64,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private TextView distriText;
 	private TableLayout diskTable;
 	private ProgressBar progressBar;
-	private ProgressDialog rebootProgressDialog;
 
 	private SharedPreferences sharedPrefs;
 
@@ -133,7 +128,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateQueryDataInView() {
-		coreTempText.setText(queryData.getTempCore().toString());
+		String tempScale = sharedPrefs.getString(
+				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
+				getString(R.string.pref_temperature_scala_default));
+		coreTempText.setText(queryData.getTempCore().toString() + " "
+				+ tempScale);
 		armFreqText.setText(queryData.getFreqArm().toString());
 		coreFreqText.setText(queryData.getFreqCore().toString());
 		coreVoltText.setText(queryData.getVolts().toString());
@@ -141,8 +140,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				queryData.getLastUpdate()));
 		uptimeText.setText(queryData.getStartup());
 		averageLoadText.setText(queryData.getAvgLoad().toString());
-		totalMemoryText.setText(queryData.getTotalMem().toString());
-		freeMemoryText.setText(queryData.getFreeMem().toString());
+		totalMemoryText.setText(queryData.getTotalMem().humanReadableByteCount(false));
+		freeMemoryText.setText(queryData.getFreeMem().humanReadableByteCount(false));
 		serialNoText.setText(queryData.getSerialNo());
 		ipAddrText.setText(queryData.getIpAddr());
 		distriText.setText(queryData.getDistri());
@@ -152,7 +151,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void updateDiskTable(List<DiskUsageBean> disks) {
 		// remove current rows except header row
 		diskTable.removeViews(1, diskTable.getChildCount() - 1);
-		for (DiskUsageBean diskUsageBean : disks) {
+		for (de.eidottermihi.raspitools.beans.DiskUsageBean diskUsageBean : disks) {
 			// new Textviews (code looks ugly, refactor sometimes..)
 			TextView tempText = new TextView(this);
 			tempText.setText(diskUsageBean.getFileSystem());
@@ -186,6 +185,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// only show spinner if theres already a device to show
 		if (deviceCursor.getCount() > 0) {
 			// make adapter
+			@SuppressWarnings("deprecation")
 			SimpleCursorAdapter spinadapter = new SimpleCursorAdapter(this,
 					R.layout.sherlock_spinner_dropdown_item, deviceCursor,
 					new String[] { "name", "_id" },
@@ -315,24 +315,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private void doReboot() {
-		if (currentDevice == null) {
-			// no device available, show hint for user
-			Toast.makeText(this, R.string.no_device_available,
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		if (networkInfo != null && networkInfo.isConnected()) {
-			DialogFragment rebootDialog = new RebootDialogFragment();
-			rebootDialog.show(getSupportFragmentManager(), "reboot");
-		} else {
-			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
-					.show();
-		}
-	}
-
 	private class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 
 		@Override
@@ -361,7 +343,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				String avgLoad = uptime.getAverageLoad();
 				String prettyUptime = uptime.getRunningPretty();
 				publishProgress(60);
-				MemoryBean memory = raspiQuery.queryMemoryInformation();
+				RaspiMemoryBean memory = raspiQuery.queryMemoryInformation();
 				publishProgress(70);
 				String serialNo = raspiQuery.queryCpuSerial();
 				publishProgress(80);
@@ -443,19 +425,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			this.startActivity(newRaspiIntent);
 		}
 		return true;
-	}
-
-	@Override
-	public void onDialogPositiveClick(DialogFragment dialog) {
-		// Reboot was confirmed
-		// show ProgressDialog
-		rebootProgressDialog = ProgressDialog.show(this, "Reboot",
-				"Reboot in progress...");
-	}
-
-	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
-		// Reboot was canceled, nothing to do
 	}
 
 }

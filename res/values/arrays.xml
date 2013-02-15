@@ -5,7 +5,7 @@
         <item>Fahrenheit</item>
     </string-array>
 	<string-array name="temp_scales_values">
-	    <item>C</item>
-	    <item>F</item>
+	    <item>°C</item>
+	    <item>°F</item>
 	</string-array>        
 </resources>

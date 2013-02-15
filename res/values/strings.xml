@@ -66,5 +66,6 @@
     <string name="question_reboot">Reboot?</string>
     <string name="cancel">Cancel</string>
     <string name="reboot">Reboot</string>
+    <string name="temperature_scala_summary">Temperature scala to use (Celsius, Fahrenheit)</string>
 
 </resources>

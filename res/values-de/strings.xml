@@ -34,6 +34,7 @@
     <string name="default_ssh_port">22</string>
     <string name="raspi_device_button_new">Speichern</string>
     <string name="pref_temp_scala_title">Temperaturskala</string>
+    <string name="temperature_scala_summary">Celsius, Fahrenheit</string>
     <string name="pref_temperature_scala_default">C</string>
     <string name="pref_group_display_settings_title">Display</string>
     <string name="last_update">Letzte Aktualisierung</string>
@@ -66,5 +67,6 @@
     <string name="question_reboot">Neustart?</string>
     <string name="cancel">Abbrechen</string>
     <string name="reboot">Neustart</string>
+    
 
 </resources>
