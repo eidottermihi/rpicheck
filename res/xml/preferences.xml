@@ -11,4 +11,15 @@
             android:entryValues="@array/temp_scales_values"
             android:defaultValue="@string/pref_temperature_scala_default"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_query_settings"
+    	android:title="@string/pref_group_query_settings_title" >
+    	<CheckBoxPreference 
+    	    android:key="pref_query_hide_root"
+    	    android:title="@string/pref_query_hide_root_title"
+    	    android:summary="@string/pref_query_hide_root_summary"
+    	    android:summaryOn="@string/pref_query_hide_root_summaryOn"
+    	    android:summaryOff="@string/pref_query_hide_root_summaryOff"
+    	    android:defaultValue="true"/>   
+    </PreferenceCategory>
 </PreferenceScreen>

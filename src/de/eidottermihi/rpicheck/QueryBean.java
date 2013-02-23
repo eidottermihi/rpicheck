@@ -1,12 +1,16 @@
 package de.eidottermihi.rpicheck;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import de.eidottermihi.raspitools.beans.DiskUsageBean;
 import de.eidottermihi.raspitools.beans.MemoryBean;
+import de.eidottermihi.raspitools.beans.ProcessBean;
 
-public class QueryBean {
+public class QueryBean implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private Double volts;
 	private Double freqArm;
 	private Double freqCore;
@@ -21,6 +25,7 @@ public class QueryBean {
 	private String ipAddr;
 	private List<DiskUsageBean> disks;
 	private String distri;
+	private List<ProcessBean> processes;
 
 	public Double getVolts() {
 		return volts;
@@ -132,6 +137,14 @@ public class QueryBean {
 
 	public void setDistri(String distri) {
 		this.distri = distri;
+	}
+
+	public List<ProcessBean> getProcesses() {
+		return processes;
+	}
+
+	public void setProcesses(List<ProcessBean> processes) {
+		this.processes = processes;
 	}
 
 }

@@ -16,7 +16,10 @@ import com.actionbarsherlock.view.MenuItem;
  */
 public class SettingsActivity extends SherlockPreferenceActivity {
 	private static final String LOG_TAG = "SettingsActivity";
+	
+	/** Preference keys. */
 	public static final String KEY_PREF_TEMPERATURE_SCALE = "pref_temperature_scala";
+	public static final String KEY_PREF_QUERY_HIDE_ROOT_PROCESSES = "pref_query_hide_root";
 
 	@SuppressWarnings("deprecation")
 	@Override

@@ -1,8 +1,8 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.handmark.pulltorefresh.library.PullToRefreshScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="match_parent" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,7 +52,6 @@
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -78,7 +77,6 @@
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -105,7 +103,6 @@
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -131,7 +128,6 @@
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </RelativeLayout>
 
         <TextView
@@ -169,7 +165,6 @@
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -274,7 +269,6 @@
                 android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -419,9 +413,62 @@
                     android:paddingRight="3dp"
                     android:text="@string/disk_header_mounted_on"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
+            </TableRow>
+        </TableLayout>
 
+        <TextView
+            android:id="@+id/headerTextProcesses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/process_header"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+        <TableLayout
+            android:id="@+id/processTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="3dp" >
+
+                <TextView
+                    android:id="@+id/tableHeaderPID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="15dp"
+                    android:text="@string/header_pid"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/tableHeader2TTY"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="20dp"
+                    android:text="@string/header_tty"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/tableHeader3CPU"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="55dp"
+                    android:text="@string/header_cpu_time"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/tableHeader4CMD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/header_command"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </TableRow>
         </TableLayout>
     </LinearLayout>
 
-</ScrollView>
+</com.handmark.pulltorefresh.library.PullToRefreshScrollView>

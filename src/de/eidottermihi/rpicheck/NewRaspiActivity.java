@@ -91,15 +91,14 @@ public class NewRaspiActivity extends SherlockActivity {
 				+ pass + "/" + sshPort);
 
 		if (StringUtils.isBlank(name) || StringUtils.isBlank(host)
-				|| StringUtils.isBlank(user)) {
+				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass)) {
 			Toast.makeText(this,
-					"Please specify at minimum a name, host and ssh username.",
+					R.string.new_raspi_minimum,
 					Toast.LENGTH_LONG).show();
 		} else {
 			addRaspiToDb(name, host, user, pass, sshPort, description);
 			// back to main
-			Intent main = new Intent(this, MainActivity.class);
-			this.startActivity(main);
+			NavUtils.navigateUpFromSameTask(this);
 		}
 	}
 

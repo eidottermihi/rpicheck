@@ -1,6 +1,7 @@
 package de.eidottermihi.rpicheck;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -18,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -28,22 +30,28 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import de.eidottermihi.raspitools.RaspiQuery;
 import de.eidottermihi.raspitools.RaspiQueryException;
 import de.eidottermihi.raspitools.beans.DiskUsageBean;
+import de.eidottermihi.raspitools.beans.ProcessBean;
 import de.eidottermihi.raspitools.beans.RaspiMemoryBean;
 import de.eidottermihi.raspitools.beans.UptimeBean;
 
 // TODO reboot command
 // TODO wipe all raspis action from preferences (optional)
 public class MainActivity extends SherlockFragmentActivity implements
-		ActionBar.OnNavigationListener {
+		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView> {
+
 	protected static final String EXTRA_DEVICE_ID = "device_id";
 
 	public static final String KEY_PREFERENCES_SHOWN = "key_prefs_preferences_shown";
 
 	private static final String LOG_TAG = "MAIN";
+	private static final String QUERY_DATA = "queryData";
 
 	private Intent settingsIntent;
 	private Intent newRaspiIntent;
@@ -63,7 +71,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private TextView ipAddrText;
 	private TextView distriText;
 	private TableLayout diskTable;
+	private TableLayout processTable;
 	private ProgressBar progressBar;
+	private PullToRefreshScrollView refreshableScrollView;
 
 	private SharedPreferences sharedPrefs;
 
@@ -117,6 +127,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		ipAddrText = (TextView) findViewById(R.id.ipAddrText);
 		distriText = (TextView) findViewById(R.id.distriText);
 		diskTable = (TableLayout) findViewById(R.id.diskTable);
+		processTable = (TableLayout) findViewById(R.id.processTable);
+
+		// assigning refreshable root scrollview
+		refreshableScrollView = (PullToRefreshScrollView) findViewById(R.id.scrollView1);
+		refreshableScrollView.setOnRefreshListener(this);
 
 		// init device database
 		deviceDb = new DeviceDbHelper(this);
@@ -125,13 +140,27 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		// init spinner
 		initSpinner();
+
+		// restoring disk and process table
+		if (savedInstanceState != null && savedInstanceState.getSerializable(QUERY_DATA) != null) {
+			Log.d(LOG_TAG, "Restoring disk and process table.");
+			queryData = (QueryBean) savedInstanceState
+					.getSerializable(QUERY_DATA);
+			if (queryData.getDisks() != null) {
+				this.updateDiskTable(queryData.getDisks());
+			}
+			if (queryData.getProcesses() != null) {
+				this.updateProcessTable(queryData.getProcesses());
+			}
+		}
 	}
 
 	private void updateQueryDataInView() {
 		String tempScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
 				getString(R.string.pref_temperature_scala_default));
-		coreTempText.setText(queryData.getTempCore().toString() + " "
+		coreTempText.setText(DecimalFormat.getInstance().format(
+				queryData.getTempCore())
 				+ tempScale);
 		armFreqText.setText(queryData.getFreqArm().toString());
 		coreFreqText.setText(queryData.getFreqCore().toString());
@@ -140,43 +169,60 @@ public class MainActivity extends SherlockFragmentActivity implements
 				queryData.getLastUpdate()));
 		uptimeText.setText(queryData.getStartup());
 		averageLoadText.setText(queryData.getAvgLoad().toString());
-		totalMemoryText.setText(queryData.getTotalMem().humanReadableByteCount(false));
-		freeMemoryText.setText(queryData.getFreeMem().humanReadableByteCount(false));
+		totalMemoryText.setText(queryData.getTotalMem().humanReadableByteCount(
+				false));
+		freeMemoryText.setText(queryData.getFreeMem().humanReadableByteCount(
+				false));
 		serialNoText.setText(queryData.getSerialNo());
 		ipAddrText.setText(queryData.getIpAddr());
 		distriText.setText(queryData.getDistri());
 		updateDiskTable(queryData.getDisks());
+		updateProcessTable(queryData.getProcesses());
+	}
+
+	private void updateProcessTable(List<ProcessBean> processes) {
+		// remove current rows except header row
+		processTable.removeViews(1, processTable.getChildCount() - 1);
+		for (ProcessBean processBean : processes) {
+			processTable.addView(createProcessRow(processBean));
+		}
+	}
+
+	private View createProcessRow(ProcessBean processBean) {
+		final TableRow tempRow = new TableRow(this);
+		tempRow.addView(createTextView(processBean.getpId() + ""));
+		tempRow.addView(createTextView(processBean.getTty()));
+		tempRow.addView(createTextView(processBean.getCpuTime()));
+		tempRow.addView(createTextView(processBean.getCommand()));
+		return tempRow;
+	}
+
+	private View createDiskRow(DiskUsageBean disk) {
+		final TableRow tempRow = new TableRow(this);
+		tempRow.addView(createTextView(disk.getFileSystem()));
+		tempRow.addView(createTextView(disk.getSize()));
+		tempRow.addView(createTextView(disk.getAvailable()));
+		tempRow.addView(createTextView(disk.getUsedPercent()));
+		tempRow.addView(createTextView(disk.getMountedOn()));
+		return tempRow;
+	}
+
+	private View createTextView(String text) {
+		final TextView tempText = new TextView(this);
+		tempText.setText(text);
+		// add 3dp to padding right
+		// tempText.setPadding(0, 0, 0, (int)
+		// TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3,
+		// getResources().getDisplayMetrics()));
+		return tempText;
 	}
 
 	private void updateDiskTable(List<DiskUsageBean> disks) {
 		// remove current rows except header row
 		diskTable.removeViews(1, diskTable.getChildCount() - 1);
-		for (de.eidottermihi.raspitools.beans.DiskUsageBean diskUsageBean : disks) {
-			// new Textviews (code looks ugly, refactor sometimes..)
-			TextView tempText = new TextView(this);
-			tempText.setText(diskUsageBean.getFileSystem());
-			tempText.setFreezesText(true);
-			TextView tempSizeText = new TextView(this);
-			tempSizeText.setText(diskUsageBean.getSize());
-			tempSizeText.setFreezesText(true);
-			TextView tempAvailText = new TextView(this);
-			tempAvailText.setText(diskUsageBean.getAvailable());
-			tempAvailText.setFreezesText(true);
-			TextView tempUsedText = new TextView(this);
-			tempUsedText.setText(diskUsageBean.getUsedPercent());
-			tempUsedText.setFreezesText(true);
-			TextView tempMountedOnText = new TextView(this);
-			tempMountedOnText.setText(diskUsageBean.getMountedOn());
-			tempMountedOnText.setFreezesText(true);
-			// new TableRow
-			TableRow tempRow = new TableRow(this);
-			tempRow.addView(tempText);
-			tempRow.addView(tempSizeText);
-			tempRow.addView(tempAvailText);
-			tempRow.addView(tempUsedText);
-			tempRow.addView(tempMountedOnText);
+		for (DiskUsageBean diskUsageBean : disks) {
 			// add row to table
-			diskTable.addView(tempRow);
+			diskTable.addView(createDiskRow(diskUsageBean));
 		}
 	}
 
@@ -209,6 +255,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// hide and reset progress bar
 		progressBar.setVisibility(View.GONE);
 		progressBar.setProgress(0);
+		// update pullToRefresh
+		refreshableScrollView.onRefreshComplete();
 		// update refresh indicator
 		refreshItem.setActionView(null);
 		if (queryData.getStatus() == QueryStatus.OK) {
@@ -244,7 +292,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			break;
 		case R.id.menu_refresh:
 			// do query
-			this.doQuery(item);
+			refreshItem = item;
+			this.doQuery();
 			break;
 		case R.id.menu_new_raspi:
 			this.startActivity(newRaspiIntent);
@@ -273,7 +322,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		deviceDb.delete(currentDevice.getId());
 	}
 
-	private void doQuery(MenuItem item) {
+	private void doQuery() {
 		if (currentDevice == null) {
 			// no device available, show hint for user
 			Toast.makeText(this, R.string.no_device_available,
@@ -286,7 +335,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// show progressbar
 			progressBar.setVisibility(View.VISIBLE);
 			// animate refresh button
-			item.setActionView(R.layout.action_button_refresh);
+			refreshItem.setActionView(R.layout.action_button_refresh);
 			// get connection settings from shared preferences
 			String host = currentDevice.getHost();
 			String user = currentDevice.getUser();
@@ -295,6 +344,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// reading temperature preference
 			String tempPref = sharedPrefs.getString(
 					SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, "°C");
+			// reading process preference
+			Boolean hideRoot = new Boolean(sharedPrefs.getBoolean(
+					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
 			// get connection from current device in dropdown
 			if (host == null) {
 				Toast.makeText(this, R.string.no_hostname_specified,
@@ -307,7 +359,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 						Toast.LENGTH_LONG);
 			} else {
 				// execute query
-				new SSHQueryTask().execute(host, user, pass, port, tempPref);
+				new SSHQueryTask().execute(host, user, pass, port, tempPref,
+						hideRoot.toString());
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
@@ -322,14 +375,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// create and do query
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
 					(String) params[2], Integer.parseInt(params[3]));
+			boolean hideRootProcesses = Boolean.parseBoolean(params[5]);
 			QueryBean bean = new QueryBean();
 			try {
 				publishProgress(5);
 				raspiQuery.connect();
 				publishProgress(10);
-				Double tempCore = raspiQuery
-						.queryCpuTemp(params[4].equals("°C") ? RaspiQuery.TEMP_CELSIUS
-								: RaspiQuery.TEMP_FAHRENHEIT);
+				Double tempCore = raspiQuery.queryCpuTemp(params[4]
+						.equals("°C") ? RaspiQuery.TEMP_CELSIUS
+						: RaspiQuery.TEMP_FAHRENHEIT);
 				publishProgress(20);
 				Double armFreq = raspiQuery.queryFreq(RaspiQuery.FREQ_ARM,
 						RaspiQuery.FREQUENCY_MHZ);
@@ -346,6 +400,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 				RaspiMemoryBean memory = raspiQuery.queryMemoryInformation();
 				publishProgress(70);
 				String serialNo = raspiQuery.queryCpuSerial();
+				publishProgress(72);
+				List<ProcessBean> processes = raspiQuery
+						.queryProcesses(!hideRootProcesses);
 				publishProgress(80);
 				String ipAddr = raspiQuery.queryEth0IpAddr();
 				publishProgress(90);
@@ -365,6 +422,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				bean.setTotalMem(memory.getTotalMemory());
 				bean.setSerialNo(serialNo);
 				bean.setIpAddr(ipAddr);
+				bean.setProcesses(processes);
 				bean.setStatus(QueryStatus.OK);
 				return bean;
 			} catch (RaspiQueryException e) {
@@ -425,6 +483,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 			this.startActivity(newRaspiIntent);
 		}
 		return true;
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+		this.doQuery();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// saving process and disk table
+		if (queryData != null) {
+			Log.d(LOG_TAG, "Saving instance state (query data)");
+			outState.putSerializable(QUERY_DATA, queryData);
+		}
+		super.onSaveInstanceState(outState);
 	}
 
 }

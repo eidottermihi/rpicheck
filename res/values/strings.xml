@@ -67,5 +67,16 @@
     <string name="cancel">Cancel</string>
     <string name="reboot">Reboot</string>
     <string name="temperature_scala_summary">Temperature scala to use (Celsius, Fahrenheit)</string>
+    <string name="process_header">Processes</string>
+    <string name="header_pid">PID</string>
+    <string name="header_tty">TTY</string>
+    <string name="header_cpu_time">CPU</string>
+    <string name="header_command">Command</string>
+    <string name="pref_group_query_settings_title">Query</string>
+    <string name="pref_query_hide_root_title">Hide root processes</string>
+    <string name="pref_query_hide_root_summary">Check if you want to hide root processes.</string>
+    <string name="pref_query_hide_root_summaryOn">No root processes are shown.</string>
+    <string name="pref_query_hide_root_summaryOff">All processes are shown.</string>
+    <string name="new_raspi_minimum">Please specify at minimum a name, host and ssh username / password.</string>
 
 </resources>
