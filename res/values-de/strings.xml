@@ -67,6 +67,17 @@
     <string name="question_reboot">Neustart?</string>
     <string name="cancel">Abbrechen</string>
     <string name="reboot">Neustart</string>
-    
+    <string name="temperature_scala_summary">Temperaturskala (Celsius, Fahrenheit)</string>
+    <string name="process_header">Prozesse</string>
+    <string name="header_pid">PID</string>
+    <string name="header_tty">TTY</string>
+    <string name="header_cpu_time">CPU</string>
+    <string name="header_command">Kommando</string>
+    <string name="pref_group_query_settings_title">Abfragen</string>
+    <string name="pref_query_hide_root_title">Verstecke root Prozesse</string>
+    <string name="pref_query_hide_root_summary">Blendet Prozesse von root aus.</string>
+    <string name="pref_query_hide_root_summaryOn">root Prozesse werden ausgeblendet.</string>
+    <string name="pref_query_hide_root_summaryOff">Alle Prozesse werden angezeigt.</string>
+    <string name="new_raspi_minimum">Bitte mindestens Namen, Hostname, SSH Benutzername und Passwort angeben.</string>
 
 </resources>
