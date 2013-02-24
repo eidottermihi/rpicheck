@@ -47,9 +47,10 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			+ DEVICES_TABLE_NAME + " (" + COLUMN_ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_NAME
 			+ " TEXT ," + COLUMN_DESCRIPTION + " TEXT, " + COLUMN_HOST
-			+ " TEXT, " + COLUMN_USER + " TEXT," + COLUMN_PASSWD + " TEXT, " + COLUMN_SUDOPW + " TEXT, "
-			+ COLUMN_SSHPORT + " INTEGER, " + COLUMN_CREATED_AT + " INTEGER, "
-			+ COLUMN_MODIFIED_AT + " INTEGER, " + COLUMN_SERIAL + " TEXT)";
+			+ " TEXT, " + COLUMN_USER + " TEXT," + COLUMN_PASSWD + " TEXT, "
+			+ COLUMN_SUDOPW + " TEXT, " + COLUMN_SSHPORT + " INTEGER, "
+			+ COLUMN_CREATED_AT + " INTEGER, " + COLUMN_MODIFIED_AT
+			+ " INTEGER, " + COLUMN_SERIAL + " TEXT)";
 
 	private static final String QUERY_TABLE_CREATE = "CREATE TABLE "
 			+ QUERIES_TABLE_NAME + " (" + COLUMN_ID
@@ -81,10 +82,12 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.d(LOG_TAG, "Upgrading database from version " + oldVersion + " to "
 				+ newVersion);
-		if(oldVersion == 6 && newVersion == 7){
-			Log.d(LOG_TAG, "Upgrading database from version 6 to version 7: adding sudo password column to device table.");
+		if (oldVersion == 6 && newVersion == 7) {
+			Log.d(LOG_TAG,
+					"Upgrading database from version 6 to version 7: adding sudo password column to device table.");
 			// adding sudo pw field in device table
-			db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN " + COLUMN_SUDOPW  + " TEXT");
+			db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
+					+ COLUMN_SUDOPW + " TEXT");
 		} else {
 			// dropping all tables (data will be lost *sad* )
 			db.execSQL("DROP TABLE " + DEVICES_TABLE_NAME);
@@ -153,9 +156,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		Cursor cursor = db.query(DEVICES_TABLE_NAME, new String[] { COLUMN_ID,
 				COLUMN_HOST, COLUMN_USER, COLUMN_PASSWD, COLUMN_SSHPORT,
 				COLUMN_CREATED_AT, COLUMN_MODIFIED_AT, COLUMN_SERIAL,
-				COLUMN_DESCRIPTION, COLUMN_NAME, COLUMN_SUDOPW }, COLUMN_ID + "=" + id, null,
-				null, null, null, null);
-		if(cursor.moveToFirst()){
+				COLUMN_DESCRIPTION, COLUMN_NAME, COLUMN_SUDOPW }, COLUMN_ID
+				+ "=" + id, null, null, null, null, null);
+		if (cursor.moveToFirst()) {
 			cursor.moveToFirst();
 			bean.setId(cursor.getInt(0));
 			bean.setHost(cursor.getString(1));
@@ -220,8 +223,8 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		// modified: current timestamp
 		Long timestamp = Calendar.getInstance().getTimeInMillis();
 		values.put(COLUMN_MODIFIED_AT, timestamp);
-		int rowsUpdate = db.update(DEVICES_TABLE_NAME, values, COLUMN_ID + " = ?",
-				new String[] { device.getId() + "" });
+		int rowsUpdate = db.update(DEVICES_TABLE_NAME, values, COLUMN_ID
+				+ " = ?", new String[] { device.getId() + "" });
 		db.close();
 		Log.d(LOG_TAG, rowsUpdate + " row afflicted from update.");
 		return read(device.getId());
