@@ -291,12 +291,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (rebootSuccess) {
 			Toast.makeText(
 					this,
-					"Reboot command sent. Please wait for your next query until reboot is complete and SSH service is running again.",
+					R.string.reboot_fail,
 					Toast.LENGTH_LONG).show();
 		} else {
 			Toast.makeText(
 					this,
-					"Reboot failed. Check your connection settings and sudo password.",
+					R.string.reboot_success,
 					Toast.LENGTH_LONG).show();
 		}
 	}

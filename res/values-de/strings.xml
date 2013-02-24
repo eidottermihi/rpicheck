@@ -78,6 +78,10 @@
     <string name="pref_query_hide_root_summary">Blendet Prozesse von root aus.</string>
     <string name="pref_query_hide_root_summaryOn">root Prozesse werden ausgeblendet.</string>
     <string name="pref_query_hide_root_summaryOff">Alle Prozesse werden angezeigt.</string>
-    <string name="new_raspi_minimum">Bitte mindestens Namen, Hostnamen, SSH Benutzername / Passwort und sudo Passwort angeben.</string>
-
+    <string name="new_raspi_minimum">Bitte mindestens Namen, Hostnamen, SSH Benutzername / Passwort und Sudo Passwort angeben.</string>
+	<string name="raspi_device_sudo_password_hint">Sudo Passwort</string>
+    <string name="sudo_password">Sudo Passwort</string>
+    <string name="sudo_password_not_specified">Für einen Neustart muss das sudo Passwort angegeben sein. Bitte gib es an.</string>
+    <string name="reboot_fail">Neustart angestoßen. Bitte warte, bis dein Raspberry Pi neu hochgefahren ist und der SSH Service gestartet ist.</string>
+    <string name="reboot_success">Neustart fehlgeschlagen. Überprüfe deine Netzwerk und das angegebene Sudo Passwort.</string>
 </resources>
