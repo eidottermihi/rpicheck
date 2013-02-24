@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 public class EditRaspiActivity extends SherlockActivity {
+	public static final String FOCUS_SUDO_PASSWORD = "focusSudo";
 
 	private static final String LOG_TAG = "EditRaspiActivity";
 	private EditText editTextName;
@@ -22,6 +23,7 @@ public class EditRaspiActivity extends SherlockActivity {
 	private EditText editTextPass;
 	private EditText editTextSshPortOpt;
 	private EditText editTextDescription;
+	private EditText editTextSudoPass;
 
 	private DeviceDbHelper deviceDb;
 	private RaspberryDeviceBean deviceBean;
@@ -40,6 +42,7 @@ public class EditRaspiActivity extends SherlockActivity {
 		editTextPass = (EditText) findViewById(R.id.edit_raspi_pass_editText);
 		editTextSshPortOpt = (EditText) findViewById(R.id.edit_raspi_ssh_port_editText);
 		editTextDescription = (EditText) findViewById(R.id.edit_raspi_desc_editText);
+		editTextSudoPass = (EditText) findViewById(R.id.edit_raspi_sudoPass_editText);
 
 		// init sql db
 		deviceDb = new DeviceDbHelper(this);
@@ -56,6 +59,12 @@ public class EditRaspiActivity extends SherlockActivity {
 		editTextPass.setText(deviceBean.getPass());
 		editTextSshPortOpt.setText(deviceBean.getPort() + "");
 		editTextDescription.setText(deviceBean.getDescription());
+		editTextSudoPass.setText(deviceBean.getSudoPass());
+		
+		// check if sudo password fields needs focus
+		if(this.getIntent().getExtras().getBoolean(FOCUS_SUDO_PASSWORD)){
+			editTextSudoPass.requestFocus();
+		}
 	}
 
 	@Override
@@ -92,29 +101,32 @@ public class EditRaspiActivity extends SherlockActivity {
 
 	private void updateRaspi() {
 		// getting credentials from textfields
-		String name = editTextName.getText().toString().trim();
-		String host = editTextHost.getText().toString().trim();
-		String user = editTextUser.getText().toString().trim();
-		String pass = editTextPass.getText().toString().trim();
-		String sshPort = editTextSshPortOpt.getText().toString().trim();
-		String description = editTextDescription.getText().toString().trim();
+		final String name = editTextName.getText().toString().trim();
+		final String host = editTextHost.getText().toString().trim();
+		final String user = editTextUser.getText().toString().trim();
+		final String pass = editTextPass.getText().toString().trim();
+		final String sshPort = editTextSshPortOpt.getText().toString().trim();
+		final String description = editTextDescription.getText().toString()
+				.trim();
+		final String sudoPass = editTextSudoPass.getText().toString().trim();
 		Log.d(LOG_TAG, "Update raspi :" + name + "/" + host + "/" + user + "/"
 				+ pass + "/" + sshPort);
 
 		if (StringUtils.isBlank(name) || StringUtils.isBlank(host)
-				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass)) {
-			Toast.makeText(this,
-					getText(R.string.new_raspi_minimum),
+				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass)
+				|| StringUtils.isBlank(sudoPass)) {
+			Toast.makeText(this, getText(R.string.new_raspi_minimum),
 					Toast.LENGTH_LONG).show();
 		} else {
-			updateRaspiInDb(name, host, user, pass, sshPort, description);
+			updateRaspiInDb(name, host, user, pass, sshPort, description,
+					sudoPass);
 			// back to main
 			NavUtils.navigateUpFromSameTask(this);
 		}
 	}
 
 	private void updateRaspiInDb(String name, String host, String user,
-			String pass, String sshPort, String description) {
+			String pass, String sshPort, String description, String sudoPass) {
 		// if sshPort is empty, use default port (22)
 		if (StringUtils.isBlank(sshPort)) {
 			sshPort = getText(R.string.default_ssh_port).toString();
@@ -125,6 +137,7 @@ public class EditRaspiActivity extends SherlockActivity {
 		deviceBean.setPass(pass);
 		deviceBean.setPort(Integer.parseInt(sshPort));
 		deviceBean.setDescription(description);
+		deviceBean.setSudoPass(sudoPass);
 		deviceDb.update(deviceBean);
 	}
 

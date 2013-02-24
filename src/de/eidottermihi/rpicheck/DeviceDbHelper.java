@@ -16,7 +16,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "RASPIQUERY";
 	private static final String DEVICES_TABLE_NAME = "DEVICES";
 	private static final String QUERIES_TABLE_NAME = "QUERIES";
-	private static final int DATABASE_VERSION = 6;
+	private static final int DATABASE_VERSION = 7;
 	private static final String COLUMN_ID = BaseColumns._ID;
 	private static final String COLUMN_NAME = "name";
 	private static final String COLUMN_DESCRIPTION = "description";
@@ -26,6 +26,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	private static final String COLUMN_SSHPORT = "ssh_port";
 	private static final String COLUMN_CREATED_AT = "created_at";
 	private static final String COLUMN_MODIFIED_AT = "modified_at";
+	private static final String COLUMN_SUDOPW = "sudo_passwd";
 	private static final String COLUMN_SERIAL = "serial";
 	private static final String COLUMN_QUERY_TIME = "time";
 	private static final String COLUMN_QUERY_STATUS = "status";
@@ -46,7 +47,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			+ DEVICES_TABLE_NAME + " (" + COLUMN_ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_NAME
 			+ " TEXT ," + COLUMN_DESCRIPTION + " TEXT, " + COLUMN_HOST
-			+ " TEXT, " + COLUMN_USER + " TEXT," + COLUMN_PASSWD + " TEXT, "
+			+ " TEXT, " + COLUMN_USER + " TEXT," + COLUMN_PASSWD + " TEXT, " + COLUMN_SUDOPW + " TEXT, "
 			+ COLUMN_SSHPORT + " INTEGER, " + COLUMN_CREATED_AT + " INTEGER, "
 			+ COLUMN_MODIFIED_AT + " INTEGER, " + COLUMN_SERIAL + " TEXT)";
 
@@ -80,11 +81,17 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.d(LOG_TAG, "Upgrading database from version " + oldVersion + " to "
 				+ newVersion);
-		// dropping all tables (data will be lost *sad* )
-		db.execSQL("DROP TABLE " + DEVICES_TABLE_NAME);
-		db.execSQL("DROP TABLE " + QUERIES_TABLE_NAME);
-		// run initial setup
-		this.onCreate(db);
+		if(oldVersion == 6 && newVersion == 7){
+			Log.d(LOG_TAG, "Upgrading database from version 6 to version 7: adding sudo password column to device table.");
+			// adding sudo pw field in device table
+			db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN " + COLUMN_SUDOPW  + " TEXT");
+		} else {
+			// dropping all tables (data will be lost *sad* )
+			db.execSQL("DROP TABLE " + DEVICES_TABLE_NAME);
+			db.execSQL("DROP TABLE " + QUERIES_TABLE_NAME);
+			// run initial setup
+			this.onCreate(db);
+		}
 	}
 
 	/**
@@ -113,7 +120,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	 * @return a {@link RaspberryDeviceBean}
 	 */
 	public RaspberryDeviceBean create(String name, String host, String user,
-			String pass, int sshPort, String description) {
+			String pass, int sshPort, String description, String sudoPass) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		// _id AUTOINCREMENT
@@ -122,6 +129,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		values.put(COLUMN_USER, user);
 		values.put(COLUMN_PASSWD, pass);
 		values.put(COLUMN_SSHPORT, sshPort);
+		values.put(COLUMN_SUDOPW, sudoPass);
 
 		// created: current timestamp
 		Long timestamp = Calendar.getInstance().getTimeInMillis();
@@ -145,7 +153,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		Cursor cursor = db.query(DEVICES_TABLE_NAME, new String[] { COLUMN_ID,
 				COLUMN_HOST, COLUMN_USER, COLUMN_PASSWD, COLUMN_SSHPORT,
 				COLUMN_CREATED_AT, COLUMN_MODIFIED_AT, COLUMN_SERIAL,
-				COLUMN_DESCRIPTION, COLUMN_NAME }, COLUMN_ID + "=" + id, null,
+				COLUMN_DESCRIPTION, COLUMN_NAME, COLUMN_SUDOPW }, COLUMN_ID + "=" + id, null,
 				null, null, null, null);
 		if(cursor.moveToFirst()){
 			cursor.moveToFirst();
@@ -159,6 +167,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			bean.setSerial(cursor.getString(7));
 			bean.setDescription(cursor.getString(8));
 			bean.setName(cursor.getString(9));
+			bean.setSudoPass(cursor.getString(10));
 			cursor.close();
 			db.close();
 			return bean;
@@ -207,6 +216,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		values.put(COLUMN_SSHPORT, device.getPort());
 		values.put(COLUMN_DESCRIPTION, device.getDescription());
 		values.put(COLUMN_SERIAL, device.getSerial());
+		values.put(COLUMN_SUDOPW, device.getSudoPass());
 		// modified: current timestamp
 		Long timestamp = Calendar.getInstance().getTimeInMillis();
 		values.put(COLUMN_MODIFIED_AT, timestamp);

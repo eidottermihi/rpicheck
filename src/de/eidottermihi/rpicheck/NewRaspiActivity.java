@@ -2,7 +2,6 @@ package de.eidottermihi.rpicheck;
 
 import org.apache.commons.lang3.StringUtils;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -23,6 +22,7 @@ public class NewRaspiActivity extends SherlockActivity {
 	private EditText editTextPass;
 	private EditText editTextSshPortOpt;
 	private EditText editTextDescription;
+	private EditText editTextSudoPw;
 
 	private DeviceDbHelper deviceDb;
 
@@ -40,6 +40,7 @@ public class NewRaspiActivity extends SherlockActivity {
 		editTextPass = (EditText) findViewById(R.id.raspi_pass_editText);
 		editTextSshPortOpt = (EditText) findViewById(R.id.raspi_ssh_port_editText);
 		editTextDescription = (EditText) findViewById(R.id.raspi_desc_editText);
+		editTextSudoPw = (EditText) findViewById(R.id.raspi_sudoPass_editText);
 
 		// init sql db
 		deviceDb = new DeviceDbHelper(this);
@@ -81,35 +82,36 @@ public class NewRaspiActivity extends SherlockActivity {
 
 	private void saveRaspi() {
 		// getting credentials from textfields
-		String name = editTextName.getText().toString().trim();
-		String host = editTextHost.getText().toString().trim();
-		String user = editTextUser.getText().toString().trim();
-		String pass = editTextPass.getText().toString().trim();
-		String sshPort = editTextSshPortOpt.getText().toString().trim();
-		String description = editTextDescription.getText().toString().trim();
+		final String name = editTextName.getText().toString().trim();
+		final String host = editTextHost.getText().toString().trim();
+		final String user = editTextUser.getText().toString().trim();
+		final String pass = editTextPass.getText().toString().trim();
+		final String sshPort = editTextSshPortOpt.getText().toString().trim();
+		final String description = editTextDescription.getText().toString().trim();
+		final String sudoPass = editTextSudoPw.getText().toString().trim();
 		Log.d(LOG_TAG, "New raspi :" + name + "/" + host + "/" + user + "/"
-				+ pass + "/" + sshPort);
+				+ pass + "/" + sshPort + "/" + sudoPass);
 
 		if (StringUtils.isBlank(name) || StringUtils.isBlank(host)
-				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass)) {
+				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass) || StringUtils.isBlank(sudoPass)) {
 			Toast.makeText(this,
 					R.string.new_raspi_minimum,
 					Toast.LENGTH_LONG).show();
 		} else {
-			addRaspiToDb(name, host, user, pass, sshPort, description);
+			addRaspiToDb(name, host, user, pass, sshPort, description, sudoPass);
 			// back to main
 			NavUtils.navigateUpFromSameTask(this);
 		}
 	}
 
 	private void addRaspiToDb(String name, String host, String user,
-			String pass, String sshPort, String description) {
+			String pass, String sshPort, String description, String sudoPass) {
 		// if sshPort is empty, use default port (22)
 		if (StringUtils.isBlank(sshPort)) {
 			sshPort = getText(R.string.default_ssh_port).toString();
 		}
 		deviceDb.create(name, host, user, pass, Integer.parseInt(sshPort),
-				description);
+				description, sudoPass);
 	}
 
 }

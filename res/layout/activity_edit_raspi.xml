@@ -153,6 +153,37 @@
                 android:paddingRight="8dp"
                 android:text="@string/ssh_port"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp" >
+
+            <EditText
+                android:id="@+id/edit_raspi_sudoPass_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/labelSudoPass"
+                android:ems="10"
+                android:hint="@string/raspi_device_sudo_password_hint"
+                android:inputType="text|textPassword"
+                android:maxLines="1"
+                android:paddingLeft="8dp" />
+
+            <TextView
+                android:id="@+id/labelSudoPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/edit_raspi_sudoPass_editText"
+                android:layout_alignBottom="@+id/edit_raspi_sudoPass_editText"
+                android:layout_alignParentLeft="true"
+                android:paddingRight="8dp"
+                android:text="@string/sudo_password"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
         </RelativeLayout>
 
         <TextView

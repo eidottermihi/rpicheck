@@ -65,6 +65,16 @@
             android:maxLines="1"
             android:paddingTop="8dp" />
 
+        <EditText
+            android:id="@+id/raspi_sudoPass_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/raspi_device_sudo_password_hint"
+            android:inputType="text|textPassword"
+            android:maxLines="1"
+            android:paddingTop="8dp" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

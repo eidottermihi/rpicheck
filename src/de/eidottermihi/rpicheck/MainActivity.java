@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -40,11 +43,12 @@ import de.eidottermihi.raspitools.beans.DiskUsageBean;
 import de.eidottermihi.raspitools.beans.ProcessBean;
 import de.eidottermihi.raspitools.beans.RaspiMemoryBean;
 import de.eidottermihi.raspitools.beans.UptimeBean;
+import de.eidottermihi.rpicheck.RebootDialogFragment.RebootDialogListener;
 
-// TODO reboot command
 // TODO wipe all raspis action from preferences (optional)
 public class MainActivity extends SherlockFragmentActivity implements
-		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView> {
+		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
+		RebootDialogListener {
 
 	protected static final String EXTRA_DEVICE_ID = "device_id";
 
@@ -79,6 +83,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private QueryBean queryData;
 
+	private boolean rebootSuccess;
+
 	private DeviceDbHelper deviceDb;
 
 	private RaspberryDeviceBean currentDevice;
@@ -94,6 +100,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// gets called from AsyncTask when data was queried
 			updateResultsInUi();
 		}
+	};
+
+	// Runnable for reboot result
+	final Runnable mRebootResult = new Runnable() {
+		public void run() {
+			// gets called from AsyncTask when reboot command was sent
+			afterReboot();
+		}
+
 	};
 
 	private MenuItem refreshItem;
@@ -142,7 +157,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		initSpinner();
 
 		// restoring disk and process table
-		if (savedInstanceState != null && savedInstanceState.getSerializable(QUERY_DATA) != null) {
+		if (savedInstanceState != null
+				&& savedInstanceState.getSerializable(QUERY_DATA) != null) {
 			Log.d(LOG_TAG, "Restoring disk and process table.");
 			queryData = (QueryBean) savedInstanceState
 					.getSerializable(QUERY_DATA);
@@ -271,15 +287,30 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
+	private void afterReboot() {
+		if (rebootSuccess) {
+			Toast.makeText(
+					this,
+					"Reboot command sent. Please wait for your next query until reboot is complete and SSH service is running again.",
+					Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(
+					this,
+					"Reboot failed. Check your connection settings and sudo password.",
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
 		// assign refresh button to field
 		refreshItem = menu.findItem(R.id.menu_refresh);
-		// set delete and edit visible if there is a current device
+		// set delete, edit and reboot visible if there is a current device
 		if (currentDevice != null) {
 			menu.findItem(R.id.menu_delete).setVisible(true);
 			menu.findItem(R.id.menu_edit_raspi).setVisible(true);
+			menu.findItem(R.id.menu_reboot).setVisible(true);
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -303,16 +334,61 @@ public class MainActivity extends SherlockFragmentActivity implements
 			this.initSpinner();
 			break;
 		case R.id.menu_edit_raspi:
-			Bundle extras = new Bundle();
+			final Bundle extras = new Bundle();
 			extras.putInt(EXTRA_DEVICE_ID, currentDevice.getId());
 			editRaspiIntent.putExtras(extras);
 			this.startActivity(editRaspiIntent);
 			break;
-		// case R.id.menu_reboot:
-		// this.doReboot();
-		// break;
+		case R.id.menu_reboot:
+			this.showRebootDialog();
+			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void showRebootDialog() {
+		// checking if sudo password is present, if not send to editRaspi to
+		// specify one
+		boolean sudoPassPresent = true;
+		if (currentDevice.getSudoPass() == null) {
+			Log.d(LOG_TAG, "Current device: sudoPass is null");
+			sudoPassPresent = false;
+		} else if (StringUtils.isBlank(currentDevice.getSudoPass())) {
+			Log.d(LOG_TAG, "Current device: sudoPass is blank");
+			sudoPassPresent = false;
+		}
+		if (sudoPassPresent) {
+			Log.d(LOG_TAG, "Showing reboot dialog.");
+			DialogFragment rebootDialog = new RebootDialogFragment();
+			rebootDialog.show(getSupportFragmentManager(), "reboot");
+		} else {
+			Toast.makeText(this,
+					getString(R.string.sudo_password_not_specified),
+					Toast.LENGTH_LONG).show();
+			final Bundle extras = new Bundle();
+			extras.putInt(EXTRA_DEVICE_ID, currentDevice.getId());
+			extras.putBoolean(EditRaspiActivity.FOCUS_SUDO_PASSWORD, true);
+			editRaspiIntent.putExtras(extras);
+			this.startActivity(editRaspiIntent);
+		}
+	}
+
+	private void doReboot() {
+		Log.d(LOG_TAG, "Doing reboot...");
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			// get connection settings from shared preferences
+			String host = currentDevice.getHost();
+			String user = currentDevice.getUser();
+			String pass = currentDevice.getPass();
+			String port = currentDevice.getPort() + "";
+			String sudoPass = currentDevice.getSudoPass();
+			new SSHRebootTask().execute(host, user, pass, port, sudoPass);
+		} else {
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
+					.show();
+		}
 	}
 
 	private void deleteCurrentDevice() {
@@ -345,7 +421,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			String tempPref = sharedPrefs.getString(
 					SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, "°C");
 			// reading process preference
-			Boolean hideRoot = new Boolean(sharedPrefs.getBoolean(
+			final Boolean hideRoot = new Boolean(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
 			// get connection from current device in dropdown
 			if (host == null) {
@@ -366,6 +442,42 @@ public class MainActivity extends SherlockFragmentActivity implements
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
 		}
+	}
+
+	private class SSHRebootTask extends AsyncTask<String, Integer, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
+					(String) params[2], Integer.parseInt(params[3]));
+			final String sudoPass = params[4];
+			try {
+				raspiQuery.connect();
+				boolean rebootSignal = raspiQuery.sendRebootSignal(sudoPass);
+				raspiQuery.disconnect();
+				return rebootSignal;
+			} catch (RaspiQueryException e) {
+				Log.e(LOG_TAG, e.getMessage());
+			} catch (IOException e) {
+				Log.e(LOG_TAG, e.getMessage());
+			} finally {
+				try {
+					raspiQuery.disconnect();
+				} catch (IOException e) {
+					Log.e(LOG_TAG, e.getMessage());
+				}
+			}
+			return false;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// update query data
+			rebootSuccess = result;
+			// inform handler
+			mHandler.post(mRebootResult);
+		}
+
 	}
 
 	private class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
@@ -498,6 +610,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 			outState.putSerializable(QUERY_DATA, queryData);
 		}
 		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		Log.d(LOG_TAG, "RebootDialog: Reboot confirmed.");
+		this.doReboot();
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		Log.d(LOG_TAG, "RebootDialog: Reboot cancelled.");
 	}
 
 }

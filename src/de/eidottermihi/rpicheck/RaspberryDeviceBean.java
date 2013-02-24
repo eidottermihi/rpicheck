@@ -13,6 +13,7 @@ public class RaspberryDeviceBean {
 	private String serial;
 	private Date createdAt;
 	private Date modifiedAt;
+	private String sudoPass;
 
 	public String getHost() {
 		return host;
@@ -92,6 +93,14 @@ public class RaspberryDeviceBean {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getSudoPass() {
+		return sudoPass;
+	}
+
+	public void setSudoPass(String sudoPass) {
+		this.sudoPass = sudoPass;
 	}
 
 }

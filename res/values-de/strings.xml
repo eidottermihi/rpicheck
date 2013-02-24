@@ -35,7 +35,7 @@
     <string name="raspi_device_button_new">Speichern</string>
     <string name="pref_temp_scala_title">Temperaturskala</string>
     <string name="temperature_scala_summary">Celsius, Fahrenheit</string>
-    <string name="pref_temperature_scala_default">C</string>
+    <string name="pref_temperature_scala_default">°C</string>
     <string name="pref_group_display_settings_title">Display</string>
     <string name="last_update">Letzte Aktualisierung</string>
     <string name="no_device_available">Bitte zuerst ein RasPi hinzufügen.</string>
@@ -78,6 +78,6 @@
     <string name="pref_query_hide_root_summary">Blendet Prozesse von root aus.</string>
     <string name="pref_query_hide_root_summaryOn">root Prozesse werden ausgeblendet.</string>
     <string name="pref_query_hide_root_summaryOff">Alle Prozesse werden angezeigt.</string>
-    <string name="new_raspi_minimum">Bitte mindestens Namen, Hostname, SSH Benutzername und Passwort angeben.</string>
+    <string name="new_raspi_minimum">Bitte mindestens Namen, Hostnamen, SSH Benutzername / Passwort und sudo Passwort angeben.</string>
 
 </resources>

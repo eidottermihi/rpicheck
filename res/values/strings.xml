@@ -34,7 +34,7 @@
     <string name="default_ssh_port">22</string>
     <string name="raspi_device_button_new">Save</string>
     <string name="pref_temp_scala_title">Temperature scale</string>
-    <string name="pref_temperature_scala_default">C</string>
+    <string name="pref_temperature_scala_default">°C</string>
     <string name="pref_group_display_settings_title">Display settings</string>
     <string name="last_update">Last refresh</string>
     <string name="no_device_available">Please add a Raspberry Pi first.</string>
@@ -77,6 +77,9 @@
     <string name="pref_query_hide_root_summary">Check if you want to hide root processes.</string>
     <string name="pref_query_hide_root_summaryOn">No root processes are shown.</string>
     <string name="pref_query_hide_root_summaryOff">All processes are shown.</string>
-    <string name="new_raspi_minimum">Please specify at minimum a name, host and ssh username / password.</string>
+    <string name="new_raspi_minimum">Please specify at minimum a name, host and ssh username / password and sudo password.</string>
+    <string name="raspi_device_sudo_password_hint">sudo password</string>
+    <string name="sudo_password">Sudo password</string>
+    <string name="sudo_password_not_specified">Reboot needs the sudo password. Please specify one.</string>
 
 </resources>
