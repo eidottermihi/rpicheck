@@ -403,6 +403,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// no device available, show hint for user
 			Toast.makeText(this, R.string.no_device_available,
 					Toast.LENGTH_LONG).show();
+			// stop refresh animation from pull-to-refresh
+			refreshableScrollView.onRefreshComplete();
 			return;
 		}
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -441,6 +443,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
+			// stop refresh animation from pull-to-refresh
+			refreshableScrollView.onRefreshComplete();
 		}
 	}
 
