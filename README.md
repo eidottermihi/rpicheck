@@ -15,5 +15,5 @@ Please report bugs here: https://github.com/eidottermihi/rpicheck/issues
 
 Contributing
 ------------
-Feel free to contribute (especially Android layout/acitivities)!
+Feel free to contribute!
 
