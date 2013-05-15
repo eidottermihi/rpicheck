@@ -1,9 +1,8 @@
 package de.eidottermihi.rpicheck;
 
 public enum QueryStatus {
-	OK("Everything ok."),
-	ConnectionFailure("Connection failed."),
-	AuthenticationFailure("Authentication failed.");
+	OK("Everything ok."), ConnectionFailure("Connection failed."), AuthenticationFailure(
+			"Authentication failed."), VCGENCMD("vcgencmd was not found.");
 
 	private String text;
 

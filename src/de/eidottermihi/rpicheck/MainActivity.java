@@ -1,7 +1,6 @@
 package de.eidottermihi.rpicheck;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -40,9 +39,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import de.eidottermihi.raspitools.RaspiQuery;
 import de.eidottermihi.raspitools.RaspiQueryException;
 import de.eidottermihi.raspitools.beans.DiskUsageBean;
+import de.eidottermihi.raspitools.beans.NetworkInterfaceInformation;
 import de.eidottermihi.raspitools.beans.ProcessBean;
 import de.eidottermihi.raspitools.beans.RaspiMemoryBean;
 import de.eidottermihi.raspitools.beans.UptimeBean;
+import de.eidottermihi.raspitools.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.RebootDialogFragment.RebootDialogListener;
 
 // TODO wipe all raspis action from preferences (optional)
@@ -172,15 +173,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateQueryDataInView() {
-		String tempScale = sharedPrefs.getString(
+		// TODO use tempScale (write utility-Class for calculations...)
+		final String tempScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
 				getString(R.string.pref_temperature_scala_default));
-		coreTempText.setText(DecimalFormat.getInstance().format(
-				queryData.getTempCore())
-				+ tempScale);
-		armFreqText.setText(queryData.getFreqArm().toString());
-		coreFreqText.setText(queryData.getFreqCore().toString());
-		coreVoltText.setText(queryData.getVolts().toString());
+		coreTempText.setText(queryData.getVcgencmdInfo().getCpuTemperature()
+				+ "");
+		// TODO unit of frequency in settings (hz, mhz, ghz)
+		armFreqText.setText(queryData.getVcgencmdInfo().getArmFrequency() + "");
+		coreFreqText.setText(queryData.getVcgencmdInfo().getCoreFrequency()
+				+ "");
+		coreVoltText.setText(queryData.getVcgencmdInfo().getCoreVolts() + "");
+		// TODO add firmware version
 		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(
 				queryData.getLastUpdate()));
 		uptimeText.setText(queryData.getStartup());
@@ -190,7 +194,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		freeMemoryText.setText(queryData.getFreeMem().humanReadableByteCount(
 				false));
 		serialNoText.setText(queryData.getSerialNo());
-		ipAddrText.setText(queryData.getIpAddr());
+		// TODO new layout for more network interfaces (like PROCESSES or DISK
+		// USAGE)
+		// ipAddrText.setText(queryData.getIpAddr());
+		ipAddrText.setText(queryData.getNetworkInfo().get(0).getIpAdress());
 		distriText.setText(queryData.getDistri());
 		updateDiskTable(queryData.getDisks());
 		updateProcessTable(queryData.getProcesses());
@@ -289,15 +296,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private void afterReboot() {
 		if (rebootSuccess) {
-			Toast.makeText(
-					this,
-					R.string.reboot_fail,
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
+					.show();
 		} else {
-			Toast.makeText(
-					this,
-					R.string.reboot_success,
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
+					.show();
 		}
 	}
 
@@ -423,7 +426,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			String tempPref = sharedPrefs.getString(
 					SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, "°C");
 			// reading process preference
-			final Boolean hideRoot = new Boolean(sharedPrefs.getBoolean(
+			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
 			// get connection from current device in dropdown
 			if (host == null) {
@@ -497,16 +500,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				publishProgress(5);
 				raspiQuery.connect();
 				publishProgress(10);
-				Double tempCore = raspiQuery.queryCpuTemp(params[4]
-						.equals("°C") ? RaspiQuery.TEMP_CELSIUS
-						: RaspiQuery.TEMP_FAHRENHEIT);
-				publishProgress(20);
-				Double armFreq = raspiQuery.queryFreq(RaspiQuery.FREQ_ARM,
-						RaspiQuery.FREQUENCY_MHZ);
-				Double coreFreq = raspiQuery.queryFreq(RaspiQuery.FREQ_CORE,
-						RaspiQuery.FREQUENCY_MHZ);
-				publishProgress(30);
-				Double volts = raspiQuery.queryVolts();
+				final VcgencmdBean vcgencmdBean = raspiQuery.queryVcgencmd();
 				publishProgress(40);
 				UptimeBean uptime = raspiQuery.queryUptime();
 				publishProgress(50);
@@ -520,38 +514,36 @@ public class MainActivity extends SherlockFragmentActivity implements
 				List<ProcessBean> processes = raspiQuery
 						.queryProcesses(!hideRootProcesses);
 				publishProgress(80);
-				String ipAddr = raspiQuery.queryEth0IpAddr();
+				final List<NetworkInterfaceInformation> networkInformation = raspiQuery
+						.queryNetworkInformation();
 				publishProgress(90);
 				bean.setDisks(raspiQuery.queryDiskUsage());
 				publishProgress(95);
 				bean.setDistri(raspiQuery.queryDistributionName());
 				raspiQuery.disconnect();
 				publishProgress(100);
-				bean.setTempCore(tempCore);
-				bean.setFreqArm(armFreq);
-				bean.setFreqCore(coreFreq);
-				bean.setVolts(volts);
+				bean.setVcgencmdInfo(vcgencmdBean);
 				bean.setLastUpdate(Calendar.getInstance().getTime());
 				bean.setStartup(prettyUptime);
 				bean.setAvgLoad(avgLoad);
 				bean.setFreeMem(memory.getTotalFree());
 				bean.setTotalMem(memory.getTotalMemory());
 				bean.setSerialNo(serialNo);
-				bean.setIpAddr(ipAddr);
+				bean.setNetworkInfo(networkInformation);
 				bean.setProcesses(processes);
 				bean.setStatus(QueryStatus.OK);
 				return bean;
 			} catch (RaspiQueryException e) {
 				Log.e(LOG_TAG, e.getMessage());
-				return this.handleException(e);
+				return this.handleException(e, bean);
 			} catch (IOException e) {
 				Log.e(LOG_TAG, e.getMessage());
 			}
 			return null;
 		}
 
-		private QueryBean handleException(RaspiQueryException e) {
-			QueryBean queryBean = new QueryBean();
+		private QueryBean handleException(RaspiQueryException e,
+				QueryBean queryBean) {
 			switch (e.getReasonCode()) {
 			case RaspiQueryException.REASON_CONNECTION_FAILED:
 				queryBean.setStatus(QueryStatus.ConnectionFailure);
@@ -561,6 +553,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 				break;
 			case RaspiQueryException.REASON_TRANSPORT_EXCEPTION:
 				queryBean.setStatus(QueryStatus.ConnectionFailure);
+				break;
+			case RaspiQueryException.REASON_VCGENCMD_NOT_FOUND:
+				queryBean.setStatus(QueryStatus.VCGENCMD);
+				break;
 			}
 			return queryBean;
 		}

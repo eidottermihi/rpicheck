@@ -6,15 +6,15 @@ import java.util.List;
 
 import de.eidottermihi.raspitools.beans.DiskUsageBean;
 import de.eidottermihi.raspitools.beans.MemoryBean;
+import de.eidottermihi.raspitools.beans.NetworkInterfaceInformation;
 import de.eidottermihi.raspitools.beans.ProcessBean;
+import de.eidottermihi.raspitools.beans.VcgencmdBean;
 
 public class QueryBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Double volts;
-	private Double freqArm;
-	private Double freqCore;
-	private Double tempCore;
+	private VcgencmdBean vcgencmdInfo;
+	private List<NetworkInterfaceInformation> networkInfo;
 	private Date lastUpdate;
 	private QueryStatus status;
 	private String startup;
@@ -22,41 +22,24 @@ public class QueryBean implements Serializable {
 	private MemoryBean totalMem;
 	private MemoryBean freeMem;
 	private String serialNo;
-	private String ipAddr;
 	private List<DiskUsageBean> disks;
 	private String distri;
 	private List<ProcessBean> processes;
 
-	public Double getVolts() {
-		return volts;
+	public VcgencmdBean getVcgencmdInfo() {
+		return vcgencmdInfo;
 	}
 
-	public void setVolts(Double volts) {
-		this.volts = volts;
+	public void setVcgencmdInfo(VcgencmdBean vcgencmdInfo) {
+		this.vcgencmdInfo = vcgencmdInfo;
 	}
 
-	public Double getFreqArm() {
-		return freqArm;
+	public List<NetworkInterfaceInformation> getNetworkInfo() {
+		return networkInfo;
 	}
 
-	public void setFreqArm(Double freqArm) {
-		this.freqArm = freqArm;
-	}
-
-	public Double getFreqCore() {
-		return freqCore;
-	}
-
-	public void setFreqCore(Double freqCore) {
-		this.freqCore = freqCore;
-	}
-
-	public Double getTempCore() {
-		return tempCore;
-	}
-
-	public void setTempCore(Double tempCore) {
-		this.tempCore = tempCore;
+	public void setNetworkInfo(List<NetworkInterfaceInformation> networkInfo) {
+		this.networkInfo = networkInfo;
 	}
 
 	public QueryStatus getStatus() {
@@ -113,14 +96,6 @@ public class QueryBean implements Serializable {
 
 	public void setSerialNo(String serialNo) {
 		this.serialNo = serialNo;
-	}
-
-	public String getIpAddr() {
-		return ipAddr;
-	}
-
-	public void setIpAddr(String ipAddr) {
-		this.ipAddr = ipAddr;
 	}
 
 	public List<DiskUsageBean> getDisks() {
