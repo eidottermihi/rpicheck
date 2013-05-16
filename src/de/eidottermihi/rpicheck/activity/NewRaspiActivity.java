@@ -94,21 +94,24 @@ public class NewRaspiActivity extends SherlockActivity {
 		final String user = editTextUser.getText().toString().trim();
 		final String pass = editTextPass.getText().toString().trim();
 		final String sshPort = editTextSshPortOpt.getText().toString().trim();
-		final String description = editTextDescription.getText().toString().trim();
-		final String sudoPass = editTextSudoPw.getText().toString().trim();
+		final String description = editTextDescription.getText().toString()
+				.trim();
+		String sudoPass = editTextSudoPw.getText().toString().trim();
 		Log.d(LOG_TAG, "New raspi :" + name + "/" + host + "/" + user + "/"
 				+ pass + "/" + sshPort + "/" + sudoPass);
 
 		if (StringUtils.isBlank(name) || StringUtils.isBlank(host)
-				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass) || StringUtils.isBlank(sudoPass)) {
-			Toast.makeText(this,
-					R.string.new_raspi_minimum,
-					Toast.LENGTH_LONG).show();
-		} else {
-			addRaspiToDb(name, host, user, pass, sshPort, description, sudoPass);
-			// back to main
-			NavUtils.navigateUpFromSameTask(this);
+				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass)) {
+			Toast.makeText(this, R.string.new_raspi_minimum, Toast.LENGTH_LONG)
+					.show();
+			return;
 		}
+		if (StringUtils.isBlank(sudoPass)) {
+			sudoPass = "";
+		}
+		addRaspiToDb(name, host, user, pass, sshPort, description, sudoPass);
+		// back to main
+		NavUtils.navigateUpFromSameTask(this);
 	}
 
 	private void addRaspiToDb(String name, String host, String user,

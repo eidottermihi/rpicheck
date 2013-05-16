@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -310,10 +308,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private void afterReboot() {
 		if (rebootSuccess) {
-			Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
+			Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
 					.show();
 		} else {
-			Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
+			Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
 					.show();
 		}
 	}
@@ -370,23 +368,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (currentDevice.getSudoPass() == null) {
 			Log.d(LOG_TAG, "Current device: sudoPass is null");
 			sudoPassPresent = false;
-		} else if (StringUtils.isBlank(currentDevice.getSudoPass())) {
-			Log.d(LOG_TAG, "Current device: sudoPass is blank");
-			sudoPassPresent = false;
 		}
 		if (sudoPassPresent) {
 			Log.d(LOG_TAG, "Showing reboot dialog.");
 			DialogFragment rebootDialog = new RebootDialogFragment();
 			rebootDialog.show(getSupportFragmentManager(), "reboot");
-		} else {
-			Toast.makeText(this,
-					getString(R.string.sudo_password_not_specified),
-					Toast.LENGTH_LONG).show();
-			final Bundle extras = new Bundle();
-			extras.putInt(EXTRA_DEVICE_ID, currentDevice.getId());
-			extras.putBoolean(EditRaspiActivity.FOCUS_SUDO_PASSWORD, true);
-			editRaspiIntent.putExtras(extras);
-			this.startActivity(editRaspiIntent);
 		}
 	}
 
@@ -494,7 +480,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		@Override
 		protected void onPostExecute(Boolean result) {
 			// update query data
-			rebootSuccess = result;
+			Log.d(LOG_TAG, "Reboot success: " + result + ".");
+			rebootSuccess = result.booleanValue();
 			// inform handler
 			mHandler.post(mRebootResult);
 		}
