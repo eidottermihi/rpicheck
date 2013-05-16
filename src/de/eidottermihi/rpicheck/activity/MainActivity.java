@@ -83,6 +83,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private TextView serialNoText;
 	private TextView ipAddrText;
 	private TextView distriText;
+	private TextView firmwareText;
 	private TableLayout diskTable;
 	private TableLayout processTable;
 	private ProgressBar progressBar;
@@ -143,6 +144,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		coreFreqText = (TextView) findViewById(R.id.coreFreqText);
 		coreVoltText = (TextView) findViewById(R.id.coreVoltText);
 		coreTempText = (TextView) findViewById(R.id.coreTempText);
+		firmwareText = (TextView) findViewById(R.id.firmwareText);
 		lastUpdateText = (TextView) findViewById(R.id.lastUpdateText);
 		uptimeText = (TextView) findViewById(R.id.startedText);
 		averageLoadText = (TextView) findViewById(R.id.loadText);
@@ -196,7 +198,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				.getCoreFrequency(), freqScale));
 		coreVoltText.setText(helper.formatDecimal(queryData.getVcgencmdInfo()
 				.getCoreVolts()));
-		// TODO add firmware version
+		firmwareText.setText(queryData.getVcgencmdInfo().getVersion());
 		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(
 				queryData.getLastUpdate()));
 		uptimeText.setText(queryData.getStartup());

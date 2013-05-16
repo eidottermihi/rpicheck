@@ -4,17 +4,13 @@
     <string name="app_name">RasPi Check</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="menu_refresh">Aktualisieren</string>
-
     <string name="title_activity_main">RasPi Check</string>
     <string name="title_activity_new_raspi">RasPi hinzufügen</string>
     <string name="title_activity_settings">Einstellungen</string>
-
-
     <string name="core_temp">CORE Temperatur</string>
     <string name="core_freq">CORE Frequenz</string>
     <string name="arm_freq">ARM Frequenz</string>
     <string name="core_volt">CORE Volt</string>
-    
     <string name="host">Hostname/IP</string>
     <string name="user">Benutzername</string>
     <string name="password">Passwort</string>
@@ -79,13 +75,14 @@
     <string name="pref_query_hide_root_summaryOn">root Prozesse werden ausgeblendet.</string>
     <string name="pref_query_hide_root_summaryOff">Alle Prozesse werden angezeigt.</string>
     <string name="new_raspi_minimum">Bitte mindestens Namen, Hostnamen, SSH Benutzername / Passwort und Sudo Passwort angeben.</string>
-	<string name="raspi_device_sudo_password_hint">Sudo Passwort</string>
+    <string name="raspi_device_sudo_password_hint">Sudo Passwort</string>
     <string name="sudo_password">Sudo Passwort</string>
     <string name="sudo_password_not_specified">Für einen Neustart muss das sudo Passwort angegeben sein. Bitte gib es an.</string>
     <string name="reboot_fail">Neustart angestoßen. Bitte warte, bis dein Raspberry Pi neu hochgefahren ist und der SSH Service gestartet ist.</string>
     <string name="reboot_success">Neustart fehlgeschlagen. Überprüfe deine Netzwerk und das angegebene Sudo Passwort.</string>
-	<string name="pref_frequency_unit_default">MHz</string>
+    <string name="pref_frequency_unit_default">MHz</string>
     <string name="pref_frequency_unit_summary">Hz, MHz oder GHz</string>
     <string name="pref_frequency_unit_title">Frequenz Einheit</string>
+    <string name="firmware_version">Firmware</string>
 
 </resources>
