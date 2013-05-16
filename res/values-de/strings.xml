@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">RasPi Check</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="menu_refresh">Aktualisieren</string>
     <string name="title_activity_main">RasPi Check</string>
-    <string name="title_activity_new_raspi">RasPi hinzufügen</string>
+    <string name="title_activity_new_raspi">Pi hinzufügen</string>
     <string name="title_activity_settings">Einstellungen</string>
     <string name="core_temp">CORE Temperatur</string>
     <string name="core_freq">CORE Frequenz</string>
@@ -21,20 +20,18 @@
     <string name="no_hostname_specified">Kein Hostname angegeben. Bitte überprüfe deine Angaben.</string>
     <string name="no_username_specified">Kein Benutzername angegeben. Bitte überprüfe deine Angaben.</string>
     <string name="no_password_specified">Kein Passwort angegeben. Bitte überprüfe deine Angaben.</string>
-    <string name="new_raspi">RasPi hinzufügen</string>
+    <string name="new_raspi">Pi hinzufügen</string>
     <string name="raspi_device_name_hint">Name</string>
     <string name="raspi_device_host_hint">Hostname / IP</string>
     <string name="raspi_device_user_hint">SSH Benutzername</string>
     <string name="raspi_device_password_hint">SSH Passwort</string>
     <string name="raspi_device_description_hint">Beschreibung (optional)</string>
-    <string name="default_ssh_port">22</string>
     <string name="raspi_device_button_new">Speichern</string>
     <string name="pref_temp_scala_title">Temperaturskala</string>
     <string name="temperature_scala_summary">Celsius, Fahrenheit</string>
-    <string name="pref_temperature_scala_default">°C</string>
     <string name="pref_group_display_settings_title">Display</string>
-    <string name="last_update">Letzte Aktualisierung</string>
-    <string name="no_device_available">Bitte zuerst ein RasPi hinzufügen.</string>
+    <string name="last_update">Letzter Refresh</string>
+    <string name="no_device_available">Bitte zuerst einen Pi hinzufügen.</string>
     <string name="new_raspi_text">Gib deine Raspberry Pi Verbindungsdaten an.</string>
     <string name="ssh_port">SSH Port</string>
     <string name="new_raspi_description">Zusätzliche Beschreibung</string>
@@ -55,15 +52,14 @@
     <string name="disk_header_avail">Available</string>
     <string name="disk_header_usedper">Used%</string>
     <string name="menu_delete">Entfernen</string>
-    <string name="please_add_a_raspberry_pi">Bitte füge einen RasPi hinzu.</string>
-    <string name="edit_raspi">RasPi bearbeiten</string>
-    <string name="activity_title_edit_raspi">Raspberry Pi bearbeiten</string>
+    <string name="please_add_a_raspberry_pi">Bitte füge einen Pi hinzu.</string>
+    <string name="edit_raspi">Pi bearbeiten</string>
+    <string name="activity_title_edit_raspi">Pi bearbeiten</string>
     <string name="disk_header_mounted_on">Mounted on</string>
     <string name="menu_reboot">Neustart</string>
-    <string name="question_reboot">Neustart?</string>
+    <string name="question_reboot">Möchtest du wirklich einen Neustart durchführen?</string>
     <string name="cancel">Abbrechen</string>
     <string name="reboot">Neustart</string>
-    <string name="temperature_scala_summary">Temperaturskala (Celsius, Fahrenheit)</string>
     <string name="process_header">Prozesse</string>
     <string name="header_pid">PID</string>
     <string name="header_tty">TTY</string>
@@ -77,12 +73,27 @@
     <string name="new_raspi_minimum">Bitte mindestens Namen, Hostnamen, SSH Benutzername und Passwort angeben.</string>
     <string name="raspi_device_sudo_password_hint">Sudo Passwort</string>
     <string name="sudo_password">Sudo Passwort</string>
-    <string name="sudo_password_not_specified">Für einen Neustart muss das sudo Passwort angegeben sein. Bitte gib es an.</string>
     <string name="reboot_success">Neustart angestoßen. Bitte warte, bis dein Raspberry Pi neu hochgefahren ist und der SSH Service gestartet ist.</string>
     <string name="reboot_fail">Neustart fehlgeschlagen. Überprüfe dein Netzwerk und das angegebene Sudo Passwort.</string>
-    <string name="pref_frequency_unit_default">MHz</string>
     <string name="pref_frequency_unit_summary">Hz, MHz oder GHz</string>
     <string name="pref_frequency_unit_title">Frequenz Einheit</string>
     <string name="firmware_version">Firmware</string>
-
+    
+	<string name="network_header">Netzwerk</string>
+	<string name="network_interface">Interface</string>
+	<string name="network_status">Status</string>
+	<string name="network_status_up">Up</string>
+	<string name="network_status_down">Down</string>
+	<string name="network_ip">IP</string>
+	<string name="network_signal">Signal</string>
+	<string name="network_link">Qualität</string>
+	
+	<string name="pref_group_about">Über RasPi Check</string>
+	<string name="pref_github">Bugs / Fehlermeldungen / Wünsche</string>
+	<string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
+	<string name="pref_dev_email">Entwickler kontaktieren</string>
+	<string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
+	<string name="pref_rate_app">App bewerten</string>
+	<string name="pref_rate_app_summary">Wenn dir RasPi Check gefällt, nimm dir einen Moment Zeit es zu bewerten.</string>
+	<string name="pref_version">Version</string>
 </resources>

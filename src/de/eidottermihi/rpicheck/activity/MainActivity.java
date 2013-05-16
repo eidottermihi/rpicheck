@@ -31,6 +31,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
@@ -79,11 +80,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private TextView totalMemoryText;
 	private TextView freeMemoryText;
 	private TextView serialNoText;
-	private TextView ipAddrText;
 	private TextView distriText;
 	private TextView firmwareText;
 	private TableLayout diskTable;
 	private TableLayout processTable;
+	private TableLayout networkTable;
 	private ProgressBar progressBar;
 	private PullToRefreshScrollView refreshableScrollView;
 
@@ -149,10 +150,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		totalMemoryText = (TextView) findViewById(R.id.totalMemText);
 		freeMemoryText = (TextView) findViewById(R.id.freeMemText);
 		serialNoText = (TextView) findViewById(R.id.cpuSerialText);
-		ipAddrText = (TextView) findViewById(R.id.ipAddrText);
 		distriText = (TextView) findViewById(R.id.distriText);
 		diskTable = (TableLayout) findViewById(R.id.diskTable);
 		processTable = (TableLayout) findViewById(R.id.processTable);
+		networkTable = (TableLayout) findViewById(R.id.networkTable);
 
 		// assigning refreshable root scrollview
 		refreshableScrollView = (PullToRefreshScrollView) findViewById(R.id.scrollView1);
@@ -177,6 +178,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 			if (queryData.getProcesses() != null) {
 				this.updateProcessTable(queryData.getProcesses());
+			}
+			if (queryData.getNetworkInfo() != null) {
+				this.updateNetworkTable(queryData.getNetworkInfo());
 			}
 		}
 	}
@@ -206,13 +210,43 @@ public class MainActivity extends SherlockFragmentActivity implements
 		freeMemoryText.setText(queryData.getFreeMem().humanReadableByteCount(
 				false));
 		serialNoText.setText(queryData.getSerialNo());
-		// TODO new layout for more network interfaces (like PROCESSES or DISK
-		// USAGE)
-		// ipAddrText.setText(queryData.getIpAddr());
-		ipAddrText.setText(queryData.getNetworkInfo().get(0).getIpAdress());
 		distriText.setText(queryData.getDistri());
+		// update tables
+		updateNetworkTable(queryData.getNetworkInfo());
 		updateDiskTable(queryData.getDisks());
 		updateProcessTable(queryData.getProcesses());
+	}
+
+	private void updateNetworkTable(
+			List<NetworkInterfaceInformation> networkInfo) {
+		// remove rows except header
+		networkTable.removeViews(1, networkTable.getChildCount() - 1);
+		for (NetworkInterfaceInformation interfaceInformation : networkInfo) {
+			networkTable.addView(createNetworkRow(interfaceInformation));
+		}
+	}
+
+	private View createNetworkRow(
+			NetworkInterfaceInformation interfaceInformation) {
+		final TableRow tempRow = new TableRow(this);
+		tempRow.addView(createTextView(interfaceInformation.getName()));
+		CharSequence statusText;
+		if (interfaceInformation.isHasCarrier()) {
+			statusText = getText(R.string.network_status_up);
+		} else {
+			statusText = getText(R.string.network_status_down);
+		}
+		tempRow.addView(createTextView(statusText.toString()));
+		if (interfaceInformation.getIpAdress() != null) {
+			tempRow.addView(createTextView(interfaceInformation.getIpAdress()));
+		}
+		if (interfaceInformation.getWlanInfo() != null) {
+			tempRow.addView(createTextView(interfaceInformation.getWlanInfo()
+					.getSignalLevel() + ""));
+			tempRow.addView(createTextView(interfaceInformation.getWlanInfo()
+					.getLinkQuality() + ""));
+		}
+		return tempRow;
 	}
 
 	private void updateProcessTable(List<ProcessBean> processes) {
@@ -290,8 +324,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// hide and reset progress bar
 		progressBar.setVisibility(View.GONE);
 		progressBar.setProgress(0);
-		// update pullToRefresh
+		// update and reset pullToRefresh
 		refreshableScrollView.onRefreshComplete();
+		refreshableScrollView.setMode(Mode.PULL_FROM_START);
 		// update refresh indicator
 		refreshItem.setActionView(null);
 		if (queryData.getStatus() == QueryStatus.OK) {
@@ -339,7 +374,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		case R.id.menu_refresh:
 			// do query
 			refreshItem = item;
-			this.doQuery();
+			this.doQuery(false);
 			break;
 		case R.id.menu_new_raspi:
 			this.startActivity(newRaspiIntent);
@@ -401,7 +436,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		deviceDb.delete(currentDevice.getId());
 	}
 
-	private void doQuery() {
+	private void doQuery(boolean initByPullToRefresh) {
 		if (currentDevice == null) {
 			// no device available, show hint for user
 			Toast.makeText(this, R.string.no_device_available,
@@ -422,9 +457,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			String user = currentDevice.getUser();
 			String pass = currentDevice.getPass();
 			String port = currentDevice.getPort() + "";
-			// reading temperature preference
-			String tempPref = sharedPrefs.getString(
-					SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, "°C");
 			// reading process preference
 			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
@@ -439,8 +471,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 				Toast.makeText(this, R.string.no_password_specified,
 						Toast.LENGTH_LONG);
 			} else {
+				// disable pullToRefresh (if refresh initiated by action bar)
+				if (!initByPullToRefresh) {
+					refreshableScrollView.setMode(Mode.DISABLED);
+				}
 				// execute query
-				new SSHQueryTask().execute(host, user, pass, port, tempPref,
+				new SSHQueryTask().execute(host, user, pass, port,
 						hideRoot.toString());
 			}
 		} else {
@@ -495,7 +531,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// create and do query
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
 					(String) params[2], Integer.parseInt(params[3]));
-			boolean hideRootProcesses = Boolean.parseBoolean(params[5]);
+			boolean hideRootProcesses = Boolean.parseBoolean(params[4]);
 			QueryBean bean = new QueryBean();
 			try {
 				publishProgress(5);
@@ -600,7 +636,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
-		this.doQuery();
+		this.doQuery(true);
 	}
 
 	@Override

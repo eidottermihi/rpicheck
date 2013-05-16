@@ -3,7 +3,6 @@ package de.eidottermihi.rpicheck.activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.support.v4.app.NavUtils;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
@@ -58,16 +57,18 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if (key.equals(KEY_PREF_FREQUENCY_UNIT)) {
-			findPreference(key)
-					.setSummary(
-							sharedPreferences.getString(
-									KEY_PREF_FREQUENCY_UNIT, "MHz"));
+			findPreference(key).setSummary(
+					sharedPreferences.getString(KEY_PREF_FREQUENCY_UNIT,
+							getString(R.string.pref_frequency_unit_default)));
 
 		}
 		if (key.equals(KEY_PREF_TEMPERATURE_SCALE)) {
-			findPreference(key).setSummary(
-					sharedPreferences.getString(KEY_PREF_TEMPERATURE_SCALE,
-							"°C"));
+			findPreference(key)
+					.setSummary(
+							sharedPreferences
+									.getString(
+											KEY_PREF_TEMPERATURE_SCALE,
+											getString(R.string.pref_temperature_scala_default)));
 		}
 	}
 

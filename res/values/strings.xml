@@ -2,10 +2,11 @@
 <resources>
 
     <string name="app_name">RasPi Check</string>
+    <string name="app_version">1.3.0</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_refresh">Refresh</string>
     <string name="title_activity_main">RasPi Check</string>
-    <string name="title_activity_new_raspi">Add Raspberry Pi</string>
+    <string name="title_activity_new_raspi">Add Pi</string>
     <string name="title_activity_settings">Settings</string>
     <string name="core_temp">CORE Temperature</string>
     <string name="core_freq">CORE Frequency</string>
@@ -21,7 +22,7 @@
     <string name="no_hostname_specified">No hostname specified. Please check your settings.</string>
     <string name="no_username_specified">No username specified. Please check your settings.</string>
     <string name="no_password_specified">No password specified. Please check your settings.</string>
-    <string name="new_raspi">New RasPi</string>
+    <string name="new_raspi">Add Pi</string>
     <string name="raspi_device_name_hint">Name</string>
     <string name="raspi_device_host_hint">Hostname / IP</string>
     <string name="raspi_device_user_hint">SSH username</string>
@@ -55,11 +56,11 @@
     <string name="disk_header_usedper">Used%</string>
     <string name="menu_delete">Delete</string>
     <string name="please_add_a_raspberry_pi">Please add a Raspberry Pi.</string>
-    <string name="edit_raspi">Edit Raspi</string>
-    <string name="activity_title_edit_raspi">Edit Raspberry Pi</string>
+    <string name="edit_raspi">Edit Pi</string>
+    <string name="activity_title_edit_raspi">Edit Pi</string>
     <string name="disk_header_mounted_on">Mounted on</string>
     <string name="menu_reboot">Reboot</string>
-    <string name="question_reboot">Reboot?</string>
+    <string name="question_reboot">Really perform a reboot?</string>
     <string name="cancel">Cancel</string>
     <string name="reboot">Reboot</string>
     <string name="temperature_scala_summary">Temperature scala to use (Celsius, Fahrenheit)</string>
@@ -76,12 +77,27 @@
     <string name="new_raspi_minimum">Please specify at minimum a name, host, ssh username and password.</string>
     <string name="raspi_device_sudo_password_hint">sudo password</string>
     <string name="sudo_password">Sudo password</string>
-    <string name="sudo_password_not_specified">Reboot needs the sudo password. Please specify one.</string>
     <string name="reboot_success">Reboot command sent. Please wait for your next query until reboot is complete and SSH service is running again.</string>
     <string name="reboot_fail">Reboot failed. Check your connection settings and sudo password.</string>
     <string name="pref_frequency_unit_default">MHz</string>
     <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
     <string name="pref_frequency_unit_title">Frequency unit</string>
     <string name="firmware_version">Firmware</string>
+    <string name="network_header">Network</string>
+    <string name="network_interface">Interface</string>
+    <string name="network_status">Status</string>
+    <string name="network_status_up">Up</string>
+    <string name="network_status_down">Down</string>
+    <string name="network_ip">IP</string>
+    <string name="network_signal">Signal</string>
+    <string name="network_link">Quality</string>
 
+    <string name="pref_group_about">About RasPi Check</string>
+	<string name="pref_github">Bugs reports / feedback</string>
+	<string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
+	<string name="pref_dev_email">Contact developer</string>
+	<string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
+	<string name="pref_rate_app">Rate app</string>
+	<string name="pref_rate_app_summary">If you like RasPi Check, take a moment and rate it.</string>
+	<string name="pref_version">Version</string>
 </resources>

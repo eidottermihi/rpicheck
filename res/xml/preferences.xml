@@ -30,5 +30,36 @@
             android:summaryOn="@string/pref_query_hide_root_summaryOn"
             android:title="@string/pref_query_hide_root_title" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_about"
+        android:title="@string/pref_group_about" >
+        <Preference
+            android:key="pref_app_version"
+            android:summary="@string/app_version"
+            android:title="@string/pref_version" />
+        <Preference 
+            android:title="@string/pref_github"
+            android:summary="@string/pref_github_summary" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/eidottermihi/rpicheck/issues" />
+        </Preference>
+        <Preference 
+            android:title="@string/pref_dev_email"
+            android:summary="@string/pref_dev_email_summary" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="mailto:eidottermihi@gmail.com?subject=RasPi Check"
+                 />
+        </Preference>
+        <Preference 
+            android:title="@string/pref_rate_app"
+            android:summary="@string/pref_rate_app_summary" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="market://details?id=de.eidottermihi.rpicheck"
+                 />
+        </Preference>
+    </PreferenceCategory>
 
 </PreferenceScreen>
