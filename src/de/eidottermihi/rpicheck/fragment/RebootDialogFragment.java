@@ -1,5 +1,7 @@
-package de.eidottermihi.rpicheck;
+package de.eidottermihi.rpicheck.fragment;
 
+import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.R.string;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;

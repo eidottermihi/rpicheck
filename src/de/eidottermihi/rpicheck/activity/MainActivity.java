@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck;
+package de.eidottermihi.rpicheck.activity;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -44,9 +44,15 @@ import de.eidottermihi.raspitools.beans.ProcessBean;
 import de.eidottermihi.raspitools.beans.RaspiMemoryBean;
 import de.eidottermihi.raspitools.beans.UptimeBean;
 import de.eidottermihi.raspitools.beans.VcgencmdBean;
-import de.eidottermihi.rpicheck.RebootDialogFragment.RebootDialogListener;
+import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.Helper;
+import de.eidottermihi.rpicheck.bean.QueryBean;
+import de.eidottermihi.rpicheck.bean.QueryStatus;
+import de.eidottermihi.rpicheck.db.DeviceDbHelper;
+import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
+import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.RebootDialogListener;
 
-// TODO wipe all raspis action from preferences (optional)
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
 		RebootDialogListener {
@@ -57,6 +63,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private static final String LOG_TAG = "MAIN";
 	private static final String QUERY_DATA = "queryData";
+
+	private final Helper helper = new Helper();
 
 	private Intent settingsIntent;
 	private Intent newRaspiIntent;
@@ -120,6 +128,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		setContentView(R.layout.activity_main);
 
 		// assigning Shared Preferences
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		// init intents
 		settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
@@ -173,17 +182,20 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateQueryDataInView() {
-		// TODO use tempScale (write utility-Class for calculations...)
 		final String tempScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
 				getString(R.string.pref_temperature_scala_default));
-		coreTempText.setText(queryData.getVcgencmdInfo().getCpuTemperature()
-				+ "");
-		// TODO unit of frequency in settings (hz, mhz, ghz)
-		armFreqText.setText(queryData.getVcgencmdInfo().getArmFrequency() + "");
-		coreFreqText.setText(queryData.getVcgencmdInfo().getCoreFrequency()
-				+ "");
-		coreVoltText.setText(queryData.getVcgencmdInfo().getCoreVolts() + "");
+		coreTempText.setText(helper.formatTemperature(queryData
+				.getVcgencmdInfo().getCpuTemperature(), tempScale));
+		final String freqScale = sharedPrefs.getString(
+				SettingsActivity.KEY_PREF_FREQUENCY_UNIT,
+				getString(R.string.pref_frequency_unit_default));
+		armFreqText.setText(helper.formatFrequency(queryData.getVcgencmdInfo()
+				.getArmFrequency(), freqScale));
+		coreFreqText.setText(helper.formatFrequency(queryData.getVcgencmdInfo()
+				.getCoreFrequency(), freqScale));
+		coreVoltText.setText(helper.formatDecimal(queryData.getVcgencmdInfo()
+				.getCoreVolts()));
 		// TODO add firmware version
 		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(
 				queryData.getLastUpdate()));

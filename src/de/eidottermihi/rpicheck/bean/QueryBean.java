@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck;
+package de.eidottermihi.rpicheck.bean;
 
 import java.io.Serializable;
 import java.util.Date;

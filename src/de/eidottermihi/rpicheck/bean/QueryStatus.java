@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck;
+package de.eidottermihi.rpicheck.bean;
 
 public enum QueryStatus {
 	OK("Everything ok."), ConnectionFailure("Connection failed."), AuthenticationFailure(

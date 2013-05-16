@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck;
+package de.eidottermihi.rpicheck.db;
 
 import java.util.Calendar;
 import java.util.Date;

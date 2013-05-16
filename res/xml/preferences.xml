@@ -4,22 +4,31 @@
     <PreferenceCategory
         android:key="pref_display_settings"
         android:title="@string/pref_group_display_settings_title" >
-        <ListPreference android:key="pref_temperature_scala"
-            android:title="@string/pref_temp_scala_title"
-            android:summary="@string/temperature_scala_summary"
+        <ListPreference
+            android:defaultValue="@string/pref_temperature_scala_default"
             android:entries="@array/temp_scales"
             android:entryValues="@array/temp_scales_values"
-            android:defaultValue="@string/pref_temperature_scala_default"/>
+            android:key="pref_temperature_scala"
+            android:summary="@string/temperature_scala_summary"
+            android:title="@string/pref_temp_scala_title" />
+        <ListPreference
+            android:defaultValue="@string/pref_frequency_unit_default"
+            android:entries="@array/pref_frequency_units"
+            android:entryValues="@array/pref_frequency_unit_values"
+            android:key="pref_frequency_unit"
+            android:summary="@string/pref_frequency_unit_summary"
+            android:title="@string/pref_frequency_unit_title" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="pref_query_settings"
-    	android:title="@string/pref_group_query_settings_title" >
-    	<CheckBoxPreference 
-    	    android:key="pref_query_hide_root"
-    	    android:title="@string/pref_query_hide_root_title"
-    	    android:summary="@string/pref_query_hide_root_summary"
-    	    android:summaryOn="@string/pref_query_hide_root_summaryOn"
-    	    android:summaryOff="@string/pref_query_hide_root_summaryOff"
-    	    android:defaultValue="true"/>   
+        android:title="@string/pref_group_query_settings_title" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_query_hide_root"
+            android:summary="@string/pref_query_hide_root_summary"
+            android:summaryOff="@string/pref_query_hide_root_summaryOff"
+            android:summaryOn="@string/pref_query_hide_root_summaryOn"
+            android:title="@string/pref_query_hide_root_title" />
     </PreferenceCategory>
+
 </PreferenceScreen>

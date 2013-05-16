@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck;
+package de.eidottermihi.rpicheck.activity;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +12,13 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
+import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.R.id;
+import de.eidottermihi.rpicheck.R.layout;
+import de.eidottermihi.rpicheck.R.menu;
+import de.eidottermihi.rpicheck.R.string;
+import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 
 public class NewRaspiActivity extends SherlockActivity {
 

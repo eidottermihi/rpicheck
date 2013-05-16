@@ -4,17 +4,13 @@
     <string name="app_name">RasPi Check</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_refresh">Refresh</string>
-
     <string name="title_activity_main">RasPi Check</string>
     <string name="title_activity_new_raspi">Add Raspberry Pi</string>
     <string name="title_activity_settings">Settings</string>
-
-
     <string name="core_temp">CORE Temperature</string>
     <string name="core_freq">CORE Frequency</string>
     <string name="arm_freq">ARM Frequency</string>
     <string name="core_volt">CORE Volt</string>
-    
     <string name="host">Hostname/IP</string>
     <string name="user">Username</string>
     <string name="password">Password</string>
@@ -83,5 +79,8 @@
     <string name="sudo_password_not_specified">Reboot needs the sudo password. Please specify one.</string>
     <string name="reboot_fail">Reboot command sent. Please wait for your next query until reboot is complete and SSH service is running again.</string>
     <string name="reboot_success">Reboot failed. Check your connection settings and sudo password.</string>
+    <string name="pref_frequency_unit_default">MHz</string>
+    <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
+    <string name="pref_frequency_unit_title">Frequency unit</string>
 
 </resources>
