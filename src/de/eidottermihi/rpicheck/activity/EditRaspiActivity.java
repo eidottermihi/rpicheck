@@ -10,14 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
-import de.eidottermihi.rpicheck.R.id;
-import de.eidottermihi.rpicheck.R.layout;
-import de.eidottermihi.rpicheck.R.menu;
-import de.eidottermihi.rpicheck.R.string;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 
@@ -73,13 +68,6 @@ public class EditRaspiActivity extends SherlockActivity {
 		if (this.getIntent().getExtras().getBoolean(FOCUS_SUDO_PASSWORD)) {
 			editTextSudoPass.requestFocus();
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSupportMenuInflater().inflate(R.menu.activity_new_raspi, menu);
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override

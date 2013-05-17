@@ -10,14 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
-import de.eidottermihi.rpicheck.R.id;
-import de.eidottermihi.rpicheck.R.layout;
-import de.eidottermihi.rpicheck.R.menu;
-import de.eidottermihi.rpicheck.R.string;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 
 public class NewRaspiActivity extends SherlockActivity {
@@ -30,34 +25,32 @@ public class NewRaspiActivity extends SherlockActivity {
 	private EditText editTextSshPortOpt;
 	private EditText editTextDescription;
 	private EditText editTextSudoPw;
+	
 
 	private DeviceDbHelper deviceDb;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_new_raspi);
+		setContentView(R.layout.activity_edit_raspi);
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// assigning view elements to fields
-		editTextName = (EditText) findViewById(R.id.raspi_name_editText);
-		editTextHost = (EditText) findViewById(R.id.raspi_host_editText);
-		editTextUser = (EditText) findViewById(R.id.raspi_user_editText);
-		editTextPass = (EditText) findViewById(R.id.raspi_pass_editText);
-		editTextSshPortOpt = (EditText) findViewById(R.id.raspi_ssh_port_editText);
-		editTextDescription = (EditText) findViewById(R.id.raspi_desc_editText);
-		editTextSudoPw = (EditText) findViewById(R.id.raspi_sudoPass_editText);
+		// assigning view elements to fields
+		editTextName = (EditText) findViewById(R.id.edit_raspi_name_editText);
+		editTextHost = (EditText) findViewById(R.id.edit_raspi_host_editText);
+		editTextUser = (EditText) findViewById(R.id.edit_raspi_user_editText);
+		editTextPass = (EditText) findViewById(R.id.edit_raspi_pass_editText);
+		editTextSshPortOpt = (EditText) findViewById(R.id.edit_raspi_ssh_port_editText);
+		editTextDescription = (EditText) findViewById(R.id.edit_raspi_desc_editText);
+		editTextSudoPw = (EditText) findViewById(R.id.edit_raspi_sudoPass_editText);
+		// Show information text
+		final View text = findViewById(R.id.new_raspi_text);
+		text.setVisibility(View.VISIBLE);
 
 		// init sql db
 		deviceDb = new DeviceDbHelper(this);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSupportMenuInflater().inflate(R.menu.activity_new_raspi, menu);
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -72,9 +65,7 @@ public class NewRaspiActivity extends SherlockActivity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		case R.id.new_raspi_save_button:
-			saveRaspi();
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

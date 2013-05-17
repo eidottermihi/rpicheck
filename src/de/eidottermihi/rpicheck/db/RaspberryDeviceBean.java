@@ -1,8 +1,11 @@
 package de.eidottermihi.rpicheck.db;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class RaspberryDeviceBean {
+public class RaspberryDeviceBean implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private int id;
 	private String name;
 	private String host;
@@ -14,6 +17,8 @@ public class RaspberryDeviceBean {
 	private Date createdAt;
 	private Date modifiedAt;
 	private String sudoPass;
+	
+	private int spinnerPosition;
 
 	public String getHost() {
 		return host;
@@ -101,6 +106,14 @@ public class RaspberryDeviceBean {
 
 	public void setSudoPass(String sudoPass) {
 		this.sudoPass = sudoPass;
+	}
+
+	public int getSpinnerPosition() {
+		return spinnerPosition;
+	}
+
+	public void setSpinnerPosition(int spinnerPosition) {
+		this.spinnerPosition = spinnerPosition;
 	}
 
 }

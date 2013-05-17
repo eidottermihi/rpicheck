@@ -54,7 +54,7 @@
     <string name="disk_header">Disk Usage</string>
     <string name="disk_header_avail">Available</string>
     <string name="disk_header_usedper">Used%</string>
-    <string name="menu_delete">Delete</string>
+    <string name="menu_delete">Delete Pi</string>
     <string name="please_add_a_raspberry_pi">Please add a Raspberry Pi.</string>
     <string name="edit_raspi">Edit Pi</string>
     <string name="activity_title_edit_raspi">Edit Pi</string>

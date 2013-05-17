@@ -62,6 +62,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private static final String LOG_TAG = "MAIN";
 	private static final String QUERY_DATA = "queryData";
+	private static final String CURRENT_DEVICE = "currentDevice";
 
 	private final Helper helper = new Helper();
 
@@ -161,26 +162,31 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		// init device database
 		deviceDb = new DeviceDbHelper(this);
-		// init device cursor
-		deviceCursor = deviceDb.getFullDeviceCursor();
-
 		// init spinner
 		initSpinner();
 
-		// restoring disk and process table
-		if (savedInstanceState != null
-				&& savedInstanceState.getSerializable(QUERY_DATA) != null) {
-			Log.d(LOG_TAG, "Restoring disk and process table.");
-			queryData = (QueryBean) savedInstanceState
-					.getSerializable(QUERY_DATA);
-			if (queryData.getDisks() != null) {
-				this.updateDiskTable(queryData.getDisks());
+		// restoring tables
+		if (savedInstanceState != null) {
+			if (savedInstanceState.getSerializable(QUERY_DATA) != null) {
+				Log.d(LOG_TAG, "Restoring dynamic tables.");
+				queryData = (QueryBean) savedInstanceState
+						.getSerializable(QUERY_DATA);
+				if (queryData.getDisks() != null) {
+					this.updateDiskTable(queryData.getDisks());
+				}
+				if (queryData.getProcesses() != null) {
+					this.updateProcessTable(queryData.getProcesses());
+				}
+				if (queryData.getNetworkInfo() != null) {
+					this.updateNetworkTable(queryData.getNetworkInfo());
+				}
 			}
-			if (queryData.getProcesses() != null) {
-				this.updateProcessTable(queryData.getProcesses());
-			}
-			if (queryData.getNetworkInfo() != null) {
-				this.updateNetworkTable(queryData.getNetworkInfo());
+			if (savedInstanceState.getSerializable(CURRENT_DEVICE) != null) {
+				Log.d(LOG_TAG, "Restoring current device.");
+				currentDevice = (RaspberryDeviceBean) savedInstanceState
+						.getSerializable(CURRENT_DEVICE);
+				this.getSupportActionBar().setSelectedNavigationItem(
+						currentDevice.getSpinnerPosition());
 			}
 		}
 	}
@@ -296,6 +302,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void initSpinner() {
+		deviceCursor = deviceDb.getFullDeviceCursor();
 		Log.d(LOG_TAG, "Cursor rows: " + deviceCursor.getCount());
 		// only show spinner if theres already a device to show
 		if (deviceCursor.getCount() > 0) {
@@ -358,6 +365,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		refreshItem = menu.findItem(R.id.menu_refresh);
 		// set delete, edit and reboot visible if there is a current device
 		if (currentDevice != null) {
+			Log.d(LOG_TAG, "Enabling menu buttons.");
 			menu.findItem(R.id.menu_delete).setVisible(true);
 			menu.findItem(R.id.menu_edit_raspi).setVisible(true);
 			menu.findItem(R.id.menu_reboot).setVisible(true);
@@ -622,6 +630,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// get device with id
 		RaspberryDeviceBean read = deviceDb.read(itemId);
 		this.currentDevice = read;
+		if (currentDevice != null) {
+			this.currentDevice.setSpinnerPosition(itemPosition);
+		}
 		// refresh options menu
 		this.supportInvalidateOptionsMenu();
 		// if current device == null (if only device was deleted), start new
@@ -645,6 +656,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (queryData != null) {
 			Log.d(LOG_TAG, "Saving instance state (query data)");
 			outState.putSerializable(QUERY_DATA, queryData);
+		}
+		if (currentDevice != null) {
+			Log.d(LOG_TAG, "Saving instance state (current device)");
+			outState.putSerializable(CURRENT_DEVICE, currentDevice);
 		}
 		super.onSaveInstanceState(outState);
 	}

@@ -82,9 +82,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.d(LOG_TAG, "Upgrading database from version " + oldVersion + " to "
 				+ newVersion);
-		if (oldVersion == 6 && newVersion == 7) {
+		if (oldVersion == 6 && newVersion >= 7) {
 			Log.d(LOG_TAG,
-					"Upgrading database from version 6 to version 7: adding sudo password column to device table.");
+					"Upgrading database from version 6 to newer version: adding sudo password column to device table.");
 			// adding sudo pw field in device table
 			db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
 					+ COLUMN_SUDOPW + " TEXT");
