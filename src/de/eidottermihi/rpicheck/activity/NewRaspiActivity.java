@@ -17,7 +17,8 @@ import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 
 public class NewRaspiActivity extends SherlockActivity {
 
-	private static final String LOG_TAG = "NewRaspiActivity";
+	private static final String LOG_TAG = NewRaspiActivity.class
+			.getCanonicalName();
 	private EditText editTextName;
 	private EditText editTextHost;
 	private EditText editTextUser;
@@ -25,7 +26,6 @@ public class NewRaspiActivity extends SherlockActivity {
 	private EditText editTextSshPortOpt;
 	private EditText editTextDescription;
 	private EditText editTextSudoPw;
-	
 
 	private DeviceDbHelper deviceDb;
 

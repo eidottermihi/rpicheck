@@ -30,7 +30,7 @@
         android:icon="@drawable/ic_av_replay"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/menu_reboot"
+        android:title="@string/menu_shutdown"
       	android:visible="false"	/>
     <item
         android:id="@+id/menu_settings"

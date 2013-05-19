@@ -19,7 +19,8 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 public class EditRaspiActivity extends SherlockActivity {
 	public static final String FOCUS_SUDO_PASSWORD = "focusSudo";
 
-	private static final String LOG_TAG = "EditRaspiActivity";
+	private static final String LOG_TAG = EditRaspiActivity.class
+			.getCanonicalName();
 	private EditText editTextName;
 	private EditText editTextHost;
 	private EditText editTextUser;

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
@@ -19,7 +18,8 @@ import de.eidottermihi.rpicheck.R;
  */
 public class SettingsActivity extends SherlockPreferenceActivity implements
 		OnSharedPreferenceChangeListener {
-	private static final String LOG_TAG = "SettingsActivity";
+	private static final String LOG_TAG = SettingsActivity.class
+			.getCanonicalName();
 
 	/** Preference keys. */
 	public static final String KEY_PREF_TEMPERATURE_SCALE = "pref_temperature_scala";
@@ -34,12 +34,6 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 
 		// ancestral navigation
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_settings, menu);
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override

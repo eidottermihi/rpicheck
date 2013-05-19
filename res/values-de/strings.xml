@@ -56,10 +56,7 @@
     <string name="edit_raspi">Pi bearbeiten</string>
     <string name="activity_title_edit_raspi">Pi bearbeiten</string>
     <string name="disk_header_mounted_on">Mounted on</string>
-    <string name="menu_reboot">Neustart</string>
-    <string name="question_reboot">Möchtest du wirklich einen Neustart durchführen?</string>
-    <string name="cancel">Abbrechen</string>
-    <string name="reboot">Neustart</string>
+    <string name="menu_shutdown">Herunterfahren</string>
     <string name="process_header">Prozesse</string>
     <string name="header_pid">PID</string>
     <string name="header_tty">TTY</string>
@@ -73,8 +70,8 @@
     <string name="new_raspi_minimum">Bitte mindestens Namen, Hostnamen, SSH Benutzername und Passwort angeben.</string>
     <string name="raspi_device_sudo_password_hint">Sudo Passwort</string>
     <string name="sudo_password">Sudo Passwort</string>
-    <string name="reboot_success">Neustart angestoßen. Bitte warte, bis dein Raspberry Pi neu hochgefahren ist und der SSH Service gestartet ist.</string>
-    <string name="reboot_fail">Neustart fehlgeschlagen. Überprüfe dein Netzwerk und das angegebene Sudo Passwort.</string>
+    <string name="reboot_success">Neustart angestoßen.</string>
+    <string name="reboot_fail">Neustart fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
     <string name="pref_frequency_unit_summary">Hz, MHz oder GHz</string>
     <string name="pref_frequency_unit_title">Frequenz Einheit</string>
     <string name="firmware_version">Firmware</string>
@@ -96,4 +93,8 @@
 	<string name="pref_rate_app">App bewerten</string>
 	<string name="pref_rate_app_summary">Wenn dir RasPi Check gefällt, nimm dir einen Moment Zeit es zu bewerten.</string>
 	<string name="pref_version">Version</string>
+	
+	<string name="shutdown_type_title">Herunterfahren</string>
+	<string name="halt_success">System Halt Kommando gesendet.</string>
+	<string name="halt_fail">System Halt fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
 </resources>

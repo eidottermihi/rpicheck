@@ -59,10 +59,7 @@
     <string name="edit_raspi">Edit Pi</string>
     <string name="activity_title_edit_raspi">Edit Pi</string>
     <string name="disk_header_mounted_on">Mounted on</string>
-    <string name="menu_reboot">Reboot</string>
-    <string name="question_reboot">Really perform a reboot?</string>
-    <string name="cancel">Cancel</string>
-    <string name="reboot">Reboot</string>
+    <string name="menu_shutdown">Shutdown</string>
     <string name="temperature_scala_summary">Temperature scala to use (Celsius, Fahrenheit)</string>
     <string name="process_header">Processes</string>
     <string name="header_pid">PID</string>
@@ -77,7 +74,7 @@
     <string name="new_raspi_minimum">Please specify at minimum a name, host, ssh username and password.</string>
     <string name="raspi_device_sudo_password_hint">sudo password</string>
     <string name="sudo_password">Sudo password</string>
-    <string name="reboot_success">Reboot command sent. Please wait for your next query until reboot is complete and SSH service is running again.</string>
+    <string name="reboot_success">Reboot command sent.</string>
     <string name="reboot_fail">Reboot failed. Check your connection settings and sudo password.</string>
     <string name="pref_frequency_unit_default">MHz</string>
     <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
@@ -100,4 +97,8 @@
 	<string name="pref_rate_app">Rate app</string>
 	<string name="pref_rate_app_summary">If you like RasPi Check, take a moment and rate it.</string>
 	<string name="pref_version">Version</string>
+	
+	<string name="shutdown_type_title">Shutdown options</string>
+	<string name="halt_success">Halt command sent.</string>
+	<string name="halt_fail">Halt failed. Check your connection settings and sudo password.</string>
 </resources>

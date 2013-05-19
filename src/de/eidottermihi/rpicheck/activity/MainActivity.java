@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -47,22 +48,26 @@ import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Helper;
 import de.eidottermihi.rpicheck.bean.QueryBean;
 import de.eidottermihi.rpicheck.bean.QueryStatus;
+import de.eidottermihi.rpicheck.bean.ShutdownResult;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
-import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.RebootDialogListener;
+import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
-		RebootDialogListener {
+		ShutdownDialogListener {
 
 	protected static final String EXTRA_DEVICE_ID = "device_id";
 
 	public static final String KEY_PREFERENCES_SHOWN = "key_prefs_preferences_shown";
 
-	private static final String LOG_TAG = "MAIN";
+	private static final String LOG_TAG = MainActivity.class.getCanonicalName();
 	private static final String QUERY_DATA = "queryData";
 	private static final String CURRENT_DEVICE = "currentDevice";
+
+	private static final String TYPE_REBOOT = "reboot";
+	private static final String TYPE_HALT = "halt";
 
 	private final Helper helper = new Helper();
 
@@ -93,7 +98,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private QueryBean queryData;
 
-	private boolean rebootSuccess;
+	private ShutdownResult shutdownResult;
 
 	private DeviceDbHelper deviceDb;
 
@@ -116,7 +121,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	final Runnable mRebootResult = new Runnable() {
 		public void run() {
 			// gets called from AsyncTask when reboot command was sent
-			afterReboot();
+			afterShutdown();
 		}
 
 	};
@@ -348,13 +353,26 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private void afterReboot() {
-		if (rebootSuccess) {
-			Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
-					.show();
-		} else {
-			Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
-					.show();
+	/**
+	 * Just show Toast.
+	 */
+	private void afterShutdown() {
+		if (shutdownResult.getType().equals(TYPE_REBOOT)) {
+			if (shutdownResult.getExcpetion() == null) {
+				Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
+						.show();
+			} else {
+				Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
+						.show();
+			}
+		} else if (shutdownResult.getType().equals(TYPE_HALT)) {
+			if (shutdownResult.getExcpetion() == null) {
+				Toast.makeText(this, R.string.halt_success, Toast.LENGTH_LONG)
+						.show();
+			} else {
+				Toast.makeText(this, R.string.halt_fail, Toast.LENGTH_LONG)
+						.show();
+			}
 		}
 	}
 
@@ -425,12 +443,34 @@ public class MainActivity extends SherlockFragmentActivity implements
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
 			// get connection settings from shared preferences
-			String host = currentDevice.getHost();
-			String user = currentDevice.getUser();
-			String pass = currentDevice.getPass();
-			String port = currentDevice.getPort() + "";
-			String sudoPass = currentDevice.getSudoPass();
-			new SSHRebootTask().execute(host, user, pass, port, sudoPass);
+			final String host = currentDevice.getHost();
+			final String user = currentDevice.getUser();
+			final String pass = currentDevice.getPass();
+			final String port = currentDevice.getPort() + "";
+			final String sudoPass = currentDevice.getSudoPass();
+			final String type = TYPE_REBOOT;
+			new SSHShutdownTask().execute(host, user, pass, port, sudoPass,
+					type);
+		} else {
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
+					.show();
+		}
+	}
+
+	private void doHalt() {
+		Log.d(LOG_TAG, "Doing halt...");
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			// get connection settings from shared preferences
+			final String host = currentDevice.getHost();
+			final String user = currentDevice.getUser();
+			final String pass = currentDevice.getPass();
+			final String port = currentDevice.getPort() + "";
+			final String sudoPass = currentDevice.getSudoPass();
+			final String type = TYPE_HALT;
+			new SSHShutdownTask().execute(host, user, pass, port, sudoPass,
+					type);
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
@@ -495,37 +535,43 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private class SSHRebootTask extends AsyncTask<String, Integer, Boolean> {
+	private class SSHShutdownTask extends
+			AsyncTask<String, Integer, ShutdownResult> {
 
+		/**
+		 * Send the reboot command. Returns true, when no Exception was raised.
+		 */
 		@Override
-		protected Boolean doInBackground(String... params) {
+		protected ShutdownResult doInBackground(String... params) {
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
 					(String) params[2], Integer.parseInt(params[3]));
 			final String sudoPass = params[4];
+			final String type = params[5];
+			ShutdownResult result = new ShutdownResult();
+			result.setType(type);
 			try {
 				raspiQuery.connect();
-				boolean rebootSignal = raspiQuery.sendRebootSignal(sudoPass);
+				if (type.equals(TYPE_REBOOT)) {
+					raspiQuery.sendRebootSignal(sudoPass);
+				} else if (type.equals(TYPE_HALT)) {
+					raspiQuery.sendHaltSignal(sudoPass);
+				}
 				raspiQuery.disconnect();
-				return rebootSignal;
+				return result;
 			} catch (RaspiQueryException e) {
 				Log.e(LOG_TAG, e.getMessage());
+				result.setExcpetion(e);
+				return result;
 			} catch (IOException e) {
 				Log.e(LOG_TAG, e.getMessage());
-			} finally {
-				try {
-					raspiQuery.disconnect();
-				} catch (IOException e) {
-					Log.e(LOG_TAG, e.getMessage());
-				}
+				result.setExcpetion(e);
+				return result;
 			}
-			return false;
 		}
 
 		@Override
-		protected void onPostExecute(Boolean result) {
-			// update query data
-			Log.d(LOG_TAG, "Reboot success: " + result + ".");
-			rebootSuccess = result.booleanValue();
+		protected void onPostExecute(ShutdownResult result) {
+			shutdownResult = result;
 			// inform handler
 			mHandler.post(mRebootResult);
 		}
@@ -665,14 +711,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog) {
-		Log.d(LOG_TAG, "RebootDialog: Reboot confirmed.");
-		this.doReboot();
+	public void onHaltClick(DialogInterface dialog) {
+		Log.d(LOG_TAG, "ShutdownDialog: Halt chosen.");
+		this.doHalt();
 	}
 
 	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
-		Log.d(LOG_TAG, "RebootDialog: Reboot cancelled.");
+	public void onRebootClick(DialogInterface dialog) {
+		Log.d(LOG_TAG, "ShutdownDialog: Reboot chosen.");
+		this.doReboot();
 	}
 
 }
