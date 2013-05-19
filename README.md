@@ -1,7 +1,7 @@
 rpicheck - RasPi Check
 ========
 
-Android app for checking your Raspberry Pi status.
+Android app for checking your Raspberry Pi status. ![Get it on Google Play.](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)
 
 The goal of this Android app is to show the user the current system status of a running Raspberry Pi.
 
