@@ -98,5 +98,11 @@
 	<string name="halt_success">System Halt Kommando gesendet.</string>
 	<string name="halt_fail">System Halt fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
 	
-	<string name="port_not_valid">%1$s ist kein gültiger Port.</string>
+	<string name="validation_msg_name">Name darf nicht leer sein.</string>
+	<string name="validation_msg_host">Hostname darf nicht leer sein.</string>
+	<string name="validation_msg_user">Username darf nicht leer sein.</string>
+	<string name="validation_msg_password">Passwort darf nicht leer sein.</string>
+	<string name="validation_msg_port">Kein gültiger Port.</string>
+	<string name="update_successful">Pi aktualisiert.</string>
+	<string name="new_pi_created">Pi hinzugefügt.</string>
 </resources>

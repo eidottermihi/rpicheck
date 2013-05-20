@@ -14,6 +14,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 
 public class NewRaspiActivity extends SherlockActivity {
@@ -26,6 +27,8 @@ public class NewRaspiActivity extends SherlockActivity {
 	private EditText editTextSshPortOpt;
 	private EditText editTextDescription;
 	private EditText editTextSudoPw;
+
+	private Validation validator = new Validation();
 
 	private DeviceDbHelper deviceDb;
 
@@ -79,52 +82,26 @@ public class NewRaspiActivity extends SherlockActivity {
 	}
 
 	private void saveRaspi() {
-		// getting credentials from textfields
-		final String name = editTextName.getText().toString().trim();
-		final String host = editTextHost.getText().toString().trim();
-		final String user = editTextUser.getText().toString().trim();
-		final String pass = editTextPass.getText().toString().trim();
-		final String sshPort = editTextSshPortOpt.getText().toString().trim();
-		final String description = editTextDescription.getText().toString()
-				.trim();
-		String sudoPass = editTextSudoPw.getText().toString().trim();
-		LOGGER.debug("New raspi :" + name + "/" + host + "/" + user + "/"
-				+ pass + "/" + sshPort + "/" + sudoPass);
-
-		if (StringUtils.isBlank(name) || StringUtils.isBlank(host)
-				|| StringUtils.isBlank(user) || StringUtils.isBlank(pass)) {
-			Toast.makeText(this, R.string.new_raspi_minimum, Toast.LENGTH_LONG)
+		boolean validationSuccessful = validator.validatePiData(this,
+				editTextName, editTextHost, editTextUser, editTextPass,
+				editTextSshPortOpt, editTextSudoPw);
+		if (validationSuccessful) {
+			// getting credentials from textfields
+			final String name = editTextName.getText().toString().trim();
+			final String host = editTextHost.getText().toString().trim();
+			final String user = editTextUser.getText().toString().trim();
+			final String pass = editTextPass.getText().toString().trim();
+			final String sshPort = editTextSshPortOpt.getText().toString()
+					.trim();
+			final String description = editTextDescription.getText().toString()
+					.trim();
+			final String sudoPass = editTextSudoPw.getText().toString().trim();
+			addRaspiToDb(name, host, user, pass, sshPort, description, sudoPass);
+			Toast.makeText(this, R.string.new_pi_created, Toast.LENGTH_SHORT)
 					.show();
-			return;
+			// back to main
+			NavUtils.navigateUpFromSameTask(this);
 		}
-		// validate port range
-		if (!StringUtils.isBlank(sshPort)) {
-			boolean validPort = true;
-			try {
-				int portNr = Integer.parseInt(sshPort);
-				if (portNr < 1 || portNr > 65535) {
-					LOGGER.debug(portNr + " is not a valid port.");
-					validPort = false;
-				}
-			} catch (NumberFormatException e) {
-				LOGGER.debug("Unable to parse ssh port number. Input: "
-						+ sshPort);
-				validPort = false;
-			}
-			if (!validPort) {
-				Toast.makeText(this,
-						getString(R.string.port_not_valid, sshPort),
-						Toast.LENGTH_LONG).show();
-				editTextSshPortOpt.requestFocus();
-				return;
-			}
-		}
-		if (StringUtils.isBlank(sudoPass)) {
-			sudoPass = "";
-		}
-		addRaspiToDb(name, host, user, pass, sshPort, description, sudoPass);
-		// back to main
-		NavUtils.navigateUpFromSameTask(this);
 	}
 
 	private void addRaspiToDb(String name, String host, String user,
@@ -132,6 +109,9 @@ public class NewRaspiActivity extends SherlockActivity {
 		// if sshPort is empty, use default port (22)
 		if (StringUtils.isBlank(sshPort)) {
 			sshPort = getText(R.string.default_ssh_port).toString();
+		}
+		if (StringUtils.isBlank(sudoPass)) {
+			sudoPass = "";
 		}
 		deviceDb.create(name, host, user, pass, Integer.parseInt(sshPort),
 				description, sudoPass);

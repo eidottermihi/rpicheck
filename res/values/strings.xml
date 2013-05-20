@@ -102,5 +102,11 @@
 	<string name="halt_success">Halt command sent.</string>
 	<string name="halt_fail">Halt failed. Check your connection settings and sudo password.</string>
 	
-	<string name="port_not_valid">%1$s is not a valid port number.</string>
+	<string name="validation_msg_name">Name cannot be blank.</string>
+	<string name="validation_msg_host">Hostname cannot be blank.</string>
+	<string name="validation_msg_user">Username cannot be blank.</string>
+	<string name="validation_msg_password">Password cannot be blank.</string>
+	<string name="validation_msg_port">Not a valid port.</string>
+	<string name="update_successful">Pi successfully updated.</string>
+	<string name="new_pi_created">Pi created.</string>
 </resources>
