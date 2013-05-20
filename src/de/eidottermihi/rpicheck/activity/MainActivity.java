@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +20,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -57,12 +59,13 @@ import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogList
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
 		ShutdownDialogListener {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(MainActivity.class);
 
 	protected static final String EXTRA_DEVICE_ID = "device_id";
 
 	public static final String KEY_PREFERENCES_SHOWN = "key_prefs_preferences_shown";
 
-	private static final String LOG_TAG = MainActivity.class.getCanonicalName();
 	private static final String QUERY_DATA = "queryData";
 	private static final String CURRENT_DEVICE = "currentDevice";
 
@@ -132,7 +135,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		// assigning Shared Preferences
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -173,7 +175,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// restoring tables
 		if (savedInstanceState != null) {
 			if (savedInstanceState.getSerializable(QUERY_DATA) != null) {
-				Log.d(LOG_TAG, "Restoring dynamic tables.");
+				LOGGER.debug("Restoring dynamic tables.");
 				queryData = (QueryBean) savedInstanceState
 						.getSerializable(QUERY_DATA);
 				if (queryData.getDisks() != null) {
@@ -187,7 +189,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 			}
 			if (savedInstanceState.getSerializable(CURRENT_DEVICE) != null) {
-				Log.d(LOG_TAG, "Restoring current device.");
+				LOGGER.debug("Restoring current device.");
 				currentDevice = (RaspberryDeviceBean) savedInstanceState
 						.getSerializable(CURRENT_DEVICE);
 				this.getSupportActionBar().setSelectedNavigationItem(
@@ -308,7 +310,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private void initSpinner() {
 		deviceCursor = deviceDb.getFullDeviceCursor();
-		Log.d(LOG_TAG, "Cursor rows: " + deviceCursor.getCount());
+		LOGGER.debug("Cursor rows: " + deviceCursor.getCount());
 		// only show spinner if theres already a device to show
 		if (deviceCursor.getCount() > 0) {
 			// make adapter
@@ -383,7 +385,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		refreshItem = menu.findItem(R.id.menu_refresh);
 		// set delete, edit and reboot visible if there is a current device
 		if (currentDevice != null) {
-			Log.d(LOG_TAG, "Enabling menu buttons.");
+			LOGGER.debug("Enabling menu buttons.");
 			menu.findItem(R.id.menu_delete).setVisible(true);
 			menu.findItem(R.id.menu_edit_raspi).setVisible(true);
 			menu.findItem(R.id.menu_reboot).setVisible(true);
@@ -427,18 +429,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// specify one
 		boolean sudoPassPresent = true;
 		if (currentDevice.getSudoPass() == null) {
-			Log.d(LOG_TAG, "Current device: sudoPass is null");
+			LOGGER.debug("Current device: sudoPass is null");
 			sudoPassPresent = false;
 		}
 		if (sudoPassPresent) {
-			Log.d(LOG_TAG, "Showing reboot dialog.");
+			LOGGER.debug("Showing reboot dialog.");
 			DialogFragment rebootDialog = new RebootDialogFragment();
 			rebootDialog.show(getSupportFragmentManager(), "reboot");
 		}
 	}
 
 	private void doReboot() {
-		Log.d(LOG_TAG, "Doing reboot...");
+		LOGGER.debug("Doing reboot...");
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
@@ -458,7 +460,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void doHalt() {
-		Log.d(LOG_TAG, "Doing halt...");
+		LOGGER.debug("Doing halt...");
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
@@ -478,9 +480,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void deleteCurrentDevice() {
-		Log.i(LOG_TAG,
-				"User wants to delete device with id = "
-						+ currentDevice.getId() + ".");
+		LOGGER.info("User wants to delete device with id = "
+				+ currentDevice.getId() + ".");
 		deviceDb.delete(currentDevice.getId());
 	}
 
@@ -559,11 +560,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 				raspiQuery.disconnect();
 				return result;
 			} catch (RaspiQueryException e) {
-				Log.e(LOG_TAG, e.getMessage());
+				LOGGER.error(e.getMessage());
 				result.setExcpetion(e);
 				return result;
 			} catch (IOException e) {
-				Log.e(LOG_TAG, e.getMessage());
+				LOGGER.error(e.getMessage());
 				result.setExcpetion(e);
 				return result;
 			}
@@ -625,10 +626,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 				bean.setStatus(QueryStatus.OK);
 				return bean;
 			} catch (RaspiQueryException e) {
-				Log.e(LOG_TAG, e.getMessage());
+				LOGGER.error(e.getMessage());
 				return this.handleException(e, bean);
 			} catch (IOException e) {
-				Log.e(LOG_TAG, e.getMessage());
+				LOGGER.error(e.getMessage());
 			}
 			return null;
 		}
@@ -671,7 +672,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		Log.d(LOG_TAG, "DropdownItemSelected: pos=" + itemPosition + ", id="
+		LOGGER.debug("DropdownItemSelected: pos=" + itemPosition + ", id="
 				+ itemId);
 		// get device with id
 		RaspberryDeviceBean read = deviceDb.read(itemId);
@@ -700,11 +701,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	protected void onSaveInstanceState(Bundle outState) {
 		// saving process and disk table
 		if (queryData != null) {
-			Log.d(LOG_TAG, "Saving instance state (query data)");
+			LOGGER.debug("Saving instance state (query data)");
 			outState.putSerializable(QUERY_DATA, queryData);
 		}
 		if (currentDevice != null) {
-			Log.d(LOG_TAG, "Saving instance state (current device)");
+			LOGGER.debug("Saving instance state (current device)");
 			outState.putSerializable(CURRENT_DEVICE, currentDevice);
 		}
 		super.onSaveInstanceState(outState);
@@ -712,13 +713,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onHaltClick(DialogInterface dialog) {
-		Log.d(LOG_TAG, "ShutdownDialog: Halt chosen.");
+		LOGGER.debug("ShutdownDialog: Halt chosen.");
 		this.doHalt();
 	}
 
 	@Override
 	public void onRebootClick(DialogInterface dialog) {
-		Log.d(LOG_TAG, "ShutdownDialog: Reboot chosen.");
+		LOGGER.debug("ShutdownDialog: Reboot chosen.");
 		this.doReboot();
 	}
 

@@ -3,6 +3,9 @@ package de.eidottermihi.rpicheck.db;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,6 +15,8 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 public class DeviceDbHelper extends SQLiteOpenHelper {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(DeviceDbHelper.class);
 	private static final String LOG_TAG = "DeviceDbHelper";
 	private static final String DATABASE_NAME = "RASPIQUERY";
 	private static final String DEVICES_TABLE_NAME = "DEVICES";
@@ -72,7 +77,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d(LOG_TAG, "Executing setup SQL: " + DEVICE_TABLE_CREATE + "; "
+		LOGGER.debug("Executing setup SQL: " + DEVICE_TABLE_CREATE + "; "
 				+ QUERY_TABLE_CREATE);
 		db.execSQL(DEVICE_TABLE_CREATE);
 		db.execSQL(QUERY_TABLE_CREATE);
@@ -80,11 +85,10 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.d(LOG_TAG, "Upgrading database from version " + oldVersion + " to "
+		LOGGER.debug("Upgrading database from version " + oldVersion + " to "
 				+ newVersion);
 		if (oldVersion == 6 && newVersion >= 7) {
-			Log.d(LOG_TAG,
-					"Upgrading database from version 6 to newer version: adding sudo password column to device table.");
+			LOGGER.debug("Upgrading database from version 6 to newer version: adding sudo password column to device table.");
 			// adding sudo pw field in device table
 			db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
 					+ COLUMN_SUDOPW + " TEXT");
@@ -150,7 +154,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	 * @return a {@link RaspberryDeviceBean}
 	 */
 	public RaspberryDeviceBean read(long id) {
-		Log.d(LOG_TAG, "Reading device with id = " + id);
+		LOGGER.debug("Reading device with id = " + id);
 		RaspberryDeviceBean bean = new RaspberryDeviceBean();
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.query(DEVICES_TABLE_NAME, new String[] { COLUMN_ID,
@@ -195,7 +199,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 				+ " = ?", new String[] { idString });
 		int deviceRows = db.delete(DEVICES_TABLE_NAME, COLUMN_ID + " = ?",
 				new String[] { idString });
-		Log.i(LOG_TAG, "Delete device with id=" + idString + ": " + deviceRows
+		LOGGER.info("Delete device with id=" + idString + ": " + deviceRows
 				+ "device row(s) deleted, " + queryRows
 				+ " query data row(s) deleted.");
 		db.close();
@@ -209,7 +213,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	 * @return the updated device
 	 */
 	public RaspberryDeviceBean update(RaspberryDeviceBean device) {
-		Log.d(LOG_TAG, "Updating device with id=" + device.getId() + "...");
+		LOGGER.debug("Updating device with id=" + device.getId() + "...");
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_NAME, device.getName());
@@ -226,7 +230,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		int rowsUpdate = db.update(DEVICES_TABLE_NAME, values, COLUMN_ID
 				+ " = ?", new String[] { device.getId() + "" });
 		db.close();
-		Log.d(LOG_TAG, rowsUpdate + " row afflicted from update.");
+		LOGGER.debug(rowsUpdate + " row afflicted from update.");
 		return read(device.getId());
 	}
 
@@ -234,14 +238,14 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	 * Deletes all device data and query data from the database.
 	 */
 	public void wipeAllData() {
-		Log.i(LOG_TAG, "Wiping all device information....");
+		LOGGER.info("Wiping all device information....");
 		SQLiteDatabase db = this.getWritableDatabase();
 		int rowsQueries = db.delete(QUERIES_TABLE_NAME, "1", null);
-		Log.i(LOG_TAG, "Deleted " + rowsQueries
+		LOGGER.info("Deleted " + rowsQueries
 				+ " device query data from database.");
 		int rowsDevices = db.delete(DEVICES_TABLE_NAME, "1", null);
-		Log.i(LOG_TAG, "Deleted " + rowsDevices + " devices from database.");
-		Log.i(LOG_TAG, "Wipe successful.");
+		LOGGER.info("Deleted " + rowsDevices + " devices from database.");
+		LOGGER.info("Wipe successful.");
 		db.close();
 	}
 

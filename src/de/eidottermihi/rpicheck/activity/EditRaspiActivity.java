@@ -1,10 +1,11 @@
 package de.eidottermihi.rpicheck.activity;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,9 +19,8 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 
 public class EditRaspiActivity extends SherlockActivity {
 	public static final String FOCUS_SUDO_PASSWORD = "focusSudo";
-
-	private static final String LOG_TAG = EditRaspiActivity.class
-			.getCanonicalName();
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(EditRaspiActivity.class);
 	private EditText editTextName;
 	private EditText editTextHost;
 	private EditText editTextUser;
@@ -106,7 +106,7 @@ public class EditRaspiActivity extends SherlockActivity {
 		final String description = editTextDescription.getText().toString()
 				.trim();
 		String sudoPass = editTextSudoPass.getText().toString().trim();
-		Log.d(LOG_TAG, "Update raspi :" + name + "/" + host + "/" + user + "/"
+		LOGGER.debug("Update raspi :" + name + "/" + host + "/" + user + "/"
 				+ pass + "/" + sshPort);
 
 		if (StringUtils.isBlank(name) || StringUtils.isBlank(host)
@@ -114,6 +114,28 @@ public class EditRaspiActivity extends SherlockActivity {
 			Toast.makeText(this, getText(R.string.new_raspi_minimum),
 					Toast.LENGTH_LONG).show();
 			return;
+		}
+		// validate port range
+		if (!StringUtils.isBlank(sshPort)) {
+			boolean validPort = true;
+			try {
+				int portNr = Integer.parseInt(sshPort);
+				if (portNr < 1 || portNr > 65535) {
+					LOGGER.debug(portNr + " is not a valid port.");
+					validPort = false;
+				}
+			} catch (NumberFormatException e) {
+				LOGGER.debug("Unable to parse ssh port number. Input: "
+						+ sshPort);
+				validPort = false;
+			}
+			if (!validPort) {
+				Toast.makeText(this,
+						getString(R.string.port_not_valid, sshPort),
+						Toast.LENGTH_LONG).show();
+				editTextSshPortOpt.requestFocus();
+				return;
+			}
 		}
 		if (StringUtils.isBlank(sudoPass)) {
 			sudoPass = "";

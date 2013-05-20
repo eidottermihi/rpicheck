@@ -101,4 +101,6 @@
 	<string name="shutdown_type_title">Shutdown options</string>
 	<string name="halt_success">Halt command sent.</string>
 	<string name="halt_fail">Halt failed. Check your connection settings and sudo password.</string>
+	
+	<string name="port_not_valid">%1$s is not a valid port number.</string>
 </resources>

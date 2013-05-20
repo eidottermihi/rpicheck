@@ -1,0 +1,32 @@
+<configuration>
+	<property name="LOG_DIR" value="/sdcard/data/de.eidottermihi.rpicheck" />
+
+	<!-- Create a logcat appender -->
+	<appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+		<encoder>
+			<pattern>%msg</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Create a file appender -->
+	<appender name="infoLog" class="ch.qos.logback.core.FileAppender">
+		<file>${LOG_DIR}/rpicheck.log</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="net.schmizz" level="WARN" />
+	<logger name="de.eidottermihi.rpicheck" level="DEBUG" />
+	<logger name="de.eidottermihi.raspitools" level="INFO" />
+
+	<!-- Write TRACE (and higher-level) messages to logcat -->
+	<root level="TRACE">
+		<appender-ref ref="logcat" />
+	</root>
+	<!-- Write INFO (and higher-level) messages to file -->
+	<root level="INFO">
+		<appender-ref ref="infoLog" />
+	</root>
+</configuration>

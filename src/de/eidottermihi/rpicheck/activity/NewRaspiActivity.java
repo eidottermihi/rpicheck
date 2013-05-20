@@ -1,10 +1,11 @@
 package de.eidottermihi.rpicheck.activity;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,9 +17,8 @@ import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 
 public class NewRaspiActivity extends SherlockActivity {
-
-	private static final String LOG_TAG = NewRaspiActivity.class
-			.getCanonicalName();
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NewRaspiActivity.class);
 	private EditText editTextName;
 	private EditText editTextHost;
 	private EditText editTextUser;
@@ -88,7 +88,7 @@ public class NewRaspiActivity extends SherlockActivity {
 		final String description = editTextDescription.getText().toString()
 				.trim();
 		String sudoPass = editTextSudoPw.getText().toString().trim();
-		Log.d(LOG_TAG, "New raspi :" + name + "/" + host + "/" + user + "/"
+		LOGGER.debug("New raspi :" + name + "/" + host + "/" + user + "/"
 				+ pass + "/" + sshPort + "/" + sudoPass);
 
 		if (StringUtils.isBlank(name) || StringUtils.isBlank(host)
@@ -96,6 +96,28 @@ public class NewRaspiActivity extends SherlockActivity {
 			Toast.makeText(this, R.string.new_raspi_minimum, Toast.LENGTH_LONG)
 					.show();
 			return;
+		}
+		// validate port range
+		if (!StringUtils.isBlank(sshPort)) {
+			boolean validPort = true;
+			try {
+				int portNr = Integer.parseInt(sshPort);
+				if (portNr < 1 || portNr > 65535) {
+					LOGGER.debug(portNr + " is not a valid port.");
+					validPort = false;
+				}
+			} catch (NumberFormatException e) {
+				LOGGER.debug("Unable to parse ssh port number. Input: "
+						+ sshPort);
+				validPort = false;
+			}
+			if (!validPort) {
+				Toast.makeText(this,
+						getString(R.string.port_not_valid, sshPort),
+						Toast.LENGTH_LONG).show();
+				editTextSshPortOpt.requestFocus();
+				return;
+			}
 		}
 		if (StringUtils.isBlank(sudoPass)) {
 			sudoPass = "";

@@ -97,4 +97,6 @@
 	<string name="shutdown_type_title">Herunterfahren</string>
 	<string name="halt_success">System Halt Kommando gesendet.</string>
 	<string name="halt_fail">System Halt fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
+	
+	<string name="port_not_valid">%1$s ist kein gültiger Port.</string>
 </resources>
