@@ -33,7 +33,7 @@ public class RebootDialogFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.shutdown_type_title);
-		// builder.setMessage(R.string.question_reboot);
+		builder.setIcon(R.drawable.shutdown);
 		builder.setItems(R.array.shutdown_options,
 				new DialogInterface.OnClickListener() {
 

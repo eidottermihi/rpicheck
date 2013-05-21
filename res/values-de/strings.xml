@@ -83,7 +83,7 @@
     <string name="network_signal">Signal</string>
     <string name="network_link">Qualität</string>
     <string name="pref_group_about">Über RasPi Check</string>
-    <string name="pref_github">Bugs / Fehlermeldungen / Wünsche</string>
+    <string name="pref_github">Bugs / Fehler / Wünsche</string>
     <string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
     <string name="pref_dev_email">Entwickler kontaktieren</string>
     <string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
@@ -100,7 +100,7 @@
     <string name="validation_msg_port">Kein gültiger Port.</string>
     <string name="update_successful">Pi aktualisiert.</string>
     <string name="new_pi_created">Pi hinzugefügt.</string>
-    <string name="exception_dialog_title">Ups!</string>
+    <string name="exception_dialog_title">Uups!</string>
     <string name="authentication_failed">SSH Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.</string>
     <string name="connection_failed">Die Verbindung konnte nicht hergestellt werden. Bitte überprüfe den Hostnamen und dein Netzwerk.</string>
     <string name="errormessages_dialog_title">Sorry...</string>
@@ -109,4 +109,12 @@
     <string name="exception_vcgencmd">Das Programm \'vcgencmd\' konnte auf deinem Pi nicht gefunden werden. Stelle sicher, dass es im Verzeichnis \'/usr/bin\' oder \'/opt/vc/bin\' ist.</string>
     <string name="weird_exception">Etwas total komisches ist passiert. Bitte wirf einen Blick in das Logfile (sdcard/data/de.eidottermihi.rpicheck).</string>
 
+    <string name="pref_group_log">Log</string>
+    <string name="pref_log_title">Log anzeigen</string>
+    <string name="pref_log_title_summary">Öffnet den Log dieser App</string>
+    
+    <string name="pref_screen_about">Über RasPi Check</string>
+    <string name="pref_screen_about_summary">Version, Changelog, Entwickler</string>
+    <string name="pref_changelog_title">Changelog anzeigen</string>
+    <string name="pref_changelog_title_summary">Öffnet den Changelog dieser App</string>
 </resources>

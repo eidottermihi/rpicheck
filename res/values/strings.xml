@@ -86,7 +86,7 @@
     <string name="network_ip">IP</string>
     <string name="network_signal">Signal</string>
     <string name="network_link">Quality</string>
-    <string name="pref_group_about">About RasPi Check</string>
+    <string name="pref_group_about">About</string>
     <string name="pref_github">Bugs reports / feedback</string>
     <string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
     <string name="pref_dev_email">Contact developer</string>
@@ -118,4 +118,15 @@
     <string name="changelog_title">What\'s New</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">more...</string>
+    
+    <string name="pref_group_log">Log</string>
+    <string name="pref_log_title">View log</string>
+    <string name="pref_log_title_summary">Views the debug log of this app</string>
+    
+    <string name="pref_screen_about">About RasPi Check</string>
+    <string name="pref_screen_about_summary">Version, changelog, developer</string>
+    <string name="pref_changelog_title">View changelog</string>
+    <string name="pref_changelog_title_summary">Views changelog of this app</string>
+    
+    
 </resources>
