@@ -12,21 +12,21 @@
 	<appender name="infoLog" class="ch.qos.logback.core.FileAppender">
 		<file>${LOG_DIR}/rpicheck.log</file>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{24} - %msg%n
-			</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{24} - %msg%n</pattern>
 		</encoder>
 	</appender>
 	
-	<logger name="net.schmizz" level="WARN" />
-	<logger name="de.eidottermihi.rpicheck" level="DEBUG" />
-	<logger name="de.eidottermihi.raspitools" level="INFO" />
+	<logger name="net.schmizz" level="WARN">
+	    <appender-ref ref="infoLog"/>
+	</logger>
+	<logger name="de.eidottermihi.rpicheck" level="INFO">
+	    <appender-ref ref="infoLog"/>
+	</logger>
+	<logger name="de.eidottermihi.raspitools" level="INFO">
+	    <appender-ref ref="infoLog"/>
+	</logger>
 
-	<!-- Write TRACE (and higher-level) messages to logcat -->
 	<root level="TRACE">
 		<appender-ref ref="logcat" />
-	</root>
-	<!-- Write INFO (and higher-level) messages to file -->
-	<root level="INFO">
-		<appender-ref ref="infoLog" />
 	</root>
 </configuration>

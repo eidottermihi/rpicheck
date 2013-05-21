@@ -116,5 +116,10 @@
     <string name="pref_screen_about">Über RasPi Check</string>
     <string name="pref_screen_about_summary">Version, Changelog, Entwickler</string>
     <string name="pref_changelog_title">Changelog anzeigen</string>
-    <string name="pref_changelog_title_summary">Öffnet den Changelog dieser App</string>
+    <string name="pref_changelog_title_summary">Öffnet den Changelog dieser App.</string>
+    
+    <string name="pref_debug_log_summary">Aktiviert das Debug-Logging.</string>
+    <string name="pref_debug_log_summary_on">Achtung: Log-Datei kann riesig werden.</string>
+    <string name="pref_debug_log_summary_off">Debug-Level Logging deaktiviert.</string>
+    <string name="pref_debug_log_title">Debug Logging</string>
 </resources>

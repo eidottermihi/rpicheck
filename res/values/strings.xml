@@ -121,12 +121,17 @@
     
     <string name="pref_group_log">Log</string>
     <string name="pref_log_title">View log</string>
-    <string name="pref_log_title_summary">Views the debug log of this app</string>
+    <string name="pref_log_title_summary">Views the log of this app</string>
     
     <string name="pref_screen_about">About RasPi Check</string>
     <string name="pref_screen_about_summary">Version, changelog, developer</string>
     <string name="pref_changelog_title">View changelog</string>
     <string name="pref_changelog_title_summary">Views changelog of this app</string>
+    
+    <string name="pref_debug_log_summary">Print debug messages to the log.</string>
+    <string name="pref_debug_log_summary_on">Warning: Log file can get huge.</string>
+    <string name="pref_debug_log_summary_off">Debug level logging disabled.</string>
+    <string name="pref_debug_log_title">Debug logging</string>
     
     
 </resources>

@@ -50,6 +50,7 @@ import de.eidottermihi.raspitools.beans.UptimeBean;
 import de.eidottermihi.raspitools.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Helper;
+import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.bean.QueryBean;
 import de.eidottermihi.rpicheck.bean.ShutdownResult;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
@@ -174,6 +175,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		deviceDb = new DeviceDbHelper(this);
 		// init spinner
 		initSpinner();
+
+		boolean debugLogging = sharedPrefs.getBoolean(
+				SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
+		if (debugLogging) {
+			LoggingHelper.changeLogger(true);
+		}
 
 		// restoring tables
 		if (savedInstanceState != null) {

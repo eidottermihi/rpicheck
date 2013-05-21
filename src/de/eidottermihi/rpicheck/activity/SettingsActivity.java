@@ -22,6 +22,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 
 /**
  * Settings activity. Settings items are inflated from xml.
@@ -39,6 +40,7 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 	public static final String KEY_PREF_TEMPERATURE_SCALE = "pref_temperature_scala";
 	public static final String KEY_PREF_QUERY_HIDE_ROOT_PROCESSES = "pref_query_hide_root";
 	public static final String KEY_PREF_FREQUENCY_UNIT = "pref_frequency_unit";
+	public static final String KEY_PREF_DEBUG_LOGGING = "pref_debug_log";
 
 	private static final String KEY_PREF_LOG = "pref_log";
 	private static final String KEY_PREF_CHANGELOG = "pref_changelog";
@@ -110,6 +112,15 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 									.getString(
 											KEY_PREF_TEMPERATURE_SCALE,
 											getString(R.string.pref_temperature_scala_default)));
+		}
+		if (key.equals(KEY_PREF_DEBUG_LOGGING)) {
+			boolean debugEnabled = sharedPreferences.getBoolean(key, false);
+			if (debugEnabled) {
+				LOGGER.warn("Enabling debug logging. Be warned that the log file can get huge because of this.");
+			} else {
+				LOGGER.info("Disabled debug logging.");
+			}
+			LoggingHelper.changeLogger(debugEnabled);
 		}
 	}
 
