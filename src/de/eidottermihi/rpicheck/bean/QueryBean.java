@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import de.eidottermihi.raspitools.RaspiQueryException;
 import de.eidottermihi.raspitools.beans.DiskUsageBean;
 import de.eidottermihi.raspitools.beans.MemoryBean;
 import de.eidottermihi.raspitools.beans.NetworkInterfaceInformation;
@@ -16,7 +17,6 @@ public class QueryBean implements Serializable {
 	private VcgencmdBean vcgencmdInfo;
 	private List<NetworkInterfaceInformation> networkInfo;
 	private Date lastUpdate;
-	private QueryStatus status;
 	private String startup;
 	private String avgLoad;
 	private MemoryBean totalMem;
@@ -25,6 +25,8 @@ public class QueryBean implements Serializable {
 	private List<DiskUsageBean> disks;
 	private String distri;
 	private List<ProcessBean> processes;
+	private RaspiQueryException exception;
+	private List<String> errorMessages;
 
 	public VcgencmdBean getVcgencmdInfo() {
 		return vcgencmdInfo;
@@ -40,14 +42,6 @@ public class QueryBean implements Serializable {
 
 	public void setNetworkInfo(List<NetworkInterfaceInformation> networkInfo) {
 		this.networkInfo = networkInfo;
-	}
-
-	public QueryStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(QueryStatus status) {
-		this.status = status;
 	}
 
 	public Date getLastUpdate() {
@@ -120,6 +114,22 @@ public class QueryBean implements Serializable {
 
 	public void setProcesses(List<ProcessBean> processes) {
 		this.processes = processes;
+	}
+
+	public RaspiQueryException getException() {
+		return exception;
+	}
+
+	public void setException(RaspiQueryException exception) {
+		this.exception = exception;
+	}
+
+	public List<String> getErrorMessages() {
+		return errorMessages;
+	}
+
+	public void setErrorMessages(List<String> errorMessages) {
+		this.errorMessages = errorMessages;
 	}
 
 }

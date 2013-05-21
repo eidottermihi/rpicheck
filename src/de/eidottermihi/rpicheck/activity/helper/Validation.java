@@ -57,6 +57,7 @@ public class Validation {
 				portValid = false;
 			}
 			if (!portValid) {
+				dataValid = false;
 				port.setError(context.getString(R.string.validation_msg_port));
 			}
 		}

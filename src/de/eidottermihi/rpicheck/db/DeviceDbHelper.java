@@ -12,16 +12,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 public class DeviceDbHelper extends SQLiteOpenHelper {
+	/** Current database version. */
+	private static final int DATABASE_VERSION = 7;
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DeviceDbHelper.class);
-	private static final String LOG_TAG = "DeviceDbHelper";
 	private static final String DATABASE_NAME = "RASPIQUERY";
 	private static final String DEVICES_TABLE_NAME = "DEVICES";
 	private static final String QUERIES_TABLE_NAME = "QUERIES";
-	private static final int DATABASE_VERSION = 7;
 	private static final String COLUMN_ID = BaseColumns._ID;
 	private static final String COLUMN_NAME = "name";
 	private static final String COLUMN_DESCRIPTION = "description";
@@ -77,15 +76,14 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		LOGGER.debug("Executing setup SQL: " + DEVICE_TABLE_CREATE + "; "
-				+ QUERY_TABLE_CREATE);
+		LOGGER.info("Executing first-time database setup.");
 		db.execSQL(DEVICE_TABLE_CREATE);
 		db.execSQL(QUERY_TABLE_CREATE);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		LOGGER.debug("Upgrading database from version " + oldVersion + " to "
+		LOGGER.info("Upgrading database from version " + oldVersion + " to "
 				+ newVersion);
 		if (oldVersion == 6 && newVersion >= 7) {
 			LOGGER.debug("Upgrading database from version 6 to newer version: adding sudo password column to device table.");
@@ -154,7 +152,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	 * @return a {@link RaspberryDeviceBean}
 	 */
 	public RaspberryDeviceBean read(long id) {
-		LOGGER.debug("Reading device with id = " + id);
+		LOGGER.trace("Reading device with id = " + id);
 		RaspberryDeviceBean bean = new RaspberryDeviceBean();
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.query(DEVICES_TABLE_NAME, new String[] { COLUMN_ID,
@@ -181,7 +179,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		} else {
 			cursor.close();
 			db.close();
-			Log.w(LOG_TAG, "Device with id = " + id + " is not in db.");
+			LOGGER.warn("Device with id = {} is not in db.", id);
 			return null;
 		}
 	}
@@ -213,7 +211,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	 * @return the updated device
 	 */
 	public RaspberryDeviceBean update(RaspberryDeviceBean device) {
-		LOGGER.debug("Updating device with id=" + device.getId() + "...");
+		LOGGER.trace("Updating device with id=" + device.getId() + "...");
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_NAME, device.getName());
@@ -230,7 +228,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		int rowsUpdate = db.update(DEVICES_TABLE_NAME, values, COLUMN_ID
 				+ " = ?", new String[] { device.getId() + "" });
 		db.close();
-		LOGGER.debug(rowsUpdate + " row afflicted from update.");
+		LOGGER.trace(rowsUpdate + " row afflicted from update.");
 		return read(device.getId());
 	}
 

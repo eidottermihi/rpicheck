@@ -11,8 +11,8 @@ import java.text.NumberFormat;
  * 
  */
 public class Helper {
-	public static final String SCALE_CELSIUS = "캜";
-	public static final String SCALE_FAHRENHEIT = "캟";
+	public static final String SCALE_CELSIUS = "째C";
+	public static final String SCALE_FAHRENHEIT = "째F";
 
 	public static final String SCALE_HZ = "Hz";
 	public static final String SCALE_MHZ = "MHz";
@@ -27,7 +27,7 @@ public class Helper {
 	 * @param tempInCelsius
 	 *            the temperature to be formatted (in celsius)
 	 * @param tempScale
-	 *            the scale to use (C�/F�).
+	 *            the scale to use (째C/째F).
 	 * @return the formatted temperature
 	 */
 	public String formatTemperature(double tempInCelsius, String tempScale) {

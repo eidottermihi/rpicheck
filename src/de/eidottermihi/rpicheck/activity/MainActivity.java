@@ -1,12 +1,14 @@
 package de.eidottermihi.rpicheck.activity;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sheetrock.panda.changelog.ChangeLog;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,10 +51,11 @@ import de.eidottermihi.raspitools.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Helper;
 import de.eidottermihi.rpicheck.bean.QueryBean;
-import de.eidottermihi.rpicheck.bean.QueryStatus;
 import de.eidottermihi.rpicheck.bean.ShutdownResult;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.eidottermihi.rpicheck.fragment.QueryErrorMessagesDialog;
+import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
 
@@ -196,9 +199,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 						currentDevice.getSpinnerPosition());
 			}
 		}
+
+		// changelog
+		final ChangeLog cl = new ChangeLog(this);
+		if (cl.firstRun())
+			cl.getLogDialog().show();
 	}
 
 	private void updateQueryDataInView() {
+		final List<String> errorMessages = queryData.getErrorMessages();
 		final String tempScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
 				getString(R.string.pref_temperature_scala_default));
@@ -216,18 +225,48 @@ public class MainActivity extends SherlockFragmentActivity implements
 		firmwareText.setText(queryData.getVcgencmdInfo().getVersion());
 		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(
 				queryData.getLastUpdate()));
-		uptimeText.setText(queryData.getStartup());
-		averageLoadText.setText(queryData.getAvgLoad().toString());
-		totalMemoryText.setText(queryData.getTotalMem().humanReadableByteCount(
-				false));
-		freeMemoryText.setText(queryData.getFreeMem().humanReadableByteCount(
-				false));
+		// uptime and average load may contain errors
+		if (queryData.getAvgLoad() != null) {
+			averageLoadText.setText(queryData.getAvgLoad().toString());
+		}
+		if (queryData.getStartup() != null) {
+			uptimeText.setText(queryData.getStartup());
+		}
+		if (queryData.getFreeMem() != null) {
+			freeMemoryText.setText(queryData.getFreeMem()
+					.humanReadableByteCount(false));
+		}
+		if (queryData.getTotalMem() != null) {
+			totalMemoryText.setText(queryData.getTotalMem()
+					.humanReadableByteCount(false));
+		}
 		serialNoText.setText(queryData.getSerialNo());
 		distriText.setText(queryData.getDistri());
 		// update tables
 		updateNetworkTable(queryData.getNetworkInfo());
 		updateDiskTable(queryData.getDisks());
 		updateProcessTable(queryData.getProcesses());
+		this.handleQueryError(errorMessages);
+	}
+
+	/**
+	 * Shows a dialog containing the ErrorMessages.
+	 * 
+	 * @param errorMessages
+	 *            the messages
+	 */
+	private void handleQueryError(List<String> errorMessages) {
+		final ArrayList<String> messages = new ArrayList<String>(errorMessages);
+		if (errorMessages.size() > 0) {
+			LOGGER.trace("Showing query error messages.");
+			Bundle args = new Bundle();
+			args.putStringArrayList(
+					QueryErrorMessagesDialog.KEY_ERROR_MESSAGES, messages);
+			final QueryErrorMessagesDialog messageDialog = new QueryErrorMessagesDialog();
+			messageDialog.setArguments(args);
+			messageDialog.show(getSupportFragmentManager(),
+					"QueryErrorMessagesDialog");
+		}
 	}
 
 	private void updateNetworkTable(
@@ -292,10 +331,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private View createTextView(String text) {
 		final TextView tempText = new TextView(this);
 		tempText.setText(text);
-		// add 3dp to padding right
-		// tempText.setPadding(0, 0, 0, (int)
-		// TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3,
-		// getResources().getDisplayMetrics()));
 		return tempText;
 	}
 
@@ -310,7 +345,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private void initSpinner() {
 		deviceCursor = deviceDb.getFullDeviceCursor();
-		LOGGER.debug("Cursor rows: " + deviceCursor.getCount());
+		LOGGER.trace("Cursor rows: " + deviceCursor.getCount());
 		// only show spinner if theres already a device to show
 		if (deviceCursor.getCount() > 0) {
 			// make adapter
@@ -343,16 +378,54 @@ public class MainActivity extends SherlockFragmentActivity implements
 		refreshableScrollView.setMode(Mode.PULL_FROM_START);
 		// update refresh indicator
 		refreshItem.setActionView(null);
-		if (queryData.getStatus() == QueryStatus.OK) {
+		if (queryData.getException() == null) {
 			// update view data
 			this.updateQueryDataInView();
-		} else if (queryData.getStatus() == QueryStatus.AuthenticationFailure) {
-			Toast.makeText(this, R.string.authentication_failed,
-					Toast.LENGTH_LONG).show();
-		} else if (queryData.getStatus() == QueryStatus.ConnectionFailure) {
-			Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_LONG)
-					.show();
+		} else {
+			this.handleQueryException(queryData.getException());
 		}
+	}
+
+	/**
+	 * Shows a dialog with a detailed error message.
+	 * 
+	 * @param exception
+	 */
+	private void handleQueryException(RaspiQueryException exception) {
+		LOGGER.trace("Query caused exception. Showing dialog.");
+		// build dialog
+		final String errorMessage = this.mapExceptionToErrorMessage(exception);
+		Bundle dialogArgs = new Bundle();
+		dialogArgs.putString(QueryExceptionDialog.MESSAGE_KEY, errorMessage);
+		QueryExceptionDialog dialogFragment = new QueryExceptionDialog();
+		dialogFragment.setArguments(dialogArgs);
+		dialogFragment
+				.show(getSupportFragmentManager(), "QueryExceptionDialog");
+	}
+
+	private String mapExceptionToErrorMessage(RaspiQueryException exception) {
+		String message = null;
+		switch (exception.getReasonCode()) {
+		case RaspiQueryException.REASON_CONNECTION_FAILED:
+			message = getString(R.string.connection_failed);
+			break;
+		case RaspiQueryException.REASON_AUTHENTIFICATION_FAILED:
+			message = getString(R.string.authentication_failed);
+			break;
+		case RaspiQueryException.REASON_TRANSPORT_EXCEPTION:
+			message = getString(R.string.transport_exception);
+			break;
+		case RaspiQueryException.REASON_IO_EXCEPTION:
+			message = getString(R.string.unexpected_exception);
+			break;
+		case RaspiQueryException.REASON_VCGENCMD_NOT_FOUND:
+			message = getString(R.string.exception_vcgencmd);
+			break;
+		default:
+			message = getString(R.string.weird_exception);
+			break;
+		}
+		return message;
 	}
 
 	/**
@@ -385,7 +458,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		refreshItem = menu.findItem(R.id.menu_refresh);
 		// set delete, edit and reboot visible if there is a current device
 		if (currentDevice != null) {
-			LOGGER.debug("Enabling menu buttons.");
+			LOGGER.trace("Enabling menu buttons.");
 			menu.findItem(R.id.menu_delete).setVisible(true);
 			menu.findItem(R.id.menu_edit_raspi).setVisible(true);
 			menu.findItem(R.id.menu_reboot).setVisible(true);
@@ -425,22 +498,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void showRebootDialog() {
-		// checking if sudo password is present, if not send to editRaspi to
-		// specify one
-		boolean sudoPassPresent = true;
-		if (currentDevice.getSudoPass() == null) {
-			LOGGER.debug("Current device: sudoPass is null");
-			sudoPassPresent = false;
-		}
-		if (sudoPassPresent) {
-			LOGGER.debug("Showing reboot dialog.");
-			DialogFragment rebootDialog = new RebootDialogFragment();
-			rebootDialog.show(getSupportFragmentManager(), "reboot");
-		}
+		LOGGER.trace("Showing reboot dialog.");
+		DialogFragment rebootDialog = new RebootDialogFragment();
+		rebootDialog.show(getSupportFragmentManager(), "reboot");
 	}
 
 	private void doReboot() {
-		LOGGER.debug("Doing reboot...");
+		LOGGER.info("Doing reboot on {}...", currentDevice.getName());
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
@@ -460,7 +524,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void doHalt() {
-		LOGGER.debug("Doing halt...");
+		LOGGER.debug("Doing halt on {}...", currentDevice.getName());
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
@@ -480,8 +544,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void deleteCurrentDevice() {
-		LOGGER.info("User wants to delete device with id = "
-				+ currentDevice.getId() + ".");
+		LOGGER.info("Deleting pi {}.", currentDevice.getName());
 		deviceDb.delete(currentDevice.getId());
 	}
 
@@ -563,10 +626,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 				LOGGER.error(e.getMessage());
 				result.setExcpetion(e);
 				return result;
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage());
-				result.setExcpetion(e);
-				return result;
 			}
 		}
 
@@ -588,16 +647,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 					(String) params[2], Integer.parseInt(params[3]));
 			boolean hideRootProcesses = Boolean.parseBoolean(params[4]);
 			QueryBean bean = new QueryBean();
+			bean.setErrorMessages(new ArrayList<String>());
 			try {
 				publishProgress(5);
 				raspiQuery.connect();
-				publishProgress(10);
+				publishProgress(20);
 				final VcgencmdBean vcgencmdBean = raspiQuery.queryVcgencmd();
-				publishProgress(40);
-				UptimeBean uptime = raspiQuery.queryUptime();
 				publishProgress(50);
-				String avgLoad = uptime.getAverageLoad();
-				String prettyUptime = uptime.getRunningPretty();
+				UptimeBean uptime = raspiQuery.queryUptime();
 				publishProgress(60);
 				RaspiMemoryBean memory = raspiQuery.queryMemoryInformation();
 				publishProgress(70);
@@ -616,41 +673,31 @@ public class MainActivity extends SherlockFragmentActivity implements
 				publishProgress(100);
 				bean.setVcgencmdInfo(vcgencmdBean);
 				bean.setLastUpdate(Calendar.getInstance().getTime());
-				bean.setStartup(prettyUptime);
-				bean.setAvgLoad(avgLoad);
-				bean.setFreeMem(memory.getTotalFree());
-				bean.setTotalMem(memory.getTotalMemory());
+				// uptimeBean may contain messages
+				if (uptime.getErrorMessage() != null) {
+					bean.getErrorMessages().add(uptime.getErrorMessage());
+				} else {
+					bean.setStartup(uptime.getRunningPretty());
+					bean.setAvgLoad(uptime.getAverageLoad());
+				}
+				if (memory.getErrorMessage() != null) {
+					bean.getErrorMessages().add(memory.getErrorMessage());
+				} else {
+					bean.setFreeMem(memory.getTotalFree());
+					bean.setTotalMem(memory.getTotalMemory());
+				}
 				bean.setSerialNo(serialNo);
 				bean.setNetworkInfo(networkInformation);
 				bean.setProcesses(processes);
-				bean.setStatus(QueryStatus.OK);
+				for (String error : bean.getErrorMessages()) {
+					LOGGER.error(error);
+				}
 				return bean;
 			} catch (RaspiQueryException e) {
-				LOGGER.error(e.getMessage());
-				return this.handleException(e, bean);
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage());
+				LOGGER.error("Query failed: " + e.getMessage());
+				bean.setException(e);
+				return bean;
 			}
-			return null;
-		}
-
-		private QueryBean handleException(RaspiQueryException e,
-				QueryBean queryBean) {
-			switch (e.getReasonCode()) {
-			case RaspiQueryException.REASON_CONNECTION_FAILED:
-				queryBean.setStatus(QueryStatus.ConnectionFailure);
-				break;
-			case RaspiQueryException.REASON_AUTHENTIFICATION_FAILED:
-				queryBean.setStatus(QueryStatus.AuthenticationFailure);
-				break;
-			case RaspiQueryException.REASON_TRANSPORT_EXCEPTION:
-				queryBean.setStatus(QueryStatus.ConnectionFailure);
-				break;
-			case RaspiQueryException.REASON_VCGENCMD_NOT_FOUND:
-				queryBean.setStatus(QueryStatus.VCGENCMD);
-				break;
-			}
-			return queryBean;
 		}
 
 		@Override
@@ -663,7 +710,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			Integer totalProgress = values[0];
+			final Integer totalProgress = values[0];
 			progressBar.setProgress(totalProgress);
 			super.onProgressUpdate(values);
 		}
@@ -672,7 +719,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		LOGGER.debug("DropdownItemSelected: pos=" + itemPosition + ", id="
+		LOGGER.trace("Spinner item selected: pos=" + itemPosition + ", id="
 				+ itemId);
 		// get device with id
 		RaspberryDeviceBean read = deviceDb.read(itemId);
@@ -694,6 +741,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+		LOGGER.trace("Query initiated by PullToRefresh.");
 		this.doQuery(true);
 	}
 
@@ -701,11 +749,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	protected void onSaveInstanceState(Bundle outState) {
 		// saving process and disk table
 		if (queryData != null) {
-			LOGGER.debug("Saving instance state (query data)");
+			LOGGER.trace("Saving instance state (query data)");
 			outState.putSerializable(QUERY_DATA, queryData);
 		}
 		if (currentDevice != null) {
-			LOGGER.debug("Saving instance state (current device)");
+			LOGGER.trace("Saving instance state (current device)");
 			outState.putSerializable(CURRENT_DEVICE, currentDevice);
 		}
 		super.onSaveInstanceState(outState);
@@ -713,13 +761,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onHaltClick(DialogInterface dialog) {
-		LOGGER.debug("ShutdownDialog: Halt chosen.");
+		LOGGER.trace("ShutdownDialog: Halt chosen.");
 		this.doHalt();
 	}
 
 	@Override
 	public void onRebootClick(DialogInterface dialog) {
-		LOGGER.debug("ShutdownDialog: Reboot chosen.");
+		LOGGER.trace("ShutdownDialog: Reboot chosen.");
 		this.doReboot();
 	}
 

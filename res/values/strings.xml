@@ -17,8 +17,6 @@
     <string name="password">Password</string>
     <string name="ssh_credentials">SSH Credentials</string>
     <string name="no_connection">Please turn on WiFi.</string>
-    <string name="authentication_failed">SSH authentication failed. Please check your credentials.</string>
-    <string name="connection_failed">Connection failed. Please check hostname.</string>
     <string name="no_hostname_specified">No hostname specified. Please check your settings.</string>
     <string name="no_username_specified">No username specified. Please check your settings.</string>
     <string name="no_password_specified">No password specified. Please check your settings.</string>
@@ -88,25 +86,36 @@
     <string name="network_ip">IP</string>
     <string name="network_signal">Signal</string>
     <string name="network_link">Quality</string>
-
     <string name="pref_group_about">About RasPi Check</string>
-	<string name="pref_github">Bugs reports / feedback</string>
-	<string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
-	<string name="pref_dev_email">Contact developer</string>
-	<string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
-	<string name="pref_rate_app">Rate app</string>
-	<string name="pref_rate_app_summary">If you like RasPi Check, take a moment and rate it.</string>
-	<string name="pref_version">Version</string>
-	
-	<string name="shutdown_type_title">Shutdown options</string>
-	<string name="halt_success">Halt command sent.</string>
-	<string name="halt_fail">Halt failed. Check your connection settings and sudo password.</string>
-	
-	<string name="validation_msg_name">Name cannot be blank.</string>
-	<string name="validation_msg_host">Hostname cannot be blank.</string>
-	<string name="validation_msg_user">Username cannot be blank.</string>
-	<string name="validation_msg_password">Password cannot be blank.</string>
-	<string name="validation_msg_port">Not a valid port.</string>
-	<string name="update_successful">Pi successfully updated.</string>
-	<string name="new_pi_created">Pi created.</string>
+    <string name="pref_github">Bugs reports / feedback</string>
+    <string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
+    <string name="pref_dev_email">Contact developer</string>
+    <string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
+    <string name="pref_rate_app">Rate app</string>
+    <string name="pref_rate_app_summary">If you like RasPi Check, take a moment and rate it.</string>
+    <string name="pref_version">Version</string>
+    <string name="shutdown_type_title">Shutdown options</string>
+    <string name="halt_success">Halt command sent.</string>
+    <string name="halt_fail">Halt failed. Check your connection settings and sudo password.</string>
+    <string name="validation_msg_name">Name cannot be blank.</string>
+    <string name="validation_msg_host">Hostname cannot be blank.</string>
+    <string name="validation_msg_user">Username cannot be blank.</string>
+    <string name="validation_msg_password">Password cannot be blank.</string>
+    <string name="validation_msg_port">Not a valid port.</string>
+    <string name="update_successful">Pi successfully updated.</string>
+    <string name="new_pi_created">Pi created.</string>
+    <string name="exception_dialog_title">Oops!</string>
+    <string name="authentication_failed">SSH authentication failed. Please check your credentials.</string>
+    <string name="connection_failed">Could not establish a connection. Please check hostname and your network.</string>
+    <string name="errormessages_dialog_title">Sorry...</string>
+    <string name="transport_exception">A transport exception occurred. Please try again.</string>
+    <string name="unexpected_exception">A unexcepted exception occurred. Please try again.</string>
+    <string name="exception_vcgencmd">The tool \'vcgencmd\' was not found on your Pi. Make sure it is located under \'/usr/bin\' or \'/opt/vc/bin\'.</string>
+    <string name="weird_exception">Something weird went wrong. Please take a look at the log file (sdcard/data/de.eidottermihi.rpicheck).</string>
+
+    
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more...</string>
 </resources>

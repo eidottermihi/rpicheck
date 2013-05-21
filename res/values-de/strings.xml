@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">RasPi Check</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="menu_refresh">Aktualisieren</string>
@@ -15,8 +16,6 @@
     <string name="password">Passwort</string>
     <string name="ssh_credentials">SSH Credentials</string>
     <string name="no_connection">Bitte Wi-Fi einschalten.</string>
-    <string name="authentication_failed">SSH Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.</string>
-    <string name="connection_failed">Verbindung fehlgeschlagen. Bitte überprüfe den Hostnamen.</string>
     <string name="no_hostname_specified">Kein Hostname angegeben. Bitte überprüfe deine Angaben.</string>
     <string name="no_username_specified">Kein Benutzername angegeben. Bitte überprüfe deine Angaben.</string>
     <string name="no_password_specified">Kein Passwort angegeben. Bitte überprüfe deine Angaben.</string>
@@ -75,34 +74,39 @@
     <string name="pref_frequency_unit_summary">Hz, MHz oder GHz</string>
     <string name="pref_frequency_unit_title">Frequenz Einheit</string>
     <string name="firmware_version">Firmware</string>
-    
-	<string name="network_header">Netzwerk</string>
-	<string name="network_interface">Interface</string>
-	<string name="network_status">Status</string>
-	<string name="network_status_up">Up</string>
-	<string name="network_status_down">Down</string>
-	<string name="network_ip">IP</string>
-	<string name="network_signal">Signal</string>
-	<string name="network_link">Qualität</string>
-	
-	<string name="pref_group_about">Über RasPi Check</string>
-	<string name="pref_github">Bugs / Fehlermeldungen / Wünsche</string>
-	<string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
-	<string name="pref_dev_email">Entwickler kontaktieren</string>
-	<string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
-	<string name="pref_rate_app">App bewerten</string>
-	<string name="pref_rate_app_summary">Wenn dir RasPi Check gefällt, nimm dir einen Moment Zeit es zu bewerten.</string>
-	<string name="pref_version">Version</string>
-	
-	<string name="shutdown_type_title">Herunterfahren</string>
-	<string name="halt_success">System Halt Kommando gesendet.</string>
-	<string name="halt_fail">System Halt fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
-	
-	<string name="validation_msg_name">Name darf nicht leer sein.</string>
-	<string name="validation_msg_host">Hostname darf nicht leer sein.</string>
-	<string name="validation_msg_user">Username darf nicht leer sein.</string>
-	<string name="validation_msg_password">Passwort darf nicht leer sein.</string>
-	<string name="validation_msg_port">Kein gültiger Port.</string>
-	<string name="update_successful">Pi aktualisiert.</string>
-	<string name="new_pi_created">Pi hinzugefügt.</string>
+    <string name="network_header">Netzwerk</string>
+    <string name="network_interface">Interface</string>
+    <string name="network_status">Status</string>
+    <string name="network_status_up">Up</string>
+    <string name="network_status_down">Down</string>
+    <string name="network_ip">IP</string>
+    <string name="network_signal">Signal</string>
+    <string name="network_link">Qualität</string>
+    <string name="pref_group_about">Über RasPi Check</string>
+    <string name="pref_github">Bugs / Fehlermeldungen / Wünsche</string>
+    <string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
+    <string name="pref_dev_email">Entwickler kontaktieren</string>
+    <string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
+    <string name="pref_rate_app">App bewerten</string>
+    <string name="pref_rate_app_summary">Wenn dir RasPi Check gefällt, nimm dir einen Moment Zeit es zu bewerten.</string>
+    <string name="pref_version">Version</string>
+    <string name="shutdown_type_title">Herunterfahren</string>
+    <string name="halt_success">System Halt Kommando gesendet.</string>
+    <string name="halt_fail">System Halt fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
+    <string name="validation_msg_name">Name darf nicht leer sein.</string>
+    <string name="validation_msg_host">Hostname darf nicht leer sein.</string>
+    <string name="validation_msg_user">Username darf nicht leer sein.</string>
+    <string name="validation_msg_password">Passwort darf nicht leer sein.</string>
+    <string name="validation_msg_port">Kein gültiger Port.</string>
+    <string name="update_successful">Pi aktualisiert.</string>
+    <string name="new_pi_created">Pi hinzugefügt.</string>
+    <string name="exception_dialog_title">Ups!</string>
+    <string name="authentication_failed">SSH Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.</string>
+    <string name="connection_failed">Die Verbindung konnte nicht hergestellt werden. Bitte überprüfe den Hostnamen und dein Netzwerk.</string>
+    <string name="errormessages_dialog_title">Sorry...</string>
+    <string name="transport_exception">Die Verbindung wurde unerwartet geschlossen. Probier es noch einmal.</string>
+    <string name="unexpected_exception">Ein unerwarteter Fehler ist aufgetreten. Probier es noch einmal.</string>
+    <string name="exception_vcgencmd">Das Programm \'vcgencmd\' konnte auf deinem Pi nicht gefunden werden. Stelle sicher, dass es im Verzeichnis \'/usr/bin\' oder \'/opt/vc/bin\' ist.</string>
+    <string name="weird_exception">Etwas total komisches ist passiert. Bitte wirf einen Blick in das Logfile (sdcard/data/de.eidottermihi.rpicheck).</string>
+
 </resources>
