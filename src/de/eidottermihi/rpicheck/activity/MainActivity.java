@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -48,6 +49,7 @@ import de.eidottermihi.raspitools.beans.ProcessBean;
 import de.eidottermihi.raspitools.beans.RaspiMemoryBean;
 import de.eidottermihi.raspitools.beans.UptimeBean;
 import de.eidottermihi.raspitools.beans.VcgencmdBean;
+import de.eidottermihi.raspitools.beans.WlanBean;
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Helper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
@@ -300,10 +302,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 			tempRow.addView(createTextView(interfaceInformation.getIpAdress()));
 		}
 		if (interfaceInformation.getWlanInfo() != null) {
-			tempRow.addView(createTextView(interfaceInformation.getWlanInfo()
-					.getSignalLevel() + ""));
-			tempRow.addView(createTextView(interfaceInformation.getWlanInfo()
-					.getLinkQuality() + ""));
+			final WlanBean wlan = interfaceInformation.getWlanInfo();
+			tempRow.addView(createTextView(
+					helper.formatPercentage(wlan.getSignalLevel()), 3));
+			tempRow.addView(createTextView(
+					helper.formatPercentage(wlan.getLinkQuality()), 3));
+		} else {
+			tempRow.addView(createTextView(" - ", 3));
+			tempRow.addView(createTextView(" - ", 3));
 		}
 		return tempRow;
 	}
@@ -336,8 +342,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private View createTextView(String text) {
+		return createTextView(text, null);
+	}
+
+	private View createTextView(String text, Integer paddingLeft) {
 		final TextView tempText = new TextView(this);
 		tempText.setText(text);
+		if (paddingLeft != null) {
+			float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+					paddingLeft.intValue(), getResources().getDisplayMetrics());
+			tempText.setPadding((int) (pix), 0, 0, 0);
+		}
 		return tempText;
 	}
 

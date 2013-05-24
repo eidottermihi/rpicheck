@@ -79,4 +79,19 @@ public class Helper {
 		return decimalFormat.format(number);
 	}
 
+	/**
+	 * Formats a percentage value (0-100).
+	 * 
+	 * @param percentage
+	 *            the percentage value (0-100).
+	 * @return formatted string "[percentage] %".
+	 */
+	public String formatPercentage(Integer percentage) {
+		if (percentage != null) {
+			return percentage + " %";
+		} else {
+			return " n/a ";
+		}
+	}
+
 }
