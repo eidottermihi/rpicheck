@@ -18,6 +18,8 @@ public class Helper {
 	public static final String SCALE_MHZ = "MHz";
 	public static final String SCALE_GHZ = "GHz";
 
+	private static final String N_A = " n/a ";
+
 	private static final NumberFormat decimalFormat = DecimalFormat
 			.getNumberInstance();
 
@@ -90,7 +92,44 @@ public class Helper {
 		if (percentage != null) {
 			return percentage + " %";
 		} else {
-			return " n/a ";
+			return N_A;
+		}
+	}
+
+	/**
+	 * Formats the wifi-signal. If the number is negative, it is possibly a dBm
+	 * value.
+	 * 
+	 * @param signal
+	 *            the signal (may be null)
+	 * @return the formatted signal
+	 */
+	public String formatWifiSignale(Integer signal) {
+		if (signal != null) {
+			if (signal > 0) {
+				// percent value
+				return formatPercentage(signal);
+			} else {
+				// dBm value
+				return formatDbmValue(signal);
+			}
+		} else {
+			return N_A;
+		}
+	}
+
+	/**
+	 * Formats a dBm value.
+	 * 
+	 * @param signal
+	 *            the wifi signal in dBm
+	 * @return the formatted dBm signal
+	 */
+	public String formatDbmValue(Integer signal) {
+		if (signal != null) {
+			return signal + " dBm";
+		} else {
+			return N_A;
 		}
 	}
 
