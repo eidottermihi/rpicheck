@@ -91,8 +91,8 @@
     <string name="pref_rate_app_summary">Wenn dir RasPi Check gefällt, nimm dir einen Moment Zeit es zu bewerten.</string>
     <string name="pref_version">Version</string>
     <string name="shutdown_type_title">Herunterfahren</string>
-    <string name="halt_success">System Halt Kommando gesendet.</string>
-    <string name="halt_fail">System Halt fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
+    <string name="halt_success">Kommando zum Anhalten gesendet.</string>
+    <string name="halt_fail">Anhalten fehlgeschlagen. Überprüfe dein Netzwerk und Sudo Passwort.</string>
     <string name="validation_msg_name">Name darf nicht leer sein.</string>
     <string name="validation_msg_host">Hostname darf nicht leer sein.</string>
     <string name="validation_msg_user">Username darf nicht leer sein.</string>
@@ -107,19 +107,17 @@
     <string name="transport_exception">Die Verbindung wurde unerwartet geschlossen. Probier es noch einmal.</string>
     <string name="unexpected_exception">Ein unerwarteter Fehler ist aufgetreten. Probier es noch einmal.</string>
     <string name="exception_vcgencmd">Das Programm \'vcgencmd\' konnte auf deinem Pi nicht gefunden werden. Stelle sicher, dass es im Verzeichnis \'/usr/bin\' oder \'/opt/vc/bin\' ist.</string>
-    <string name="weird_exception">Etwas total komisches ist passiert. Bitte wirf einen Blick in das Logfile (sdcard/data/de.eidottermihi.rpicheck).</string>
-
+    <string name="weird_exception">Etwas total komisches ist passiert. Bitte wirf einen Blick in das Logfile.</string>
     <string name="pref_group_log">Log</string>
     <string name="pref_log_title">Log anzeigen</string>
     <string name="pref_log_title_summary">Öffnet den Log dieser App</string>
-    
     <string name="pref_screen_about">Über RasPi Check</string>
     <string name="pref_screen_about_summary">Version, Changelog, Entwickler</string>
     <string name="pref_changelog_title">Changelog anzeigen</string>
     <string name="pref_changelog_title_summary">Öffnet den Changelog dieser App.</string>
-    
     <string name="pref_debug_log_summary">Aktiviert das Debug-Logging.</string>
-    <string name="pref_debug_log_summary_on">Achtung: Log-Datei kann riesig werden.</string>
+    <string name="pref_debug_log_summary_on">Debug-Logging aktiviert.</string>
     <string name="pref_debug_log_summary_off">Debug-Level Logging deaktiviert.</string>
     <string name="pref_debug_log_title">Debug Logging</string>
+
 </resources>

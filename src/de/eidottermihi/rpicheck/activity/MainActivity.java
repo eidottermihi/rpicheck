@@ -300,6 +300,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		tempRow.addView(createTextView(statusText.toString()));
 		if (interfaceInformation.getIpAdress() != null) {
 			tempRow.addView(createTextView(interfaceInformation.getIpAdress()));
+		} else {
+			tempRow.addView(createTextView(" - "));
 		}
 		if (interfaceInformation.getWlanInfo() != null) {
 			final WlanBean wlan = interfaceInformation.getWlanInfo();

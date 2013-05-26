@@ -9,16 +9,10 @@
 	</appender>
 
 	<!-- Create a file appender -->
-	<appender name="infoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="infoLog" class="ch.qos.logback.core.FileAppender">
 		<file>${LOG_DIR}/rpicheck.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-		    <!-- daily rollover -->
-		    <fileNamePattern>${LOG_DIR}/rpicheck.%d{yyyy-MM-dd}.log</fileNamePattern>
-			<!-- 14 days history -->
-			<maxHistory>14</maxHistory>
-		</rollingPolicy>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{24} - %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{0} - %msg%n</pattern>
 		</encoder>
 	</appender>
 	
