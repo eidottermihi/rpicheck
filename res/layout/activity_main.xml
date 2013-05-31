@@ -48,7 +48,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/coreTempLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -73,7 +72,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/armFreqLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -99,7 +97,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/coreFreqLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -124,7 +121,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/coreVoltLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -149,7 +145,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/firmwareLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -186,7 +181,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/startedLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -213,7 +207,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/loadLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
@@ -239,7 +232,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/totalMemLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
@@ -265,7 +257,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/freeMemLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
@@ -291,7 +282,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/distriLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
@@ -317,7 +307,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/cpuSerialLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
@@ -342,7 +331,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/lastUpdateLabel"
-                android:freezesText="true"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>

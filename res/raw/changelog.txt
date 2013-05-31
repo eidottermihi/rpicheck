@@ -19,6 +19,11 @@
     </style>
   </head>
   <body>
+$ 1.3.1
+  % Version 1.3.1
+  _ 2013-05-31
+    * query data will now be saved during app runtime
+    * fixed bug in parsing the IP address
 $ 1.3.0
   % Version 1.3.0
   _ 2013-05-26

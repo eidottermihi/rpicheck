@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.eidottermihi.rpicheck"
-    android:versionCode="11"
+    android:versionCode="12"
     android:versionName="@string/app_version" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,11 +20,11 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="de.eidottermihi.rpicheck.activity.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity

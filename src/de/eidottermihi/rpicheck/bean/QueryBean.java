@@ -12,7 +12,7 @@ import de.eidottermihi.raspitools.beans.ProcessBean;
 import de.eidottermihi.raspitools.beans.VcgencmdBean;
 
 public class QueryBean implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4550202922460044379L;
 
 	private VcgencmdBean vcgencmdInfo;
 	private List<NetworkInterfaceInformation> networkInfo;
@@ -46,6 +46,17 @@ public class QueryBean implements Serializable {
 
 	public Date getLastUpdate() {
 		return lastUpdate;
+	}
+
+	@Override
+	public String toString() {
+		return "QueryBean [vcgencmdInfo=" + vcgencmdInfo + ", networkInfo="
+				+ networkInfo + ", lastUpdate=" + lastUpdate + ", startup="
+				+ startup + ", avgLoad=" + avgLoad + ", totalMem=" + totalMem
+				+ ", freeMem=" + freeMem + ", serialNo=" + serialNo
+				+ ", disks=" + disks + ", distri=" + distri + ", processes="
+				+ processes + ", exception=" + exception + ", errorMessages="
+				+ errorMessages + "]";
 	}
 
 	public void setLastUpdate(Date lastUpdate) {

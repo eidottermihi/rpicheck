@@ -3,13 +3,14 @@ package de.eidottermihi.rpicheck.activity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sheetrock.panda.changelog.ChangeLog;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -70,10 +72,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	protected static final String EXTRA_DEVICE_ID = "device_id";
 
-	public static final String KEY_PREFERENCES_SHOWN = "key_prefs_preferences_shown";
-
-	private static final String QUERY_DATA = "queryData";
 	private static final String CURRENT_DEVICE = "currentDevice";
+	private static final String ALL_DEVICES = "allDevices";
 
 	private static final String TYPE_REBOOT = "reboot";
 	private static final String TYPE_HALT = "halt";
@@ -105,13 +105,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private SharedPreferences sharedPrefs;
 
-	private QueryBean queryData;
-
 	private ShutdownResult shutdownResult;
 
 	private DeviceDbHelper deviceDb;
 
 	private RaspberryDeviceBean currentDevice;
+	private SparseArray<RaspberryDeviceBean> allDevices;
 
 	private Cursor deviceCursor;
 
@@ -139,6 +138,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		LOGGER.debug("onCreate()....");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		// assigning Shared Preferences
@@ -184,77 +184,80 @@ public class MainActivity extends SherlockFragmentActivity implements
 			LoggingHelper.changeLogger(true);
 		}
 
-		// restoring tables
-		if (savedInstanceState != null) {
-			if (savedInstanceState.getSerializable(QUERY_DATA) != null) {
-				LOGGER.debug("Restoring dynamic tables.");
-				queryData = (QueryBean) savedInstanceState
-						.getSerializable(QUERY_DATA);
-				if (queryData.getDisks() != null) {
-					this.updateDiskTable(queryData.getDisks());
-				}
-				if (queryData.getProcesses() != null) {
-					this.updateProcessTable(queryData.getProcesses());
-				}
-				if (queryData.getNetworkInfo() != null) {
-					this.updateNetworkTable(queryData.getNetworkInfo());
-				}
-			}
-			if (savedInstanceState.getSerializable(CURRENT_DEVICE) != null) {
-				LOGGER.debug("Restoring current device.");
-				currentDevice = (RaspberryDeviceBean) savedInstanceState
-						.getSerializable(CURRENT_DEVICE);
-				this.getSupportActionBar().setSelectedNavigationItem(
-						currentDevice.getSpinnerPosition());
-			}
-		}
-
 		// changelog
 		final ChangeLog cl = new ChangeLog(this);
 		if (cl.firstRun())
 			cl.getLogDialog().show();
 	}
 
+	/**
+	 * Reset the view.
+	 */
+	private void resetView() {
+		coreTempText.setText("");
+		armFreqText.setText("");
+		coreFreqText.setText("");
+		coreVoltText.setText("");
+		firmwareText.setText("");
+		uptimeText.setText("");
+		averageLoadText.setText("");
+		totalMemoryText.setText("");
+		freeMemoryText.setText("");
+		distriText.setText("");
+		serialNoText.setText("");
+		lastUpdateText.setText("");
+		// tables
+		updateDiskTable();
+		updateNetworkTable();
+		updateProcessTable();
+	}
+
 	private void updateQueryDataInView() {
-		final List<String> errorMessages = queryData.getErrorMessages();
+		final List<String> errorMessages = currentDevice.getLastQueryData()
+				.getErrorMessages();
 		final String tempScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
 				getString(R.string.pref_temperature_scala_default));
-		coreTempText.setText(helper.formatTemperature(queryData
-				.getVcgencmdInfo().getCpuTemperature(), tempScale));
+		coreTempText.setText(helper.formatTemperature(currentDevice
+				.getLastQueryData().getVcgencmdInfo().getCpuTemperature(),
+				tempScale));
 		final String freqScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_FREQUENCY_UNIT,
 				getString(R.string.pref_frequency_unit_default));
-		armFreqText.setText(helper.formatFrequency(queryData.getVcgencmdInfo()
-				.getArmFrequency(), freqScale));
-		coreFreqText.setText(helper.formatFrequency(queryData.getVcgencmdInfo()
-				.getCoreFrequency(), freqScale));
-		coreVoltText.setText(helper.formatDecimal(queryData.getVcgencmdInfo()
-				.getCoreVolts()));
-		firmwareText.setText(queryData.getVcgencmdInfo().getVersion());
+		armFreqText.setText(helper.formatFrequency(currentDevice
+				.getLastQueryData().getVcgencmdInfo().getArmFrequency(),
+				freqScale));
+		coreFreqText.setText(helper.formatFrequency(currentDevice
+				.getLastQueryData().getVcgencmdInfo().getCoreFrequency(),
+				freqScale));
+		coreVoltText.setText(helper.formatDecimal(currentDevice
+				.getLastQueryData().getVcgencmdInfo().getCoreVolts()));
+		firmwareText.setText(currentDevice.getLastQueryData().getVcgencmdInfo()
+				.getVersion());
 		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(
-				queryData.getLastUpdate()));
+				currentDevice.getLastQueryData().getLastUpdate()));
 		// uptime and average load may contain errors
-		if (queryData.getAvgLoad() != null) {
-			averageLoadText.setText(queryData.getAvgLoad().toString());
+		if (currentDevice.getLastQueryData().getAvgLoad() != null) {
+			averageLoadText.setText(currentDevice.getLastQueryData()
+					.getAvgLoad().toString());
 		}
-		if (queryData.getStartup() != null) {
-			uptimeText.setText(queryData.getStartup());
+		if (currentDevice.getLastQueryData().getStartup() != null) {
+			uptimeText.setText(currentDevice.getLastQueryData().getStartup());
 		}
-		if (queryData.getFreeMem() != null) {
-			freeMemoryText.setText(queryData.getFreeMem()
-					.humanReadableByteCount(false));
+		if (currentDevice.getLastQueryData().getFreeMem() != null) {
+			freeMemoryText.setText(currentDevice.getLastQueryData()
+					.getFreeMem().humanReadableByteCount(false));
 		}
-		if (queryData.getTotalMem() != null) {
-			totalMemoryText.setText(queryData.getTotalMem()
-					.humanReadableByteCount(false));
+		if (currentDevice.getLastQueryData().getTotalMem() != null) {
+			totalMemoryText.setText(currentDevice.getLastQueryData()
+					.getTotalMem().humanReadableByteCount(false));
 		}
-		serialNoText.setText(queryData.getSerialNo());
-		distriText.setText(queryData.getDistri());
+		serialNoText.setText(currentDevice.getLastQueryData().getSerialNo());
+		distriText.setText(currentDevice.getLastQueryData().getDistri());
 		// update tables
-		updateNetworkTable(queryData.getNetworkInfo());
-		updateDiskTable(queryData.getDisks());
-		updateProcessTable(queryData.getProcesses());
+		updateNetworkTable();
+		updateDiskTable();
+		updateProcessTable();
 		this.handleQueryError(errorMessages);
 	}
 
@@ -278,12 +281,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private void updateNetworkTable(
-			List<NetworkInterfaceInformation> networkInfo) {
+	private void updateNetworkTable() {
 		// remove rows except header
 		networkTable.removeViews(1, networkTable.getChildCount() - 1);
-		for (NetworkInterfaceInformation interfaceInformation : networkInfo) {
-			networkTable.addView(createNetworkRow(interfaceInformation));
+		if (currentDevice != null && currentDevice.getLastQueryData() != null) {
+			for (NetworkInterfaceInformation interfaceInformation : currentDevice
+					.getLastQueryData().getNetworkInfo()) {
+				networkTable.addView(createNetworkRow(interfaceInformation));
+			}
+
 		}
 	}
 
@@ -316,11 +322,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return tempRow;
 	}
 
-	private void updateProcessTable(List<ProcessBean> processes) {
+	private void updateProcessTable() {
 		// remove current rows except header row
 		processTable.removeViews(1, processTable.getChildCount() - 1);
-		for (ProcessBean processBean : processes) {
-			processTable.addView(createProcessRow(processBean));
+		if (currentDevice != null && currentDevice.getLastQueryData() != null) {
+			for (ProcessBean processBean : currentDevice.getLastQueryData()
+					.getProcesses()) {
+				processTable.addView(createProcessRow(processBean));
+			}
 		}
 	}
 
@@ -358,12 +367,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return tempText;
 	}
 
-	private void updateDiskTable(List<DiskUsageBean> disks) {
+	private void updateDiskTable() {
 		// remove current rows except header row
 		diskTable.removeViews(1, diskTable.getChildCount() - 1);
-		for (DiskUsageBean diskUsageBean : disks) {
-			// add row to table
-			diskTable.addView(createDiskRow(diskUsageBean));
+		if (currentDevice != null && currentDevice.getLastQueryData() != null) {
+			for (DiskUsageBean diskUsageBean : currentDevice.getLastQueryData()
+					.getDisks()) {
+				// add row to table
+				diskTable.addView(createDiskRow(diskUsageBean));
+			}
 		}
 	}
 
@@ -402,11 +414,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 		refreshableScrollView.setMode(Mode.PULL_FROM_START);
 		// update refresh indicator
 		refreshItem.setActionView(null);
-		if (queryData.getException() == null) {
+		if (currentDevice.getLastQueryData().getException() == null) {
 			// update view data
 			this.updateQueryDataInView();
+			// update entry in allDevices-Map
+			if (allDevices != null) {
+				allDevices.put(this.currentDevice.getId(), this.currentDevice);
+			} else {
+				allDevices = new SparseArray<RaspberryDeviceBean>();
+				allDevices.put(this.currentDevice.getId(), this.currentDevice);
+			}
 		} else {
-			this.handleQueryException(queryData.getException());
+			this.handleQueryException(currentDevice.getLastQueryData()
+					.getException());
 		}
 	}
 
@@ -570,6 +590,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void deleteCurrentDevice() {
 		LOGGER.info("Deleting pi {}.", currentDevice.getName());
 		deviceDb.delete(currentDevice.getId());
+		if (allDevices != null) {
+			allDevices.delete(currentDevice.getId());
+		}
 	}
 
 	private void doQuery(boolean initByPullToRefresh) {
@@ -671,6 +694,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					(String) params[2], Integer.parseInt(params[3]));
 			boolean hideRootProcesses = Boolean.parseBoolean(params[4]);
 			QueryBean bean = new QueryBean();
+			final long msStart = new Date().getTime();
 			bean.setErrorMessages(new ArrayList<String>());
 			try {
 				publishProgress(5);
@@ -716,18 +740,20 @@ public class MainActivity extends SherlockFragmentActivity implements
 				for (String error : bean.getErrorMessages()) {
 					LOGGER.error(error);
 				}
-				return bean;
 			} catch (RaspiQueryException e) {
 				LOGGER.error("Query failed: " + e.getMessage());
 				bean.setException(e);
-				return bean;
 			}
+			final long msFinish = new Date().getTime();
+			final long durationInMs = msFinish - msStart;
+			LOGGER.debug("Query time: {} ms.", durationInMs);
+			return bean;
 		}
 
 		@Override
 		protected void onPostExecute(QueryBean result) {
 			// update query data
-			queryData = result;
+			currentDevice.setLastQueryData(result);
 			// inform handler
 			mHandler.post(mUpdateResults);
 		}
@@ -743,11 +769,39 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		LOGGER.trace("Spinner item selected: pos=" + itemPosition + ", id="
+		LOGGER.debug("Spinner item selected: pos=" + itemPosition + ", id="
 				+ itemId);
 		// get device with id
 		RaspberryDeviceBean read = deviceDb.read(itemId);
-		this.currentDevice = read;
+		if (currentDevice == null) {
+			this.currentDevice = read;
+		} else {
+			// set current device only when device has changed (query data get
+			// lost otherwise)
+			if (read.getId() != this.currentDevice.getId()) {
+				LOGGER.debug("Switch from device id {} to device id {}.",
+						this.currentDevice.getId(), read.getId());
+				this.currentDevice = read;
+				// switched to other device
+				// check if last query data for new device is present
+				boolean lastQueryPresent = false;
+				if (allDevices != null) {
+					RaspberryDeviceBean deviceBean = allDevices
+							.get(this.currentDevice.getId());
+					if (deviceBean != null) {
+						if (deviceBean.getLastQueryData() != null) {
+							this.currentDevice.setLastQueryData(deviceBean
+									.getLastQueryData());
+							this.updateQueryDataInView();
+							lastQueryPresent = true;
+						}
+					}
+				}
+				if (!lastQueryPresent) {
+					this.resetView();
+				}
+			}
+		}
 		if (currentDevice != null) {
 			this.currentDevice.setSpinnerPosition(itemPosition);
 		}
@@ -771,16 +825,50 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		// saving process and disk table
-		if (queryData != null) {
-			LOGGER.trace("Saving instance state (query data)");
-			outState.putSerializable(QUERY_DATA, queryData);
-		}
+		// saving query data of current device
 		if (currentDevice != null) {
-			LOGGER.trace("Saving instance state (current device)");
+			LOGGER.debug("Saving instance state (current device)");
 			outState.putSerializable(CURRENT_DEVICE, currentDevice);
+			if (allDevices == null) {
+				LOGGER.debug("Saving new instance of all devices.");
+				allDevices = new SparseArray<RaspberryDeviceBean>();
+				allDevices.put(currentDevice.getId(), currentDevice);
+			} else {
+				LOGGER.debug("Adding current device to all devices.");
+				allDevices.put(currentDevice.getId(), currentDevice);
+			}
 		}
+		if (allDevices != null) {
+			outState.putSparseParcelableArray(ALL_DEVICES, allDevices);
+		}
+		outState.putString("bug:fix", "no empty outstate");
 		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		if (savedInstanceState.getSerializable(CURRENT_DEVICE) != null) {
+			LOGGER.debug("Restoring device..");
+			currentDevice = (RaspberryDeviceBean) savedInstanceState
+					.getSerializable(CURRENT_DEVICE);
+			// restoring tables
+			LOGGER.debug("Setting spinner to show last Pi.");
+			this.getSupportActionBar().setSelectedNavigationItem(
+					currentDevice.getSpinnerPosition());
+			if (currentDevice.getLastQueryData() != null) {
+				LOGGER.debug("Restoring query data..");
+				this.updateQueryDataInView();
+			} else {
+				LOGGER.debug("No last query data present.");
+				this.resetView();
+			}
+		}
+		if (savedInstanceState.getSparseParcelableArray(ALL_DEVICES) != null) {
+			LOGGER.debug("Restoring all devices.");
+			allDevices = savedInstanceState
+					.getSparseParcelableArray(ALL_DEVICES);
+		}
 	}
 
 	@Override

@@ -3,8 +3,13 @@ package de.eidottermihi.rpicheck.db;
 import java.io.Serializable;
 import java.util.Date;
 
-public class RaspberryDeviceBean implements Serializable {
-	private static final long serialVersionUID = 1L;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import de.eidottermihi.rpicheck.bean.QueryBean;
+
+public class RaspberryDeviceBean implements Serializable, Parcelable {
+	private static final long serialVersionUID = -7054070923663258253L;
 
 	private int id;
 	private String name;
@@ -17,8 +22,9 @@ public class RaspberryDeviceBean implements Serializable {
 	private Date createdAt;
 	private Date modifiedAt;
 	private String sudoPass;
-	
+
 	private int spinnerPosition;
+	private QueryBean lastQueryData;
 
 	public String getHost() {
 		return host;
@@ -114,6 +120,33 @@ public class RaspberryDeviceBean implements Serializable {
 
 	public void setSpinnerPosition(int spinnerPosition) {
 		this.spinnerPosition = spinnerPosition;
+	}
+
+	public QueryBean getLastQueryData() {
+		return lastQueryData;
+	}
+
+	public void setLastQueryData(QueryBean lastQueryData) {
+		this.lastQueryData = lastQueryData;
+	}
+
+	@Override
+	public String toString() {
+		return "RaspberryDeviceBean [id=" + id + ", name=" + name + ", host="
+				+ host + ", user=" + user + ", pass=" + pass + ", port=" + port
+				+ ", description=" + description + ", serial=" + serial
+				+ ", createdAt=" + createdAt + ", modifiedAt=" + modifiedAt
+				+ ", sudoPass=" + sudoPass + ", spinnerPosition="
+				+ spinnerPosition + ", lastQueryData=" + lastQueryData + "]";
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
 	}
 
 }
