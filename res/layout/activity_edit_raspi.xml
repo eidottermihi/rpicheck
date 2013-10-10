@@ -145,7 +145,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/labelSshPort"
-                    android:layout_toLeftOf="@+id/labelSudoPass"
                     android:inputType="number"
                     android:maxLines="1"
                     android:minEms="3"

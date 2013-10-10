@@ -22,6 +22,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 
 /**
@@ -35,7 +36,8 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 
 	private static final String LOG_LOCATION = Environment
 			.getExternalStorageDirectory().getPath()
-			+ "/data/de.eidottermihi.rpicheck/rpicheck.log";
+			+ Constants.SD_LOCATION
+			+ "rpicheck.log";
 	/** Preference keys. */
 	public static final String KEY_PREF_TEMPERATURE_SCALE = "pref_temperature_scala";
 	public static final String KEY_PREF_QUERY_HIDE_ROOT_PROCESSES = "pref_query_hide_root";

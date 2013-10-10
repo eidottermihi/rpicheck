@@ -1,10 +1,11 @@
 package de.eidottermihi.rpicheck.activity;
 
+import java.io.File;
+import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -53,6 +55,7 @@ import de.eidottermihi.raspitools.beans.UptimeBean;
 import de.eidottermihi.raspitools.beans.VcgencmdBean;
 import de.eidottermihi.raspitools.beans.WlanBean;
 import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Helper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.bean.QueryBean;
@@ -135,6 +138,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	};
 
 	private MenuItem refreshItem;
+
+	static {
+		Security.insertProviderAt(
+				new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -619,6 +627,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// reading process preference
 			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
+			// check if there's a private key file on sd card
+			String piName = currentDevice.getName();
+			final String storageDirectoryPath = Environment
+					.getExternalStorageDirectory().getPath()
+					+ Constants.SD_LOCATION;
+			final File privateKey = new File(storageDirectoryPath + piName
+					+ ".pk");
+			String keyPath = null;
+			if (privateKey.exists()) {
+				LOGGER.info("Found private key file for {}: {}", piName,
+						privateKey.getPath());
+				keyPath = privateKey.getPath();
+			} else {
+				LOGGER.info("No private key found: {}", privateKey.getPath());
+			}
 			// get connection from current device in dropdown
 			if (host == null) {
 				Toast.makeText(this, R.string.no_hostname_specified,
@@ -636,7 +659,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 				// execute query
 				new SSHQueryTask().execute(host, user, pass, port,
-						hideRoot.toString());
+						hideRoot.toString(), keyPath);
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
@@ -693,12 +716,22 @@ public class MainActivity extends SherlockFragmentActivity implements
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
 					(String) params[2], Integer.parseInt(params[3]));
 			boolean hideRootProcesses = Boolean.parseBoolean(params[4]);
+			final String privateKeyPath = params[5];
 			QueryBean bean = new QueryBean();
 			final long msStart = new Date().getTime();
 			bean.setErrorMessages(new ArrayList<String>());
 			try {
 				publishProgress(5);
-				raspiQuery.connect();
+				if (privateKeyPath != null) {
+					File f = new File(privateKeyPath);
+					if (f.exists()) {
+						raspiQuery.connectWithPubKeyAuth(f.getPath());
+					} else {
+						raspiQuery.connect();
+					}
+				} else {
+					raspiQuery.connect();
+				}
 				publishProgress(20);
 				final VcgencmdBean vcgencmdBean = raspiQuery.queryVcgencmd();
 				publishProgress(50);
