@@ -23,5 +23,10 @@
         <item>Reboot</item>
         <item>Halt</item>
     </string-array>
+    <string-array name="auth_methods">
+        <item>password</item>
+        <item>private key</item>
+        <item>private key w. password</item>
+    </string-array>
 
 </resources>

@@ -5,5 +5,10 @@
         <item>Neustarten</item>
         <item>System anhalten</item>
     </string-array>
+    <string-array name="auth_methods">
+        <item>Passwort</item>
+        <item>Private key</item>
+        <item>Private key m. Passwort</item>
+    </string-array>
 
 </resources>

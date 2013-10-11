@@ -127,5 +127,7 @@
     <string name="pref_debug_log_summary_on">Debug logging enabled.</string>
     <string name="pref_debug_log_summary_off">Debug level logging disabled.</string>
     <string name="pref_debug_log_title">Debug logging</string>
+    <string name="new_raspi_continue">Next</string>
+    <string name="new_raspi_auth_method">Authentification</string>
 
 </resources>

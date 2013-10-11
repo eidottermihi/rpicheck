@@ -88,7 +88,7 @@ public class EditRaspiActivity extends SherlockActivity {
 
 	public void onSaveButtonClick(View view) {
 		switch (view.getId()) {
-		case R.id.new_raspi_save_button:
+		case R.id.new_raspi_continue_button:
 			updateRaspi();
 			break;
 		}

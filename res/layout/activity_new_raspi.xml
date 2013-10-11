@@ -106,26 +106,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp" >
-
-            <EditText
-                android:id="@+id/edit_raspi_pass_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/labelPass"
-                android:ems="10"
-                android:hint="@string/raspi_device_password_hint"
-                android:inputType="text|textPassword"
-                android:maxLines="1"
-                android:paddingTop="8dp" />
-
-            <TextView
-                android:id="@+id/labelPass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingRight="8dp"
-                android:text="@string/raspi_device_password_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -139,26 +119,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp" >
-
-                <EditText
-                    android:id="@+id/edit_raspi_ssh_port_editText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/labelSshPort"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:minEms="3"
-                    android:paddingLeft="8dp"
-                    android:text="@string/default_ssh_port" />
-
-                <TextView
-                    android:id="@+id/labelSshPort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:paddingRight="8dp"
-                    android:text="@string/ssh_port"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -167,26 +127,6 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/relativeLayoutPort"
                 android:paddingTop="8dp" >
-
-                <TextView
-                    android:id="@+id/labelSudoPass"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/sudo_password"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                <EditText
-                    android:id="@+id/edit_raspi_sudoPass_editText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/labelSudoPass"
-                    android:ems="10"
-                    android:hint="@string/raspi_device_sudo_password_hint"
-                    android:inputType="text|textPassword"
-                    android:maxLines="1"
-                    android:paddingLeft="8dp" />
 
             </RelativeLayout>
         </RelativeLayout>

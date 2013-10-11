@@ -44,6 +44,14 @@
                 android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
         </activity>
         <activity
+            android:name="de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity"
+            android:label="@string/title_activity_new_raspi"
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.NewRaspiActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.eidottermihi.rpicheck.activity.NewRaspiActivity" />
+        </activity>
+        <activity
             android:name="de.eidottermihi.rpicheck.activity.EditRaspiActivity"
             android:label="@string/activity_title_edit_raspi"
             android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
