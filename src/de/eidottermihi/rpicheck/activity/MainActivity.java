@@ -45,27 +45,27 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
-import de.eidottermihi.raspitools.RaspiQuery;
-import de.eidottermihi.raspitools.RaspiQueryException;
-import de.eidottermihi.raspitools.beans.DiskUsageBean;
-import de.eidottermihi.raspitools.beans.NetworkInterfaceInformation;
-import de.eidottermihi.raspitools.beans.ProcessBean;
-import de.eidottermihi.raspitools.beans.RaspiMemoryBean;
-import de.eidottermihi.raspitools.beans.UptimeBean;
-import de.eidottermihi.raspitools.beans.VcgencmdBean;
-import de.eidottermihi.raspitools.beans.WlanBean;
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Helper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
-import de.eidottermihi.rpicheck.bean.QueryBean;
-import de.eidottermihi.rpicheck.bean.ShutdownResult;
+import de.eidottermihi.rpicheck.beans.DiskUsageBean;
+import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
+import de.eidottermihi.rpicheck.beans.ProcessBean;
+import de.eidottermihi.rpicheck.beans.QueryBean;
+import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.beans.ShutdownResult;
+import de.eidottermihi.rpicheck.beans.UptimeBean;
+import de.eidottermihi.rpicheck.beans.VcgencmdBean;
+import de.eidottermihi.rpicheck.beans.WlanBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.QueryErrorMessagesDialog;
 import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
+import de.eidottermihi.rpicheck.ssh.RaspiQuery;
+import de.eidottermihi.rpicheck.ssh.RaspiQueryException;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,

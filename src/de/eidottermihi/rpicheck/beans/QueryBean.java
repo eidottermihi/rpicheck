@@ -1,15 +1,10 @@
-package de.eidottermihi.rpicheck.bean;
+package de.eidottermihi.rpicheck.beans;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import de.eidottermihi.raspitools.RaspiQueryException;
-import de.eidottermihi.raspitools.beans.DiskUsageBean;
-import de.eidottermihi.raspitools.beans.MemoryBean;
-import de.eidottermihi.raspitools.beans.NetworkInterfaceInformation;
-import de.eidottermihi.raspitools.beans.ProcessBean;
-import de.eidottermihi.raspitools.beans.VcgencmdBean;
+import de.eidottermihi.rpicheck.ssh.RaspiQueryException;
 
 public class QueryBean implements Serializable {
 	private static final long serialVersionUID = 4550202922460044379L;

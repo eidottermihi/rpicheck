@@ -6,7 +6,7 @@ import java.util.Date;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import de.eidottermihi.rpicheck.bean.QueryBean;
+import de.eidottermihi.rpicheck.beans.QueryBean;
 
 public class RaspberryDeviceBean implements Serializable, Parcelable {
 	private static final long serialVersionUID = -7054070923663258253L;

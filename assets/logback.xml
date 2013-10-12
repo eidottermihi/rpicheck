@@ -22,9 +22,6 @@
 	<logger name="de.eidottermihi.rpicheck" level="INFO">
 	    <appender-ref ref="infoLog"/>
 	</logger>
-	<logger name="de.eidottermihi.raspitools" level="INFO">
-	    <appender-ref ref="infoLog"/>
-	</logger>
 
 	<root level="TRACE">
 		<appender-ref ref="logcat" />

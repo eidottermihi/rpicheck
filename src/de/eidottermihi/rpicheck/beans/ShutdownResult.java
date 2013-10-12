@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck.bean;
+package de.eidottermihi.rpicheck.beans;
 
 /**
  * Capsules the result of a Reboot/Halt-ASyncTask.
