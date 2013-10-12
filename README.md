@@ -16,4 +16,5 @@ Please report bugs here: https://github.com/eidottermihi/rpicheck/issues
 Contributing
 ------------
 Feel free to contribute!
+Needed android librarys: ActionBarSherlock, Android-PullToRefresh, Android File Dialog https://code.google.com/p/android-file-dialog/
 
