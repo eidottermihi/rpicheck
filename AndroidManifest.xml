@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.eidottermihi.rpicheck"
-    android:versionCode="12"
+    android:versionCode="13"
     android:versionName="@string/app_version" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -58,6 +58,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.lamerman.FileDialog"
+            android:label="@string/title_filedialog" >
         </activity>
     </application>
 

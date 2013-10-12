@@ -6,6 +6,8 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,7 +17,7 @@ import android.provider.BaseColumns;
 
 public class DeviceDbHelper extends SQLiteOpenHelper {
 	/** Current database version. */
-	private static final int DATABASE_VERSION = 7;
+	private static final int DATABASE_VERSION = 8;
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DeviceDbHelper.class);
 	private static final String DATABASE_NAME = "RASPIQUERY";
@@ -31,6 +33,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	private static final String COLUMN_CREATED_AT = "created_at";
 	private static final String COLUMN_MODIFIED_AT = "modified_at";
 	private static final String COLUMN_SUDOPW = "sudo_passwd";
+	private static final String COLUMN_AUTH_METHOD = "auth_method";
+	private static final String COLUMN_KEYFILE_PATH = "keyfile_path";
+	private static final String COLUMN_KEYFILE_PASS = "keyfile_pass";
 	private static final String COLUMN_SERIAL = "serial";
 	private static final String COLUMN_QUERY_TIME = "time";
 	private static final String COLUMN_QUERY_STATUS = "status";
@@ -54,7 +59,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			+ " TEXT, " + COLUMN_USER + " TEXT," + COLUMN_PASSWD + " TEXT, "
 			+ COLUMN_SUDOPW + " TEXT, " + COLUMN_SSHPORT + " INTEGER, "
 			+ COLUMN_CREATED_AT + " INTEGER, " + COLUMN_MODIFIED_AT
-			+ " INTEGER, " + COLUMN_SERIAL + " TEXT)";
+			+ " INTEGER, " + COLUMN_SERIAL + " TEXT, " + COLUMN_AUTH_METHOD
+			+ " TEXT NOT NULL, " + COLUMN_KEYFILE_PATH + " TEXT, "
+			+ COLUMN_KEYFILE_PASS + " TEXT)";
 
 	private static final String QUERY_TABLE_CREATE = "CREATE TABLE "
 			+ QUERIES_TABLE_NAME + " (" + COLUMN_ID
@@ -85,18 +92,46 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		LOGGER.info("Upgrading database from version " + oldVersion + " to "
 				+ newVersion);
-		if (oldVersion == 6 && newVersion >= 7) {
-			LOGGER.debug("Upgrading database from version 6 to newer version: adding sudo password column to device table.");
-			// adding sudo pw field in device table
-			db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
-					+ COLUMN_SUDOPW + " TEXT");
-		} else {
+		boolean migrationAvailable = false;
+		if (oldVersion == 6 && newVersion == 7) {
+			upgradeV6ToV7(db);
+			migrationAvailable = true;
+		}
+		if (oldVersion == 6 && newVersion == 8) {
+			upgradeV6ToV7(db);
+			upgradeV7ToV8(db);
+			migrationAvailable = true;
+		}
+		if (oldVersion == 7 && newVersion == 8) {
+			upgradeV7ToV8(db);
+			migrationAvailable = true;
+		}
+		if (!migrationAvailable) {
 			// dropping all tables (data will be lost *sad* )
+			LOGGER.warn("No migration for database upgrade from version {} to version {} available. Setting up whole new database, all current data will be lost, sorry!");
 			db.execSQL("DROP TABLE " + DEVICES_TABLE_NAME);
 			db.execSQL("DROP TABLE " + QUERIES_TABLE_NAME);
 			// run initial setup
 			this.onCreate(db);
 		}
+	}
+
+	private void upgradeV7ToV8(SQLiteDatabase db) {
+		LOGGER.info("Upgrading database from version 7 to version 8: adding auth method, key file path and key file passphrase to device table.");
+		db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
+				+ COLUMN_AUTH_METHOD + " TEXT NOT NULL DEFAULT '"
+				+ NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0] + "'");
+		db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
+				+ COLUMN_KEYFILE_PATH + " TEXT");
+		db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
+				+ COLUMN_KEYFILE_PASS + " TEXT");
+	}
+
+	private void upgradeV6ToV7(SQLiteDatabase db) {
+		LOGGER.debug("Upgrading database from version 6 to version 7: adding sudo password column to device table.");
+		// adding sudo pw field in device table
+		db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
+				+ COLUMN_SUDOPW + " TEXT");
 	}
 
 	/**
@@ -125,16 +160,30 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	 * @return a {@link RaspberryDeviceBean}
 	 */
 	public RaspberryDeviceBean create(String name, String host, String user,
-			String pass, int sshPort, String description, String sudoPass) {
+			String pass, int sshPort, String description, String sudoPass,
+			String authMethod, String keyFilePath, String keyFilePass) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		// _id AUTOINCREMENT
 		values.put(COLUMN_NAME, name);
 		values.put(COLUMN_HOST, host);
 		values.put(COLUMN_USER, user);
-		values.put(COLUMN_PASSWD, pass);
 		values.put(COLUMN_SSHPORT, sshPort);
 		values.put(COLUMN_SUDOPW, sudoPass);
+		values.put(COLUMN_AUTH_METHOD, authMethod);
+		if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+			// insert only ssh password
+			values.put(COLUMN_PASSWD, pass);
+		} else if (authMethod
+				.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+			// insert only location of keyfile
+			values.put(COLUMN_KEYFILE_PATH, keyFilePath);
+		} else if (authMethod
+				.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+			// insert keyfile path and password
+			values.put(COLUMN_KEYFILE_PATH, keyFilePath);
+			values.put(COLUMN_KEYFILE_PASS, keyFilePass);
+		}
 
 		// created: current timestamp
 		Long timestamp = Calendar.getInstance().getTimeInMillis();
@@ -158,8 +207,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		Cursor cursor = db.query(DEVICES_TABLE_NAME, new String[] { COLUMN_ID,
 				COLUMN_HOST, COLUMN_USER, COLUMN_PASSWD, COLUMN_SSHPORT,
 				COLUMN_CREATED_AT, COLUMN_MODIFIED_AT, COLUMN_SERIAL,
-				COLUMN_DESCRIPTION, COLUMN_NAME, COLUMN_SUDOPW }, COLUMN_ID
-				+ "=" + id, null, null, null, null, null);
+				COLUMN_DESCRIPTION, COLUMN_NAME, COLUMN_SUDOPW,
+				COLUMN_AUTH_METHOD, COLUMN_KEYFILE_PATH, COLUMN_KEYFILE_PASS },
+				COLUMN_ID + "=" + id, null, null, null, null, null);
 		if (cursor.moveToFirst()) {
 			cursor.moveToFirst();
 			bean.setId(cursor.getInt(0));
@@ -173,6 +223,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			bean.setDescription(cursor.getString(8));
 			bean.setName(cursor.getString(9));
 			bean.setSudoPass(cursor.getString(10));
+			bean.setAuthMethod(cursor.getString(11));
+			bean.setKeyfilePath(cursor.getString(12));
+			bean.setKeyfilePass(cursor.getString(13));
 			cursor.close();
 			db.close();
 			return bean;
@@ -222,6 +275,10 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		values.put(COLUMN_DESCRIPTION, device.getDescription());
 		values.put(COLUMN_SERIAL, device.getSerial());
 		values.put(COLUMN_SUDOPW, device.getSudoPass());
+		values.put(COLUMN_AUTH_METHOD, device.getAuthMethod());
+		values.put(COLUMN_KEYFILE_PATH, device.getKeyfilePath());
+		values.put(COLUMN_KEYFILE_PASS, device.getKeyfilePass());
+
 		// modified: current timestamp
 		Long timestamp = Calendar.getInstance().getTimeInMillis();
 		values.put(COLUMN_MODIFIED_AT, timestamp);

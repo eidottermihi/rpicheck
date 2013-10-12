@@ -21,7 +21,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -46,7 +45,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import de.eidottermihi.rpicheck.R;
-import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Helper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.beans.DiskUsageBean;
@@ -622,44 +620,88 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// get connection settings from shared preferences
 			String host = currentDevice.getHost();
 			String user = currentDevice.getUser();
-			String pass = currentDevice.getPass();
 			String port = currentDevice.getPort() + "";
+			String pass = null;
 			// reading process preference
 			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
-			// check if there's a private key file on sd card
-			String piName = currentDevice.getName();
-			final String storageDirectoryPath = Environment
-					.getExternalStorageDirectory().getPath()
-					+ Constants.SD_LOCATION;
-			final File privateKey = new File(storageDirectoryPath + piName
-					+ ".pk");
 			String keyPath = null;
-			if (privateKey.exists()) {
-				LOGGER.info("Found private key file for {}: {}", piName,
-						privateKey.getPath());
-				keyPath = privateKey.getPath();
-			} else {
-				LOGGER.info("No private key found: {}", privateKey.getPath());
+			String keyPass = null;
+			boolean canConnect = false;
+			// check authentification method
+			final String authMethod = currentDevice.getAuthMethod();
+			if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+				// only ssh password
+				pass = currentDevice.getPass();
+				if (pass != null) {
+					canConnect = true;
+				} else {
+					Toast.makeText(this, R.string.no_password_specified,
+							Toast.LENGTH_LONG);
+				}
+			} else if (authMethod
+					.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+				// keyfile must be present
+				final String keyfilePath = currentDevice.getKeyfilePath();
+				if (keyfilePath != null) {
+					final File privateKey = new File(keyfilePath);
+					if (privateKey.exists()) {
+						keyPath = keyfilePath;
+						canConnect = true;
+					} else {
+						Toast.makeText(this,
+								"Cannot find keyfile at location: "
+										+ keyfilePath, Toast.LENGTH_LONG);
+					}
+				} else {
+					Toast.makeText(this, "No keyfile specified!",
+							Toast.LENGTH_LONG);
+				}
+			} else if (authMethod
+					.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+				// keyfile and keypass must be present
+				final String keyfilePath = currentDevice.getKeyfilePath();
+				if (keyfilePath != null) {
+					final File privateKey = new File(keyfilePath);
+					if (privateKey.exists()) {
+						keyPath = keyfilePath;
+						final String keyfilePass = currentDevice
+								.getKeyfilePass();
+						if (keyfilePass != null) {
+							canConnect = true;
+							keyPass = keyfilePass;
+						} else {
+							Toast.makeText(this,
+									"No private key passphrase specified!",
+									Toast.LENGTH_LONG);
+						}
+					} else {
+						Toast.makeText(this,
+								"Cannot find keyfile at location: "
+										+ keyfilePath, Toast.LENGTH_LONG);
+					}
+				} else {
+					Toast.makeText(this, "No keyfile specified!",
+							Toast.LENGTH_LONG);
+				}
 			}
-			// get connection from current device in dropdown
 			if (host == null) {
 				Toast.makeText(this, R.string.no_hostname_specified,
 						Toast.LENGTH_LONG);
+				canConnect = false;
 			} else if (user == null) {
 				Toast.makeText(this, R.string.no_username_specified,
 						Toast.LENGTH_LONG);
-			} else if (pass == null) {
-				Toast.makeText(this, R.string.no_password_specified,
-						Toast.LENGTH_LONG);
-			} else {
+				canConnect = false;
+			}
+			if (canConnect) {
 				// disable pullToRefresh (if refresh initiated by action bar)
 				if (!initByPullToRefresh) {
 					refreshableScrollView.setMode(Mode.DISABLED);
 				}
 				// execute query
 				new SSHQueryTask().execute(host, user, pass, port,
-						hideRoot.toString(), keyPath);
+						hideRoot.toString(), keyPath, keyPass);
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
@@ -677,14 +719,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 		 */
 		@Override
 		protected ShutdownResult doInBackground(String... params) {
+			// TODO refactor (auth methods!)
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
-					(String) params[2], Integer.parseInt(params[3]));
+					Integer.parseInt(params[3]));
+			final String pass = params[2];
 			final String sudoPass = params[4];
 			final String type = params[5];
 			ShutdownResult result = new ShutdownResult();
 			result.setType(type);
 			try {
-				raspiQuery.connect();
+				raspiQuery.connect(pass);
 				if (type.equals(TYPE_REBOOT)) {
 					raspiQuery.sendRebootSignal(sudoPass);
 				} else if (type.equals(TYPE_HALT)) {
@@ -714,9 +758,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		protected QueryBean doInBackground(String... params) {
 			// create and do query
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
-					(String) params[2], Integer.parseInt(params[3]));
+					Integer.parseInt(params[3]));
+			final String pass = params[2];
 			boolean hideRootProcesses = Boolean.parseBoolean(params[4]);
 			final String privateKeyPath = params[5];
+			final String privateKeyPass = params[6];
 			QueryBean bean = new QueryBean();
 			final long msStart = new Date().getTime();
 			bean.setErrorMessages(new ArrayList<String>());
@@ -724,13 +770,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 				publishProgress(5);
 				if (privateKeyPath != null) {
 					File f = new File(privateKeyPath);
-					if (f.exists()) {
+					if (privateKeyPass == null) {
+						// connect with private key only
 						raspiQuery.connectWithPubKeyAuth(f.getPath());
 					} else {
-						raspiQuery.connect();
+						// connect with key and passphrase
+						raspiQuery.connectWithPubKeyAuthAndPassphrase(
+								f.getPath(), privateKeyPass);
 					}
 				} else {
-					raspiQuery.connect();
+					raspiQuery.connect(pass);
 				}
 				publishProgress(20);
 				final VcgencmdBean vcgencmdBean = raspiQuery.queryVcgencmd();

@@ -80,7 +80,6 @@ public class RaspiQuery {
 	private SSHClient client;
 	private String hostname;
 	private String username;
-	private String password;
 	private int port = DEFAULT_SSH_PORT;
 
 	/**
@@ -95,19 +94,15 @@ public class RaspiQuery {
 	 * @param port
 	 *            ssh port to use (if null, default will be used)
 	 */
-	public RaspiQuery(final String host, final String user, final String pass,
-			final Integer port) {
+	public RaspiQuery(final String host, final String user, final Integer port) {
 		if (StringUtils.isBlank(host)) {
 			throw new IllegalArgumentException("hostname should not be blank.");
 		} else if (StringUtils.isBlank(user)) {
 			throw new IllegalArgumentException("username should not be blank.");
-		} else if (StringUtils.isBlank(pass)) {
-			throw new IllegalArgumentException("password should not be null.");
 		} else {
 			LOGGER.info("New RaspiQuery for host: {}", host);
 			this.hostname = host;
 			this.username = user;
-			this.password = pass;
 			if (port != null) {
 				this.port = port;
 			}
@@ -1171,10 +1166,12 @@ public class RaspiQuery {
 	/**
 	 * Establishes a ssh connection to a raspberry pi via ssh.
 	 * 
+	 * @param password
+	 *            the ssh password
 	 * @throws RaspiQueryException
 	 *             - if connection, authentication or transport fails
 	 */
-	public final void connect() throws RaspiQueryException {
+	public final void connect(String password) throws RaspiQueryException {
 		LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
 		client = new SSHClient(new AndroidConfig());
 		LOGGER.info("Using no host key verification.");
@@ -1198,7 +1195,7 @@ public class RaspiQuery {
 	/**
 	 * Establishes a ssh connection with public key authentification.
 	 * 
-	 * @param filesystem
+	 * @param keyfilePath
 	 *            path to the private key file in PKCS11/OpenSSH format
 	 * @throws RaspiQueryException
 	 */
@@ -1217,6 +1214,41 @@ public class RaspiQuery {
 		}
 		try {
 			final KeyProvider keyProvider = client.loadKeys(keyfilePath);
+			client.authPublickey(username, keyProvider);
+		} catch (UserAuthException e) {
+			LOGGER.info("Authentification failed.", e);
+			throw RaspiQueryException.createAuthenticationFailure(hostname,
+					username, e);
+		} catch (TransportException e) {
+			throw RaspiQueryException.createTransportFailure(hostname, e);
+		} catch (IOException e) {
+			throw RaspiQueryException.createIOException(e);
+		}
+	}
+
+	/**
+	 * Establishes a ssh connection with public key authentification.
+	 * 
+	 * @param path
+	 *            path to the private key file in PKCS11/OpenSSH format
+	 * @throws RaspiQueryException
+	 */
+	public void connectWithPubKeyAuthAndPassphrase(String path,
+			String privateKeyPass) throws RaspiQueryException {
+		LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
+		client = new SSHClient(new AndroidConfig());
+		LOGGER.info("Using no host key verification.");
+		client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
+		LOGGER.info("Using private/public key authentification with passphrase.");
+		try {
+			client.connect(hostname, port);
+		} catch (IOException e) {
+			throw RaspiQueryException
+					.createConnectionFailure(hostname, port, e);
+		}
+		try {
+			final KeyProvider keyProvider = client.loadKeys(path,
+					privateKeyPass.toCharArray());
 			client.authPublickey(username, keyProvider);
 		} catch (UserAuthException e) {
 			LOGGER.info("Authentification failed.", e);

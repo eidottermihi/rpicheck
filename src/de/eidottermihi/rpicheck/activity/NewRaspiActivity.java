@@ -1,6 +1,5 @@
 package de.eidottermihi.rpicheck.activity;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,52 +8,44 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
-import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 
 public class NewRaspiActivity extends SherlockActivity {
+	public static final String PI_HOST = "PI_HOST";
+	public static final String PI_NAME = "PI_NAME";
+	public static final String PI_USER = "PI_USER";
+	public static final String PI_DESC = "PI_DESC";
+	public static final String PI_BUNDLE = "PI_BUNDLE";
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NewRaspiActivity.class);
 	private EditText editTextName;
 	private EditText editTextHost;
 	private EditText editTextUser;
-	private EditText editTextPass;
-	private EditText editTextSshPortOpt;
 	private EditText editTextDescription;
-	private EditText editTextSudoPw;
 
 	private Validation validator = new Validation();
-
-	private DeviceDbHelper deviceDb;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_edit_raspi);
+		setContentView(R.layout.activity_new_raspi);
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// assigning view elements to fields
-		// assigning view elements to fields
 		editTextName = (EditText) findViewById(R.id.edit_raspi_name_editText);
 		editTextHost = (EditText) findViewById(R.id.edit_raspi_host_editText);
 		editTextUser = (EditText) findViewById(R.id.edit_raspi_user_editText);
-		editTextPass = (EditText) findViewById(R.id.edit_raspi_pass_editText);
-		editTextSshPortOpt = (EditText) findViewById(R.id.edit_raspi_ssh_port_editText);
 		editTextDescription = (EditText) findViewById(R.id.edit_raspi_desc_editText);
-		editTextSudoPw = (EditText) findViewById(R.id.edit_raspi_sudoPass_editText);
 		// Show information text
 		final View text = findViewById(R.id.new_raspi_text);
 		text.setVisibility(View.VISIBLE);
 
-		// init sql db
-		deviceDb = new DeviceDbHelper(this);
 	}
 
 	@Override
@@ -77,47 +68,32 @@ public class NewRaspiActivity extends SherlockActivity {
 	public void onSaveButtonClick(View view) {
 		switch (view.getId()) {
 		case R.id.new_raspi_continue_button:
-			saveRaspi();
+			continueToAuthMethodActivity();
 			break;
 		}
 	}
 
-	private void saveRaspi() {
-		boolean validationSuccessful = validator.validatePiData(this,
-				editTextName, editTextHost, editTextUser, editTextPass,
-				editTextSshPortOpt, editTextSudoPw);
+	private void continueToAuthMethodActivity() {
+		boolean validationSuccessful = validator.validatePiCoreData(this,
+				editTextName, editTextHost, editTextUser);
 		if (validationSuccessful) {
 			// getting credentials from textfields
 			final String name = editTextName.getText().toString().trim();
 			final String host = editTextHost.getText().toString().trim();
 			final String user = editTextUser.getText().toString().trim();
-			final String pass = editTextPass.getText().toString().trim();
-			final String sshPort = editTextSshPortOpt.getText().toString()
-					.trim();
 			final String description = editTextDescription.getText().toString()
 					.trim();
-			final String sudoPass = editTextSudoPw.getText().toString().trim();
-			addRaspiToDb(name, host, user, pass, sshPort, description, sudoPass);
-			Toast.makeText(this, R.string.new_pi_created, Toast.LENGTH_SHORT)
-					.show();
 			// continue to auth activity
-			final Intent i = new Intent(NewRaspiActivity.this, NewRaspiAuthActivity.class);
+			final Intent i = new Intent(NewRaspiActivity.this,
+					NewRaspiAuthActivity.class);
+			final Bundle b = new Bundle();
+			b.putString(PI_NAME, name);
+			b.putString(PI_HOST, host);
+			b.putString(PI_USER, user);
+			b.putString(PI_DESC, description);
+			i.putExtra(PI_BUNDLE, b);
 			this.startActivity(i);
-//			NavUtils.navigateUpFromSameTask(this);
 		}
-	}
-
-	private void addRaspiToDb(String name, String host, String user,
-			String pass, String sshPort, String description, String sudoPass) {
-		// if sshPort is empty, use default port (22)
-		if (StringUtils.isBlank(sshPort)) {
-			sshPort = getText(R.string.default_ssh_port).toString();
-		}
-		if (StringUtils.isBlank(sudoPass)) {
-			sudoPass = "";
-		}
-		deviceDb.create(name, host, user, pass, Integer.parseInt(sshPort),
-				description, sudoPass);
 	}
 
 }

@@ -65,6 +65,32 @@ public class Validation {
 	}
 
 	/**
+	 * Validates if user input for core data is valid.
+	 * 
+	 * @param name
+	 * @param host
+	 * @param user
+	 * @return true, if input is valid
+	 */
+	public boolean validatePiCoreData(Context context, EditText name,
+			EditText host, EditText user) {
+		boolean dataValid = true;
+		if (!checkNonOptionalTextField(name,
+				context.getString(R.string.validation_msg_name))) {
+			dataValid = false;
+		}
+		if (!checkNonOptionalTextField(host,
+				context.getString(R.string.validation_msg_host))) {
+			dataValid = false;
+		}
+		if (!checkNonOptionalTextField(user,
+				context.getString(R.string.validation_msg_user))) {
+			dataValid = false;
+		}
+		return dataValid;
+	}
+
+	/**
 	 * Checks if a Textfield is not blank.
 	 * 
 	 * @param textfield
@@ -73,7 +99,7 @@ public class Validation {
 	 *            the errorMessage to set if validation fails
 	 * @return true, if valid, else false
 	 */
-	private boolean checkNonOptionalTextField(EditText textfield,
+	public boolean checkNonOptionalTextField(EditText textfield,
 			String errorMessage) {
 		// get text
 		final String text = textfield.getText().toString().trim();
@@ -83,4 +109,5 @@ public class Validation {
 		}
 		return true;
 	}
+
 }
