@@ -3,6 +3,7 @@ package de.eidottermihi.rpicheck.activity.helper;
 import org.apache.commons.lang3.StringUtils;
 
 import android.content.Context;
+import android.widget.Button;
 import android.widget.EditText;
 import de.eidottermihi.rpicheck.R;
 
@@ -17,6 +18,9 @@ public class Validation {
 	/**
 	 * Validates if user input is valid.
 	 * 
+	 * @param authMethod
+	 *            0 = ssh password, 1 = private key, 2 = private key with
+	 *            passphrase
 	 * @param name
 	 * @param host
 	 * @param user
@@ -25,10 +29,12 @@ public class Validation {
 	 * @param sudoPass
 	 * @return true, if input is valid
 	 */
-	public boolean validatePiData(Context context, EditText name,
-			EditText host, EditText user, EditText password, EditText port,
-			EditText sudoPass) {
+	public boolean validatePiEditData(Context context, int authMethod,
+			EditText name, EditText host, EditText user, EditText password,
+			EditText port, EditText sudoPass, EditText keyPassphrase,
+			Button keyChooser, boolean alwaysAskChecked, String keyfilePath) {
 		boolean dataValid = true;
+		// check non-optional fields
 		if (!checkNonOptionalTextField(name,
 				context.getString(R.string.validation_msg_name))) {
 			dataValid = false;
@@ -41,24 +47,37 @@ public class Validation {
 				context.getString(R.string.validation_msg_user))) {
 			dataValid = false;
 		}
-		if (!checkNonOptionalTextField(password,
-				context.getString(R.string.validation_msg_password))) {
+		if (!validatePort(port)) {
 			dataValid = false;
 		}
-		final String piPortString = port.getText().toString().trim();
-		if (!StringUtils.isBlank(piPortString)) {
-			boolean portValid = true;
-			try {
-				int portNr = Integer.parseInt(piPortString);
-				if (portNr < 1 || portNr > 65535) {
-					portValid = false;
-				}
-			} catch (NumberFormatException e) {
-				portValid = false;
-			}
-			if (!portValid) {
+		// check auth method
+		if (authMethod == 0) {
+			// ssh password must be present
+			if (!checkNonOptionalTextField(password,
+					context.getString(R.string.validation_msg_password))) {
 				dataValid = false;
-				port.setError(context.getString(R.string.validation_msg_port));
+			}
+		} else if (authMethod == 1) {
+			// a keyfile must be present
+			if (keyfilePath == null || StringUtils.isBlank(keyfilePath)) {
+				keyChooser.setError(context
+						.getString(R.string.validation_msg_keyfile));
+				dataValid = false;
+			}
+		} else if (authMethod == 2) {
+			// keyfile must be present
+			if (keyfilePath == null || StringUtils.isBlank(keyfilePath)) {
+				keyChooser.setError(context
+						.getString(R.string.validation_msg_keyfile));
+				dataValid = false;
+			}
+			// if always asked is unchecked, passphrase must be present
+			if (!alwaysAskChecked) {
+				if (!checkNonOptionalTextField(
+						keyPassphrase,
+						context.getString(R.string.validation_msg_key_passphrase))) {
+					dataValid = false;
+				}
 			}
 		}
 		return dataValid;
@@ -108,6 +127,25 @@ public class Validation {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean validatePort(EditText editTextSshPort) {
+		boolean portValid = true;
+		// range 1 to 65535
+		try {
+			final Long sshPort = Long.parseLong(editTextSshPort.getText()
+					.toString());
+			if (sshPort < 1 || sshPort > 65535) {
+				portValid = false;
+			}
+		} catch (NumberFormatException e) {
+			portValid = false;
+		}
+		if (!portValid) {
+			editTextSshPort.setError(editTextSshPort.getContext().getText(
+					R.string.validation_msg_port));
+		}
+		return portValid;
 	}
 
 }

@@ -83,23 +83,39 @@
                 android:onClick="onButtonClick"
                 android:text="@string/raspi_auth_button_keyfile" />
 
-            <TextView
-                android:id="@+id/text_key_pw"
+            <CheckBox
+                android:id="@+id/checkboxAsk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/buttonKeyfile"
-                android:paddingTop="8dp"
-                android:text="@string/raspi_key_password_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:checked="true"
+                android:onClick="onCheckboxClick"
+                android:text="@string/raspi_key_checkbox_text" />
 
-            <EditText
-                android:id="@+id/editTextKeyPw"
-                android:layout_below="@id/text_key_pw"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/rel_key_pw"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPassword" />
+                android:layout_below="@id/checkboxAsk"
+                android:visibility="gone" >
 
+                <TextView
+                    android:id="@+id/text_key_pw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:text="@string/raspi_key_password_hint"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <EditText
+                    android:id="@+id/editTextKeyPw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_key_pw"
+                    android:ems="10"
+                    android:inputType="textPassword" />
+
+            </RelativeLayout>
         </RelativeLayout>
         
         <RelativeLayout
@@ -153,7 +169,7 @@
 
                 <EditText
                     android:id="@+id/edit_raspi_sudoPass_editText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/labelSudoPass"
                     android:ems="10"

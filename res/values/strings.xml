@@ -138,5 +138,11 @@
     <string name="raspi_auth_button_keyfile">Choose keyfile</string>
     <string name="title_filedialog">Choose keyfile</string>
     <string name="no_keyfile_present">Please select an existing private key file.</string>
-
+    <string name="raspi_key_checkbox_text">Always ask for passphrase</string>
+	<string name="validation_msg_keyfile">Please select a keyfile.</string>
+	<string name="validation_msg_key_passphrase">Key passphrase cannot be blank.</string>
+	<string name="dialog_save_passphrase">Save passphrase</string>
+	<string name="dialog_passphrase_hint">passphrase</string>
+	<string name="dialog_passphrase_needed">Passphrase needed</string>
+	<string name="dialog_passphrase_text">Please enter passphrase for private key.</string>
 </resources>

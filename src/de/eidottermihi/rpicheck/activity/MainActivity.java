@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,16 +59,18 @@ import de.eidottermihi.rpicheck.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.beans.WlanBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
 import de.eidottermihi.rpicheck.fragment.QueryErrorMessagesDialog;
 import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
+import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
 import de.eidottermihi.rpicheck.ssh.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.RaspiQueryException;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
-		ShutdownDialogListener {
+		ShutdownDialogListener, PassphraseDialogListener {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(MainActivity.class);
 
@@ -144,7 +147,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		LOGGER.debug("onCreate()....");
+		// LOGGER.debug("onCreate()....");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		// assigning Shared Preferences
@@ -553,40 +556,75 @@ public class MainActivity extends SherlockFragmentActivity implements
 		rebootDialog.show(getSupportFragmentManager(), "reboot");
 	}
 
-	private void doReboot() {
-		LOGGER.info("Doing reboot on {}...", currentDevice.getName());
+	private void doRebootOrHalt(String type) {
+		LOGGER.info("Doing {} on {}...", type, currentDevice.getName());
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
 			// get connection settings from shared preferences
 			final String host = currentDevice.getHost();
 			final String user = currentDevice.getUser();
-			final String pass = currentDevice.getPass();
 			final String port = currentDevice.getPort() + "";
 			final String sudoPass = currentDevice.getSudoPass();
-			final String type = TYPE_REBOOT;
-			new SSHShutdownTask().execute(host, user, pass, port, sudoPass,
-					type);
-		} else {
-			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
-					.show();
-		}
-	}
-
-	private void doHalt() {
-		LOGGER.debug("Doing halt on {}...", currentDevice.getName());
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		if (networkInfo != null && networkInfo.isConnected()) {
-			// get connection settings from shared preferences
-			final String host = currentDevice.getHost();
-			final String user = currentDevice.getUser();
-			final String pass = currentDevice.getPass();
-			final String port = currentDevice.getPort() + "";
-			final String sudoPass = currentDevice.getSudoPass();
-			final String type = TYPE_HALT;
-			new SSHShutdownTask().execute(host, user, pass, port, sudoPass,
-					type);
+			if (currentDevice.getAuthMethod().equals(
+					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+				// ssh password
+				final String pass = currentDevice.getPass();
+				new SSHShutdownTask().execute(host, user, pass, port, sudoPass,
+						type, null, null);
+			} else if (currentDevice.getAuthMethod().equals(
+					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+				// keyfile
+				final String keyfilePath = currentDevice.getKeyfilePath();
+				if (keyfilePath != null) {
+					final File privateKey = new File(keyfilePath);
+					if (privateKey.exists()) {
+						new SSHShutdownTask().execute(host, user, null, port,
+								sudoPass, type, keyfilePath, null);
+					} else {
+						Toast.makeText(this,
+								"Cannot find keyfile at location: "
+										+ keyfilePath, Toast.LENGTH_LONG);
+					}
+				} else {
+					Toast.makeText(this, "No keyfile specified!",
+							Toast.LENGTH_LONG);
+				}
+			} else if (currentDevice.getAuthMethod().equals(
+					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+				// keyfile and passphrase
+				final String keyfilePath = currentDevice.getKeyfilePath();
+				if (keyfilePath != null) {
+					final File privateKey = new File(keyfilePath);
+					if (privateKey.exists()) {
+						if (!StringUtils
+								.isBlank(currentDevice.getKeyfilePass())) {
+							final String passphrase = currentDevice
+									.getKeyfilePass();
+							new SSHShutdownTask().execute(host, user, null,
+									port, sudoPass, type, keyfilePath,
+									passphrase);
+						} else {
+							final String dialogType = type.equals(TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN
+									: PassphraseDialog.SSH_HALT;
+							final DialogFragment passphraseDialog = new PassphraseDialog();
+							final Bundle args = new Bundle();
+							args.putString(PassphraseDialog.KEY_TYPE,
+									dialogType);
+							passphraseDialog.setArguments(args);
+							passphraseDialog.show(getSupportFragmentManager(),
+									"passphrase");
+						}
+					} else {
+						Toast.makeText(this,
+								"Cannot find keyfile at location: "
+										+ keyfilePath, Toast.LENGTH_LONG);
+					}
+				} else {
+					Toast.makeText(this, "No keyfile specified!",
+							Toast.LENGTH_LONG);
+				}
+			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
@@ -671,9 +709,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 							canConnect = true;
 							keyPass = keyfilePass;
 						} else {
-							Toast.makeText(this,
-									"No private key passphrase specified!",
-									Toast.LENGTH_LONG);
+							final DialogFragment newFragment = new PassphraseDialog();
+							final Bundle args = new Bundle();
+							args.putString(PassphraseDialog.KEY_TYPE,
+									PassphraseDialog.SSH_QUERY);
+							newFragment.setArguments(args);
+							newFragment.show(getSupportFragmentManager(),
+									"passphrase");
+							canConnect = false;
 						}
 					} else {
 						Toast.makeText(this,
@@ -719,15 +762,29 @@ public class MainActivity extends SherlockFragmentActivity implements
 		 */
 		@Override
 		protected ShutdownResult doInBackground(String... params) {
-			// TODO refactor (auth methods!)
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
 					Integer.parseInt(params[3]));
 			final String pass = params[2];
 			final String sudoPass = params[4];
 			final String type = params[5];
+			final String keyfile = params[6];
+			final String keypass = params[7];
 			ShutdownResult result = new ShutdownResult();
 			result.setType(type);
 			try {
+				if (keyfile != null) {
+					File f = new File(keyfile);
+					if (keypass == null) {
+						// connect with private key only
+						raspiQuery.connectWithPubKeyAuth(f.getPath());
+					} else {
+						// connect with key and passphrase
+						raspiQuery.connectWithPubKeyAuthAndPassphrase(
+								f.getPath(), keypass);
+					}
+				} else {
+					raspiQuery.connect(pass);
+				}
 				raspiQuery.connect(pass);
 				if (type.equals(TYPE_REBOOT)) {
 					raspiQuery.sendRebootSignal(sudoPass);
@@ -956,13 +1013,50 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onHaltClick(DialogInterface dialog) {
 		LOGGER.trace("ShutdownDialog: Halt chosen.");
-		this.doHalt();
+		this.doRebootOrHalt(TYPE_HALT);
 	}
 
 	@Override
 	public void onRebootClick(DialogInterface dialog) {
 		LOGGER.trace("ShutdownDialog: Reboot chosen.");
-		this.doReboot();
+		this.doRebootOrHalt(TYPE_REBOOT);
+	}
+
+	@Override
+	public void onPassphraseOKClick(DialogFragment dialog, String passphrase,
+			boolean savePassphrase, String type) {
+		if (savePassphrase) {
+			// save passphrase in db
+			LOGGER.debug("Saving passphrase for device {}.",
+					currentDevice.getName());
+			currentDevice.setKeyfilePass(passphrase);
+			deviceDb.update(currentDevice);
+		}
+		if (type.equals(PassphraseDialog.SSH_QUERY)) {
+			// connect
+			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
+					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
+			new SSHQueryTask().execute(currentDevice.getHost(),
+					currentDevice.getUser(), null,
+					currentDevice.getPort() + "", hideRoot.toString(),
+					currentDevice.getKeyfilePath(), passphrase);
+		} else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {
+			// new SSHShutdownTask().execute(params)
+		} else if (type.equals(PassphraseDialog.SSH_HALT)) {
+
+		}
+	}
+
+	@Override
+	public void onPassphraseCancelClick() {
+		// hide and reset progress bar
+		progressBar.setVisibility(View.GONE);
+		progressBar.setProgress(0);
+		// update and reset pullToRefresh
+		refreshableScrollView.onRefreshComplete();
+		refreshableScrollView.setMode(Mode.PULL_FROM_START);
+		// update refresh indicator
+		refreshItem.setActionView(null);
 	}
 
 }

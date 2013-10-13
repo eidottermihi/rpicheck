@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -39,7 +40,7 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 	public static final String[] SPINNER_AUTH_METHODS = { "password", "keys",
 			"keysWithPassword" };
 
-	private static final int REQUEST_LOAD = 0;
+	public static final int REQUEST_LOAD = 0;
 
 	private Validation validator = new Validation();
 
@@ -49,12 +50,14 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 
 	private RelativeLayout relLaySshPass;
 	private RelativeLayout relLayKeyfile;
+	private RelativeLayout relLayKeyPassphrase;
 	private EditText editTextSshPass;
 	private EditText editTextKeyfilePass;
 	private Button buttonKeyfile;
 	private TextView textKeyPass;
 	private EditText editTextSshPort;
 	private EditText editTextSudoPw;
+	private CheckBox checkboxAskPassphrase;
 
 	private String keyfilePath;
 
@@ -74,12 +77,14 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 		spinnerAuth = (Spinner) findViewById(R.id.spinnerAuthMethod);
 		relLaySshPass = (RelativeLayout) findViewById(R.id.rel_pw);
 		relLayKeyfile = (RelativeLayout) findViewById(R.id.rel_key);
+		relLayKeyPassphrase = (RelativeLayout) findViewById(R.id.rel_key_pw);
 		editTextSshPass = (EditText) findViewById(R.id.editText_ssh_password);
 		editTextKeyfilePass = (EditText) findViewById(R.id.editTextKeyPw);
 		buttonKeyfile = (Button) findViewById(R.id.buttonKeyfile);
 		textKeyPass = (TextView) findViewById(R.id.text_key_pw);
 		editTextSshPort = (EditText) findViewById(R.id.edit_raspi_ssh_port_editText);
 		editTextSudoPw = (EditText) findViewById(R.id.edit_raspi_sudoPass_editText);
+		checkboxAskPassphrase = (CheckBox) findViewById(R.id.checkboxAsk);
 		// show default option for auth method = ssh password
 		this.switchAuthMethodsInView(SPINNER_AUTH_METHODS[0]);
 		// init auth spinner
@@ -133,6 +138,28 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 		}
 	}
 
+	public void onCheckboxClick(View view) {
+		boolean checked = ((CheckBox) view).isChecked();
+		switch (view.getId()) {
+		case R.id.checkboxAsk:
+			switchCheckbox(checked);
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void switchCheckbox(boolean checked) {
+		LOGGER.debug("Always ask for passphrase: {}", checked);
+		if (checked) {
+			// don't show textfield for passphrase
+			relLayKeyPassphrase.setVisibility(View.GONE);
+		} else {
+			// show textfield for passphrase
+			relLayKeyPassphrase.setVisibility(View.VISIBLE);
+		}
+	}
+
 	private void openKeyfile() {
 		final Intent intent = new Intent(getBaseContext(), FileDialog.class);
 		intent.putExtra(FileDialog.START_PATH, Environment
@@ -154,53 +181,61 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 				.getSelectedItemPosition()];
 		final String sudoPass = editTextSudoPw.getText().toString().trim();
 		final String sshPort = editTextSshPort.getText().toString().trim();
-		boolean saveSuccessful = false;
-		if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[0])) {
-			// ssh password (cannot be empty)
-			if (validator.checkNonOptionalTextField(editTextSshPass,
-					getString(R.string.validation_msg_password))) {
-				final String sshPass = editTextSshPass.getText().toString()
-						.trim();
-				addRaspiToDb(name, host, user, selectedAuthMethod, sshPort,
-						desc, sudoPass, sshPass, null, null);
-				saveSuccessful = true;
-			}
-		} else if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[1])) {
-			// keyfile must be selected
-			if (keyfilePath != null && new File(keyfilePath).exists()) {
-				addRaspiToDb(name, host, user, selectedAuthMethod, sshPort,
-						desc, sudoPass, null, null, keyfilePath);
-				saveSuccessful = true;
-			} else {
-				Toast.makeText(this, getText(R.string.no_keyfile_present),
-						Toast.LENGTH_LONG);
-			}
-		} else if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[2])) {
-			// keyfile and key password
-			if (keyfilePath != null && new File(keyfilePath).exists()) {
-				if (validator.checkNonOptionalTextField(editTextKeyfilePass,
-						getString(R.string.raspi_key_password_empty))) {
-					final String keyfilePass = editTextKeyfilePass.getText()
-							.toString().trim();
+		boolean portOk = true;
+		// validate ssh port (range 1 to 65535)
+		if (!validator.validatePort(editTextSshPort)) {
+			portOk = false;
+		}
+		if (portOk) {
+			boolean saveSuccessful = false;
+			if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[0])) {
+				// ssh password (cannot be empty)
+				if (validator.checkNonOptionalTextField(editTextSshPass,
+						getString(R.string.validation_msg_password))) {
+					final String sshPass = editTextSshPass.getText().toString()
+							.trim();
 					addRaspiToDb(name, host, user, selectedAuthMethod, sshPort,
-							desc, sudoPass, null, keyfilePass, keyfilePath);
+							desc, sudoPass, sshPass, null, null);
 					saveSuccessful = true;
 				}
-			} else {
-				Toast.makeText(this, getText(R.string.no_keyfile_present),
-						Toast.LENGTH_LONG);
+			} else if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[1])) {
+				// keyfile must be selected
+				if (keyfilePath != null && new File(keyfilePath).exists()) {
+					addRaspiToDb(name, host, user, selectedAuthMethod, sshPort,
+							desc, sudoPass, null, null, keyfilePath);
+					saveSuccessful = true;
+				} else {
+					Toast.makeText(this, getText(R.string.no_keyfile_present),
+							Toast.LENGTH_LONG);
+				}
+			} else if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[2])) {
+				// keyfile and key password
+				if (keyfilePath != null && new File(keyfilePath).exists()) {
+					if (validator.checkNonOptionalTextField(
+							editTextKeyfilePass,
+							getString(R.string.raspi_key_password_empty))) {
+						final String keyfilePass = editTextKeyfilePass
+								.getText().toString().trim();
+						addRaspiToDb(name, host, user, selectedAuthMethod,
+								sshPort, desc, sudoPass, null, keyfilePass,
+								keyfilePath);
+						saveSuccessful = true;
+					}
+				} else {
+					Toast.makeText(this, getText(R.string.no_keyfile_present),
+							Toast.LENGTH_LONG);
+				}
+				saveSuccessful = true;
 			}
-			saveSuccessful = true;
+			if (saveSuccessful) {
+				Toast.makeText(this, R.string.new_pi_created,
+						Toast.LENGTH_SHORT).show();
+				// start main activity
+				final Intent i = new Intent(NewRaspiAuthActivity.this,
+						MainActivity.class);
+				this.startActivity(i);
+			}
 		}
-		if (saveSuccessful) {
-			Toast.makeText(this, R.string.new_pi_created, Toast.LENGTH_SHORT)
-					.show();
-			// start main activity
-			final Intent i = new Intent(NewRaspiAuthActivity.this,
-					MainActivity.class);
-			this.startActivity(i);
-		}
-
 	}
 
 	private void addRaspiToDb(String name, String host, String user,
@@ -236,15 +271,17 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 			relLaySshPass.setVisibility(View.VISIBLE);
 			relLayKeyfile.setVisibility(View.GONE);
 		} else if (method.equals(SPINNER_AUTH_METHODS[1])) {
-			// show key file button
+			// show key file button (no passphrase)
 			relLaySshPass.setVisibility(View.GONE);
 			relLayKeyfile.setVisibility(View.VISIBLE);
+			checkboxAskPassphrase.setVisibility(View.GONE);
 			textKeyPass.setVisibility(View.GONE);
 			editTextKeyfilePass.setVisibility(View.GONE);
 		} else {
 			// show key file button and passphrase field
 			relLaySshPass.setVisibility(View.GONE);
 			relLayKeyfile.setVisibility(View.VISIBLE);
+			checkboxAskPassphrase.setVisibility(View.VISIBLE);
 			textKeyPass.setVisibility(View.VISIBLE);
 			editTextKeyfilePass.setVisibility(View.VISIBLE);
 		}
@@ -258,11 +295,19 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 						.getStringExtra(FileDialog.RESULT_PATH);
 				LOGGER.debug("Path of selected keyfile: {}", filePath);
 				this.keyfilePath = filePath;
-				buttonKeyfile.setText(filePath);
+				// set text to filename, not full path
+				String fileName = getFilenameFromPath(filePath);
+				buttonKeyfile.setText(fileName);
+				buttonKeyfile.setError(null);
 			}
 		} else if (resultCode == Activity.RESULT_CANCELED) {
 			LOGGER.warn("No file selected...");
 		}
+	}
+
+	public static String getFilenameFromPath(String filePath) {
+		final File f = new File(filePath);
+		return f.getName();
 	}
 
 }
