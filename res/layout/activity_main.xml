@@ -147,7 +147,9 @@
                 android:layout_toRightOf="@+id/firmwareLabel"
                 android:gravity="right"
                 android:paddingLeft="8dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:ellipsize="marquee"
+                android:singleLine="true" />
         </RelativeLayout>
 
         <TextView

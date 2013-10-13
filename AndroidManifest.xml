@@ -10,7 +10,7 @@
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <!-- android:uiOptions="splitActionBarWhenNarrow" -->
     <application

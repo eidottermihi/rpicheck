@@ -19,6 +19,11 @@
     </style>
   </head>
   <body>
+$ 1.4.0
+  % Version 1.4.0
+  _ 2013-10-13
+    * added authentification with keys (PKCS8/OpenSSH file format)
+    * removed background of app icon
 $ 1.3.1
   % Version 1.3.1
   _ 2013-05-31

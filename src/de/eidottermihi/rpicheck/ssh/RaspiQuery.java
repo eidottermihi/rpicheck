@@ -237,7 +237,9 @@ public class RaspiQuery {
 					cmd.join();
 					String output = IOUtils.readFully(cmd.getInputStream())
 							.toString();
-					return this.parseFirmwareVersion(output);
+					final String result = this.parseFirmwareVersion(output);
+					LOGGER.debug("Firmware version: {}", result);
+					return result;
 				} catch (IOException e) {
 					throw RaspiQueryException.createTransportFailure(hostname,
 							e);
@@ -262,7 +264,11 @@ public class RaspiQuery {
 	private String parseFirmwareVersion(final String output) {
 		final String[] splitted = output.split("\n");
 		if (splitted.length >= 3) {
-			return splitted[2];
+			if (splitted[2].startsWith("version ")) {
+				return splitted[2].replace("version ", "");
+			} else {
+				return splitted[2];
+			}
 		} else {
 			LOGGER.error("Could not parse firmware. Maybe the output of 'vcgencmd version' changed.");
 			LOGGER.debug("Output of 'vcgencmd version': \n{}", output);

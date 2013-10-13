@@ -119,5 +119,20 @@
     <string name="pref_debug_log_summary_on">Debug-Logging aktiviert.</string>
     <string name="pref_debug_log_summary_off">Debug-Level Logging deaktiviert.</string>
     <string name="pref_debug_log_title">Debug Logging</string>
+    <string name="new_raspi_continue">Weiter</string>
+    <string name="new_raspi_auth_method">Authentifizierungsmethode</string>
+    <string name="raspi_key_password_hint">Key Passphrase</string>
+    <string name="raspi_key_password_empty">Key Passphrase darf nicht leer sein.</string>
+    <string name="raspi_auth_keyfile_hint">Private Key (PKCS8/OpenSSH Format)</string>
+    <string name="raspi_auth_button_keyfile">Key auswählen</string>
+    <string name="title_filedialog">Key auswählen</string>
+    <string name="no_keyfile_present">Bitte wähle einen existierenden privaten Key aus.</string>
+    <string name="raspi_key_checkbox_text">Immer nach Passphrase fragen</string>
+	<string name="validation_msg_keyfile">Bitte einen Keyfile auswählen.</string>
+	<string name="validation_msg_key_passphrase">Key Passphrase darf nicht leer sein.</string>
+	<string name="dialog_save_passphrase">Passphrase merken</string>
+	<string name="dialog_passphrase_hint">Passphrase</string>
+	<string name="dialog_passphrase_needed">Passphrase darf nicht leer sein.</string>
+	<string name="dialog_passphrase_text">Bitte gib die Passphrase für den privaten Key an.</string>
 
 </resources>
