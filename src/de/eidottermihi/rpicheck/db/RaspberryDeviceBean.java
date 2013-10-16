@@ -28,6 +28,61 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
 	private int spinnerPosition;
 	private QueryBean lastQueryData;
 
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(id);
+		dest.writeString(name);
+		dest.writeString(host);
+		dest.writeString(user);
+		dest.writeString(pass);
+		dest.writeInt(port);
+		dest.writeString(description);
+		dest.writeString(serial);
+		dest.writeSerializable(createdAt);
+		dest.writeSerializable(modifiedAt);
+		dest.writeString(sudoPass);
+		dest.writeString(authMethod);
+		dest.writeString(keyfilePath);
+		dest.writeString(keyfilePass);
+		dest.writeInt(spinnerPosition);
+		dest.writeSerializable(lastQueryData);
+	}
+
+	public static final Parcelable.Creator<RaspberryDeviceBean> CREATOR = new Parcelable.Creator<RaspberryDeviceBean>() {
+		public RaspberryDeviceBean createFromParcel(Parcel in) {
+			return new RaspberryDeviceBean(in);
+		}
+
+		public RaspberryDeviceBean[] newArray(int size) {
+			return new RaspberryDeviceBean[size];
+		}
+	};
+
+	public RaspberryDeviceBean(Parcel source) {
+		/*
+		 * Reconstruct from the Parcel. Keep same order as in writeToParcel()
+		 */
+		id = source.readInt();
+		name = source.readString();
+		host = source.readString();
+		user = source.readString();
+		pass = source.readString();
+		port = source.readInt();
+		description = source.readString();
+		serial = source.readString();
+		createdAt = (Date) source.readSerializable();
+		modifiedAt = (Date) source.readSerializable();
+		sudoPass = source.readString();
+		authMethod = source.readString();
+		keyfilePath = source.readString();
+		keyfilePass = source.readString();
+		spinnerPosition = source.readInt();
+		lastQueryData = (QueryBean) source.readSerializable();
+	}
+
+	public RaspberryDeviceBean() {
+	}
+
 	public String getHost() {
 		return host;
 	}
@@ -135,10 +190,6 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
 	@Override
 	public int describeContents() {
 		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
 	}
 
 	public String getAuthMethod() {
