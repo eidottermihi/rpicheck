@@ -36,6 +36,8 @@ public class EditRaspiActivity extends SherlockActivity implements
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EditRaspiActivity.class);
 
+	public static final int REQUEST_EDIT = 10;
+
 	private Spinner spinnerAuth;
 	private RelativeLayout relLaySshPass;
 	private EditText editTextPass;
@@ -244,7 +246,8 @@ public class EditRaspiActivity extends SherlockActivity implements
 			Toast.makeText(this, R.string.update_successful, Toast.LENGTH_SHORT)
 					.show();
 			// back to main
-			NavUtils.navigateUpFromSameTask(this);
+			this.setResult(RESULT_OK);
+			this.finish();
 		}
 	}
 

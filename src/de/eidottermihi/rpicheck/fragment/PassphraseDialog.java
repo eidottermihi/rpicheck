@@ -6,10 +6,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import de.eidottermihi.rpicheck.R;
@@ -75,20 +77,7 @@ public class PassphraseDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// validate passphrase not empty
-						if (!StringUtils.isBlank(editTextPassphrase.getText()
-								.toString())) {
-							final String passphrase = editTextPassphrase
-									.getText().toString().trim();
-							final boolean savePassphrase = checkSavePassphrase
-									.isChecked();
-							mPassphraseDialogListener.onPassphraseOKClick(
-									PassphraseDialog.this, passphrase,
-									savePassphrase, type);
-						} else {
-							editTextPassphrase
-									.setError(getString(R.string.validation_msg_key_passphrase));
-						}
+						// do nothing here
 					}
 				});
 		builder.setNegativeButton(android.R.string.cancel,
@@ -99,5 +88,37 @@ public class PassphraseDialog extends DialogFragment {
 					}
 				});
 		return builder.create();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart(); // super.onStart() is where dialog.show() is actually
+							// called on the underlying dialog, so we have to do
+							// it after this point
+		AlertDialog d = (AlertDialog) getDialog();
+		if (d != null) {
+			Button positiveButton = (Button) d
+					.getButton(Dialog.BUTTON_POSITIVE);
+			positiveButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// validate passphrase not empty
+					if (!StringUtils.isBlank(editTextPassphrase.getText()
+							.toString())) {
+						final String passphrase = editTextPassphrase.getText()
+								.toString().trim();
+						final boolean savePassphrase = checkSavePassphrase
+								.isChecked();
+						dismiss();
+						mPassphraseDialogListener.onPassphraseOKClick(
+								PassphraseDialog.this, passphrase,
+								savePassphrase, type);
+					} else {
+						editTextPassphrase
+								.setError(getString(R.string.validation_msg_key_passphrase));
+					}
+				}
+			});
+		}
 	}
 }

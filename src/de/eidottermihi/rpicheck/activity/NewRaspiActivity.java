@@ -21,6 +21,7 @@ public class NewRaspiActivity extends SherlockActivity {
 	public static final String PI_USER = "PI_USER";
 	public static final String PI_DESC = "PI_DESC";
 	public static final String PI_BUNDLE = "PI_BUNDLE";
+	public static final int REQUEST_SAVE = 0;
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NewRaspiActivity.class);
 	private EditText editTextName;
@@ -92,7 +93,16 @@ public class NewRaspiActivity extends SherlockActivity {
 			b.putString(PI_USER, user);
 			b.putString(PI_DESC, description);
 			i.putExtra(PI_BUNDLE, b);
-			this.startActivity(i);
+			this.startActivityForResult(i, REQUEST_SAVE);
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_SAVE && resultCode == RESULT_OK) {
+			// user saved the new raspi
+			setResult(RESULT_OK);
+			finish();
 		}
 	}
 

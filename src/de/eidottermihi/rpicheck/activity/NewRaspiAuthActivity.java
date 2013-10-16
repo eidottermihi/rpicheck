@@ -230,10 +230,12 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 			if (saveSuccessful) {
 				Toast.makeText(this, R.string.new_pi_created,
 						Toast.LENGTH_SHORT).show();
-				// start main activity
-				final Intent i = new Intent(NewRaspiAuthActivity.this,
-						MainActivity.class);
-				this.startActivity(i);
+				// finish
+				this.setResult(RESULT_OK);
+				this.finish();
+				// final Intent i = new Intent(NewRaspiAuthActivity.this,
+				// MainActivity.class);
+				// this.startActivity(i);
 			}
 		}
 	}

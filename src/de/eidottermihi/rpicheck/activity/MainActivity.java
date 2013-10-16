@@ -60,10 +60,10 @@ import de.eidottermihi.rpicheck.beans.WlanBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
+import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.QueryErrorMessagesDialog;
 import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
-import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
 import de.eidottermihi.rpicheck.ssh.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.RaspiQueryException;
@@ -293,7 +293,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void updateNetworkTable() {
 		// remove rows except header
 		networkTable.removeViews(1, networkTable.getChildCount() - 1);
-		if (currentDevice != null && currentDevice.getLastQueryData() != null) {
+		if (currentDevice != null && currentDevice.getLastQueryData() != null
+				&& currentDevice.getLastQueryData().getNetworkInfo() != null) {
 			for (NetworkInterfaceInformation interfaceInformation : currentDevice
 					.getLastQueryData().getNetworkInfo()) {
 				networkTable.addView(createNetworkRow(interfaceInformation));
@@ -334,7 +335,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void updateProcessTable() {
 		// remove current rows except header row
 		processTable.removeViews(1, processTable.getChildCount() - 1);
-		if (currentDevice != null && currentDevice.getLastQueryData() != null) {
+		if (currentDevice != null && currentDevice.getLastQueryData() != null
+				&& currentDevice.getLastQueryData().getProcesses() != null) {
 			for (ProcessBean processBean : currentDevice.getLastQueryData()
 					.getProcesses()) {
 				processTable.addView(createProcessRow(processBean));
@@ -379,7 +381,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void updateDiskTable() {
 		// remove current rows except header row
 		diskTable.removeViews(1, diskTable.getChildCount() - 1);
-		if (currentDevice != null && currentDevice.getLastQueryData() != null) {
+		if (currentDevice != null && currentDevice.getLastQueryData() != null
+				&& currentDevice.getLastQueryData().getDisks() != null) {
 			for (DiskUsageBean diskUsageBean : currentDevice.getLastQueryData()
 					.getDisks()) {
 				// add row to table
@@ -531,7 +534,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			this.doQuery(false);
 			break;
 		case R.id.menu_new_raspi:
-			this.startActivity(newRaspiIntent);
+			this.startActivityForResult(newRaspiIntent,
+					NewRaspiActivity.REQUEST_SAVE);
 			break;
 		case R.id.menu_delete:
 			this.deleteCurrentDevice();
@@ -541,7 +545,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			final Bundle extras = new Bundle();
 			extras.putInt(EXTRA_DEVICE_ID, currentDevice.getId());
 			editRaspiIntent.putExtras(extras);
-			this.startActivity(editRaspiIntent);
+			this.startActivityForResult(editRaspiIntent,
+					EditRaspiActivity.REQUEST_EDIT);
 			break;
 		case R.id.menu_reboot:
 			this.showRebootDialog();
@@ -612,6 +617,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 							args.putString(PassphraseDialog.KEY_TYPE,
 									dialogType);
 							passphraseDialog.setArguments(args);
+							passphraseDialog.setCancelable(false);
 							passphraseDialog.show(getSupportFragmentManager(),
 									"passphrase");
 						}
@@ -714,6 +720,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 							args.putString(PassphraseDialog.KEY_TYPE,
 									PassphraseDialog.SSH_QUERY);
 							newFragment.setArguments(args);
+							newFragment.setCancelable(false);
 							newFragment.show(getSupportFragmentManager(),
 									"passphrase");
 							canConnect = false;
@@ -769,7 +776,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			final String type = params[5];
 			final String keyfile = params[6];
 			final String keypass = params[7];
-			ShutdownResult result = new ShutdownResult();
+			final ShutdownResult result = new ShutdownResult();
 			result.setType(type);
 			try {
 				if (keyfile != null) {
@@ -928,7 +935,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 					RaspberryDeviceBean deviceBean = allDevices
 							.get(this.currentDevice.getId());
 					if (deviceBean != null) {
-						if (deviceBean.getLastQueryData() != null) {
+						if (deviceBean.getLastQueryData() != null
+								&& deviceBean.getLastQueryData().getException() == null) {
 							this.currentDevice.setLastQueryData(deviceBean
 									.getLastQueryData());
 							this.updateQueryDataInView();
@@ -938,6 +946,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 				if (!lastQueryPresent) {
 					this.resetView();
+				}
+			} else {
+				// device was maybe updated
+				if (currentDevice.getLastQueryData() != null) {
+					final QueryBean data = this.currentDevice
+							.getLastQueryData();
+					this.currentDevice = read;
+					this.currentDevice.setLastQueryData(data);
+				} else {
+					this.currentDevice = read;
 				}
 			}
 		}
@@ -995,7 +1013,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			LOGGER.debug("Setting spinner to show last Pi.");
 			this.getSupportActionBar().setSelectedNavigationItem(
 					currentDevice.getSpinnerPosition());
-			if (currentDevice.getLastQueryData() != null) {
+			if (currentDevice.getLastQueryData() != null
+					&& currentDevice.getLastQueryData().getException() == null) {
 				LOGGER.debug("Restoring query data..");
 				this.updateQueryDataInView();
 			} else {
@@ -1041,9 +1060,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 					currentDevice.getPort() + "", hideRoot.toString(),
 					currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {
-			// new SSHShutdownTask().execute(params)
+			new SSHShutdownTask().execute(currentDevice.getHost(),
+					currentDevice.getUser(), null,
+					currentDevice.getPort() + "", currentDevice.getSudoPass(),
+					TYPE_REBOOT, currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_HALT)) {
-
+			new SSHShutdownTask().execute(currentDevice.getHost(),
+					currentDevice.getUser(), null,
+					currentDevice.getPort() + "", currentDevice.getSudoPass(),
+					TYPE_HALT, currentDevice.getKeyfilePath(), passphrase);
 		}
 	}
 
@@ -1057,6 +1082,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 		refreshableScrollView.setMode(Mode.PULL_FROM_START);
 		// update refresh indicator
 		refreshItem.setActionView(null);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent intent) {
+		switch (requestCode) {
+		case NewRaspiActivity.REQUEST_SAVE:
+			initSpinner();
+			break;
+		case EditRaspiActivity.REQUEST_EDIT:
+			initSpinner();
+			break;
+		default:
+			break;
+		}
 	}
 
 }
