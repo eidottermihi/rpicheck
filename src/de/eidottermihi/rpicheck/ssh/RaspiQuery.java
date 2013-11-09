@@ -899,11 +899,11 @@ public class RaspiQuery {
 							.toString();
 					session.close();
 					LOGGER.debug("Reboot Output: {}", output);
-					if (output.contains("sudo: command not found")) {
+					if (output.contains("sudo: not found")) {
 						session = client.startSession();
 						session.allocateDefaultPTY();
 						LOGGER.warn("Sudo unknown: Trying \"reboot\"...");
-						// maybe openelec running
+						//openelec running
 						cmd = session.exec("reboot");
 						cmd.join();
 						output = IOUtils.readFully(cmd.getInputStream())
@@ -958,8 +958,8 @@ public class RaspiQuery {
 							.toString();
 					session.close();
 					LOGGER.debug("Halt Output: {}", output);
-					if (output.contains("sudo: command not found")) {
-						// maybe openelec running
+					if (output.contains("sudo: not found")) {
+						//openelec running
 						session = client.startSession();
 						session.allocateDefaultPTY();
 						LOGGER.warn("Sudo unknown: Trying \"halt\"...");
