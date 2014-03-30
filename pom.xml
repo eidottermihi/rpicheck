@@ -3,15 +3,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.eidottermihi</groupId>
 	<artifactId>rpicheck</artifactId>
-	<version>1.4.1-SNAPSHOT</version>
+	<version>1.4.2-SNAPSHOT</version>
 	<name>RasPi Check</name>
 	<description>A little android app for querying your Raspberry Pis.</description>
 	<packaging>apk</packaging>
 
+	<properties>
+		<app.versionName>${project.version}</app.versionName>
+	</properties>
+
 	<dependencies>
 		<!-- installed into local repository with Maven Android SDK Deployer -->
+		<!-- command: mvn install -P 4.4 -Dplatform.android.groupid=com.google.android -->
 		<dependency>
-			<groupId>android</groupId>
+			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
 			<version>4.4.2_r3</version>
 			<scope>provided</scope>
@@ -28,14 +33,15 @@
 			<version>2.1.1</version>
 			<type>apklib</type>
 		</dependency>
-		<!-- installed manually into local repository -->
+		<!-- installed manually out of libraries/FileExplorer into local repository -->
 		<dependency>
 			<groupId>com.google</groupId>
 			<artifactId>android-file-dialog</artifactId>
-			<version>1.0</version>
+			<version>0.0.1-SNAPSHOT</version>
 			<type>apklib</type>
 		</dependency>
-		<!-- fork of sshj library from github.com/eidottermihi/sshj -->
+		<!-- fork of sshj library from github.com/eidottermihi/sshj, installed 
+			from libraries/sshj-0.9.1-SNAPSHOT.jar -->
 		<dependency>
 			<groupId>net.schmizz</groupId>
 			<artifactId>sshj</artifactId>
@@ -85,12 +91,51 @@
 		</pluginManagement>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<!-- use the copy resources instead of resources, which adds it to 
+							the eclipse buildpath -->
+						<phase>initialize</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/res</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/templates/res</directory>
+									<targetPath>${project.basedir}/target/filtered-res</targetPath>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${project.basedir}/res</directory>
+									<targetPath>${project.basedir}/target/filtered-res</targetPath>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
 					<sdk>
 						<platform>19</platform>
 					</sdk>
+					<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.4.2
+  % Version 1.4.2
+  _ 2014-03-30
+    * Reboot/Halt now working on OpenELEC (thanks to Mafarricos)
 $ 1.4.1
   % Version 1.4.1
   _ 2013-10-16
