@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.schmizz.sshj.AndroidConfig;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Command;
 import net.schmizz.sshj.transport.TransportException;
@@ -895,18 +897,20 @@ public class RaspiQuery {
 					LOGGER.info("Sending reboot command: {}", rebootCmdLogger);
 					Command cmd = session.exec(command);
 					cmd.join();
-					String output = IOUtils.readFully(cmd.getInputStream())
-							.toString();
-					LOGGER.debug("Reboot Output: {}", output);
-					if (output.contains("sudo: not found")) {
+					session.close();
+					if (cmd.getExitStatus() != null && cmd.getExitStatus() != 0) {
 						LOGGER.warn("Sudo unknown: Trying \"reboot\"...");
 						// openelec running
-						cmd = session.exec("reboot");
-						cmd.join();
-						output = IOUtils.readFully(cmd.getInputStream())
-								.toString();
-						LOGGER.debug("\"reboot\" Output: {}", output);
-						session.close();
+						session = client.startSession();
+						session.allocateDefaultPTY();
+						session.exec("reboot");
+						try {
+							session.join(250, TimeUnit.MILLISECONDS);
+							LOGGER.debug("join successful after 'reboot'.");
+						} catch (ConnectionException e) {
+							// system went down
+							LOGGER.debug("'reboot' successful!");
+						}
 					}
 				} catch (IOException e) {
 					throw RaspiQueryException.createTransportFailure(hostname,
@@ -951,21 +955,20 @@ public class RaspiQuery {
 					LOGGER.info("Sending halt command: {}", haltCmdLogger);
 					Command cmd = session.exec(command);
 					cmd.join();
-					String output = IOUtils.readFully(cmd.getInputStream())
-							.toString();
 					session.close();
-					LOGGER.debug("Halt Output: {}", output);
-					if (output.contains("sudo: not found")) {
+					if (cmd.getExitStatus() != null && cmd.getExitStatus() != 0) {
 						// openelec running
 						session = client.startSession();
 						session.allocateDefaultPTY();
 						LOGGER.warn("Sudo unknown: Trying \"halt\"...");
-						cmd = session.exec("halt");
-						cmd.join();
-						output = IOUtils.readFully(cmd.getInputStream())
-								.toString();
-						LOGGER.debug("\"halt\" Output: {}", output);
-						session.close();
+						session.exec("halt");
+						try {
+							session.join(250, TimeUnit.MILLISECONDS);
+							LOGGER.debug("'halt' probably didnt work.");
+						} catch (ConnectionException e) {
+							// system went down
+							LOGGER.debug("'halt' successful!");
+						}
 					}
 				} catch (IOException e) {
 					throw RaspiQueryException.createTransportFailure(hostname,
