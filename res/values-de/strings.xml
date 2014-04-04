@@ -55,7 +55,7 @@
     <string name="edit_raspi">Pi bearbeiten</string>
     <string name="activity_title_edit_raspi">Pi bearbeiten</string>
     <string name="disk_header_mounted_on">Mounted on</string>
-    <string name="menu_shutdown">Herunterfahren</string>
+    <string name="menu_shutdown">Neustart</string>
     <string name="process_header">Prozesse</string>
     <string name="header_pid">PID</string>
     <string name="header_tty">TTY</string>

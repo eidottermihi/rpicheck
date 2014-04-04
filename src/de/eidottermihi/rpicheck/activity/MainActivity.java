@@ -138,8 +138,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	};
 
-	private MenuItem refreshItem;
-
 	static {
 		Security.insertProviderAt(
 				new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
@@ -424,8 +422,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// update and reset pullToRefresh
 		refreshableScrollView.onRefreshComplete();
 		refreshableScrollView.setMode(Mode.PULL_FROM_START);
-		// update refresh indicator
-		refreshItem.setActionView(null);
 		if (currentDevice.getLastQueryData().getException() == null) {
 			// update view data
 			this.updateQueryDataInView();
@@ -510,8 +506,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
-		// assign refresh button to field
-		refreshItem = menu.findItem(R.id.menu_refresh);
 		// set delete, edit and reboot visible if there is a current device
 		if (currentDevice != null) {
 			LOGGER.trace("Enabling menu buttons.");
@@ -527,11 +521,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		switch (item.getItemId()) {
 		case R.id.menu_settings:
 			this.startActivity(settingsIntent);
-			break;
-		case R.id.menu_refresh:
-			// do query
-			refreshItem = item;
-			this.doQuery(false);
 			break;
 		case R.id.menu_new_raspi:
 			this.startActivityForResult(newRaspiIntent,
@@ -659,8 +648,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (networkInfo != null && networkInfo.isConnected()) {
 			// show progressbar
 			progressBar.setVisibility(View.VISIBLE);
-			// animate refresh button
-			refreshItem.setActionView(R.layout.action_button_refresh);
 			// get connection settings from shared preferences
 			String host = currentDevice.getHost();
 			String user = currentDevice.getUser();
@@ -1080,8 +1067,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// update and reset pullToRefresh
 		refreshableScrollView.onRefreshComplete();
 		refreshableScrollView.setMode(Mode.PULL_FROM_START);
-		// update refresh indicator
-		refreshItem.setActionView(null);
 	}
 
 	@Override

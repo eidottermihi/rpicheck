@@ -56,7 +56,7 @@
     <string name="edit_raspi">Edit Pi</string>
     <string name="activity_title_edit_raspi">Edit Pi</string>
     <string name="disk_header_mounted_on">Mounted on</string>
-    <string name="menu_shutdown">Shutdown</string>
+    <string name="menu_shutdown">Restart</string>
     <string name="temperature_scala_summary">Temperature scala to use (Celsius, Fahrenheit)</string>
     <string name="process_header">Processes</string>
     <string name="header_pid">PID</string>
