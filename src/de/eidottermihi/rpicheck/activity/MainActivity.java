@@ -185,16 +185,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// init spinner
 		initSpinner();
 
-		boolean debugLogging = sharedPrefs.getBoolean(
+		boolean isDebugLogging = sharedPrefs.getBoolean(
 				SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
-		if (debugLogging) {
-			LoggingHelper.changeLogger(true);
-		}
+		LoggingHelper.changeLogger(isDebugLogging);
 
-		// changelog
+		// Changelog
 		final ChangeLog cl = new ChangeLog(this);
-		if (cl.firstRun())
+		if (cl.firstRun()) {
 			cl.getLogDialog().show();
+		}
 	}
 
 	/**
