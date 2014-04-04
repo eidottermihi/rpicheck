@@ -24,6 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+
 import de.eidottermihi.rpicheck.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.beans.ProcessBean;
@@ -991,7 +995,8 @@ public class RaspiQuery {
 	 * @return List with processes
 	 */
 	private List<ProcessBean> parseProcesses(String output) {
-		final String[] lines = output.split("\n");
+		final List<String> lines = Splitter.on("\n").trimResults()
+				.splitToList(output);
 		final List<ProcessBean> processes = new LinkedList<ProcessBean>();
 		int count = 0;
 		for (String line : lines) {
@@ -1000,20 +1005,25 @@ public class RaspiQuery {
 				count++;
 				continue;
 			}
-			line = line.trim();
 			// split line at whitespaces
-			final String[] lineSplitted = line.split("\\s+");
-			if (lineSplitted.length == 4) {
+			final List<String> cols = Splitter.on(CharMatcher.WHITESPACE).omitEmptyStrings()
+					.trimResults().splitToList(line);
+			if (cols.size() >= 4) {
 				try {
-					processes.add(new ProcessBean(Integer
-							.parseInt(lineSplitted[0]), lineSplitted[1],
-							lineSplitted[2], lineSplitted[3]));
+					// command may contain whitespace, so join again
+					final StringBuilder sb = new StringBuilder();
+					for (int i = 3; i < cols.size(); i++) {
+						sb.append(cols.get(i)).append(' ');
+					}
+					processes.add(new ProcessBean(
+							Integer.parseInt(cols.get(0)), cols.get(1), cols
+									.get(2), sb.toString()));
 				} catch (NumberFormatException e) {
 					LOGGER.error("Could not parse processes.");
 					LOGGER.error("Error occured on following line: {}", line);
 				}
 			} else {
-				LOGGER.error("Line[] length: {}", lineSplitted.length);
+				LOGGER.error("Line[] length: {}", cols.size());
 				LOGGER.error(
 						"Expcected another output of ps. Skipping line: {}",
 						line);
