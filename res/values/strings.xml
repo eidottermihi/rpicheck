@@ -141,5 +141,10 @@
     <string name="dialog_passphrase_hint">passphrase</string>
     <string name="dialog_passphrase_needed">Passphrase needed</string>
     <string name="dialog_passphrase_text">Please enter passphrase for private key.</string>
+    
+    
+    <string name="button_commands">Commands</string>
+    <string name="activity_title_commands">Custom Commands</string>
+    <string name="new_command">Add command</string>
 
 </resources>

@@ -61,6 +61,14 @@
                 android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
         </activity>
         <activity
+            android:name="de.eidottermihi.rpicheck.activity.CustomCommandActivity"
+            android:label="@string/activity_title_commands"
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
+        </activity>
+        <activity
             android:name="com.lamerman.FileDialog"
             android:label="@string/title_filedialog" >
         </activity>
