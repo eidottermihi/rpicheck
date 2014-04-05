@@ -118,6 +118,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private Cursor deviceCursor;
 
+	protected SimpleCursorAdapter spinadapter;
+
 	// Need handler for callbacks to the UI thread
 	final Handler mHandler = new Handler();
 
@@ -180,11 +182,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		refreshableScrollView = (PullToRefreshScrollView) findViewById(R.id.scrollView1);
 		refreshableScrollView.setOnRefreshListener(this);
 
-		// init device database
-		deviceDb = new DeviceDbHelper(this);
-		// init spinner
-		initSpinner();
-
 		boolean isDebugLogging = sharedPrefs.getBoolean(
 				SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
 		LoggingHelper.changeLogger(isDebugLogging);
@@ -193,6 +190,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 		final ChangeLog cl = new ChangeLog(this);
 		if (cl.firstRun()) {
 			cl.getLogDialog().show();
+		}
+
+		// init device database
+		deviceDb = new DeviceDbHelper(this);
+		deviceCursor = deviceDb.getFullDeviceCursor();
+		if (deviceCursor.getCount() == 0) {
+			this.startActivityForResult(newRaspiIntent,
+					NewRaspiActivity.REQUEST_SAVE);
+		} else {
+			// init spinner
+			initSpinner();
 		}
 	}
 
@@ -388,14 +396,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void initSpinner() {
 		deviceCursor = deviceDb.getFullDeviceCursor();
 		LOGGER.trace("Cursor rows: " + deviceCursor.getCount());
 		// only show spinner if theres already a device to show
 		if (deviceCursor.getCount() > 0) {
 			// make adapter
-			@SuppressWarnings("deprecation")
-			SimpleCursorAdapter spinadapter = new SimpleCursorAdapter(this,
+			this.spinadapter = new SimpleCursorAdapter(this,
 					R.layout.sherlock_spinner_dropdown_item, deviceCursor,
 					new String[] { "name", "_id" },
 					new int[] { android.R.id.text1 });
@@ -407,10 +415,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 					this);
 			this.getSupportActionBar().setDisplayShowTitleEnabled(false);
 		} else {
-			// no device, start activity to create a new
-			Toast.makeText(this, R.string.please_add_a_raspberry_pi,
-					Toast.LENGTH_LONG).show();
-			this.startActivity(newRaspiIntent);
+			this.getSupportActionBar().setNavigationMode(
+					ActionBar.DISPLAY_SHOW_TITLE);
+			this.getSupportActionBar().setDisplayShowTitleEnabled(true);
+			this.currentDevice = null;
+			// disable edit/restart/delete action menu items
+			this.supportInvalidateOptionsMenu();
 		}
 	}
 
@@ -506,12 +516,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
 		// set delete, edit and reboot visible if there is a current device
-		if (currentDevice != null) {
-			LOGGER.trace("Enabling menu buttons.");
-			menu.findItem(R.id.menu_delete).setVisible(true);
-			menu.findItem(R.id.menu_edit_raspi).setVisible(true);
-			menu.findItem(R.id.menu_reboot).setVisible(true);
-		}
+		boolean currDevice = currentDevice != null ? true : false;
+		menu.findItem(R.id.menu_delete).setVisible(currDevice);
+		menu.findItem(R.id.menu_edit_raspi).setVisible(currDevice);
+		menu.findItem(R.id.menu_reboot).setVisible(currDevice);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -631,6 +639,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (allDevices != null) {
 			allDevices.delete(currentDevice.getId());
 		}
+		initSpinner();
 	}
 
 	private void doQuery(boolean initByPullToRefresh) {
