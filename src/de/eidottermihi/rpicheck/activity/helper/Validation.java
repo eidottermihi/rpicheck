@@ -18,6 +18,22 @@ public class Validation {
 	/**
 	 * Validates if user input is valid.
 	 * 
+	 * @param context
+	 * @param cmd
+	 * @return true if valid
+	 */
+	public boolean validateNewCmdData(Context context, EditText cmd) {
+		boolean dataValid = true;
+		if (!checkNonOptionalTextField(cmd,
+				context.getString(R.string.validation_command_blank))) {
+			dataValid = false;
+		}
+		return dataValid;
+	}
+
+	/**
+	 * Validates if user input is valid.
+	 * 
 	 * @param authMethod
 	 *            0 = ssh password, 1 = private key, 2 = private key with
 	 *            passphrase

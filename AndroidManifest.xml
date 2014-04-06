@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -25,7 +24,8 @@
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -67,6 +67,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name="de.eidottermihi.rpicheck.activity.NewCommandActivity"
+            android:label="@string/activity_title_new_command"
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.CustomCommandActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity" />
         </activity>
         <activity
             android:name="com.lamerman.FileDialog"

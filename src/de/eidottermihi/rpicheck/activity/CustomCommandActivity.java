@@ -3,8 +3,10 @@ package de.eidottermihi.rpicheck.activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -27,8 +29,11 @@ public class CustomCommandActivity extends SherlockActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		Bundle extras = this.getIntent().getExtras();
-		currentDevice = (RaspberryDeviceBean) extras.get("pi");
-		getSupportActionBar().setTitle(currentDevice.getName());
+		if (extras.get("pi") != null) {
+			currentDevice = (RaspberryDeviceBean) extras.get("pi");
+			getSupportActionBar().setTitle(currentDevice.getName());
+		}
+
 	}
 
 	@Override
@@ -51,9 +56,30 @@ public class CustomCommandActivity extends SherlockActivity {
 			NavUtils.navigateUpFromSameTask(this);
 			break;
 		case R.id.menu_new_command:
-			// TODO Activity new command
+			// init intent
+			Intent newCommandIntent = new Intent(CustomCommandActivity.this,
+					NewCommandActivity.class);
+			newCommandIntent.putExtras(this.getIntent().getExtras());
+			this.startActivityForResult(newCommandIntent,
+					NewCommandActivity.REQUEST_NEW);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		LOGGER.info("onActivityResult()");
+		if (requestCode == NewCommandActivity.REQUEST_NEW
+				&& resultCode == RESULT_OK) {
+			// new cmd saved, update...
+			Toast.makeText(this, "New command saved!", Toast.LENGTH_SHORT)
+					.show();
+		}
+		LOGGER.info("Finished new command activity.");
+		currentDevice = (RaspberryDeviceBean) data.getExtras().get("pi");
+		getSupportActionBar().setTitle(currentDevice.getName());
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
 }
