@@ -19,7 +19,7 @@
 	<logger name="net.schmizz" level="WARN">
 	    <appender-ref ref="infoLog"/>
 	</logger>
-	<logger name="de.eidottermihi.rpicheck" level="INFO">
+	<logger name="de.eidottermihi.rpicheck" level="DEBUG">
 	    <appender-ref ref="infoLog"/>
 	</logger>
 

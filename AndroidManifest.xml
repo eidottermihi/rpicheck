@@ -63,6 +63,7 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.CustomCommandActivity"
             android:label="@string/activity_title_commands"
+            android:launchMode="singleTop"
             android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -343,7 +343,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		return readCommand(id);
 	}
 
-	private CommandBean readCommand(long id) {
+	public CommandBean readCommand(long id) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		CommandBean bean = null;
 		Cursor cursor = db.query(COMMANDS_TABLE_NAME, new String[] { COLUMN_ID,
