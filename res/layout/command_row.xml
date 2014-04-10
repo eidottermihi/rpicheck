@@ -9,15 +9,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:paddingBottom="6dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="6dp"
         android:text="Name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/commandRowQueryButton"
+    <TextView
+        android:id="@+id/commandRowCommand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Go" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/commandRowName"
+        android:ellipsize="marquee"
+        android:maxLines="2"
+        android:paddingLeft="8dp"
+        android:text="some very long command may be standing here instead of this dummy text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:typeface="monospace" />
 
 </RelativeLayout>

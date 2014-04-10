@@ -1119,4 +1119,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (deviceDb != null) {
+			deviceDb.close();
+		}
+	}
+
 }

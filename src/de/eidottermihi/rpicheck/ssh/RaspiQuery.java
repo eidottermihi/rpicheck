@@ -1006,8 +1006,8 @@ public class RaspiQuery {
 				continue;
 			}
 			// split line at whitespaces
-			final List<String> cols = Splitter.on(CharMatcher.WHITESPACE).omitEmptyStrings()
-					.trimResults().splitToList(line);
+			final List<String> cols = Splitter.on(CharMatcher.WHITESPACE)
+					.omitEmptyStrings().trimResults().splitToList(line);
 			if (cols.size() >= 4) {
 				try {
 					// command may contain whitespace, so join again
@@ -1322,6 +1322,49 @@ public class RaspiQuery {
 
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
+	}
+
+	/**
+	 * Runs the specified command.
+	 * 
+	 * @param command
+	 *            the command to run
+	 * @throws RaspiQueryException
+	 *             when something goes wrong
+	 */
+	public String run(String command) throws RaspiQueryException {
+		LOGGER.info("Running custom command: {}", command);
+		if (client != null) {
+			if (client.isConnected() && client.isAuthenticated()) {
+				Session session;
+				try {
+					session = client.startSession();
+					final Command cmd = session.exec(command);
+					cmd.join(20, TimeUnit.SECONDS);
+					cmd.close();
+					final String output = IOUtils.readFully(
+							cmd.getInputStream()).toString();
+					final String error = IOUtils
+							.readFully(cmd.getErrorStream()).toString();
+					final StringBuilder sb = new StringBuilder();
+					final String out = sb.append(output).append(error)
+							.toString();
+					LOGGER.debug("Output of '{}': {}", command, out);
+					session.close();
+					return out;
+				} catch (IOException e) {
+					throw RaspiQueryException.createTransportFailure(hostname,
+							e);
+				}
+			} else {
+				throw new IllegalStateException(
+						"You must establish a connection first.");
+			}
+		} else {
+			throw new IllegalStateException(
+					"You must establish a connection first.");
+		}
+
 	}
 
 }

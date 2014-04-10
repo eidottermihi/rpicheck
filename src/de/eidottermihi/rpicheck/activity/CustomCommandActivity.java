@@ -3,28 +3,34 @@ package de.eidottermihi.rpicheck.activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.CursorAdapter;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
 
-public class CustomCommandActivity extends SherlockActivity implements
-		OnItemClickListener, OnClickListener {
+public class CustomCommandActivity extends SherlockFragmentActivity implements
+		OnItemClickListener, OnItemLongClickListener {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CustomCommandActivity.class);
 
@@ -40,7 +46,6 @@ public class CustomCommandActivity extends SherlockActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_commands);
-
 		this.commandListView = (ListView) findViewById(R.id.commandListView);
 
 		// Show the Up button in the action bar.
@@ -73,10 +78,11 @@ public class CustomCommandActivity extends SherlockActivity implements
 	 */
 	private void initListView(RaspberryDeviceBean pi) {
 		fullCommandCursor = deviceDb.getFullCommandCursor();
-		CommandAdapter commandsAdapter = new CommandAdapter(fullCommandCursor,
-				this, this);
+		CommandAdapter commandsAdapter = new CommandAdapter(this,
+				fullCommandCursor, CursorAdapter.FLAG_AUTO_REQUERY);
 		commandListView.setAdapter(commandsAdapter);
 		commandListView.setOnItemClickListener(this);
+		commandListView.setOnItemLongClickListener(this);
 
 	}
 
@@ -136,14 +142,39 @@ public class CustomCommandActivity extends SherlockActivity implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int itemPos,
 			long itemId) {
-		Toast.makeText(this,
-				"Item pos " + itemPos + " clicked. Item _id= " + itemId,
-				Toast.LENGTH_SHORT).show();
+		ConnectivityManager connMgr = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			LOGGER.debug(
+					"Command pos {} clicked. Item _id = {}. Starting run dialog.",
+					itemPos, itemId);
+			DialogFragment runCommandDialog = new RunCommandDialog();
+			Bundle args = new Bundle();
+			args.putSerializable("pi", currentDevice);
+			CommandBean command = deviceDb.readCommand(itemId);
+			args.putSerializable("cmd", command);
+			runCommandDialog.setArguments(args);
+			runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+		} else {
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
+					.show();
+		}
 	}
 
 	@Override
-	public void onClick(View v) {
-		Toast.makeText(this, "Query button clicked", Toast.LENGTH_SHORT).show();
+	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
+			long arg3) {
+		LOGGER.debug("Command pos {} long clicked. Item _id = {}.");
+		return true;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (deviceDb != null) {
+			deviceDb.close();
+		}
 	}
 
 }

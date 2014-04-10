@@ -1,6 +1,5 @@
 package de.eidottermihi.rpicheck.activity;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +10,7 @@ import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.common.base.Strings;
 
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
@@ -66,12 +66,12 @@ public class NewCommandActivity extends SherlockActivity {
 
 	public void onSaveButtonClick(View view) {
 		if (validation.validateNewCmdData(this, commandEditText)) {
-			String name = nameEditText.getText().toString().trim();
-			String cmd = nameEditText.getText().toString().trim();
-			boolean showOutput = showOutputCheckbox.isChecked();
-			if (StringUtils.isBlank(name)) {
+			String name = nameEditText.getText().toString();
+			String cmd = commandEditText.getText().toString().trim();
+			if (Strings.isNullOrEmpty(name)) {
 				name = cmd;
 			}
+			boolean showOutput = showOutputCheckbox.isChecked();
 			CommandBean bean = new CommandBean();
 			bean.setName(name);
 			bean.setCommand(cmd);

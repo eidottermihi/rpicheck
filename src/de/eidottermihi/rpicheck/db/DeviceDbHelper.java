@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
-
+import de.eidottermihi.rpicheck.activity.helper.CursorHelper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -350,11 +350,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 				COLUMN_CMD_NAME, COLUMN_CMD_COMMAND, COLUMN_CMD_FLAGOUTPUT },
 				COLUMN_ID + "=" + id, null, null, null, COLUMN_ID);
 		if (cursor.moveToFirst()) {
-			bean = new CommandBean();
-			bean.setId(cursor.getLong(0));
-			bean.setName(cursor.getString(1));
-			bean.setCommand(cursor.getString(2));
-			bean.setShowOutput(cursor.getInt(3) == 1 ? true : false);
+			bean = CursorHelper.readCommand(cursor);
 		} else {
 			LOGGER.info("No command with id={} found.", id);
 		}
