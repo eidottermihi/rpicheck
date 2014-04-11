@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_new_command"
+        android:icon="@drawable/ic_content_new"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/new_command"/>
+
+</menu>

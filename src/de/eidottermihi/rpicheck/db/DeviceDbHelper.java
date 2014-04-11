@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
-
+import de.eidottermihi.rpicheck.activity.helper.CursorHelper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -17,12 +17,13 @@ import android.provider.BaseColumns;
 
 public class DeviceDbHelper extends SQLiteOpenHelper {
 	/** Current database version. */
-	private static final int DATABASE_VERSION = 8;
+	private static final int DATABASE_VERSION = 9;
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DeviceDbHelper.class);
 	private static final String DATABASE_NAME = "RASPIQUERY";
 	private static final String DEVICES_TABLE_NAME = "DEVICES";
 	private static final String QUERIES_TABLE_NAME = "QUERIES";
+	private static final String COMMANDS_TABLE_NAME = "COMMANDS";
 	private static final String COLUMN_ID = BaseColumns._ID;
 	private static final String COLUMN_NAME = "name";
 	private static final String COLUMN_DESCRIPTION = "description";
@@ -51,6 +52,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	private static final String COLUMN_QUERY_MEM_TOTAL = "mem_total";
 	private static final String COLUMN_QUERY_MEM_FREE = "mem_free";
 	private static final String COLUMN_QUERY_DISTRIBUTION = "distribution";
+	private static final String COLUMN_CMD_COMMAND = "command";
+	private static final String COLUMN_CMD_FLAGOUTPUT = "flag_output";
+	private static final String COLUMN_CMD_NAME = "name";
 
 	private static final String DEVICE_TABLE_CREATE = "CREATE TABLE "
 			+ DEVICES_TABLE_NAME + " (" + COLUMN_ID
@@ -77,6 +81,12 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			+ " INTEGER, " + COLUMN_QUERY_MEM_FREE + " INTEGER, "
 			+ COLUMN_QUERY_DISTRIBUTION + " TEXT)";
 
+	private static final String COMMAND_TABLE_CREATE = "CREATE TABLE "
+			+ COMMANDS_TABLE_NAME + " (" + COLUMN_ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_CMD_NAME
+			+ " TEXT NOT NULL, " + COLUMN_CMD_COMMAND + " TEXT NOT NULL, "
+			+ COLUMN_CMD_FLAGOUTPUT + " INTEGER NOT NULL)";
+
 	public DeviceDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
@@ -86,6 +96,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		LOGGER.info("Executing first-time database setup.");
 		db.execSQL(DEVICE_TABLE_CREATE);
 		db.execSQL(QUERY_TABLE_CREATE);
+		db.execSQL(COMMAND_TABLE_CREATE);
 	}
 
 	@Override
@@ -106,6 +117,21 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			upgradeV7ToV8(db);
 			migrationAvailable = true;
 		}
+		if (oldVersion == 6 && newVersion == 9) {
+			upgradeV6ToV7(db);
+			upgradeV7ToV8(db);
+			upgradeV8ToV9(db);
+			migrationAvailable = true;
+		}
+		if (oldVersion == 7 && newVersion == 9) {
+			upgradeV7ToV8(db);
+			upgradeV8ToV9(db);
+			migrationAvailable = true;
+		}
+		if (oldVersion == 8 && newVersion == 9) {
+			upgradeV8ToV9(db);
+			migrationAvailable = true;
+		}
 		if (!migrationAvailable) {
 			// dropping all tables (data will be lost *sad* )
 			LOGGER.warn("No migration for database upgrade from version {} to version {} available. Setting up whole new database, all current data will be lost, sorry!");
@@ -114,6 +140,11 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 			// run initial setup
 			this.onCreate(db);
 		}
+	}
+
+	private void upgradeV8ToV9(SQLiteDatabase db) {
+		LOGGER.info("Upgrading database from version 8 to version 9: adding commands table.");
+		db.execSQL(COMMAND_TABLE_CREATE);
 	}
 
 	private void upgradeV7ToV8(SQLiteDatabase db) {
@@ -140,6 +171,15 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	public Cursor getFullDeviceCursor() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		return db.query(DEVICES_TABLE_NAME, null, null, null, null, null, null);
+	}
+
+	/**
+	 * @return a full cursor for commands table
+	 */
+	public Cursor getFullCommandCursor() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		return db
+				.query(COMMANDS_TABLE_NAME, null, null, null, null, null, null);
 	}
 
 	/**
@@ -190,6 +230,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		values.put(COLUMN_CREATED_AT, timestamp);
 		values.put(COLUMN_MODIFIED_AT, timestamp);
 		long id = db.insert(DEVICES_TABLE_NAME, null, values);
+		LOGGER.debug("Inserted new device[id={}].", id);
 		return read(id);
 	}
 
@@ -289,6 +330,62 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		return read(device.getId());
 	}
 
+	public CommandBean create(CommandBean command) {
+		LOGGER.info("Writing new command[name={}] to database.",
+				command.getName());
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		// _id AUTOINCREMENT
+		values.put(COLUMN_CMD_NAME, command.getName());
+		values.put(COLUMN_CMD_COMMAND, command.getCommand());
+		values.put(COLUMN_CMD_FLAGOUTPUT, command.isShowOutput());
+		long id = db.insert(COMMANDS_TABLE_NAME, null, values);
+		db.close();
+		return readCommand(id);
+	}
+
+	public CommandBean readCommand(long id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		CommandBean bean = null;
+		Cursor cursor = db.query(COMMANDS_TABLE_NAME, new String[] { COLUMN_ID,
+				COLUMN_CMD_NAME, COLUMN_CMD_COMMAND, COLUMN_CMD_FLAGOUTPUT },
+				COLUMN_ID + "=" + id, null, null, null, COLUMN_ID);
+		if (cursor.moveToFirst()) {
+			bean = CursorHelper.readCommand(cursor);
+		} else {
+			LOGGER.info("No command with id={} found.", id);
+		}
+		cursor.close();
+		db.close();
+		return bean;
+	}
+
+	public CommandBean updateCommand(CommandBean command) {
+		LOGGER.debug("Updating command id {}.", command.getId());
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_CMD_NAME, command.getName());
+		values.put(COLUMN_CMD_COMMAND, command.getCommand());
+		values.put(COLUMN_CMD_FLAGOUTPUT, command.isShowOutput());
+		int rowsUpdate = db.update(COMMANDS_TABLE_NAME, values, COLUMN_ID
+				+ " = ?", new String[] { command.getId() + "" });
+		db.close();
+		LOGGER.debug(rowsUpdate + " row afflicted from update.");
+		return readCommand(command.getId());
+	}
+
+	public boolean deleteCommand(long id) {
+		final String idString = id + "";
+		SQLiteDatabase db = this.getWritableDatabase();
+		int deviceRows = db.delete(COMMANDS_TABLE_NAME, COLUMN_ID + " = ?",
+				new String[] { idString });
+		LOGGER.info("Deleted command with id=" + idString + ": " + deviceRows
+				+ "command row(s) deleted.");
+		db.close();
+		return deviceRows > 0;
+
+	}
+
 	/**
 	 * Deletes all device data and query data from the database.
 	 */
@@ -300,6 +397,8 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 				+ " device query data from database.");
 		int rowsDevices = db.delete(DEVICES_TABLE_NAME, "1", null);
 		LOGGER.info("Deleted " + rowsDevices + " devices from database.");
+		int commands = db.delete(COMMANDS_TABLE_NAME, null, null);
+		LOGGER.info("Deleted " + commands + " commands from database.");
 		LOGGER.info("Wipe successful.");
 		db.close();
 	}

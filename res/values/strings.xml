@@ -141,5 +141,26 @@
     <string name="dialog_passphrase_hint">passphrase</string>
     <string name="dialog_passphrase_needed">Passphrase needed</string>
     <string name="dialog_passphrase_text">Please enter passphrase for private key.</string>
+    
+    
+    
+    <string name="button_commands">Commands</string>
+    <string name="activity_title_commands">Custom Commands</string>
+    <string name="new_command">Add command</string>
+    <string name="activity_title_new_command">New command</string>
+    <string name="activity_title_edit_command">Edit command</string>
+    <string name="label_cmd_name">Name</string>
+    <string name="label_cmd_name_hint">e.g. \'reboot\'</string>
+    <string name="label_cmd_command">Command</string>
+    <string name="label_cmd_command_hint">e.g. \'shutdown now -r\'</string>
+    <string name="label_cmd_show_output">Show output</string>
+    <string name="label_cmd_save_button">Save</string>
+    <string name="validation_command_blank">Command cannot be blank.</string>
+    <string name="toast_command_updated">Command updated!</string>
+    <string name="toast_command_saved">Command saved!</string>
+    <string name="command_context_edit">Edit</string>
+    <string name="command_context_delete">Delete</string>
+    <string name="command_context_run">Run</string>
+    <string name="run_cmd_dialog_title">Running %1$s</string>
 
 </resources>

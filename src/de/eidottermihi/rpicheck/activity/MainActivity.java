@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +27,7 @@ import android.support.v4.app.DialogFragment;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
@@ -40,6 +40,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.common.base.Strings;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -87,6 +88,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Intent settingsIntent;
 	private Intent newRaspiIntent;
 	private Intent editRaspiIntent;
+	private Intent commandIntent;
 	private RaspiQuery raspiQuery;
 
 	private TextView coreTempText;
@@ -105,6 +107,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private TableLayout processTable;
 	private TableLayout networkTable;
 	private ProgressBar progressBar;
+	private Button commandButton;
 	private PullToRefreshScrollView refreshableScrollView;
 
 	private SharedPreferences sharedPrefs;
@@ -157,9 +160,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
 		newRaspiIntent = new Intent(MainActivity.this, NewRaspiActivity.class);
 		editRaspiIntent = new Intent(MainActivity.this, EditRaspiActivity.class);
+		commandIntent = new Intent(MainActivity.this,
+				CustomCommandActivity.class);
 
-		// assigning progressbar
+		// assigning progressbar and command button
 		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
+		commandButton = (Button) findViewById(R.id.commandButton);
 
 		// assigning textviews to fields
 		armFreqText = (TextView) findViewById(R.id.armFreqText);
@@ -399,7 +405,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@SuppressWarnings("deprecation")
 	private void initSpinner() {
 		deviceCursor = deviceDb.getFullDeviceCursor();
-		LOGGER.trace("Cursor rows: " + deviceCursor.getCount());
+		LOGGER.debug("Device cursor rows: " + deviceCursor.getCount());
 		// only show spinner if theres already a device to show
 		if (deviceCursor.getCount() > 0) {
 			// make adapter
@@ -414,6 +420,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			this.getSupportActionBar().setListNavigationCallbacks(spinadapter,
 					this);
 			this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+			commandButton.setVisibility(View.VISIBLE);
 		} else {
 			this.getSupportActionBar().setNavigationMode(
 					ActionBar.DISPLAY_SHOW_TITLE);
@@ -421,6 +428,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			this.currentDevice = null;
 			// disable edit/restart/delete action menu items
 			this.supportInvalidateOptionsMenu();
+			commandButton.setVisibility(View.GONE);
+
 		}
 	}
 
@@ -535,7 +544,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			break;
 		case R.id.menu_delete:
 			this.deleteCurrentDevice();
-			this.initSpinner();
 			break;
 		case R.id.menu_edit_raspi:
 			final Bundle extras = new Bundle();
@@ -598,8 +606,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				if (keyfilePath != null) {
 					final File privateKey = new File(keyfilePath);
 					if (privateKey.exists()) {
-						if (!StringUtils
-								.isBlank(currentDevice.getKeyfilePass())) {
+						if (!Strings.isNullOrEmpty(currentDevice
+								.getKeyfilePass())) {
 							final String passphrase = currentDevice
 									.getKeyfilePass();
 							new SSHShutdownTask().execute(host, user, null,
@@ -1089,6 +1097,33 @@ public class MainActivity extends SherlockFragmentActivity implements
 			break;
 		default:
 			break;
+		}
+	}
+
+	/**
+	 * Gets called when Command Button is clicked. Starts activity for custom
+	 * Commands.
+	 * 
+	 * @param view
+	 */
+	public void onCommandButtonClick(View view) {
+		switch (view.getId()) {
+		case R.id.commandButton:
+			Bundle currPi = new Bundle();
+			currPi.putSerializable("pi", currentDevice);
+			commandIntent.putExtras(currPi);
+			this.startActivity(commandIntent);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (deviceDb != null) {
+			deviceDb.close();
 		}
 	}
 

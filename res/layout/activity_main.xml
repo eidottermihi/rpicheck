@@ -19,6 +19,14 @@
             android:indeterminate="false"
             android:max="100"
             android:visibility="gone" />
+        
+        <Button android:id="@+id/commandButton" 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_commands"
+            android:visibility="gone"
+            android:onClick="onCommandButtonClick"
+            />
 
         <TextView
             android:id="@+id/headerTextOverclock"

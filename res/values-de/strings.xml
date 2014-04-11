@@ -134,5 +134,24 @@
 	<string name="dialog_passphrase_hint">Passphrase</string>
 	<string name="dialog_passphrase_needed">Passphrase darf nicht leer sein.</string>
 	<string name="dialog_passphrase_text">Bitte gib die Passphrase für den privaten Key an.</string>
+	
+	<string name="button_commands">Kommandos</string>
+    <string name="activity_title_commands">Eigene Kommandos</string>
+    <string name="new_command">Neues Kommando</string>
+    <string name="activity_title_new_command">Neues Kommando</string>
+    <string name="activity_title_edit_command">Kommando bearbeiten</string>
+    <string name="label_cmd_name">Name</string>
+    <string name="label_cmd_name_hint">z.B. \'Neustarten\'</string>
+    <string name="label_cmd_command">Befehl</string>
+    <string name="label_cmd_command_hint">z.B. \'shutdown now -r\'</string>
+    <string name="label_cmd_show_output">Ausgabe zeigen</string>
+    <string name="label_cmd_save_button">Speichern</string>
+    <string name="validation_command_blank">Befehl darf nicht leer sein.</string>
+    <string name="toast_command_updated">Kommando aktualisiert!</string>
+    <string name="toast_command_saved">Kommando gespeichert!</string>
+    <string name="command_context_edit">Bearbeiten</string>
+    <string name="command_context_delete">Löschen</string>
+    <string name="command_context_run">Ausführen</string>
+    <string name="run_cmd_dialog_title">%1$s ausführen</string>
 
 </resources>
