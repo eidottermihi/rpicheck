@@ -54,8 +54,9 @@ public class RunCommandDialog extends DialogFragment {
 			this.passphrase = this.getArguments().getString("passphrase");
 		}
 
-		builder.setTitle("Running " + this.command.getName());
-		builder.setIcon(R.drawable.device_access_accounts);
+		builder.setTitle(getString(R.string.run_cmd_dialog_title,
+				this.command.getName()));
+		builder.setIcon(R.drawable.ic_action_play);
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
 			@Override

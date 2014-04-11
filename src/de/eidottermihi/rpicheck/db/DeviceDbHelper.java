@@ -361,6 +361,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 	}
 
 	public CommandBean updateCommand(CommandBean command) {
+		LOGGER.debug("Updating command id {}.", command.getId());
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_CMD_NAME, command.getName());
@@ -369,8 +370,20 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		int rowsUpdate = db.update(COMMANDS_TABLE_NAME, values, COLUMN_ID
 				+ " = ?", new String[] { command.getId() + "" });
 		db.close();
-		LOGGER.trace(rowsUpdate + " row afflicted from update.");
+		LOGGER.debug(rowsUpdate + " row afflicted from update.");
 		return readCommand(command.getId());
+	}
+
+	public boolean deleteCommand(long id) {
+		final String idString = id + "";
+		SQLiteDatabase db = this.getWritableDatabase();
+		int deviceRows = db.delete(COMMANDS_TABLE_NAME, COLUMN_ID + " = ?",
+				new String[] { idString });
+		LOGGER.info("Deleted command with id=" + idString + ": " + deviceRows
+				+ "command row(s) deleted.");
+		db.close();
+		return deviceRows > 0;
+
 	}
 
 	/**

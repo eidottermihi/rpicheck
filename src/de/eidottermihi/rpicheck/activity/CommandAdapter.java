@@ -11,6 +11,9 @@ import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.CursorHelper;
 import de.eidottermihi.rpicheck.db.CommandBean;
 
+/**
+ * Cursor adapter for Commands.
+ */
 public class CommandAdapter extends CursorAdapter {
 
 	private LayoutInflater inflater;

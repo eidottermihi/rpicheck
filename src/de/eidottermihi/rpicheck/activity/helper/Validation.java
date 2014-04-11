@@ -1,10 +1,11 @@
 package de.eidottermihi.rpicheck.activity.helper;
 
-import org.apache.commons.lang3.StringUtils;
-
 import android.content.Context;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.google.common.base.Strings;
+
 import de.eidottermihi.rpicheck.R;
 
 /**
@@ -75,14 +76,14 @@ public class Validation {
 			}
 		} else if (authMethod == 1) {
 			// a keyfile must be present
-			if (keyfilePath == null || StringUtils.isBlank(keyfilePath)) {
+			if (Strings.isNullOrEmpty(keyfilePath)) {
 				keyChooser.setError(context
 						.getString(R.string.validation_msg_keyfile));
 				dataValid = false;
 			}
 		} else if (authMethod == 2) {
 			// keyfile must be present
-			if (keyfilePath == null || StringUtils.isBlank(keyfilePath)) {
+			if (Strings.isNullOrEmpty(keyfilePath)) {
 				keyChooser.setError(context
 						.getString(R.string.validation_msg_keyfile));
 				dataValid = false;
@@ -138,7 +139,7 @@ public class Validation {
 			String errorMessage) {
 		// get text
 		final String text = textfield.getText().toString().trim();
-		if (text == null || StringUtils.isBlank(text)) {
+		if (Strings.isNullOrEmpty(text)) {
 			textfield.setError(errorMessage);
 			return false;
 		}

@@ -14,10 +14,11 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.CursorAdapter;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,11 +32,11 @@ import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
-import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
+import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
 
 public class CustomCommandActivity extends SherlockFragmentActivity implements
-		OnItemClickListener, OnItemLongClickListener, PassphraseDialogListener {
+		OnItemClickListener, PassphraseDialogListener {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CustomCommandActivity.class);
 
@@ -87,7 +88,8 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 				fullCommandCursor, CursorAdapter.FLAG_AUTO_REQUERY);
 		commandListView.setAdapter(commandsAdapter);
 		commandListView.setOnItemClickListener(this);
-		commandListView.setOnItemLongClickListener(this);
+		// commandListView.setOnItemLongClickListener(this);
+		registerForContextMenu(commandListView);
 
 	}
 
@@ -95,6 +97,21 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.menu_command, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		if (v.getId() == R.id.commandListView) {
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+			LOGGER.debug("Creating context menu for command id = {}.", info.id);
+			CommandBean cmd = deviceDb.readCommand(info.id);
+			menu.setHeaderTitle(cmd.getName());
+			menu.add(Menu.NONE, 1, 1, R.string.command_context_edit);
+			menu.add(Menu.NONE, 2, 2, R.string.command_context_delete);
+			menu.add(Menu.NONE, 3, 3, R.string.command_context_run);
+		}
+		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 	@Override
@@ -123,15 +140,51 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	}
 
 	@Override
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
+				.getMenuInfo();
+		LOGGER.debug("Context item selected for command id {}.", info.id);
+		int menuItemIndex = item.getItemId();
+		switch (menuItemIndex) {
+		case 1:
+			Intent newCommandIntent = new Intent(CustomCommandActivity.this,
+					NewCommandActivity.class);
+			newCommandIntent.putExtras(this.getIntent().getExtras());
+			newCommandIntent.putExtra(NewCommandActivity.CMD_KEY_EDIT, info.id);
+			this.startActivityForResult(newCommandIntent,
+					NewCommandActivity.REQUEST_EDIT);
+			break;
+		case 2:
+			this.deleteCommand(info.id);
+			break;
+		case 3:
+			this.runCommand(info.id);
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+
+	private void deleteCommand(long id) {
+		deviceDb.deleteCommand(id);
+		this.initListView(currentDevice);
+	}
+
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == NewCommandActivity.REQUEST_NEW
 				&& resultCode == RESULT_OK) {
 			// new cmd saved, update...
-			Toast.makeText(this, "New command saved!", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, R.string.toast_command_saved,
+					Toast.LENGTH_SHORT).show();
+			initListView(currentDevice);
+		} else if (requestCode == NewCommandActivity.REQUEST_EDIT
+				&& resultCode == RESULT_OK) {
+			Toast.makeText(this, R.string.toast_command_updated,
+					Toast.LENGTH_SHORT).show();
 			initListView(currentDevice);
 		}
-		LOGGER.debug("Finished new command activity.");
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -147,19 +200,22 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int itemPos,
 			long itemId) {
+		LOGGER.debug("Command pos {} clicked. Item _id = {}.", itemPos, itemId);
+		runCommand(itemId);
+	}
+
+	private void runCommand(long commandId) {
 		ConnectivityManager connMgr = (ConnectivityManager) this
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
-			LOGGER.debug("Command pos {} clicked. Item _id = {}.", itemPos,
-					itemId);
 			if (currentDevice.getAuthMethod().equals(
 					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])
 					&& Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
 				// must ask for key passphrase first
 				LOGGER.debug("Asking for key passphrase.");
 				// dirty hack, saving commandId as "dialog type"
-				final String dialogType = itemId + "";
+				final String dialogType = commandId + "";
 				final DialogFragment passphraseDialog = new PassphraseDialog();
 				final Bundle args = new Bundle();
 				args.putString(PassphraseDialog.KEY_TYPE, dialogType);
@@ -169,19 +225,12 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 						.show(getSupportFragmentManager(), "passphrase");
 			} else {
 				LOGGER.debug("Opening command dialog.");
-				openCommandDialog(itemId, null);
+				openCommandDialog(commandId, null);
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
 		}
-	}
-
-	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
-		LOGGER.debug("Command pos {} long clicked. Item _id = {}.");
-		return true;
 	}
 
 	@Override

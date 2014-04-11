@@ -20,13 +20,12 @@ import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import net.schmizz.sshj.xfer.FileSystemFile;
 import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 
 import de.eidottermihi.rpicheck.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
@@ -41,6 +40,7 @@ import de.eidottermihi.rpicheck.beans.WlanBean;
  * 
  * @author Michael
  * @version <ul>
+ *          <li>0.4.0 added sending commands</li>
  *          <li>0.3.3 added private/public key authentification</li>
  *          <li>0.3.2 fixed wlan parsing</li>
  *          <li>0.3.1 added halt commando, general bugfixing of path problems</li>
@@ -101,9 +101,9 @@ public class RaspiQuery {
 	 *            ssh port to use (if null, default will be used)
 	 */
 	public RaspiQuery(final String host, final String user, final Integer port) {
-		if (StringUtils.isBlank(host)) {
+		if (Strings.isNullOrEmpty(host)) {
 			throw new IllegalArgumentException("hostname should not be blank.");
-		} else if (StringUtils.isBlank(user)) {
+		} else if (Strings.isNullOrEmpty(user)) {
 			throw new IllegalArgumentException("username should not be blank.");
 		} else {
 			LOGGER.info("New RaspiQuery for host: {}", host);

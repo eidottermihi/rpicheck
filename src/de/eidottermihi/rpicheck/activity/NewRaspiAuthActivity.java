@@ -2,7 +2,6 @@ package de.eidottermihi.rpicheck.activity;
 
 import java.io.File;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +24,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.common.base.Strings;
 import com.lamerman.FileDialog;
 import com.lamerman.SelectionMode;
 
@@ -249,10 +249,10 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 			String authMethod, String sshPort, String description,
 			String sudoPass, String sshPass, String keyPass, String keyPath) {
 		// if sshPort is empty, use default port (22)
-		if (StringUtils.isBlank(sshPort)) {
+		if (Strings.isNullOrEmpty(sshPort)) {
 			sshPort = getText(R.string.default_ssh_port).toString();
 		}
-		if (StringUtils.isBlank(sudoPass)) {
+		if (Strings.isNullOrEmpty(sudoPass)) {
 			sudoPass = "";
 		}
 		deviceDb.create(name, host, user, sshPass, Integer.parseInt(sshPort),

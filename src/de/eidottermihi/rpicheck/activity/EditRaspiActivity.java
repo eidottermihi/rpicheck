@@ -1,6 +1,5 @@
 package de.eidottermihi.rpicheck.activity;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +22,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.common.base.Strings;
 import com.lamerman.FileDialog;
 import com.lamerman.SelectionMode;
 
@@ -176,7 +176,7 @@ public class EditRaspiActivity extends SherlockActivity implements
 			// don't show textfield for passphrase
 			relLayKeyPassphrase.setVisibility(View.GONE);
 			// remove passphrase from textfield
-			editTextKeyfilePass.setText(StringUtils.EMPTY);
+			editTextKeyfilePass.setText("");
 		} else {
 			// show textfield for passphrase
 			relLayKeyPassphrase.setVisibility(View.VISIBLE);
@@ -255,7 +255,7 @@ public class EditRaspiActivity extends SherlockActivity implements
 			String pass, String sshPort, String description, String sudoPass,
 			String authMethod, String keyfilePath, String keyfilePass) {
 		// if sudoPass is null use empty pass
-		if (StringUtils.isBlank(sudoPass)) {
+		if (Strings.isNullOrEmpty(sudoPass)) {
 			sudoPass = "";
 		}
 		deviceBean.setName(name);
@@ -294,7 +294,7 @@ public class EditRaspiActivity extends SherlockActivity implements
 				relLayKeyPassphrase.setVisibility(View.VISIBLE);
 				checkboxAskPassphrase.setChecked(false);
 				editTextKeyfilePass.setText(deviceBean.getKeyfilePass());
-			} else if (!StringUtils.isBlank(editTextKeyfilePass.getText()
+			} else if (!Strings.isNullOrEmpty(editTextKeyfilePass.getText()
 					.toString())) {
 				relLayKeyPassphrase.setVisibility(View.VISIBLE);
 				checkboxAskPassphrase.setChecked(false);

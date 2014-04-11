@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +40,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.common.base.Strings;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -606,8 +606,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				if (keyfilePath != null) {
 					final File privateKey = new File(keyfilePath);
 					if (privateKey.exists()) {
-						if (!StringUtils
-								.isBlank(currentDevice.getKeyfilePass())) {
+						if (!Strings.isNullOrEmpty(currentDevice
+								.getKeyfilePass())) {
 							final String passphrase = currentDevice
 									.getKeyfilePass();
 							new SSHShutdownTask().execute(host, user, null,
@@ -1118,7 +1118,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			break;
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

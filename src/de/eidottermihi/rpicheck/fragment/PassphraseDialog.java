@@ -1,7 +1,5 @@
 package de.eidottermihi.rpicheck.fragment;
 
-import org.apache.commons.lang3.StringUtils;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
+import com.google.common.base.Strings;
+
 import de.eidottermihi.rpicheck.R;
 
 public class PassphraseDialog extends DialogFragment {
@@ -102,7 +103,7 @@ public class PassphraseDialog extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					// validate passphrase not empty
-					if (!StringUtils.isBlank(editTextPassphrase.getText()
+					if (!Strings.isNullOrEmpty(editTextPassphrase.getText()
 							.toString())) {
 						final String passphrase = editTextPassphrase.getText()
 								.toString().trim();

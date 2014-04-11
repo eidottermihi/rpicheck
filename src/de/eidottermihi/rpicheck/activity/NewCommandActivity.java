@@ -23,9 +23,9 @@ public class NewCommandActivity extends SherlockActivity {
 	// Requestcode for new command
 	public static final int REQUEST_NEW = 0;
 	// Requestcode for edit command
-	public static final int REQUEST_EDIT = 0;
+	public static final int REQUEST_EDIT = 1;
 	// Key for CommandBean when edit is requested
-	public static final String CMD_KEY_EDIT = "cmd";
+	public static final String CMD_KEY_EDIT = "cmdId";
 
 	EditText nameEditText;
 	EditText commandEditText;
@@ -33,6 +33,8 @@ public class NewCommandActivity extends SherlockActivity {
 	DeviceDbHelper db;
 
 	Validation validation = new Validation();
+
+	Long cmdId = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +49,24 @@ public class NewCommandActivity extends SherlockActivity {
 		nameEditText = (EditText) findViewById(R.id.new_cmd_name_editText);
 		commandEditText = (EditText) findViewById(R.id.new_cmd_command_editText);
 
+		if (getIntent().getExtras() != null
+				&& getIntent().getExtras().getLong(CMD_KEY_EDIT, -1L) != -1) {
+			// edit existing command!
+			cmdId = getIntent().getExtras().getLong(CMD_KEY_EDIT);
+			getSupportActionBar().setTitle(
+					getString(R.string.activity_title_edit_command));
+			CommandBean commandBean = db.readCommand(cmdId);
+			nameEditText.setText(commandBean.getName());
+			commandEditText.setText(commandBean.getCommand());
+		}
+
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			LOGGER.info("Cancelling new command activity.");
+			LOGGER.info("Cancelling new/edit command activity.");
 			this.setResult(RESULT_CANCELED);
 			this.finish();
 			break;
@@ -72,7 +85,12 @@ public class NewCommandActivity extends SherlockActivity {
 			bean.setName(name);
 			bean.setCommand(cmd);
 			bean.setShowOutput(true);
-			db.create(bean);
+			if (cmdId == null) {
+				db.create(bean);
+			} else {
+				bean.setId(cmdId);
+				db.updateCommand(bean);
+			}
 			this.setResult(RESULT_OK);
 			this.finish();
 		}
