@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -30,7 +29,6 @@ public class NewCommandActivity extends SherlockActivity {
 
 	EditText nameEditText;
 	EditText commandEditText;
-	CheckBox showOutputCheckbox;
 
 	DeviceDbHelper db;
 
@@ -48,7 +46,6 @@ public class NewCommandActivity extends SherlockActivity {
 
 		nameEditText = (EditText) findViewById(R.id.new_cmd_name_editText);
 		commandEditText = (EditText) findViewById(R.id.new_cmd_command_editText);
-		showOutputCheckbox = (CheckBox) findViewById(R.id.show_output_cb);
 
 	}
 
@@ -71,11 +68,10 @@ public class NewCommandActivity extends SherlockActivity {
 			if (Strings.isNullOrEmpty(name)) {
 				name = cmd;
 			}
-			boolean showOutput = showOutputCheckbox.isChecked();
 			CommandBean bean = new CommandBean();
 			bean.setName(name);
 			bean.setCommand(cmd);
-			bean.setShowOutput(showOutput);
+			bean.setShowOutput(true);
 			db.create(bean);
 			this.setResult(RESULT_OK);
 			this.finish();

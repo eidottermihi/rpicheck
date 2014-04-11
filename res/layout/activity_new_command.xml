@@ -71,20 +71,6 @@
                 android:inputType="text|textMultiLine|textNoSuggestions" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
-
-            <CheckBox
-                android:id="@+id/show_output_cb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:text="@string/label_cmd_show_output" />
-        </RelativeLayout>
-
         <Button
             android:id="@+id/cmd_save_button"
             android:layout_width="match_parent"
@@ -92,6 +78,7 @@
             android:onClick="onSaveButtonClick"
             android:paddingTop="8dp"
             android:text="@string/label_cmd_save_button" />
+
     </LinearLayout>
 
 </ScrollView>
