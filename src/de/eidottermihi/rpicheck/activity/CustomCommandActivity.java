@@ -1,5 +1,7 @@
 package de.eidottermihi.rpicheck.activity;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,15 +24,18 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.common.base.Strings;
 
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
 import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
+import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 
 public class CustomCommandActivity extends SherlockFragmentActivity implements
-		OnItemClickListener, OnItemLongClickListener {
+		OnItemClickListener, OnItemLongClickListener, PassphraseDialogListener {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CustomCommandActivity.class);
 
@@ -146,16 +151,26 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
-			LOGGER.debug(
-					"Command pos {} clicked. Item _id = {}. Starting run dialog.",
-					itemPos, itemId);
-			DialogFragment runCommandDialog = new RunCommandDialog();
-			Bundle args = new Bundle();
-			args.putSerializable("pi", currentDevice);
-			CommandBean command = deviceDb.readCommand(itemId);
-			args.putSerializable("cmd", command);
-			runCommandDialog.setArguments(args);
-			runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+			LOGGER.debug("Command pos {} clicked. Item _id = {}.", itemPos,
+					itemId);
+			if (currentDevice.getAuthMethod().equals(
+					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])
+					&& Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
+				// must ask for key passphrase first
+				LOGGER.debug("Asking for key passphrase.");
+				// dirty hack, saving commandId as "dialog type"
+				final String dialogType = itemId + "";
+				final DialogFragment passphraseDialog = new PassphraseDialog();
+				final Bundle args = new Bundle();
+				args.putString(PassphraseDialog.KEY_TYPE, dialogType);
+				passphraseDialog.setArguments(args);
+				passphraseDialog.setCancelable(false);
+				passphraseDialog
+						.show(getSupportFragmentManager(), "passphrase");
+			} else {
+				LOGGER.debug("Opening command dialog.");
+				openCommandDialog(itemId, null);
+			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
@@ -175,6 +190,47 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 		if (deviceDb != null) {
 			deviceDb.close();
 		}
+	}
+
+	/**
+	 * Opens the command dialog.
+	 * 
+	 * @param keyPassphrase
+	 *            nullable: key passphrase
+	 */
+	private void openCommandDialog(long commandId, String keyPassphrase) {
+		DialogFragment runCommandDialog = new RunCommandDialog();
+		Bundle args = new Bundle();
+		args.putSerializable("pi", currentDevice);
+		CommandBean command = deviceDb.readCommand(commandId);
+		args.putSerializable("cmd", command);
+		if (keyPassphrase != null) {
+			args.putString("passphrase", keyPassphrase);
+		}
+		runCommandDialog.setArguments(args);
+		runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+	}
+
+	@Override
+	public void onPassphraseOKClick(DialogFragment dialog, String passphrase,
+			boolean savePassphrase, String type) {
+		LOGGER.debug("Key passphrase entered.");
+		if (savePassphrase) {
+			LOGGER.debug("Saving passphrase..");
+			currentDevice.setKeyfilePass(passphrase);
+			currentDevice.setModifiedAt(new Date());
+			deviceDb.update(currentDevice);
+		}
+		// dirty hack: type is commandId
+		Long commandId = Long.parseLong(type);
+		LOGGER.debug("Starting command dialog for command id " + commandId);
+		openCommandDialog(commandId, passphrase);
+
+	}
+
+	@Override
+	public void onPassphraseCancelClick() {
+		// do nothing
 	}
 
 }

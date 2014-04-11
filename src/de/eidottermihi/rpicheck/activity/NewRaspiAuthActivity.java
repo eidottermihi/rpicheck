@@ -205,27 +205,35 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 							desc, sudoPass, null, null, keyfilePath);
 					saveSuccessful = true;
 				} else {
-					Toast.makeText(this, getText(R.string.no_keyfile_present),
-							Toast.LENGTH_LONG);
+					buttonKeyfile
+							.setError(getString(R.string.validation_msg_keyfile));
 				}
 			} else if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[2])) {
-				// keyfile and key password
+				// keyfile must be selected
 				if (keyfilePath != null && new File(keyfilePath).exists()) {
-					if (validator.checkNonOptionalTextField(
-							editTextKeyfilePass,
-							getString(R.string.raspi_key_password_empty))) {
-						final String keyfilePass = editTextKeyfilePass
-								.getText().toString().trim();
+					if (checkboxAskPassphrase.isChecked()) {
 						addRaspiToDb(name, host, user, selectedAuthMethod,
-								sshPort, desc, sudoPass, null, keyfilePass,
+								sshPort, desc, sudoPass, null, null,
 								keyfilePath);
 						saveSuccessful = true;
+					} else {
+						// password must be set
+						if (validator
+								.checkNonOptionalTextField(
+										editTextKeyfilePass,
+										getString(R.string.validation_msg_key_passphrase))) {
+							final String keyfilePass = editTextKeyfilePass
+									.getText().toString().trim();
+							addRaspiToDb(name, host, user, selectedAuthMethod,
+									sshPort, desc, sudoPass, null, keyfilePass,
+									keyfilePath);
+							saveSuccessful = true;
+						}
 					}
 				} else {
-					Toast.makeText(this, getText(R.string.no_keyfile_present),
-							Toast.LENGTH_LONG);
+					buttonKeyfile
+							.setError(getString(R.string.validation_msg_keyfile));
 				}
-				saveSuccessful = true;
 			}
 			if (saveSuccessful) {
 				Toast.makeText(this, R.string.new_pi_created,
@@ -233,9 +241,6 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 				// finish
 				this.setResult(RESULT_OK);
 				this.finish();
-				// final Intent i = new Intent(NewRaspiAuthActivity.this,
-				// MainActivity.class);
-				// this.startActivity(i);
 			}
 		}
 	}
@@ -303,7 +308,7 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 				buttonKeyfile.setError(null);
 			}
 		} else if (resultCode == Activity.RESULT_CANCELED) {
-			LOGGER.warn("No file selected...");
+			LOGGER.warn("No keyfile selected...");
 		}
 	}
 

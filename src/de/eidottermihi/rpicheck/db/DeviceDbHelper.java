@@ -230,6 +230,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
 		values.put(COLUMN_CREATED_AT, timestamp);
 		values.put(COLUMN_MODIFIED_AT, timestamp);
 		long id = db.insert(DEVICES_TABLE_NAME, null, values);
+		LOGGER.debug("Inserted new device[id={}].", id);
 		return read(id);
 	}
 

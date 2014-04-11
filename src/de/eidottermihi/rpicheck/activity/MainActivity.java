@@ -405,7 +405,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@SuppressWarnings("deprecation")
 	private void initSpinner() {
 		deviceCursor = deviceDb.getFullDeviceCursor();
-		LOGGER.trace("Cursor rows: " + deviceCursor.getCount());
+		LOGGER.debug("Device cursor rows: " + deviceCursor.getCount());
 		// only show spinner if theres already a device to show
 		if (deviceCursor.getCount() > 0) {
 			// make adapter
@@ -1118,7 +1118,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			break;
 		}
 	}
-
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
