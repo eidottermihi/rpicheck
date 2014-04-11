@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
+import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -141,6 +142,23 @@ public class RunCommandDialog extends DialogFragment {
 
 	private static void putLine(String text) {
 		consoleOutput.append("\n" + text);
+		consoleOutput.post(new Runnable() {
+
+			@Override
+			public void run() {
+				final Layout layout = consoleOutput.getLayout();
+				if (layout != null) {
+					int scrollDelta = layout.getLineBottom(consoleOutput
+							.getLineCount() - 1)
+							- consoleOutput.getScrollY()
+							- consoleOutput.getHeight();
+					if (scrollDelta > 0) {
+						consoleOutput.scrollBy(0, scrollDelta);
+					}
+				}
+
+			}
+		});
 	}
 
 	private class SSHCommandTask extends AsyncTask<String, String, Boolean> {
