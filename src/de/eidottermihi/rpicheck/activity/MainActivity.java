@@ -214,13 +214,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		this.isOnBackground = false;
+		isOnBackground = false;
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		this.isOnBackground = true;
+		isOnBackground = true;
 	}
 
 	/**
