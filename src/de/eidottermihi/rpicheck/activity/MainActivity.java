@@ -302,8 +302,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 */
 	private void handleQueryError(List<String> errorMessages) {
 		final ArrayList<String> messages = new ArrayList<String>(errorMessages);
-		if (errorMessages.size() > 0) {
-			LOGGER.trace("Showing query error messages.");
+		if (errorMessages.size() > 0 && !isOnBackground) {
+			LOGGER.debug("Showing query error messages.");
 			Bundle args = new Bundle();
 			args.putStringArrayList(
 					QueryErrorMessagesDialog.KEY_ERROR_MESSAGES, messages);
