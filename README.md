@@ -1,20 +1,25 @@
 rpicheck - RasPi Check
 ========
 
-Android app for checking your Raspberry Pi status. ![Get it on Google Play.](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)
+Android app for checking your Raspberry Pi status.
 
 The goal of this Android app is to show the user the current system status of a running Raspberry Pi.
 
-To gather the information needed, RasPi Check uses a SSH connection (using https://github.com/shikhar/sshj).
+To gather the information needed, RasPi Check uses a SSH connection (using a android-specific fork [shikhar/sshj](https://github.com/shikhar/sshj)).
 
-The API for the SSH queries is caspuled in https://github.com/eidottermihi/raspitools.
-
-Issue Tracking
+Download
 ------------
-Please report bugs here: https://github.com/eidottermihi/rpicheck/issues
+RasPi Check is avalaible at [Google Play](https://play.google.com/store/apps/details?id=de.eidottermihi.rpicheck).
+
+
+Bugs
+------------
+If you find any bugs and glitches, feel free to open an [issue here](https://github.com/eidottermihi/rpicheck/issues).
+
 
 Contributing
 ------------
-Feel free to contribute!
-Needed android librarys: ActionBarSherlock, Android-PullToRefresh, Android File Dialog https://code.google.com/p/android-file-dialog/
+Feel free to fork and open up pull request!
+
+Used android libraries are included under libs/, just make sure you import them to your Eclipse workspace as Android projects.
 
