@@ -795,7 +795,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 				} else {
 					raspiQuery.connect(pass);
 				}
-				raspiQuery.connect(pass);
 				if (type.equals(TYPE_REBOOT)) {
 					raspiQuery.sendRebootSignal(sudoPass);
 				} else if (type.equals(TYPE_HALT)) {
