@@ -820,7 +820,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				raspiQuery.disconnect();
 				return result;
 			} catch (RaspiQueryException e) {
-				LOGGER.error(e.getMessage());
+				LOGGER.error(e.getMessage(), e);
 				result.setExcpetion(e);
 				return result;
 			}
@@ -906,7 +906,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					LOGGER.error(error);
 				}
 			} catch (RaspiQueryException e) {
-				LOGGER.error("Query failed: " + e.getMessage());
+				LOGGER.error(e.getMessage(), e);
 				bean.setException(e);
 			}
 			final long msFinish = new Date().getTime();
