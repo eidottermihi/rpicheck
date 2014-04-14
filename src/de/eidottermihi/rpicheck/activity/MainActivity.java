@@ -140,8 +140,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// gets called from AsyncTask when reboot command was sent
 			afterShutdown();
 		}
-
 	};
+
+	private static boolean isOnBackground;
 
 	static {
 		Security.insertProviderAt(
@@ -208,6 +209,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// init spinner
 			initSpinner();
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		this.isOnBackground = false;
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		this.isOnBackground = true;
 	}
 
 	/**
@@ -461,16 +474,20 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * 
 	 * @param exception
 	 */
-	private void handleQueryException(RaspiQueryException exception) {
-		LOGGER.trace("Query caused exception. Showing dialog.");
-		// build dialog
+	private void handleQueryException(final RaspiQueryException exception) {
 		final String errorMessage = this.mapExceptionToErrorMessage(exception);
-		Bundle dialogArgs = new Bundle();
-		dialogArgs.putString(QueryExceptionDialog.MESSAGE_KEY, errorMessage);
-		QueryExceptionDialog dialogFragment = new QueryExceptionDialog();
-		dialogFragment.setArguments(dialogArgs);
-		dialogFragment
-				.show(getSupportFragmentManager(), "QueryExceptionDialog");
+		// only show dialog when app is not in background
+		if (!isOnBackground) {
+			LOGGER.debug("Query caused exception. Showing dialog.");
+			// build dialog
+			Bundle dialogArgs = new Bundle();
+			dialogArgs
+					.putString(QueryExceptionDialog.MESSAGE_KEY, errorMessage);
+			QueryExceptionDialog dialogFragment = new QueryExceptionDialog();
+			dialogFragment.setArguments(dialogArgs);
+			dialogFragment.show(getSupportFragmentManager(),
+					"QueryExceptionDialog");
+		}
 	}
 
 	private String mapExceptionToErrorMessage(RaspiQueryException exception) {
