@@ -2,7 +2,7 @@
 <resources>
     
     <style name="Theme.rpiCheck.Base.Dark" parent="Theme.Sherlock">
-        
+        <item name="actionBarStyle">@style/Widget.Sherlock.ActionBar.Solid</item>
     </style>
     
     <style name="Theme.rpiCheck.Dark" parent="Theme.rpiCheck.Base.Dark">

@@ -2,7 +2,7 @@
 <resources>
     
     <style name="Theme.rpiCheck.Base.Dark" parent="Theme.Sherlock">
-        
+        <item name="android:actionBarStyle">@style/Widget.Sherlock.ActionBar.Solid</item>
     </style>
     
 </resources>
