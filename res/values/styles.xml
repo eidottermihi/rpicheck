@@ -1,6 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="Theme.Sherlock" />
+    <style name="Theme.rpiCheck.Dark" parent="Theme.Sherlock" />
 
     <style name="TableRowText" parent="@android:style/TextAppearance.Small">
         <item name="android:paddingLeft">4dp</item>
