@@ -6,11 +6,11 @@
     </style>
     
     <style name="Theme.rpiCheck.Dark" parent="Theme.rpiCheck.Base.Dark">
-        <item name="ic_action_new">@drawable/ic_content_new</item>
-        <item name="ic_action_delete">@drawable/ic_content_discard</item>
-        <item name="ic_action_restart">@drawable/ic_av_replay</item>
-        <item name="ic_action_edit">@drawable/ic_content_edit</item>
-        <item name="ic_action_settings">@drawable/ic_action_settings</item>
+        <item name="ic_action_new">@drawable/ic_action_new_dark</item>
+        <item name="ic_action_delete">@drawable/ic_action_delete_dark</item>
+        <item name="ic_action_restart">@drawable/ic_action_replay_dark</item>
+        <item name="ic_action_edit">@drawable/ic_action_edit_dark</item>
+        <item name="ic_action_settings">@drawable/ic_action_settings_dark</item>
         
         <item name="ic_settings_github">@drawable/github</item>
         <item name="ic_settings_email">@drawable/content_email</item>
