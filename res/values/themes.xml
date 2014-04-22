@@ -12,9 +12,9 @@
         <item name="ic_action_edit">@drawable/ic_action_edit_dark</item>
         <item name="ic_action_settings">@drawable/ic_action_settings_dark</item>
         
-        <item name="ic_settings_github">@drawable/github</item>
-        <item name="ic_settings_email">@drawable/content_email</item>
-        <item name="ic_settings_rate">@drawable/rating_important</item>
+        <item name="ic_settings_github">@drawable/ic_settings_github</item>
+        <item name="ic_settings_email">@drawable/ic_action_email_dark</item>
+        <item name="ic_settings_rate">@drawable/ic_settings_rate_dark</item>
         
         <item name="ic_dialog_run">@drawable/ic_action_play</item>
         <item name="ic_dialog_shutdown">@drawable/shutdown</item>
