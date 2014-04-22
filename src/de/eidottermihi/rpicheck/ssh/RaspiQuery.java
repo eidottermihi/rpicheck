@@ -133,7 +133,7 @@ public class RaspiQuery {
 					session = client.startSession();
 					final String cmdString = vcgencmdPath + " measure_temp";
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					String output = IOUtils.readFully(cmd.getInputStream())
 							.toString();
 					return this.parseTemperature(output);
@@ -178,7 +178,7 @@ public class RaspiQuery {
 						return 0;
 					}
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					String output = IOUtils.readFully(cmd.getInputStream())
 							.toString();
 					return this.parseFrequency(output);
@@ -240,7 +240,7 @@ public class RaspiQuery {
 					session = client.startSession();
 					String cmdString = vcgencmdPath + " version";
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					String output = IOUtils.readFully(cmd.getInputStream())
 							.toString();
 					final String result = this.parseFirmwareVersion(output);
@@ -348,7 +348,7 @@ public class RaspiQuery {
 		LOGGER.debug("Checking vcgencmd location: {}", path);
 		String cmdString = path;
 		final Command cmd = session.exec(cmdString);
-		cmd.join();
+		cmd.join(5, TimeUnit.SECONDS);
 		session.close();
 		String output = IOUtils.readFully(cmd.getInputStream()).toString();
 		LOGGER.debug("Path check output: {}", output);
@@ -429,7 +429,7 @@ public class RaspiQuery {
 					session = client.startSession();
 					final String cmdString = "cat /proc/net/wireless";
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					String output = IOUtils.readFully(cmd.getInputStream())
 							.toString();
 					LOGGER.debug("Real output of /proc/net/wireless: \n{}",
@@ -524,7 +524,7 @@ public class RaspiQuery {
 					final String cmdString = "ip -f inet addr show dev " + name
 							+ " | sed -n 2p";
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					final String output = IOUtils.readFully(
 							cmd.getInputStream()).toString();
 					LOGGER.debug("Output of ssh query: {}.", output);
@@ -574,7 +574,7 @@ public class RaspiQuery {
 					final String cmdString = "cat /sys/class/net/"
 							+ interfaceName + "/carrier";
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					final String output = IOUtils.readFully(
 							cmd.getInputStream()).toString();
 					if (output.contains("1")) {
@@ -616,7 +616,7 @@ public class RaspiQuery {
 					session = client.startSession();
 					final String cmdString = "ls -1 /sys/class/net";
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					final String output = IOUtils.readFully(
 							cmd.getInputStream()).toString();
 					final String[] lines = output.split("\n");
@@ -653,7 +653,7 @@ public class RaspiQuery {
 					final String cmdString = vcgencmdPath
 							+ " measure_volts core";
 					final Command cmd = session.exec(cmdString);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					final String output = IOUtils.readFully(
 							cmd.getInputStream()).toString();
 					return this.formatVolts(output);
@@ -686,7 +686,7 @@ public class RaspiQuery {
 				try {
 					session = client.startSession();
 					final Command cmd = session.exec(UPTIME_CMD);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					final String output = IOUtils.readFully(
 							cmd.getInputStream()).toString();
 					return this.formatUptime(output);
@@ -719,7 +719,7 @@ public class RaspiQuery {
 				try {
 					session = client.startSession();
 					final Command cmd = session.exec(CPU_SERIAL_CMD);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					String output = IOUtils.readFully(cmd.getInputStream())
 							.toString();
 					return this.formatCpuSerial(output);
@@ -753,7 +753,7 @@ public class RaspiQuery {
 				try {
 					session = client.startSession();
 					final Command cmd = session.exec(MEMORY_INFO_CMD);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					return this.formatMemoryInfo(IOUtils.readFully(
 							cmd.getInputStream()).toString());
 				} catch (IOException e) {
@@ -786,7 +786,7 @@ public class RaspiQuery {
 				try {
 					session = client.startSession();
 					final Command cmd = session.exec(DISK_USAGE_CMD);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					return this.parseDiskUsage(IOUtils
 							.readFully(cmd.getInputStream()).toString().trim());
 				} catch (IOException e) {
@@ -818,7 +818,7 @@ public class RaspiQuery {
 				try {
 					session = client.startSession();
 					final Command cmd = session.exec(DISTRIBUTION_CMD);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					return this.parseDistribution(IOUtils
 							.readFully(cmd.getInputStream()).toString().trim());
 				} catch (IOException e) {
@@ -855,7 +855,7 @@ public class RaspiQuery {
 					final Command cmd = session
 							.exec(showRootProcesses ? PROCESS_ALL
 									: PROCESS_NO_ROOT_CMD);
-					cmd.join();
+					cmd.join(5, TimeUnit.SECONDS);
 					return this.parseProcesses(IOUtils
 							.readFully(cmd.getInputStream()).toString().trim());
 				} catch (IOException e) {
