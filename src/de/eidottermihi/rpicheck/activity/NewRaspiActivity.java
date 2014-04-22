@@ -77,14 +77,6 @@ public class NewRaspiActivity extends SherlockActivity {
 		}
 	}
 
-	public void onSaveButtonClick(View view) {
-		switch (view.getId()) {
-		case R.id.new_raspi_continue_button:
-			continueToAuthMethodActivity();
-			break;
-		}
-	}
-
 	private void continueToAuthMethodActivity() {
 		boolean validationSuccessful = validator.validatePiCoreData(this,
 				editTextName, editTextHost, editTextUser);
