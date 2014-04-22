@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -65,7 +66,14 @@ public class PassphraseDialog extends DialogFragment {
 				getActivity());
 		this.type = this.getArguments().getString(KEY_TYPE);
 		builder.setTitle(R.string.dialog_passphrase_needed);
-		builder.setIcon(R.drawable.device_access_accounts);
+		
+		//fetching the theme-dependent icon
+		TypedValue icon = new TypedValue();
+		if (getActivity().getTheme().resolveAttribute(
+				R.attr.ic_dialog_passphrase, icon, true)) {
+			builder.setIcon(icon.resourceId);
+		}
+		
 		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		final View view = inflater.inflate(R.layout.dialog_passphrase, null);
 		builder.setView(view);

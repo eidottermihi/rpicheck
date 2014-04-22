@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.TypedValue;
 import de.eidottermihi.rpicheck.R;
 
 public class RebootDialogFragment extends DialogFragment {
@@ -33,7 +34,14 @@ public class RebootDialogFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.shutdown_type_title);
-		builder.setIcon(R.drawable.shutdown);
+		
+		//fetching the theme-dependent icon
+		TypedValue icon = new TypedValue();
+		if (getActivity().getTheme().resolveAttribute(
+				R.attr.ic_dialog_shutdown, icon, true)) {
+			builder.setIcon(icon.resourceId);
+		}
+		
 		builder.setItems(R.array.shutdown_options,
 				new DialogInterface.OnClickListener() {
 
