@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -56,7 +57,14 @@ public class RunCommandDialog extends DialogFragment {
 
 		builder.setTitle(getString(R.string.run_cmd_dialog_title,
 				this.command.getName()));
-		builder.setIcon(R.drawable.ic_action_play);
+		
+		//fetching the theme-dependent icon
+		TypedValue icon = new TypedValue();
+		if (getActivity().getTheme().resolveAttribute(
+				R.attr.ic_dialog_run, icon, true)) {
+			builder.setIcon(icon.resourceId);
+		}
+		
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
 			@Override

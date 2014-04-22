@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="ic_action_new" format="reference"/>
+    <attr name="ic_action_delete" format="reference"/>
+    <attr name="ic_action_restart" format="reference"/>
+    <attr name="ic_action_settings" format="reference"/>
+    <attr name="ic_action_edit" format="reference"/>
+    
+    <attr name="ic_settings_github" format="reference" />
+    <attr name="ic_settings_email" format="reference" />
+    <attr name="ic_settings_rate" format="reference" />
+    
+    <attr name="ic_dialog_run" format="reference" />
+    <attr name="ic_dialog_shutdown" format="reference" />
+    <attr name="ic_dialog_passphrase" format="reference" />
+</resources>
