@@ -16,9 +16,9 @@
         <item name="ic_settings_email">@drawable/ic_action_email_dark</item>
         <item name="ic_settings_rate">@drawable/ic_settings_rate_dark</item>
         
-        <item name="ic_dialog_run">@drawable/ic_action_play</item>
-        <item name="ic_dialog_shutdown">@drawable/shutdown</item>
-        <item name="ic_dialog_passphrase">@drawable/device_access_accounts</item>
+        <item name="ic_dialog_run">@drawable/ic_dialog_run_dark</item>
+        <item name="ic_dialog_shutdown">@drawable/ic_dialog_shutdown</item>
+        <item name="ic_dialog_passphrase">@drawable/ic_dialog_passphrase_dark</item>
     </style>
     
 </resources>
