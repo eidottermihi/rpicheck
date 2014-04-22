@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Will be replaced during build with filtered templates/res/values/versions.xml -->
 <resources>
-    <string name="app_version">1.4.2</string>
+    <string name="app_version">1.5.0</string>
 </resources>

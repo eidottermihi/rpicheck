@@ -19,6 +19,13 @@
     </style>
   </head>
   <body>
+$ 1.5.0
+  % Version 1.5.0
+  _ 2014-04-22
+    * Custom commands
+    * Solid Actionbar and custom theme (thanks to larsgrefer)
+    * fixed crash when app is going to background during refresh
+    * fixed refresh freeze
 $ 1.4.2
   % Version 1.4.2
   _ 2014-03-30
