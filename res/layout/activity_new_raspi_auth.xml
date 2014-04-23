@@ -181,13 +181,6 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/new_raspi_save_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonClick"
-            android:paddingTop="8dp"
-            android:text="@string/new_raspi_button_save" />
     </LinearLayout>
 
 </ScrollView>

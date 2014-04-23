@@ -12,6 +12,7 @@
         <item name="ic_action_edit">@drawable/ic_action_edit_dark</item>
         <item name="ic_action_settings">@drawable/ic_action_settings_dark</item>
         <item name="ic_action_next">@drawable/ic_action_next_item_dark</item>
+        <item name="ic_action_save">@drawable/ic_action_save_dark</item>
         
         <item name="ic_settings_github">@drawable/ic_settings_github</item>
         <item name="ic_settings_email">@drawable/ic_settings_email_dark</item>

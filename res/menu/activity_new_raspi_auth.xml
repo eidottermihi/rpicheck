@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <item 
-        android:id="@+id/menu_continue" 
+        android:id="@+id/menu_save" 
         android:showAsAction="always|withText"
-        android:title="@string/new_raspi_continue"
-        android:icon="?attr/ic_action_next"/>
+        android:title="@string/new_raspi_button_save"
+        android:icon="?attr/ic_action_save"/>
   
 </menu>
