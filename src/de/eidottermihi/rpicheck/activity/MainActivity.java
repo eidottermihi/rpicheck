@@ -83,6 +83,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final String TYPE_REBOOT = "reboot";
 	private static final String TYPE_HALT = "halt";
 
+	private static final String KEY_PREF_REFRESH_BY_ACTION_COUNT = "refreshCountByAction";
+
 	private final Helper helper = new Helper();
 
 	private Intent settingsIntent;
@@ -572,8 +574,20 @@ public class MainActivity extends SherlockFragmentActivity implements
 		case R.id.menu_reboot:
 			this.showRebootDialog();
 			break;
+		case R.id.menu_refresh:
+			this.doQuery(false);
+			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void showPullToRefreshHint() {
+		// Shows 3 toasts if refresh is happening via action button and not pull to refresh
+		int count = sharedPrefs.getInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, 0);
+		if(count < 3){
+			Toast.makeText(this, getString(R.string.hint_pulltorefresh), Toast.LENGTH_LONG).show();
+			sharedPrefs.edit().putInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, ++count).commit();
+		}
 	}
 
 	private void showRebootDialog() {
@@ -701,7 +715,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					canConnect = true;
 				} else {
 					Toast.makeText(this, R.string.no_password_specified,
-							Toast.LENGTH_LONG);
+							Toast.LENGTH_LONG).show();
 				}
 			} else if (authMethod
 					.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
@@ -715,11 +729,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 					} else {
 						Toast.makeText(this,
 								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG);
+										+ keyfilePath, Toast.LENGTH_LONG).show();
 					}
 				} else {
 					Toast.makeText(this, "No keyfile specified!",
-							Toast.LENGTH_LONG);
+							Toast.LENGTH_LONG).show();
 				}
 			} else if (authMethod
 					.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
@@ -748,11 +762,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 					} else {
 						Toast.makeText(this,
 								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG);
+										+ keyfilePath, Toast.LENGTH_LONG).show();
 					}
 				} else {
 					Toast.makeText(this, "No keyfile specified!",
-							Toast.LENGTH_LONG);
+							Toast.LENGTH_LONG).show();
 				}
 			}
 			if (host == null) {
@@ -768,6 +782,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				// disable pullToRefresh (if refresh initiated by action bar)
 				if (!initByPullToRefresh) {
 					refreshableScrollView.setMode(Mode.DISABLED);
+					// show hint for pull-to-refresh
+					this.showPullToRefreshHint();
 				}
 				// execute query
 				new SSHQueryTask().execute(host, user, pass, port,

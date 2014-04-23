@@ -141,9 +141,6 @@
     <string name="dialog_passphrase_hint">passphrase</string>
     <string name="dialog_passphrase_needed">Passphrase needed</string>
     <string name="dialog_passphrase_text">Please enter passphrase for private key.</string>
-    
-    
-    
     <string name="button_commands">Commands</string>
     <string name="activity_title_commands">Custom Commands</string>
     <string name="new_command">Add command</string>
@@ -162,5 +159,8 @@
     <string name="command_context_delete">Delete</string>
     <string name="command_context_run">Run</string>
     <string name="run_cmd_dialog_title">Running %1$s</string>
+
+    
+    <string name="hint_pulltorefresh">Just a hint: You can also refresh by pulling the screen to the bottom!</string>
 
 </resources>

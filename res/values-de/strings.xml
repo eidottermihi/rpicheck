@@ -134,7 +134,6 @@
 	<string name="dialog_passphrase_hint">Passphrase</string>
 	<string name="dialog_passphrase_needed">Passphrase darf nicht leer sein.</string>
 	<string name="dialog_passphrase_text">Bitte gib die Passphrase für den privaten Key an.</string>
-	
 	<string name="button_commands">Kommandos</string>
     <string name="activity_title_commands">Eigene Kommandos</string>
     <string name="new_command">Neues Kommando</string>
@@ -153,5 +152,8 @@
     <string name="command_context_delete">Löschen</string>
     <string name="command_context_run">Ausführen</string>
     <string name="run_cmd_dialog_title">%1$s ausführen</string>
+    
+    <string name="hint_pulltorefresh">Nur als Hinweis: Du kannst auch aktualisieren, indem du den Bildschirm nach unten ziehst!</string>
+    
 
 </resources>
