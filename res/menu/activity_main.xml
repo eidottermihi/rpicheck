@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <item
         android:id="@+id/menu_edit_raspi"
         android:icon="?attr/ic_action_edit"
@@ -11,13 +12,18 @@
         android:icon="?attr/ic_action_restart"
         android:showAsAction="always|withText"
         android:title="@string/action_shutdown"
-      	android:visible="false"	/>
+        android:visible="false"/>
     <item
         android:id="@+id/menu_new_raspi"
         android:icon="?attr/ic_action_new"
         android:showAsAction="ifRoom"
         android:title="@string/action_new_raspi"
         android:titleCondensed="@string/action_new"/>
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="?attr/ic_action_refresh"
+        android:showAsAction="never"
+        android:title="@string/action_refresh"/>
     <item
         android:id="@+id/menu_delete"
         android:icon="?attr/ic_action_delete"
@@ -30,4 +36,5 @@
         android:icon="?attr/ic_action_settings"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
+
 </menu>

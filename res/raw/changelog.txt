@@ -19,6 +19,11 @@
     </style>
   </head>
   <body>
+$ 1.5.1
+  % Version 1.5.1
+  _ 2014-04-23
+    * fixed too low timeout for slow connections
+    * refresh action item is back
 $ 1.5.0
   % Version 1.5.0
   _ 2014-04-22

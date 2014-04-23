@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">RasPi Check</string>
-    <string name="menu_refresh">Refresh</string>
     <string name="title_activity_main">RasPi Check</string>
     <string name="title_activity_new_raspi">Add Pi</string>
     <string name="title_activity_settings">Settings</string>
@@ -135,9 +134,6 @@
     <string name="dialog_passphrase_hint">passphrase</string>
     <string name="dialog_passphrase_needed">Passphrase needed</string>
     <string name="dialog_passphrase_text">Please enter passphrase for private key.</string>
-    
-    
-    
     <string name="button_commands">Commands</string>
     <string name="activity_title_commands">Custom Commands</string>
     <string name="activity_title_new_command">New command</string>
@@ -154,6 +150,8 @@
     <string name="command_context_delete">Delete</string>
     <string name="command_context_run">Run</string>
     <string name="run_cmd_dialog_title">Running %1$s</string>
+    
+    <string name="hint_pulltorefresh">Just a hint: You can also refresh by pulling the screen to the bottom!</string>
     
     <!-- ActionButton Strings -->
     
@@ -175,5 +173,6 @@
     
     <string name="action_settings">Settings</string>
     <string name="action_shutdown">Shutdown</string>
+    <string name="action_refresh">Refresh</string>
 
 </resources>
