@@ -3,28 +3,31 @@
         android:id="@+id/menu_edit_raspi"
         android:icon="?attr/ic_action_edit"
         android:showAsAction="always|withText"
-        android:title="@string/edit_raspi"
+        android:title="@string/action_edit_raspi"
+        android:titleCondensed="@string/action_edit"
         android:visible="false"/>
     <item
         android:id="@+id/menu_reboot"
         android:icon="?attr/ic_action_restart"
         android:showAsAction="always|withText"
-        android:title="@string/menu_shutdown"
+        android:title="@string/action_shutdown"
       	android:visible="false"	/>
     <item
         android:id="@+id/menu_new_raspi"
         android:icon="?attr/ic_action_new"
         android:showAsAction="ifRoom"
-        android:title="@string/new_raspi"/>
+        android:title="@string/action_new_raspi"
+        android:titleCondensed="@string/action_new"/>
     <item
         android:id="@+id/menu_delete"
         android:icon="?attr/ic_action_delete"
         android:showAsAction="never"
-        android:title="@string/menu_delete"
+        android:title="@string/action_delete_raspi"
+        android:titleCondensed="@string/action_delete"
         android:visible="false"/>
     <item
         android:id="@+id/menu_settings"
         android:icon="?attr/ic_action_settings"
         android:showAsAction="never"
-        android:title="@string/menu_settings"/>
+        android:title="@string/action_settings"/>
 </menu>
