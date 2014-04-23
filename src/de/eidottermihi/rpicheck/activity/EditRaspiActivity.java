@@ -134,7 +134,7 @@ public class EditRaspiActivity extends SherlockActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_edit_raspi, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_raspi_edit, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 

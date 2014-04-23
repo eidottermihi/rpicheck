@@ -111,7 +111,7 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_new_raspi_auth, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_raspi_new_auth, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 

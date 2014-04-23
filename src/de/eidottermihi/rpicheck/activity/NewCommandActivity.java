@@ -65,7 +65,7 @@ public class NewCommandActivity extends SherlockActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_new_command, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_command_new, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
