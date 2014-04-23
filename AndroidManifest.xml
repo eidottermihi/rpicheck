@@ -57,7 +57,8 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.EditRaspiActivity"
             android:label="@string/activity_title_edit_raspi"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
