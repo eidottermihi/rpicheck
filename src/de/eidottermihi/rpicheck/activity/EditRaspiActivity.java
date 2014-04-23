@@ -65,7 +65,7 @@ public class EditRaspiActivity extends SherlockActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_edit_raspi);
+		setContentView(R.layout.activity_raspi_edit);
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

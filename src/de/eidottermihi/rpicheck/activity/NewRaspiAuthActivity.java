@@ -70,7 +70,7 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_new_raspi_auth);
+		setContentView(R.layout.activity_raspi_new_auth);
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
