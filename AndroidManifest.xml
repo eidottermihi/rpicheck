@@ -75,7 +75,8 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.NewCommandActivity"
             android:label="@string/activity_title_new_command"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.CustomCommandActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.CustomCommandActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity" />

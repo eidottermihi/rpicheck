@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
 
@@ -63,18 +64,28 @@ public class NewCommandActivity extends SherlockActivity {
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.activity_new_command, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			LOGGER.info("Cancelling new/edit command activity.");
 			this.setResult(RESULT_CANCELED);
 			this.finish();
-			break;
+			return true;
+		case R.id.menu_save:
+			saveCommand();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 
-	public void onSaveButtonClick(View view) {
+	private void saveCommand() {
 		if (validation.validateNewCmdData(this, commandEditText)) {
 			String name = nameEditText.getText().toString();
 			String cmd = commandEditText.getText().toString().trim();
