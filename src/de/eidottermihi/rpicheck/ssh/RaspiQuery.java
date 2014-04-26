@@ -1339,6 +1339,7 @@ public class RaspiQuery {
 				Session session;
 				try {
 					session = client.startSession();
+					session.allocateDefaultPTY();
 					final Command cmd = session.exec(command);
 					cmd.join(20, TimeUnit.SECONDS);
 					cmd.close();
