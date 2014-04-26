@@ -39,7 +39,8 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.NewRaspiActivity"
             android:label="@string/title_activity_new_raspi"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
@@ -47,7 +48,8 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity"
             android:label="@string/title_activity_new_raspi"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.NewRaspiActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.NewRaspiActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.NewRaspiActivity" />
@@ -55,7 +57,8 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.EditRaspiActivity"
             android:label="@string/activity_title_edit_raspi"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
@@ -72,7 +75,8 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.NewCommandActivity"
             android:label="@string/activity_title_new_command"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.CustomCommandActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.CustomCommandActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity" />

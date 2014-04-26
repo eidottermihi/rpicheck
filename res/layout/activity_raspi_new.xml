@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <LinearLayout
+   <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -149,13 +149,6 @@
             android:paddingTop="8dp" >
         </EditText>
 
-        <Button
-            android:id="@+id/new_raspi_continue_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onSaveButtonClick"
-            android:paddingTop="8dp"
-            android:text="@string/new_raspi_continue" />
     </LinearLayout>
 
 </ScrollView>

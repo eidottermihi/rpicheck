@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
 import com.lamerman.FileDialog;
@@ -69,7 +70,7 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_new_raspi_auth);
+		setContentView(R.layout.activity_raspi_new_auth);
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -109,6 +110,12 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.activity_raspi_new_auth, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -120,16 +127,17 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpFromSameTask(this);
-			break;
+			return true;
+		case R.id.menu_save:
+			saveRaspi();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	public void onButtonClick(View view) {
 		switch (view.getId()) {
-		case R.id.new_raspi_save_button:
-			saveRaspi();
-			break;
 		case R.id.buttonKeyfile:
 			openKeyfile();
 			break;

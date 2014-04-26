@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <LinearLayout
+   <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -70,14 +70,6 @@
                 android:hint="@string/label_cmd_command_hint"
                 android:inputType="text|textMultiLine|textNoSuggestions" />
         </RelativeLayout>
-
-        <Button
-            android:id="@+id/cmd_save_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onSaveButtonClick"
-            android:paddingTop="8dp"
-            android:text="@string/label_cmd_save_button" />
 
     </LinearLayout>
 

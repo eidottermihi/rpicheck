@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item 
+        android:id="@+id/menu_save" 
+        android:showAsAction="always|withText"
+        android:title="@string/action_save_raspi"
+        android:titleCondensed="@string/action_save"
+        android:icon="?attr/ic_action_save"/>
+  
+</menu>

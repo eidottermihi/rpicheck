@@ -21,85 +21,6 @@
             android:paddingTop="8dp" >
 
             <TextView
-                android:id="@+id/labelName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingRight="8dp"
-                android:text="@string/raspi_device_name_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <EditText
-                android:id="@+id/edit_raspi_name_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/labelName"
-                android:ems="10"
-                android:hint="@string/raspi_device_name_hint"
-                android:inputType="text|textNoSuggestions"
-                android:maxLines="1" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
-
-            <EditText
-                android:id="@+id/edit_raspi_host_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/labelHost"
-                android:ems="10"
-                android:hint="@string/raspi_device_host_hint"
-                android:inputType="text|textNoSuggestions"
-                android:maxLines="1" />
-
-            <TextView
-                android:id="@+id/labelHost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:paddingRight="8dp"
-                android:text="@string/raspi_device_host_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
-
-            <EditText
-                android:id="@+id/edit_raspi_user_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/labelUser"
-                android:ems="10"
-                android:hint="@string/raspi_device_user_hint"
-                android:inputType="text|textNoSuggestions"
-                android:maxLines="1"
-                android:paddingTop="8dp" />
-
-            <TextView
-                android:id="@+id/labelUser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingRight="8dp"
-                android:text="@string/raspi_device_user_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </RelativeLayout>
-        
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
-
-            <TextView
                 android:id="@+id/textAuthMethod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,6 +58,7 @@
                 android:ems="10"
                 android:inputType="textPassword" >
 
+                <requestFocus />
             </EditText>
         </RelativeLayout>
 
@@ -195,7 +117,7 @@
 
             </RelativeLayout>
         </RelativeLayout>
-
+        
         <RelativeLayout
             android:id="@+id/relativeLayoutPortSudo"
             android:layout_width="match_parent"
@@ -247,7 +169,7 @@
 
                 <EditText
                     android:id="@+id/edit_raspi_sudoPass_editText"
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/labelSudoPass"
                     android:ems="10"
@@ -259,31 +181,6 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:text="@string/new_raspi_description"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <EditText
-            android:id="@+id/edit_raspi_desc_editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/new_raspi_description_hint"
-            android:inputType="textMultiLine"
-            android:paddingTop="8dp" >
-        </EditText>
-
-        <Button
-            android:id="@+id/new_raspi_save_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonClick"
-            android:paddingTop="8dp"
-            android:text="@string/new_raspi_button_save" />
     </LinearLayout>
 
 </ScrollView>

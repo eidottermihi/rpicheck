@@ -2,8 +2,6 @@
 <resources>
 
     <string name="app_name">RasPi Check</string>
-    <string name="menu_settings">Einstellungen</string>
-    <string name="menu_refresh">Aktualisieren</string>
     <string name="title_activity_main">RasPi Check</string>
     <string name="title_activity_new_raspi">Pi hinzufügen</string>
     <string name="title_activity_settings">Einstellungen</string>
@@ -19,7 +17,6 @@
     <string name="no_hostname_specified">Kein Hostname angegeben. Bitte überprüfe deine Angaben.</string>
     <string name="no_username_specified">Kein Benutzername angegeben. Bitte überprüfe deine Angaben.</string>
     <string name="no_password_specified">Kein Passwort angegeben. Bitte überprüfe deine Angaben.</string>
-    <string name="new_raspi">Pi hinzufügen</string>
     <string name="raspi_device_name_hint">Name</string>
     <string name="raspi_device_host_hint">Hostname / IP</string>
     <string name="raspi_device_user_hint">SSH Benutzername</string>
@@ -35,7 +32,6 @@
     <string name="ssh_port">SSH Port</string>
     <string name="new_raspi_description">Zusätzliche Beschreibung</string>
     <string name="new_raspi_description_hint">Gib eine zusätzliche Beschreibung hier ein..</string>
-    <string name="new_raspi_button_save">Speichern</string>
     <string name="overclocking_header">Overclocking</string>
     <string name="system_header">System</string>
     <string name="uptime_started">Startup</string>
@@ -50,12 +46,9 @@
     <string name="disk_header">Disk Usage</string>
     <string name="disk_header_avail">Available</string>
     <string name="disk_header_usedper">Used%</string>
-    <string name="menu_delete">Pi entfernen</string>
     <string name="please_add_a_raspberry_pi">Bitte füge einen Pi hinzu.</string>
-    <string name="edit_raspi">Pi bearbeiten</string>
     <string name="activity_title_edit_raspi">Pi bearbeiten</string>
     <string name="disk_header_mounted_on">Mounted on</string>
-    <string name="menu_shutdown">Neustart</string>
     <string name="process_header">Prozesse</string>
     <string name="header_pid">PID</string>
     <string name="header_tty">TTY</string>
@@ -136,7 +129,6 @@
 	<string name="dialog_passphrase_text">Bitte gib die Passphrase für den privaten Key an.</string>
 	<string name="button_commands">Kommandos</string>
     <string name="activity_title_commands">Eigene Kommandos</string>
-    <string name="new_command">Neues Kommando</string>
     <string name="activity_title_new_command">Neues Kommando</string>
     <string name="activity_title_edit_command">Kommando bearbeiten</string>
     <string name="label_cmd_name">Name</string>
@@ -144,7 +136,6 @@
     <string name="label_cmd_command">Befehl</string>
     <string name="label_cmd_command_hint">z.B. \'shutdown now -r\'</string>
     <string name="label_cmd_show_output">Ausgabe zeigen</string>
-    <string name="label_cmd_save_button">Speichern</string>
     <string name="validation_command_blank">Befehl darf nicht leer sein.</string>
     <string name="toast_command_updated">Kommando aktualisiert!</string>
     <string name="toast_command_saved">Kommando gespeichert!</string>
@@ -154,6 +145,27 @@
     <string name="run_cmd_dialog_title">%1$s ausführen</string>
     
     <string name="hint_pulltorefresh">Nur als Hinweis: Du kannst auch aktualisieren, indem du den Bildschirm nach unten ziehst!</string>
-    
 
+    <!-- ActionButton Strings -->
+    
+    <string name="action_new">Neu</string>
+    <string name="action_new_raspi">Pi hinzufügen</string>
+    <string name="action_new_command">Kommando hinzufügen</string>
+    
+    <string name="action_save">Speichern</string>
+    <string name="action_save_raspi">Pi Speichern</string>
+    <string name="action_save_command">Kommando speichern</string>
+    
+    <string name="action_edit">Bearbeiten</string>
+    <string name="action_edit_raspi">Pi Bearbeiten</string>
+    <string name="action_edit_command">Kommando Bearbeiten</string>
+    
+    <string name="action_delete">Entfernen</string>
+    <string name="action_delete_raspi">Pi entfernen</string>
+    <string name="action_delete_command">Kommando Entfernen</string>
+    
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_shutdown">Herunterfahren</string>
+    <string name="action_refresh">Aktualisieren</string>
+    
 </resources>

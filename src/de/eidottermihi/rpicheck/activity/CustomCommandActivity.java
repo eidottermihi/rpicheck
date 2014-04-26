@@ -95,7 +95,7 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.menu_command, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_commands, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
