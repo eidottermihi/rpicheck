@@ -225,7 +225,7 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 						.show(getSupportFragmentManager(), "passphrase");
 			} else {
 				LOGGER.debug("Opening command dialog.");
-				openCommandDialog(commandId, null);
+				openCommandDialog(commandId, currentDevice.getKeyfilePass());
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
