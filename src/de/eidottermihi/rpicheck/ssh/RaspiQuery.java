@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
@@ -1061,10 +1062,25 @@ public class RaspiQuery {
 			}
 			// split string at whitespaces
 			final String[] linesSplitted = line.split("\\s+");
-			if (linesSplitted.length == 6) {
-				disks.add(new DiskUsageBean(linesSplitted[0], linesSplitted[1],
-						linesSplitted[2], linesSplitted[3], linesSplitted[4],
-						linesSplitted[5]));
+			if (linesSplitted.length >= 6) {
+				if (linesSplitted.length > 6) {
+					// whitespace in mountpoint path
+					StringBuilder sb = new StringBuilder();
+					for (int i = 5; i < linesSplitted.length; i++) {
+						sb.append(linesSplitted[i]);
+						if (i != linesSplitted.length - 1) {
+							sb.append(" ");
+						}
+					}
+					disks.add(new DiskUsageBean(linesSplitted[0],
+							linesSplitted[1], linesSplitted[2],
+							linesSplitted[3], linesSplitted[4], sb.toString()));
+				} else {
+					disks.add(new DiskUsageBean(linesSplitted[0],
+							linesSplitted[1], linesSplitted[2],
+							linesSplitted[3], linesSplitted[4],
+							linesSplitted[5]));
+				}
 			} else {
 				LOGGER.warn(
 						"Expected another output of df -h. Skipping line: {}",
