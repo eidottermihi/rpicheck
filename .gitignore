@@ -25,7 +25,6 @@ tmp/**/*
 *.bak
 *.swp
 *~.nib
-local.properties
 .classpath
 .settings/
 .loadpath
@@ -43,3 +42,6 @@ local.properties
 .buildpath
 /project.properties
 /target
+
+# IDEA
+*.iml
