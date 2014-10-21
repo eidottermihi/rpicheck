@@ -3,6 +3,7 @@ package de.eidottermihi.rpicheck.activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -56,9 +57,18 @@ public class NewCommandActivity extends SherlockActivity {
 			cmdId = getIntent().getExtras().getLong(CMD_KEY_EDIT);
 			getSupportActionBar().setTitle(
 					getString(R.string.activity_title_edit_command));
-			CommandBean commandBean = db.readCommand(cmdId);
-			nameEditText.setText(commandBean.getName());
-			commandEditText.setText(commandBean.getCommand());
+			new AsyncTask<Void, Void, CommandBean>() {
+				@Override
+				protected CommandBean doInBackground(Void... params) {
+					return db.readCommand(cmdId);
+				}
+
+				@Override
+				protected void onPostExecute(CommandBean commandBean) {
+					nameEditText.setText(commandBean.getName());
+					commandEditText.setText(commandBean.getCommand());
+				}
+			}.execute();
 		}
 
 	}
@@ -92,18 +102,28 @@ public class NewCommandActivity extends SherlockActivity {
 			if (Strings.isNullOrEmpty(name)) {
 				name = cmd;
 			}
-			CommandBean bean = new CommandBean();
+			final CommandBean bean = new CommandBean();
 			bean.setName(name);
 			bean.setCommand(cmd);
 			bean.setShowOutput(true);
-			if (cmdId == null) {
-				db.create(bean);
-			} else {
-				bean.setId(cmdId);
-				db.updateCommand(bean);
-			}
-			this.setResult(RESULT_OK);
-			this.finish();
+			new AsyncTask<Void, Void, Void>() {
+				@Override
+				protected Void doInBackground(Void... params) {
+					if (cmdId == null) {
+						db.create(bean);
+					} else {
+						bean.setId(cmdId);
+						db.updateCommand(bean);
+					}
+					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void r) {
+					NewCommandActivity.this.setResult(RESULT_OK);
+					NewCommandActivity.this.finish();
+				}
+			}.execute();
 		}
 	}
 
