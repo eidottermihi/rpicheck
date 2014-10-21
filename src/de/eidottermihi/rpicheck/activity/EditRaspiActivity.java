@@ -276,7 +276,12 @@ public class EditRaspiActivity extends SherlockActivity implements
 		deviceBean.setAuthMethod(authMethod);
 		deviceBean.setKeyfilePath(keyfilePath);
 		deviceBean.setKeyfilePass(keyfilePass);
-		deviceDb.update(deviceBean);
+		new Thread() {
+			@Override
+			public void run() {
+				deviceDb.update(deviceBean);
+			}
+		}.start();
 	}
 
 	private void switchAuthMethodsInView(String method) {
