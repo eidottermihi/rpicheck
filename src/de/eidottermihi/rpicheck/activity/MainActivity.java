@@ -207,6 +207,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			@Override
 			protected Void doInBackground(Void... params) {
 				deviceCursor = deviceDb.getFullDeviceCursor();
+				return null;
 			}
 			
 			@Override
