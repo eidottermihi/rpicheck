@@ -1,6 +1,10 @@
 package de.eidottermihi.rpicheck.activity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +51,8 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	private DeviceDbHelper deviceDb = new DeviceDbHelper(this);
 
 	private Cursor fullCommandCursor;
+	
+	private Pattern placeHolderPattern = Pattern.compile("(\\$\\{[a-zA-z0-9]+\\})");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -252,12 +258,28 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 		Bundle args = new Bundle();
 		args.putSerializable("pi", currentDevice);
 		CommandBean command = deviceDb.readCommand(commandId);
+		String commandString = command.getCommand();
+		List<String> placeholders = parsePlaceholders(commandString);
+		LOGGER.info("placeholders: {}", placeholders);
+		if(!placeholders.isEmpty()){
+			
+		}
 		args.putSerializable("cmd", command);
 		if (keyPassphrase != null) {
 			args.putString("passphrase", keyPassphrase);
 		}
 		runCommandDialog.setArguments(args);
 		runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+	}
+
+	private List<String> parsePlaceholders(String commandString) {
+		List<String> placeholders = new ArrayList<String>();
+		Matcher m = placeHolderPattern.matcher(commandString);
+		while (m.find()) {
+			String placeholder = m.group();
+			placeholders.add(placeholder);
+		}
+		return placeholders;
 	}
 
 	@Override
