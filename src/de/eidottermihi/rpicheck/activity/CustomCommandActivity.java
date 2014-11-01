@@ -35,12 +35,15 @@ import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog;
+import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog.PlaceholdersDialogListener;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
 
 public class CustomCommandActivity extends SherlockFragmentActivity implements
-		OnItemClickListener, PassphraseDialogListener {
+		OnItemClickListener, PassphraseDialogListener,
+		PlaceholdersDialogListener {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CustomCommandActivity.class);
 
@@ -51,8 +54,9 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	private DeviceDbHelper deviceDb = new DeviceDbHelper(this);
 
 	private Cursor fullCommandCursor;
-	
-	private Pattern placeHolderPattern = Pattern.compile("(\\$\\{[a-zA-z0-9]+\\})");
+
+	private Pattern placeHolderPattern = Pattern
+			.compile("(\\$\\{[a-zA-z0-9]+\\})");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -258,11 +262,20 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 		Bundle args = new Bundle();
 		args.putSerializable("pi", currentDevice);
 		CommandBean command = deviceDb.readCommand(commandId);
-		String commandString = command.getCommand();
-		List<String> placeholders = parsePlaceholders(commandString);
+		ArrayList<String> placeholders = parsePlaceholders(command.getCommand());
 		LOGGER.info("placeholders: {}", placeholders);
-		if(!placeholders.isEmpty()){
-			
+		if (!placeholders.isEmpty()) {
+			DialogFragment placeholderDialog = new CommandPlaceholdersDialog();
+			Bundle args2 = new Bundle();
+			args2.putStringArrayList(
+					CommandPlaceholdersDialog.ARG_PLACEHOLDERS, placeholders);
+			args2.putSerializable(CommandPlaceholdersDialog.ARG_COMMAND,
+					command);
+			args2.putString(CommandPlaceholdersDialog.ARG_PASSPHRASE,
+					keyPassphrase);
+			placeholderDialog.setArguments(args2);
+			placeholderDialog.show(getSupportFragmentManager(), "placeholders");
+			return;
 		}
 		args.putSerializable("cmd", command);
 		if (keyPassphrase != null) {
@@ -272,8 +285,8 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 		runCommandDialog.show(getSupportFragmentManager(), "runCommand");
 	}
 
-	private List<String> parsePlaceholders(String commandString) {
-		List<String> placeholders = new ArrayList<String>();
+	private ArrayList<String> parsePlaceholders(String commandString) {
+		ArrayList<String> placeholders = new ArrayList<String>();
 		Matcher m = placeHolderPattern.matcher(commandString);
 		while (m.find()) {
 			String placeholder = m.group();
@@ -302,6 +315,27 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onPassphraseCancelClick() {
 		// do nothing
+	}
+
+	@Override
+	public void onPlaceholdersOKClick(DialogFragment dialog,
+			CommandBean command, String keyPassphrase) {
+		DialogFragment runCommandDialog = new RunCommandDialog();
+		Bundle args = new Bundle();
+		args.putSerializable("pi", currentDevice);
+		args.putSerializable("cmd", command);
+		if (keyPassphrase != null) {
+			args.putString("passphrase", keyPassphrase);
+		}
+		runCommandDialog.setArguments(args);
+		runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+
+	}
+
+	@Override
+	public void onPlaceholdersCancelClick() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
