@@ -253,9 +253,9 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 		}
 	}
 
-	private void addRaspiToDb(String name, String host, String user,
-			String authMethod, String sshPort, String description,
-			String sudoPass, String sshPass, String keyPass, String keyPath) {
+	private void addRaspiToDb(final String name, final String host, final String user,
+			final String authMethod, String sshPort, final String description,
+			String sudoPass, final String sshPass, final String keyPass, final String keyPath) {
 		// if sshPort is empty, use default port (22)
 		if (Strings.isNullOrEmpty(sshPort)) {
 			sshPort = getText(R.string.default_ssh_port).toString();
@@ -263,8 +263,14 @@ public class NewRaspiAuthActivity extends SherlockActivity implements
 		if (Strings.isNullOrEmpty(sudoPass)) {
 			sudoPass = "";
 		}
-		deviceDb.create(name, host, user, sshPass, Integer.parseInt(sshPort),
-				description, sudoPass, authMethod, keyPath, keyPass);
+		final String port = sshPort, pass = sudoPass;
+		new Thread() {
+			@Override
+			public void run() {
+				deviceDb.create(name, host, user, sshPass, Integer.parseInt(port),
+						description, pass, authMethod, keyPath, keyPass);
+			}
+		}.start();
 	}
 
 	@Override

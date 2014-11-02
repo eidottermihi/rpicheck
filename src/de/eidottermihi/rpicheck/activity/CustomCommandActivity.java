@@ -2,7 +2,6 @@ package de.eidottermihi.rpicheck.activity;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +13,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
@@ -93,13 +93,23 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	 * @param pi
 	 */
 	private void initListView(RaspberryDeviceBean pi) {
-		fullCommandCursor = deviceDb.getFullCommandCursor();
-		CommandAdapter commandsAdapter = new CommandAdapter(this,
-				fullCommandCursor, CursorAdapter.FLAG_AUTO_REQUERY);
-		commandListView.setAdapter(commandsAdapter);
-		commandListView.setOnItemClickListener(this);
-		// commandListView.setOnItemLongClickListener(this);
-		registerForContextMenu(commandListView);
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				fullCommandCursor = deviceDb.getFullCommandCursor();
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void r) {
+				CommandAdapter commandsAdapter = new CommandAdapter(CustomCommandActivity.this,
+						fullCommandCursor, CursorAdapter.FLAG_AUTO_REQUERY);
+				commandListView.setAdapter(commandsAdapter);
+				commandListView.setOnItemClickListener(CustomCommandActivity.this);
+				// commandListView.setOnItemLongClickListener(this);
+				registerForContextMenu(commandListView);
+			}
+		}.execute();
 
 	}
 
@@ -110,16 +120,25 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
+	public void onCreateContextMenu(final ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.commandListView) {
-			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+			final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 			LOGGER.debug("Creating context menu for command id = {}.", info.id);
-			CommandBean cmd = deviceDb.readCommand(info.id);
-			menu.setHeaderTitle(cmd.getName());
-			menu.add(Menu.NONE, 1, 1, R.string.command_context_edit);
-			menu.add(Menu.NONE, 2, 2, R.string.command_context_delete);
-			menu.add(Menu.NONE, 3, 3, R.string.command_context_run);
+			new AsyncTask<Void, Void, CommandBean>() {
+				@Override
+				protected CommandBean doInBackground(Void... params) {
+					return deviceDb.readCommand(info.id);
+				}
+				
+				@Override
+				protected void onPostExecute(CommandBean cmd) {
+					menu.setHeaderTitle(cmd.getName());
+					menu.add(Menu.NONE, 1, 1, R.string.command_context_edit);
+					menu.add(Menu.NONE, 2, 2, R.string.command_context_delete);
+					menu.add(Menu.NONE, 3, 3, R.string.command_context_run);
+				}
+			}.execute();
 		}
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -176,9 +195,19 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 		return true;
 	}
 
-	private void deleteCommand(long id) {
-		deviceDb.deleteCommand(id);
-		this.initListView(currentDevice);
+	private void deleteCommand(final long id) {
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				deviceDb.deleteCommand(id);
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void r) {
+				CustomCommandActivity.this.initListView(currentDevice);
+			}
+		}.execute();
 	}
 
 	@Override
@@ -257,9 +286,9 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	 * @param keyPassphrase
 	 *            nullable: key passphrase
 	 */
-	private void openCommandDialog(long commandId, String keyPassphrase) {
-		DialogFragment runCommandDialog = new RunCommandDialog();
-		Bundle args = new Bundle();
+	private void openCommandDialog(final long commandId, final String keyPassphrase) {
+		final DialogFragment runCommandDialog = new RunCommandDialog();
+		final Bundle args = new Bundle();
 		args.putSerializable("pi", currentDevice);
 		CommandBean command = deviceDb.readCommand(commandId);
 		ArrayList<String> placeholders = parsePlaceholders(command.getCommand());
@@ -277,12 +306,22 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 			placeholderDialog.show(getSupportFragmentManager(), "placeholders");
 			return;
 		}
-		args.putSerializable("cmd", command);
-		if (keyPassphrase != null) {
-			args.putString("passphrase", keyPassphrase);
-		}
-		runCommandDialog.setArguments(args);
-		runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+		new AsyncTask<Void, Void, CommandBean>() {
+			@Override
+			protected CommandBean doInBackground(Void... params) {
+				return deviceDb.readCommand(commandId);
+			}
+			
+			@Override
+			protected void onPostExecute(CommandBean command) {
+				args.putSerializable("cmd", command);
+				if (keyPassphrase != null) {
+					args.putString("passphrase", keyPassphrase);
+				}
+				runCommandDialog.setArguments(args);
+				runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+			}
+		}.execute();
 	}
 
 	private ArrayList<String> parsePlaceholders(String commandString) {
@@ -303,7 +342,12 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 			LOGGER.debug("Saving passphrase..");
 			currentDevice.setKeyfilePass(passphrase);
 			currentDevice.setModifiedAt(new Date());
-			deviceDb.update(currentDevice);
+			new Thread() {
+				@Override
+				public void run() {
+					deviceDb.update(currentDevice);
+				}
+			}.start();
 		}
 		// dirty hack: type is commandId
 		Long commandId = Long.parseLong(type);

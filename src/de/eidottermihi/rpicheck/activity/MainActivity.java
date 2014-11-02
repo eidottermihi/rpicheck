@@ -203,14 +203,24 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		// init device database
 		deviceDb = new DeviceDbHelper(this);
-		deviceCursor = deviceDb.getFullDeviceCursor();
-		if (deviceCursor.getCount() == 0) {
-			this.startActivityForResult(newRaspiIntent,
-					NewRaspiActivity.REQUEST_SAVE);
-		} else {
-			// init spinner
-			initSpinner();
-		}
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				deviceCursor = deviceDb.getFullDeviceCursor();
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void r) {
+				if (deviceCursor.getCount() == 0) {
+					MainActivity.this.startActivityForResult(newRaspiIntent,
+							NewRaspiActivity.REQUEST_SAVE);
+				} else {
+					// init spinner
+					initSpinner();
+				}
+			}
+		}.execute();
 	}
 
 	@Override
@@ -419,33 +429,43 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@SuppressWarnings("deprecation")
 	private void initSpinner() {
-		deviceCursor = deviceDb.getFullDeviceCursor();
-		LOGGER.debug("Device cursor rows: " + deviceCursor.getCount());
-		// only show spinner if theres already a device to show
-		if (deviceCursor.getCount() > 0) {
-			// make adapter
-			this.spinadapter = new SimpleCursorAdapter(this,
-					R.layout.sherlock_spinner_dropdown_item, deviceCursor,
-					new String[] { "name", "_id" },
-					new int[] { android.R.id.text1 });
-			spinadapter
-					.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-			this.getSupportActionBar().setNavigationMode(
-					ActionBar.NAVIGATION_MODE_LIST);
-			this.getSupportActionBar().setListNavigationCallbacks(spinadapter,
-					this);
-			this.getSupportActionBar().setDisplayShowTitleEnabled(false);
-			commandButton.setVisibility(View.VISIBLE);
-		} else {
-			this.getSupportActionBar().setNavigationMode(
-					ActionBar.DISPLAY_SHOW_TITLE);
-			this.getSupportActionBar().setDisplayShowTitleEnabled(true);
-			this.currentDevice = null;
-			// disable edit/restart/delete action menu items
-			this.supportInvalidateOptionsMenu();
-			commandButton.setVisibility(View.GONE);
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				deviceCursor = deviceDb.getFullDeviceCursor();
+				LOGGER.debug("Device cursor rows: " + deviceCursor.getCount());
+				return null;
+			}
 
-		}
+			@Override
+			protected void onPostExecute(Void r) {
+				// only show spinner if theres already a device to show
+				if (deviceCursor.getCount() > 0) {
+					// make adapter
+					spinadapter = new SimpleCursorAdapter(MainActivity.this,
+							R.layout.sherlock_spinner_dropdown_item, deviceCursor,
+							new String[] { "name", "_id" },
+							new int[] { android.R.id.text1 });
+					spinadapter
+							.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+					getSupportActionBar().setNavigationMode(
+							ActionBar.NAVIGATION_MODE_LIST);
+					getSupportActionBar().setListNavigationCallbacks(spinadapter,
+							MainActivity.this);
+					getSupportActionBar().setDisplayShowTitleEnabled(false);
+					commandButton.setVisibility(View.VISIBLE);
+				} else {
+					getSupportActionBar().setNavigationMode(
+							ActionBar.DISPLAY_SHOW_TITLE);
+					getSupportActionBar().setDisplayShowTitleEnabled(true);
+					currentDevice = null;
+					// disable edit/restart/delete action menu items
+					supportInvalidateOptionsMenu();
+					commandButton.setVisibility(View.GONE);
+
+				}
+			}
+		}.execute();
 	}
 
 	private void updateResultsInUi() {
@@ -949,63 +969,71 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+	public boolean onNavigationItemSelected(final int itemPosition, long itemId) {
 		LOGGER.debug("Spinner item selected: pos=" + itemPosition + ", id="
 				+ itemId);
-		// get device with id
-		RaspberryDeviceBean read = deviceDb.read(itemId);
-		if (currentDevice == null) {
-			this.currentDevice = read;
-		} else {
-			// set current device only when device has changed (query data get
-			// lost otherwise)
-			if (read.getId() != this.currentDevice.getId()) {
-				LOGGER.debug("Switch from device id {} to device id {}.",
-						this.currentDevice.getId(), read.getId());
-				this.currentDevice = read;
-				// switched to other device
-				// check if last query data for new device is present
-				boolean lastQueryPresent = false;
-				if (allDevices != null) {
-					RaspberryDeviceBean deviceBean = allDevices
-							.get(this.currentDevice.getId());
-					if (deviceBean != null) {
-						if (deviceBean.getLastQueryData() != null
-								&& deviceBean.getLastQueryData().getException() == null) {
-							this.currentDevice.setLastQueryData(deviceBean
-									.getLastQueryData());
-							this.updateQueryDataInView();
-							lastQueryPresent = true;
+		new AsyncTask<Long, Void, RaspberryDeviceBean>() {
+			@Override
+			protected RaspberryDeviceBean doInBackground(Long... params) {
+				// get device with id
+				return deviceDb.read(params[0]);
+			}
+			
+			@Override
+			protected void onPostExecute(RaspberryDeviceBean read) {
+				if (currentDevice == null) {
+					currentDevice = read;
+				} else {
+					// set current device only when device has changed (query data get
+					// lost otherwise)
+					if (read.getId() != currentDevice.getId()) {
+						LOGGER.debug("Switch from device id {} to device id {}.",
+								currentDevice.getId(), read.getId());
+						currentDevice = read;
+						// switched to other device
+						// check if last query data for new device is present
+						boolean lastQueryPresent = false;
+						if (allDevices != null) {
+							RaspberryDeviceBean deviceBean = allDevices
+									.get(currentDevice.getId());
+							if (deviceBean != null) {
+								if (deviceBean.getLastQueryData() != null
+										&& deviceBean.getLastQueryData().getException() == null) {
+									currentDevice.setLastQueryData(deviceBean
+											.getLastQueryData());
+									updateQueryDataInView();
+									lastQueryPresent = true;
+								}
+							}
+						}
+						if (!lastQueryPresent) {
+							resetView();
+						}
+					} else {
+						// device was maybe updated
+						if (currentDevice.getLastQueryData() != null) {
+							final QueryBean data = currentDevice.getLastQueryData();
+							currentDevice = read;
+							currentDevice.setLastQueryData(data);
+						} else {
+							currentDevice = read;
 						}
 					}
 				}
-				if (!lastQueryPresent) {
-					this.resetView();
+				if (currentDevice != null) {
+					currentDevice.setSpinnerPosition(itemPosition);
 				}
-			} else {
-				// device was maybe updated
-				if (currentDevice.getLastQueryData() != null) {
-					final QueryBean data = this.currentDevice
-							.getLastQueryData();
-					this.currentDevice = read;
-					this.currentDevice.setLastQueryData(data);
-				} else {
-					this.currentDevice = read;
+				// refresh options menu
+				supportInvalidateOptionsMenu();
+				// if current device == null (if only device was deleted), start new
+				// raspi activity
+				if (currentDevice == null) {
+					Toast.makeText(MainActivity.this, R.string.please_add_a_raspberry_pi,
+							Toast.LENGTH_LONG).show();
+					startActivity(newRaspiIntent);
 				}
 			}
-		}
-		if (currentDevice != null) {
-			this.currentDevice.setSpinnerPosition(itemPosition);
-		}
-		// refresh options menu
-		this.supportInvalidateOptionsMenu();
-		// if current device == null (if only device was deleted), start new
-		// raspi activity
-		if (currentDevice == null) {
-			Toast.makeText(this, R.string.please_add_a_raspberry_pi,
-					Toast.LENGTH_LONG).show();
-			this.startActivity(newRaspiIntent);
-		}
+		}.execute(itemId);
 		return true;
 	}
 
@@ -1084,7 +1112,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 			LOGGER.debug("Saving passphrase for device {}.",
 					currentDevice.getName());
 			currentDevice.setKeyfilePass(passphrase);
-			deviceDb.update(currentDevice);
+			new Thread() {
+				@Override
+				public void run() {
+					deviceDb.update(currentDevice);
+				}
+			}.start();
 		}
 		if (type.equals(PassphraseDialog.SSH_QUERY)) {
 			// connect
