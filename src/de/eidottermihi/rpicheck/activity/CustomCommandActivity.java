@@ -99,13 +99,15 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 				fullCommandCursor = deviceDb.getFullCommandCursor();
 				return null;
 			}
-			
+
 			@Override
 			protected void onPostExecute(Void r) {
-				CommandAdapter commandsAdapter = new CommandAdapter(CustomCommandActivity.this,
-						fullCommandCursor, CursorAdapter.FLAG_AUTO_REQUERY);
+				CommandAdapter commandsAdapter = new CommandAdapter(
+						CustomCommandActivity.this, fullCommandCursor,
+						CursorAdapter.FLAG_AUTO_REQUERY);
 				commandListView.setAdapter(commandsAdapter);
-				commandListView.setOnItemClickListener(CustomCommandActivity.this);
+				commandListView
+						.setOnItemClickListener(CustomCommandActivity.this);
 				// commandListView.setOnItemLongClickListener(this);
 				registerForContextMenu(commandListView);
 			}
@@ -130,7 +132,7 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 				protected CommandBean doInBackground(Void... params) {
 					return deviceDb.readCommand(info.id);
 				}
-				
+
 				@Override
 				protected void onPostExecute(CommandBean cmd) {
 					menu.setHeaderTitle(cmd.getName());
@@ -202,7 +204,7 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 				deviceDb.deleteCommand(id);
 				return null;
 			}
-			
+
 			@Override
 			protected void onPostExecute(Void r) {
 				CustomCommandActivity.this.initListView(currentDevice);
@@ -286,14 +288,15 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	 * @param keyPassphrase
 	 *            nullable: key passphrase
 	 */
-	private void openCommandDialog(final long commandId, final String keyPassphrase) {
+	private void openCommandDialog(final long commandId,
+			final String keyPassphrase) {
 		final DialogFragment runCommandDialog = new RunCommandDialog();
 		final Bundle args = new Bundle();
-		args.putSerializable("pi", currentDevice);
-		CommandBean command = deviceDb.readCommand(commandId);
-		ArrayList<String> placeholders = parsePlaceholders(command.getCommand());
-		LOGGER.info("placeholders: {}", placeholders);
+		final CommandBean command = deviceDb.readCommand(commandId);
+		final ArrayList<String> placeholders = parsePlaceholders(command
+				.getCommand());
 		if (!placeholders.isEmpty()) {
+			// need to get replacements for placeholders first
 			DialogFragment placeholderDialog = new CommandPlaceholdersDialog();
 			Bundle args2 = new Bundle();
 			args2.putStringArrayList(
@@ -306,22 +309,13 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 			placeholderDialog.show(getSupportFragmentManager(), "placeholders");
 			return;
 		}
-		new AsyncTask<Void, Void, CommandBean>() {
-			@Override
-			protected CommandBean doInBackground(Void... params) {
-				return deviceDb.readCommand(commandId);
-			}
-			
-			@Override
-			protected void onPostExecute(CommandBean command) {
-				args.putSerializable("cmd", command);
-				if (keyPassphrase != null) {
-					args.putString("passphrase", keyPassphrase);
-				}
-				runCommandDialog.setArguments(args);
-				runCommandDialog.show(getSupportFragmentManager(), "runCommand");
-			}
-		}.execute();
+		args.putSerializable("pi", currentDevice);
+		args.putSerializable("cmd", command);
+		if (keyPassphrase != null) {
+			args.putString("passphrase", keyPassphrase);
+		}
+		runCommandDialog.setArguments(args);
+		runCommandDialog.show(getSupportFragmentManager(), "runCommand");
 	}
 
 	private ArrayList<String> parsePlaceholders(String commandString) {
@@ -378,8 +372,7 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onPlaceholdersCancelClick() {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 }

@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="Hint:"
+                android:text="@string/placeholder_hint"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -93,7 +93,7 @@
                 android:layout_below="@id/hint1_Text"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="You can use placeholders like &apos;${my_secret}&apos;. They will be replaced by your input when you actually run the command."
+                android:text="@string/placeholder_hint_text"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </RelativeLayout>

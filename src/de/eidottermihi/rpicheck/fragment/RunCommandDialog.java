@@ -57,14 +57,14 @@ public class RunCommandDialog extends DialogFragment {
 
 		builder.setTitle(getString(R.string.run_cmd_dialog_title,
 				this.command.getName()));
-		
-		//fetching the theme-dependent icon
+
+		// fetching the theme-dependent icon
 		TypedValue icon = new TypedValue();
-		if (getActivity().getTheme().resolveAttribute(
-				R.attr.ic_dialog_run, icon, true)) {
+		if (getActivity().getTheme().resolveAttribute(R.attr.ic_dialog_run,
+				icon, true)) {
 			builder.setIcon(icon.resourceId);
 		}
-		
+
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
 			@Override
@@ -180,7 +180,7 @@ public class RunCommandDialog extends DialogFragment {
 			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
 					Integer.parseInt(params[3]));
 			final String pass = params[2];
-			final String sudoPass = params[4];
+//			final String sudoPass = params[4];
 			final String privateKeyPath = params[5];
 			final String privateKeyPass = params[6];
 			final String command = params[7];

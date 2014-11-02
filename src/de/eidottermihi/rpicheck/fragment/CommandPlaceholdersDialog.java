@@ -1,6 +1,9 @@
 package de.eidottermihi.rpicheck.fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,8 +14,13 @@ import android.support.v4.app.DialogFragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.common.base.Strings;
+
 import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.db.CommandBean;
 
@@ -22,11 +30,12 @@ public class CommandPlaceholdersDialog extends DialogFragment {
 	public static final String ARG_COMMAND = "cmd";
 	public static final String ARG_PASSPHRASE = "passphrase";
 
-	ArrayList<String> placeholders;
-	CommandBean command;
-	String keyPass;
+	private ArrayList<String> placeholders;
+	private CommandBean command;
+	private String keyPass;
+	private Map<String, EditText> placeholderInputs;
 
-	PlaceholdersDialogListener activityListener;
+	private PlaceholdersDialogListener activityListener;
 
 	public interface PlaceholdersDialogListener {
 		/**
@@ -65,7 +74,7 @@ public class CommandPlaceholdersDialog extends DialogFragment {
 				ARG_COMMAND);
 		this.keyPass = this.getArguments().getString(ARG_PASSPHRASE);
 
-		builder.setTitle("Placeholders");
+		builder.setTitle(R.string.title_placeholders);
 
 		// fetching the theme-dependent icon
 		TypedValue icon = new TypedValue();
@@ -74,25 +83,64 @@ public class CommandPlaceholdersDialog extends DialogFragment {
 			builder.setIcon(icon.resourceId);
 		}
 
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.placeholders_button_ok,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				activityListener.onPlaceholdersOKClick(
-						CommandPlaceholdersDialog.this, command, keyPass);
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
 		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		final View view = inflater.inflate(R.layout.dialog_placeholders, null);
 		LinearLayout linLayout = (LinearLayout) view
 				.findViewById(R.id.placeholderLayout);
+		placeholderInputs = new HashMap<String, EditText>();
 		for (String string : placeholders) {
-			TextView v = new TextView(getActivity());
-			v.setText(string);
-			linLayout.addView(v);
+			final View row = inflater.inflate(R.layout.command_placeholder_row,
+					null);
+			final TextView placeholderName = (TextView) row
+					.findViewById(R.id.placeholderName);
+			placeholderName.setText(string);
+			final EditText placeholderText = (EditText) row
+					.findViewById(R.id.placeholderText);
+			linLayout.addView(row);
+			placeholderInputs.put(string, placeholderText);
 		}
 		builder.setView(view);
 		return builder.create();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart(); // super.onStart() is where dialog.show() is actually
+							// called on the underlying dialog, so we have to do
+							// it after this point
+		AlertDialog d = (AlertDialog) getDialog();
+		if (d != null) {
+			Button positiveButton = (Button) d
+					.getButton(Dialog.BUTTON_POSITIVE);
+			positiveButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// do replacements
+					String cmd = command.getCommand();
+					for (Entry<String, EditText> entry : placeholderInputs
+							.entrySet()) {
+						String placeholder = entry.getKey();
+						String replacement = entry.getValue().getText()
+								.toString();
+						if (!Strings.isNullOrEmpty(replacement)) {
+							cmd = cmd.replace(placeholder, replacement);
+						}
+					}
+					command.setCommand(cmd);
+					dismiss();
+					activityListener.onPlaceholdersOKClick(
+							CommandPlaceholdersDialog.this, command, keyPass);
+				}
+			});
+		}
 	}
 
 }

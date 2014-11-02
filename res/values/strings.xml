@@ -174,5 +174,10 @@
     <string name="action_settings">Settings</string>
     <string name="action_shutdown">Shutdown</string>
     <string name="action_refresh">Refresh</string>
+    
+    <string name="title_placeholders">Placeholders</string>
+    <string name="placeholders_button_ok">OK</string>
+    <string name="placeholder_hint_text">You can use placeholders like &amp;apos;${my_secret}&amp;apos;. They will be replaced by your input when you actually run the command.</string>
+    <string name="placeholder_hint">Hint:</string>
 
 </resources>
