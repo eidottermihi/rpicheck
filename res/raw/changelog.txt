@@ -19,6 +19,12 @@
     </style>
   </head>
   <body>
+$ 1.6.0
+  % Version 1.6.0
+  _ 2014-11-11
+    * added placeholder for custom commands
+    * bugfix: show disks with whitespace in mount point correctly
+    * internal: access database in background thread (thanks to yulin2)
 $ 1.5.2
   % Version 1.5.2
   _ 2014-08-27
