@@ -170,7 +170,7 @@
     
     <string name="title_placeholders">Platzhalter</string>
     <string name="placeholders_button_ok">OK</string>
-    <string name="placeholder_hint_text">Du kann Platzhalter wie z.B. &amp;apos;${my_secret}&amp;apos; verwenden. Diese werden erst durch deine Eingabe beim Ausführen des Kommandos ersetzt.</string>
+    <string name="placeholder_hint_text">Du kann Platzhalter wie z.B. \'${my_secret}\' verwenden. Diese werden erst durch deine Eingabe beim Ausführen des Kommandos ersetzt.</string>
     <string name="placeholder_hint">Tipp:</string>
     
 </resources>

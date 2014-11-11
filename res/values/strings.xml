@@ -177,7 +177,7 @@
     
     <string name="title_placeholders">Placeholders</string>
     <string name="placeholders_button_ok">OK</string>
-    <string name="placeholder_hint_text">You can use placeholders like &amp;apos;${my_secret}&amp;apos;. They will be replaced by your input when you actually run the command.</string>
+    <string name="placeholder_hint_text">You can use placeholders like \'${my_secret}\'. They will be replaced by your input when you actually run the command.</string>
     <string name="placeholder_hint">Hint:</string>
 
 </resources>
