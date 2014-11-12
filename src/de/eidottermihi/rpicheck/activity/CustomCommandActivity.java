@@ -108,7 +108,7 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 				commandListView.setAdapter(commandsAdapter);
 				commandListView
 						.setOnItemClickListener(CustomCommandActivity.this);
-				// commandListView.setOnItemLongClickListener(this);
+				// commandListView.setOnItemLongClickListener(CustomCommandActivity.this);
 				registerForContextMenu(commandListView);
 			}
 		}.execute();
@@ -127,20 +127,12 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 		if (v.getId() == R.id.commandListView) {
 			final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 			LOGGER.debug("Creating context menu for command id = {}.", info.id);
-			new AsyncTask<Void, Void, CommandBean>() {
-				@Override
-				protected CommandBean doInBackground(Void... params) {
-					return deviceDb.readCommand(info.id);
-				}
+			CommandBean cmd = deviceDb.readCommand(info.id);
+			menu.setHeaderTitle(cmd.getName());
+			menu.add(Menu.NONE, 1, 1, R.string.command_context_edit);
+			menu.add(Menu.NONE, 2, 2, R.string.command_context_delete);
+			menu.add(Menu.NONE, 3, 3, R.string.command_context_run);
 
-				@Override
-				protected void onPostExecute(CommandBean cmd) {
-					menu.setHeaderTitle(cmd.getName());
-					menu.add(Menu.NONE, 1, 1, R.string.command_context_edit);
-					menu.add(Menu.NONE, 2, 2, R.string.command_context_delete);
-					menu.add(Menu.NONE, 3, 3, R.string.command_context_run);
-				}
-			}.execute();
 		}
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}

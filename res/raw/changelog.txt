@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.6.1
+  % Version 1.6.1
+  _ 2014-11-12
+    * bugfix: make it possible to edit/delete commands again
 $ 1.6.0
   % Version 1.6.0
   _ 2014-11-11
