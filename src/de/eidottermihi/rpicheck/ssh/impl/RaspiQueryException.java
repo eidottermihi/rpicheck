@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck.ssh;
+package de.eidottermihi.rpicheck.ssh.impl;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package de.eidottermihi.rpicheck.ssh;
+package de.eidottermihi.rpicheck.ssh.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
@@ -35,6 +34,7 @@ import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.beans.UptimeBean;
 import de.eidottermihi.rpicheck.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.beans.WlanBean;
+import de.eidottermihi.rpicheck.ssh.IQueryService;
 
 /**
  * Simple API for querying a Raspberry Pi computer.
@@ -61,7 +61,7 @@ import de.eidottermihi.rpicheck.beans.WlanBean;
  *          </ul>
  * 
  */
-public class RaspiQuery {
+public final class RaspiQuery implements IQueryService {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(RaspiQuery.class);
@@ -197,14 +197,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Queries information available via vcgencmd (temperature, frequencies,
-	 * firmware version, ...).
-	 * 
-	 * @return a {@link VcgencmdBean} with the data
-	 * @throws RaspiQueryException
-	 *             when vcgencmd was not found on the machine
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryVcgencmd()
 	 */
+	@Override
 	public final VcgencmdBean queryVcgencmd() throws RaspiQueryException {
 		LOGGER.debug("Querying vcgencmd...");
 		// first, find the location of vcgencmd
@@ -362,14 +358,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Queries network information.
-	 * 
-	 * @return a List with informations to every interface found (loopback
-	 *         excluded).
-	 * @throws RaspiQueryException
-	 *             if something goes wrong.
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryNetworkInformation()
 	 */
+	@Override
 	public List<NetworkInterfaceInformation> queryNetworkInformation()
 			throws RaspiQueryException {
 		List<NetworkInterfaceInformation> interfacesInfo = new ArrayList<NetworkInterfaceInformation>();
@@ -643,6 +635,10 @@ public class RaspiQuery {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryVolts(java.lang.String)
+	 */
+	@Override
 	public final Double queryVolts(String vcgencmdPath)
 			throws RaspiQueryException {
 		LOGGER.info("Querying core volts...");
@@ -672,13 +668,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Queries uptime and average load.
-	 * 
-	 * @return a {@link UptimeBean}
-	 * @throws RaspiQueryException
-	 *             if something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryUptime()
 	 */
+	@Override
 	public final UptimeBean queryUptime() throws RaspiQueryException {
 		LOGGER.info("Querying uptime...");
 		if (client != null) {
@@ -705,13 +698,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Queries the cpu serial.
-	 * 
-	 * @return the cpu serial
-	 * @throws RaspiQueryException
-	 *             if something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryCpuSerial()
 	 */
+	@Override
 	public final String queryCpuSerial() throws RaspiQueryException {
 		LOGGER.info("Querying serial number...");
 		if (client != null) {
@@ -738,13 +728,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Query memory information.
-	 * 
-	 * @return a {@link RaspiMemoryBean}
-	 * @throws RaspiQueryException
-	 *             if something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryMemoryInformation()
 	 */
+	@Override
 	public final RaspiMemoryBean queryMemoryInformation()
 			throws RaspiQueryException {
 		LOGGER.info("Querying memory information...");
@@ -771,13 +758,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Query the disk usage of the raspberry pi.
-	 * 
-	 * @return a List with information for every disk
-	 * @throws RaspiQueryException
-	 *             if something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryDiskUsage()
 	 */
+	@Override
 	public final List<DiskUsageBean> queryDiskUsage()
 			throws RaspiQueryException {
 		LOGGER.info("Querying disk usage...");
@@ -804,13 +788,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Queries the distribution name.
-	 * 
-	 * @return the distribution name
-	 * @throws RaspiQueryException
-	 *             if something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryDistributionName()
 	 */
+	@Override
 	public final String queryDistributionName() throws RaspiQueryException {
 		LOGGER.info("Querying distribution name...");
 		if (client != null) {
@@ -836,15 +817,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Queries the running processes.
-	 * 
-	 * @param showRootProcesses
-	 *            if processes of root should be shown
-	 * @return List with running processes
-	 * @throws RaspiQueryException
-	 *             if something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryProcesses(boolean)
 	 */
+	@Override
 	public final List<ProcessBean> queryProcesses(boolean showRootProcesses)
 			throws RaspiQueryException {
 		LOGGER.info("Querying running processes...");
@@ -873,14 +849,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Inits a reboot via command 'sudo /sbin/shutdown -r now'. For shutdown,
-	 * root privileges are required.
-	 * 
-	 * @param sudoPassword
-	 *            the sudo password
-	 * @throws RaspiQueryException
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#sendRebootSignal(java.lang.String)
 	 */
+	@Override
 	public final void sendRebootSignal(String sudoPassword)
 			throws RaspiQueryException {
 		if (sudoPassword == null) {
@@ -931,14 +903,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Inits a system halt via command 'sudo /sbin/shutdown -h now'. For halt,
-	 * root privileges are required.
-	 * 
-	 * @param sudoPassword
-	 *            the sudo password
-	 * @throws RaspiQueryException
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#sendHaltSignal(java.lang.String)
 	 */
+	@Override
 	public final void sendHaltSignal(String sudoPassword)
 			throws RaspiQueryException {
 		if (sudoPassword == null) {
@@ -1195,14 +1163,10 @@ public class RaspiQuery {
 		return formatted;
 	}
 
-	/**
-	 * Establishes a ssh connection to a raspberry pi via ssh.
-	 * 
-	 * @param password
-	 *            the ssh password
-	 * @throws RaspiQueryException
-	 *             - if connection, authentication or transport fails
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#connect(java.lang.String)
 	 */
+	@Override
 	public final void connect(String password) throws RaspiQueryException {
 		LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
 		client = new SSHClient(new AndroidConfig());
@@ -1224,13 +1188,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Establishes a ssh connection with public key authentification.
-	 * 
-	 * @param keyfilePath
-	 *            path to the private key file in PKCS11/OpenSSH format
-	 * @throws RaspiQueryException
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#connectWithPubKeyAuth(java.lang.String)
 	 */
+	@Override
 	public final void connectWithPubKeyAuth(final String keyfilePath)
 			throws RaspiQueryException {
 		LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
@@ -1258,13 +1219,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Establishes a ssh connection with public key authentification.
-	 * 
-	 * @param path
-	 *            path to the private key file in PKCS11/OpenSSH format
-	 * @throws RaspiQueryException
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#connectWithPubKeyAuthAndPassphrase(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void connectWithPubKeyAuthAndPassphrase(String path,
 			String privateKeyPass) throws RaspiQueryException {
 		LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
@@ -1293,15 +1251,10 @@ public class RaspiQuery {
 		}
 	}
 
-	/**
-	 * Disconnects the current client.
-	 * 
-	 * @throws RaspiQueryException
-	 *             if something goes wrong
-	 * 
-	 * @throws IOException
-	 *             if something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#disconnect()
 	 */
+	@Override
 	public final void disconnect() throws RaspiQueryException {
 		if (client != null) {
 			if (client.isConnected()) {
@@ -1316,6 +1269,10 @@ public class RaspiQuery {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#getFile(java.lang.String)
+	 */
+	@Override
 	public final String getFile(String path) {
 		if (client != null) {
 			if (client.isConnected()) {
@@ -1332,22 +1289,26 @@ public class RaspiQuery {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#getHostname()
+	 */
+	@Override
 	public String getHostname() {
 		return hostname;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#setHostname(java.lang.String)
+	 */
+	@Override
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
 
-	/**
-	 * Runs the specified command.
-	 * 
-	 * @param command
-	 *            the command to run
-	 * @throws RaspiQueryException
-	 *             when something goes wrong
+	/* (non-Javadoc)
+	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#run(java.lang.String)
 	 */
+	@Override
 	public String run(String command) throws RaspiQueryException {
 		LOGGER.info("Running custom command: {}", command);
 		if (client != null) {

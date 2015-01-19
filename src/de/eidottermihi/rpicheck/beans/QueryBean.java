@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import de.eidottermihi.rpicheck.ssh.RaspiQueryException;
+import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class QueryBean implements Serializable {
 	private static final long serialVersionUID = 4550202922460044379L;

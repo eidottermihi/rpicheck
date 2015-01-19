@@ -22,8 +22,9 @@ import de.eidottermihi.rpicheck.R;
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
-import de.eidottermihi.rpicheck.ssh.RaspiQuery;
-import de.eidottermihi.rpicheck.ssh.RaspiQueryException;
+import de.eidottermihi.rpicheck.ssh.IQueryService;
+import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
+import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class RunCommandDialog extends DialogFragment {
 
@@ -172,7 +173,7 @@ public class RunCommandDialog extends DialogFragment {
 
 	private class SSHCommandTask extends AsyncTask<String, String, Boolean> {
 
-		private RaspiQuery raspiQuery;
+		private IQueryService raspiQuery;
 
 		@Override
 		protected Boolean doInBackground(String... params) {

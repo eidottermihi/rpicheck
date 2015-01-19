@@ -66,8 +66,9 @@ import de.eidottermihi.rpicheck.fragment.QueryErrorMessagesDialog;
 import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
-import de.eidottermihi.rpicheck.ssh.RaspiQuery;
-import de.eidottermihi.rpicheck.ssh.RaspiQueryException;
+import de.eidottermihi.rpicheck.ssh.IQueryService;
+import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
+import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
@@ -91,7 +92,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Intent newRaspiIntent;
 	private Intent editRaspiIntent;
 	private Intent commandIntent;
-	private RaspiQuery raspiQuery;
+	private IQueryService raspiQuery;
 
 	private TextView coreTempText;
 	private TextView armFreqText;
