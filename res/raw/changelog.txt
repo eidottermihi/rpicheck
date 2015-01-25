@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.6.2
+  % Version 1.6.2
+  _ 2015-01-25
+    * bugfix: fix crash on screen orientation change
 $ 1.6.1
   % Version 1.6.1
   _ 2014-11-12
