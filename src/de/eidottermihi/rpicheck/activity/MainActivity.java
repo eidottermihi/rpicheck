@@ -1075,6 +1075,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					.getSerializable(CURRENT_DEVICE);
 			// restoring tables
 			LOGGER.debug("Setting spinner to show last Pi.");
+			this.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			this.getSupportActionBar().setSelectedNavigationItem(
 					currentDevice.getSpinnerPosition());
 			if (currentDevice.getLastQueryData() != null
