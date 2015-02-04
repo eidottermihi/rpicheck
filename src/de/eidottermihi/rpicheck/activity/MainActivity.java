@@ -4,8 +4,6 @@ import java.io.File;
 import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -53,10 +51,7 @@ import de.eidottermihi.rpicheck.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.beans.ProcessBean;
 import de.eidottermihi.rpicheck.beans.QueryBean;
-import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.beans.ShutdownResult;
-import de.eidottermihi.rpicheck.beans.UptimeBean;
-import de.eidottermihi.rpicheck.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.beans.WlanBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
@@ -92,7 +87,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Intent newRaspiIntent;
 	private Intent editRaspiIntent;
 	private Intent commandIntent;
-	private IQueryService raspiQuery;
+	IQueryService raspiQuery;
 
 	private TextView coreTempText;
 	private TextView armFreqText;
@@ -124,13 +119,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private Cursor deviceCursor;
 
-	protected SimpleCursorAdapter spinadapter;
+	private SimpleCursorAdapter spinadapter;
 
 	// Need handler for callbacks to the UI thread
-	final Handler mHandler = new Handler();
+	final Handler callbackUiHandler = new Handler();
 
 	// Create runnable for posting
-	final Runnable mUpdateResults = new Runnable() {
+	final Runnable updateQueryResultsRunnable = new Runnable() {
 		public void run() {
 			// gets called from AsyncTask when data was queried
 			updateResultsInUi();
@@ -138,7 +133,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	};
 
 	// Runnable for reboot result
-	final Runnable mRebootResult = new Runnable() {
+	final Runnable rebootRunnable = new Runnable() {
 		public void run() {
 			// gets called from AsyncTask when reboot command was sent
 			afterShutdown();
@@ -210,7 +205,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				deviceCursor = deviceDb.getFullDeviceCursor();
 				return null;
 			}
-			
+
 			@Override
 			protected void onPostExecute(Void r) {
 				if (deviceCursor.getCount() == 0) {
@@ -444,15 +439,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 				if (deviceCursor.getCount() > 0) {
 					// make adapter
 					spinadapter = new SimpleCursorAdapter(MainActivity.this,
-							R.layout.sherlock_spinner_dropdown_item, deviceCursor,
-							new String[] { "name", "_id" },
+							R.layout.sherlock_spinner_dropdown_item,
+							deviceCursor, new String[] { "name", "_id" },
 							new int[] { android.R.id.text1 });
 					spinadapter
 							.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 					getSupportActionBar().setNavigationMode(
 							ActionBar.NAVIGATION_MODE_LIST);
-					getSupportActionBar().setListNavigationCallbacks(spinadapter,
-							MainActivity.this);
+					getSupportActionBar().setListNavigationCallbacks(
+							spinadapter, MainActivity.this);
 					getSupportActionBar().setDisplayShowTitleEnabled(false);
 					commandButton.setVisibility(View.VISIBLE);
 				} else {
@@ -603,11 +598,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void showPullToRefreshHint() {
-		// Shows 3 toasts if refresh is happening via action button and not pull to refresh
+		// Shows 3 toasts if refresh is happening via action button and not pull
+		// to refresh
 		int count = sharedPrefs.getInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, 0);
-		if(count < 3){
-			Toast.makeText(this, getString(R.string.hint_pulltorefresh), Toast.LENGTH_LONG).show();
-			sharedPrefs.edit().putInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, ++count).commit();
+		if (count < 3) {
+			Toast.makeText(this, getString(R.string.hint_pulltorefresh),
+					Toast.LENGTH_LONG).show();
+			sharedPrefs.edit()
+					.putInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, ++count).commit();
 		}
 	}
 
@@ -748,9 +746,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 						keyPath = keyfilePath;
 						canConnect = true;
 					} else {
-						Toast.makeText(this,
+						Toast.makeText(
+								this,
 								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG).show();
+										+ keyfilePath, Toast.LENGTH_LONG)
+								.show();
 					}
 				} else {
 					Toast.makeText(this, "No keyfile specified!",
@@ -781,9 +781,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 							canConnect = false;
 						}
 					} else {
-						Toast.makeText(this,
+						Toast.makeText(
+								this,
 								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG).show();
+										+ keyfilePath, Toast.LENGTH_LONG)
+								.show();
 					}
 				} else {
 					Toast.makeText(this, "No keyfile specified!",
@@ -807,8 +809,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 					this.showPullToRefreshHint();
 				}
 				// execute query
-				new SSHQueryTask().execute(host, user, pass, port,
-						hideRoot.toString(), keyPath, keyPass);
+				new SSHQueryTask(currentDevice, callbackUiHandler,
+						updateQueryResultsRunnable, progressBar)
+						.execute(host, user, pass, port, hideRoot.toString(),
+								keyPath, keyPass);
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
@@ -867,104 +871,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		protected void onPostExecute(ShutdownResult result) {
 			shutdownResult = result;
 			// inform handler
-			mHandler.post(mRebootResult);
-		}
-
-	}
-
-	private class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
-
-		@Override
-		protected QueryBean doInBackground(String... params) {
-			// create and do query
-			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
-					Integer.parseInt(params[3]));
-			final String pass = params[2];
-			boolean hideRootProcesses = Boolean.parseBoolean(params[4]);
-			final String privateKeyPath = params[5];
-			final String privateKeyPass = params[6];
-			QueryBean bean = new QueryBean();
-			final long msStart = new Date().getTime();
-			bean.setErrorMessages(new ArrayList<String>());
-			try {
-				publishProgress(5);
-				if (privateKeyPath != null) {
-					File f = new File(privateKeyPath);
-					if (privateKeyPass == null) {
-						// connect with private key only
-						raspiQuery.connectWithPubKeyAuth(f.getPath());
-					} else {
-						// connect with key and passphrase
-						raspiQuery.connectWithPubKeyAuthAndPassphrase(
-								f.getPath(), privateKeyPass);
-					}
-				} else {
-					raspiQuery.connect(pass);
-				}
-				publishProgress(20);
-				final VcgencmdBean vcgencmdBean = raspiQuery.queryVcgencmd();
-				publishProgress(50);
-				UptimeBean uptime = raspiQuery.queryUptime();
-				publishProgress(60);
-				RaspiMemoryBean memory = raspiQuery.queryMemoryInformation();
-				publishProgress(70);
-				String serialNo = raspiQuery.queryCpuSerial();
-				publishProgress(72);
-				List<ProcessBean> processes = raspiQuery
-						.queryProcesses(!hideRootProcesses);
-				publishProgress(80);
-				final List<NetworkInterfaceInformation> networkInformation = raspiQuery
-						.queryNetworkInformation();
-				publishProgress(90);
-				bean.setDisks(raspiQuery.queryDiskUsage());
-				publishProgress(95);
-				bean.setDistri(raspiQuery.queryDistributionName());
-				raspiQuery.disconnect();
-				publishProgress(100);
-				bean.setVcgencmdInfo(vcgencmdBean);
-				bean.setLastUpdate(Calendar.getInstance().getTime());
-				// uptimeBean may contain messages
-				if (uptime.getErrorMessage() != null) {
-					bean.getErrorMessages().add(uptime.getErrorMessage());
-				} else {
-					bean.setStartup(uptime.getRunningPretty());
-					bean.setAvgLoad(uptime.getAverageLoad());
-				}
-				if (memory.getErrorMessage() != null) {
-					bean.getErrorMessages().add(memory.getErrorMessage());
-				} else {
-					bean.setFreeMem(memory.getTotalFree());
-					bean.setTotalMem(memory.getTotalMemory());
-				}
-				bean.setSerialNo(serialNo);
-				bean.setNetworkInfo(networkInformation);
-				bean.setProcesses(processes);
-				for (String error : bean.getErrorMessages()) {
-					LOGGER.error(error);
-				}
-			} catch (RaspiQueryException e) {
-				LOGGER.error(e.getMessage(), e);
-				bean.setException(e);
-			}
-			final long msFinish = new Date().getTime();
-			final long durationInMs = msFinish - msStart;
-			LOGGER.debug("Query time: {} ms.", durationInMs);
-			return bean;
-		}
-
-		@Override
-		protected void onPostExecute(QueryBean result) {
-			// update query data
-			currentDevice.setLastQueryData(result);
-			// inform handler
-			mHandler.post(mUpdateResults);
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			final Integer totalProgress = values[0];
-			progressBar.setProgress(totalProgress);
-			super.onProgressUpdate(values);
+			callbackUiHandler.post(rebootRunnable);
 		}
 
 	}
@@ -979,16 +886,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 				// get device with id
 				return deviceDb.read(params[0]);
 			}
-			
+
 			@Override
 			protected void onPostExecute(RaspberryDeviceBean read) {
 				if (currentDevice == null) {
 					currentDevice = read;
 				} else {
-					// set current device only when device has changed (query data get
+					// set current device only when device has changed (query
+					// data get
 					// lost otherwise)
 					if (read.getId() != currentDevice.getId()) {
-						LOGGER.debug("Switch from device id {} to device id {}.",
+						LOGGER.debug(
+								"Switch from device id {} to device id {}.",
 								currentDevice.getId(), read.getId());
 						currentDevice = read;
 						// switched to other device
@@ -999,7 +908,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 									.get(currentDevice.getId());
 							if (deviceBean != null) {
 								if (deviceBean.getLastQueryData() != null
-										&& deviceBean.getLastQueryData().getException() == null) {
+										&& deviceBean.getLastQueryData()
+												.getException() == null) {
 									currentDevice.setLastQueryData(deviceBean
 											.getLastQueryData());
 									updateQueryDataInView();
@@ -1013,7 +923,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 					} else {
 						// device was maybe updated
 						if (currentDevice.getLastQueryData() != null) {
-							final QueryBean data = currentDevice.getLastQueryData();
+							final QueryBean data = currentDevice
+									.getLastQueryData();
 							currentDevice = read;
 							currentDevice.setLastQueryData(data);
 						} else {
@@ -1026,10 +937,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 				// refresh options menu
 				supportInvalidateOptionsMenu();
-				// if current device == null (if only device was deleted), start new
+				// if current device == null (if only device was deleted), start
+				// new
 				// raspi activity
 				if (currentDevice == null) {
-					Toast.makeText(MainActivity.this, R.string.please_add_a_raspberry_pi,
+					Toast.makeText(MainActivity.this,
+							R.string.please_add_a_raspberry_pi,
 							Toast.LENGTH_LONG).show();
 					startActivity(newRaspiIntent);
 				}
@@ -1075,7 +988,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 					.getSerializable(CURRENT_DEVICE);
 			// restoring tables
 			LOGGER.debug("Setting spinner to show last Pi.");
-			this.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			this.getSupportActionBar().setNavigationMode(
+					ActionBar.NAVIGATION_MODE_LIST);
 			this.getSupportActionBar().setSelectedNavigationItem(
 					currentDevice.getSpinnerPosition());
 			if (currentDevice.getLastQueryData() != null
@@ -1125,8 +1039,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// connect
 			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
-			new SSHQueryTask().execute(currentDevice.getHost(),
-					currentDevice.getUser(), null,
+			new SSHQueryTask(currentDevice, callbackUiHandler,
+					updateQueryResultsRunnable, progressBar).execute(
+					currentDevice.getHost(), currentDevice.getUser(), null,
 					currentDevice.getPort() + "", hideRoot.toString(),
 					currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {
