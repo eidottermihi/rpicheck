@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.os.AsyncTask;
-import android.os.Handler;
+import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.beans.ShutdownResult;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
@@ -19,18 +19,11 @@ public class SSHShutdownTask extends AsyncTask<String, Integer, ShutdownResult> 
 
 	private IQueryService queryService;
 
-	private ShutdownResult shutdownResult;
+	private AsyncShutdownUpdate delegate;
 
-	private final Handler callbackHandler;
-
-	private final Runnable shutdownRunnable;
-
-	public SSHShutdownTask(ShutdownResult shutdownResult,
-			Handler callbackHandler, Runnable updateRunnable) {
+	public SSHShutdownTask(AsyncShutdownUpdate delegate) {
 		super();
-		this.shutdownResult = shutdownResult;
-		this.callbackHandler = callbackHandler;
-		this.shutdownRunnable = updateRunnable;
+		this.delegate = delegate;
 	}
 
 	/**
@@ -61,9 +54,9 @@ public class SSHShutdownTask extends AsyncTask<String, Integer, ShutdownResult> 
 			} else {
 				queryService.connect(pass);
 			}
-			if (type.equals(MainActivity.TYPE_REBOOT)) {
+			if (type.equals(Constants.TYPE_REBOOT)) {
 				queryService.sendRebootSignal(sudoPass);
-			} else if (type.equals(MainActivity.TYPE_HALT)) {
+			} else if (type.equals(Constants.TYPE_HALT)) {
 				queryService.sendHaltSignal(sudoPass);
 			}
 			queryService.disconnect();
@@ -77,9 +70,7 @@ public class SSHShutdownTask extends AsyncTask<String, Integer, ShutdownResult> 
 
 	@Override
 	protected void onPostExecute(ShutdownResult result) {
-		this.shutdownResult = result;
-		// inform handler
-		callbackHandler.post(shutdownRunnable);
+		delegate.onShutdownFinished(result);
 	}
 
 }

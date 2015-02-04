@@ -19,7 +19,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.util.SparseArray;
@@ -45,6 +44,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.beans.DiskUsageBean;
@@ -65,17 +65,13 @@ import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
-		ShutdownDialogListener, PassphraseDialogListener {
+		ShutdownDialogListener, PassphraseDialogListener, AsyncQueryDataUpdate,
+		AsyncShutdownUpdate {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(MainActivity.class);
 
-	protected static final String EXTRA_DEVICE_ID = "device_id";
-
 	private static final String CURRENT_DEVICE = "currentDevice";
 	private static final String ALL_DEVICES = "allDevices";
-
-	static final String TYPE_REBOOT = "reboot";
-	static final String TYPE_HALT = "halt";
 
 	private static final String KEY_PREF_REFRESH_BY_ACTION_COUNT = "refreshCountByAction";
 
@@ -105,8 +101,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private SharedPreferences sharedPrefs;
 
-	private ShutdownResult shutdownResult;
-
 	private DeviceDbHelper deviceDb;
 
 	private RaspberryDeviceBean currentDevice;
@@ -115,25 +109,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Cursor deviceCursor;
 
 	private SimpleCursorAdapter spinadapter;
-
-	// Need handler for callbacks to the UI thread
-	private final Handler callbackUiHandler = new Handler();
-
-	// Create runnable for posting
-	private final Runnable updateQueryResultsRunnable = new Runnable() {
-		public void run() {
-			// gets called from AsyncTask when data was queried
-			updateResultsInUi();
-		}
-	};
-
-	// Runnable for reboot result
-	private final Runnable rebootRunnable = new Runnable() {
-		public void run() {
-			// gets called from AsyncTask when reboot command was sent
-			afterShutdown();
-		}
-	};
 
 	private static boolean isOnBackground;
 
@@ -243,14 +218,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		serialNoText.setText("");
 		lastUpdateText.setText("");
 		// tables
-		updateDiskTable();
-		updateNetworkTable();
-		updateProcessTable();
+		updateDiskTable(null);
+		updateNetworkTable(null);
+		updateProcessTable(null);
 	}
 
-	private void updateQueryDataInView() {
-		final List<String> errorMessages = currentDevice.getLastQueryData()
-				.getErrorMessages();
+	private void updateQueryDataInView(QueryBean result) {
 		final String tempScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
 				getString(R.string.pref_temperature_scala_default));
@@ -268,33 +241,31 @@ public class MainActivity extends SherlockFragmentActivity implements
 				freqScale));
 		coreVoltText.setText(FormatHelper.formatDecimal(currentDevice
 				.getLastQueryData().getVcgencmdInfo().getCoreVolts()));
-		firmwareText.setText(currentDevice.getLastQueryData().getVcgencmdInfo()
-				.getVersion());
+		firmwareText.setText(result.getVcgencmdInfo().getVersion());
 		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(
-				currentDevice.getLastQueryData().getLastUpdate()));
+				result.getLastUpdate()));
 		// uptime and average load may contain errors
-		if (currentDevice.getLastQueryData().getAvgLoad() != null) {
-			averageLoadText.setText(currentDevice.getLastQueryData()
-					.getAvgLoad().toString());
+		if (result.getAvgLoad() != null) {
+			averageLoadText.setText(result.getAvgLoad().toString());
 		}
-		if (currentDevice.getLastQueryData().getStartup() != null) {
-			uptimeText.setText(currentDevice.getLastQueryData().getStartup());
+		if (result.getStartup() != null) {
+			uptimeText.setText(result.getStartup());
 		}
-		if (currentDevice.getLastQueryData().getFreeMem() != null) {
-			freeMemoryText.setText(currentDevice.getLastQueryData()
-					.getFreeMem().humanReadableByteCount(false));
+		if (result.getFreeMem() != null) {
+			freeMemoryText.setText(result.getFreeMem().humanReadableByteCount(
+					false));
 		}
-		if (currentDevice.getLastQueryData().getTotalMem() != null) {
-			totalMemoryText.setText(currentDevice.getLastQueryData()
-					.getTotalMem().humanReadableByteCount(false));
+		if (result.getTotalMem() != null) {
+			totalMemoryText.setText(result.getTotalMem()
+					.humanReadableByteCount(false));
 		}
-		serialNoText.setText(currentDevice.getLastQueryData().getSerialNo());
-		distriText.setText(currentDevice.getLastQueryData().getDistri());
+		serialNoText.setText(result.getSerialNo());
+		distriText.setText(result.getDistri());
 		// update tables
-		updateNetworkTable();
-		updateDiskTable();
-		updateProcessTable();
-		this.handleQueryError(errorMessages);
+		updateNetworkTable(result);
+		updateDiskTable(result);
+		updateProcessTable(result);
+		this.handleQueryError(result.getErrorMessages());
 	}
 
 	/**
@@ -317,13 +288,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private void updateNetworkTable() {
+	private void updateNetworkTable(QueryBean result) {
 		// remove rows except header
 		networkTable.removeViews(1, networkTable.getChildCount() - 1);
-		if (currentDevice != null && currentDevice.getLastQueryData() != null
-				&& currentDevice.getLastQueryData().getNetworkInfo() != null) {
-			for (NetworkInterfaceInformation interfaceInformation : currentDevice
-					.getLastQueryData().getNetworkInfo()) {
+		if (result != null && result.getNetworkInfo() != null) {
+			for (NetworkInterfaceInformation interfaceInformation : result
+					.getNetworkInfo()) {
 				networkTable.addView(createNetworkRow(interfaceInformation));
 			}
 
@@ -359,13 +329,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return tempRow;
 	}
 
-	private void updateProcessTable() {
+	private void updateProcessTable(QueryBean result) {
 		// remove current rows except header row
 		processTable.removeViews(1, processTable.getChildCount() - 1);
-		if (currentDevice != null && currentDevice.getLastQueryData() != null
-				&& currentDevice.getLastQueryData().getProcesses() != null) {
-			for (ProcessBean processBean : currentDevice.getLastQueryData()
-					.getProcesses()) {
+		if (result != null && result.getProcesses() != null) {
+			for (ProcessBean processBean : result.getProcesses()) {
 				processTable.addView(createProcessRow(processBean));
 			}
 		}
@@ -405,13 +373,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return tempText;
 	}
 
-	private void updateDiskTable() {
+	private void updateDiskTable(QueryBean result) {
 		// remove current rows except header row
 		diskTable.removeViews(1, diskTable.getChildCount() - 1);
-		if (currentDevice != null && currentDevice.getLastQueryData() != null
-				&& currentDevice.getLastQueryData().getDisks() != null) {
-			for (DiskUsageBean diskUsageBean : currentDevice.getLastQueryData()
-					.getDisks()) {
+		if (result != null && result.getDisks() != null) {
+			for (DiskUsageBean diskUsageBean : result.getDisks()) {
 				// add row to table
 				diskTable.addView(createDiskRow(diskUsageBean));
 			}
@@ -457,29 +423,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 			}
 		}.execute();
-	}
-
-	private void updateResultsInUi() {
-		// hide and reset progress bar
-		progressBar.setVisibility(View.GONE);
-		progressBar.setProgress(0);
-		// update and reset pullToRefresh
-		refreshableScrollView.onRefreshComplete();
-		refreshableScrollView.setMode(Mode.PULL_FROM_START);
-		if (currentDevice.getLastQueryData().getException() == null) {
-			// update view data
-			this.updateQueryDataInView();
-			// update entry in allDevices-Map
-			if (allDevices != null) {
-				allDevices.put(this.currentDevice.getId(), this.currentDevice);
-			} else {
-				allDevices = new SparseArray<RaspberryDeviceBean>();
-				allDevices.put(this.currentDevice.getId(), this.currentDevice);
-			}
-		} else {
-			this.handleQueryException(currentDevice.getLastQueryData()
-					.getException());
-		}
 	}
 
 	/**
@@ -528,29 +471,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return message;
 	}
 
-	/**
-	 * Just show Toast.
-	 */
-	private void afterShutdown() {
-		if (shutdownResult.getType().equals(TYPE_REBOOT)) {
-			if (shutdownResult.getExcpetion() == null) {
-				Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
-						.show();
-			} else {
-				Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
-						.show();
-			}
-		} else if (shutdownResult.getType().equals(TYPE_HALT)) {
-			if (shutdownResult.getExcpetion() == null) {
-				Toast.makeText(this, R.string.halt_success, Toast.LENGTH_LONG)
-						.show();
-			} else {
-				Toast.makeText(this, R.string.halt_fail, Toast.LENGTH_LONG)
-						.show();
-			}
-		}
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
@@ -577,7 +497,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			break;
 		case R.id.menu_edit_raspi:
 			final Bundle extras = new Bundle();
-			extras.putInt(EXTRA_DEVICE_ID, currentDevice.getId());
+			extras.putInt(Constants.EXTRA_DEVICE_ID, currentDevice.getId());
 			editRaspiIntent.putExtras(extras);
 			this.startActivityForResult(editRaspiIntent,
 					EditRaspiActivity.REQUEST_EDIT);
@@ -624,8 +544,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
 				// ssh password
 				final String pass = currentDevice.getPass();
-				new SSHShutdownTask(shutdownResult, callbackUiHandler,
-						rebootRunnable).execute(host, user, pass, port,
+				new SSHShutdownTask(this).execute(host, user, pass, port,
 						sudoPass, type, null, null);
 			} else if (currentDevice.getAuthMethod().equals(
 					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
@@ -634,9 +553,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				if (keyfilePath != null) {
 					final File privateKey = new File(keyfilePath);
 					if (privateKey.exists()) {
-						new SSHShutdownTask(shutdownResult, callbackUiHandler,
-								rebootRunnable).execute(host, user, null, port,
-								sudoPass, type, keyfilePath, null);
+						new SSHShutdownTask(this).execute(host, user, null,
+								port, sudoPass, type, keyfilePath, null);
 					} else {
 						Toast.makeText(this,
 								"Cannot find keyfile at location: "
@@ -657,12 +575,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 								.getKeyfilePass())) {
 							final String passphrase = currentDevice
 									.getKeyfilePass();
-							new SSHShutdownTask(shutdownResult,
-									callbackUiHandler, rebootRunnable).execute(
-									host, user, null, port, sudoPass, type,
-									keyfilePath, passphrase);
+							new SSHShutdownTask(this).execute(host, user, null,
+									port, sudoPass, type, keyfilePath,
+									passphrase);
 						} else {
-							final String dialogType = type.equals(TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN
+							final String dialogType = type
+									.equals(Constants.TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN
 									: PassphraseDialog.SSH_HALT;
 							final DialogFragment passphraseDialog = new PassphraseDialog();
 							final Bundle args = new Bundle();
@@ -807,10 +725,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 					this.showPullToRefreshHint();
 				}
 				// execute query
-				new SSHQueryTask(currentDevice, callbackUiHandler,
-						updateQueryResultsRunnable, progressBar)
-						.execute(host, user, pass, port, hideRoot.toString(),
-								keyPath, keyPass);
+				new SSHQueryTask(this).execute(host, user, pass, port,
+						hideRoot.toString(), keyPath, keyPass);
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
@@ -856,7 +772,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 												.getException() == null) {
 									currentDevice.setLastQueryData(deviceBean
 											.getLastQueryData());
-									updateQueryDataInView();
+									updateQueryDataInView(currentDevice
+											.getLastQueryData());
 									lastQueryPresent = true;
 								}
 							}
@@ -939,7 +856,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			if (currentDevice.getLastQueryData() != null
 					&& currentDevice.getLastQueryData().getException() == null) {
 				LOGGER.debug("Restoring query data..");
-				this.updateQueryDataInView();
+				this.updateQueryDataInView(currentDevice.getLastQueryData());
 			} else {
 				LOGGER.debug("No last query data present.");
 				this.resetView();
@@ -955,13 +872,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onHaltClick(DialogInterface dialog) {
 		LOGGER.trace("ShutdownDialog: Halt chosen.");
-		this.doRebootOrHalt(TYPE_HALT);
+		this.doRebootOrHalt(Constants.TYPE_HALT);
 	}
 
 	@Override
 	public void onRebootClick(DialogInterface dialog) {
 		LOGGER.trace("ShutdownDialog: Reboot chosen.");
-		this.doRebootOrHalt(TYPE_REBOOT);
+		this.doRebootOrHalt(Constants.TYPE_REBOOT);
 	}
 
 	@Override
@@ -983,23 +900,22 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// connect
 			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
-			new SSHQueryTask(currentDevice, callbackUiHandler,
-					updateQueryResultsRunnable, progressBar).execute(
-					currentDevice.getHost(), currentDevice.getUser(), null,
+			new SSHQueryTask(this).execute(currentDevice.getHost(),
+					currentDevice.getUser(), null,
 					currentDevice.getPort() + "", hideRoot.toString(),
 					currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {
-			new SSHShutdownTask(shutdownResult, callbackUiHandler,
-					rebootRunnable).execute(currentDevice.getHost(),
+			new SSHShutdownTask(this).execute(currentDevice.getHost(),
 					currentDevice.getUser(), null,
 					currentDevice.getPort() + "", currentDevice.getSudoPass(),
-					TYPE_REBOOT, currentDevice.getKeyfilePath(), passphrase);
+					Constants.TYPE_REBOOT, currentDevice.getKeyfilePath(),
+					passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_HALT)) {
-			new SSHShutdownTask(shutdownResult, callbackUiHandler,
-					rebootRunnable).execute(currentDevice.getHost(),
+			new SSHShutdownTask(this).execute(currentDevice.getHost(),
 					currentDevice.getUser(), null,
 					currentDevice.getPort() + "", currentDevice.getSudoPass(),
-					TYPE_HALT, currentDevice.getKeyfilePath(), passphrase);
+					Constants.TYPE_HALT, currentDevice.getKeyfilePath(),
+					passphrase);
 		}
 	}
 
@@ -1055,4 +971,55 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
+	@Override
+	public void onQueryFinished(QueryBean result) {
+		currentDevice.setLastQueryData(result);
+		// hide and reset progress bar
+		progressBar.setVisibility(View.GONE);
+		progressBar.setProgress(0);
+		// update and reset pullToRefresh
+		refreshableScrollView.onRefreshComplete();
+		refreshableScrollView.setMode(Mode.PULL_FROM_START);
+		if (result.getException() == null) {
+			// update view data
+			this.updateQueryDataInView(result);
+			// update entry in allDevices-Map
+			if (allDevices != null) {
+				allDevices.put(this.currentDevice.getId(), this.currentDevice);
+			} else {
+				allDevices = new SparseArray<RaspberryDeviceBean>();
+				allDevices.put(this.currentDevice.getId(), this.currentDevice);
+			}
+		} else {
+			this.handleQueryException(result.getException());
+		}
+
+	}
+
+	@Override
+	public void onQueryProgress(int progress) {
+		progressBar.setProgress(progress);
+	}
+
+	@Override
+	public void onShutdownFinished(ShutdownResult result) {
+		if (result.getType().equals(Constants.TYPE_REBOOT)) {
+			if (result.getExcpetion() == null) {
+				Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
+						.show();
+			} else {
+				Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
+						.show();
+			}
+		} else if (result.getType().equals(Constants.TYPE_HALT)) {
+			if (result.getExcpetion() == null) {
+				Toast.makeText(this, R.string.halt_success, Toast.LENGTH_LONG)
+						.show();
+			} else {
+				Toast.makeText(this, R.string.halt_fail, Toast.LENGTH_LONG)
+						.show();
+			}
+		}
+
+	}
 }

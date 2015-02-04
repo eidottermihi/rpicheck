@@ -10,15 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.widget.ProgressBar;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.beans.ProcessBean;
 import de.eidottermihi.rpicheck.beans.QueryBean;
 import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.beans.UptimeBean;
 import de.eidottermihi.rpicheck.beans.VcgencmdBean;
-import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
@@ -30,21 +27,11 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 
 	private IQueryService queryService;
 
-	private final RaspberryDeviceBean currentDevice;
+	private final AsyncQueryDataUpdate delegate;
 
-	private final Handler callbackHandler;
-
-	private final Runnable updateRunnable;
-
-	private final ProgressBar progressBar;
-
-	public SSHQueryTask(RaspberryDeviceBean device, Handler callbackHandler,
-			Runnable updateRunnable, ProgressBar progressbar) {
+	public SSHQueryTask(AsyncQueryDataUpdate delegate) {
 		super();
-		this.currentDevice = device;
-		this.callbackHandler = callbackHandler;
-		this.updateRunnable = updateRunnable;
-		this.progressBar = progressbar;
+		this.delegate = delegate;
 	}
 
 	@Override
@@ -128,15 +115,13 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 	@Override
 	protected void onPostExecute(QueryBean result) {
 		// update query data
-		currentDevice.setLastQueryData(result);
-		// inform handler
-		callbackHandler.post(updateRunnable);
+		delegate.onQueryFinished(result);
 	}
 
 	@Override
 	protected void onProgressUpdate(Integer... values) {
 		final Integer totalProgress = values[0];
-		progressBar.setProgress(totalProgress);
+		delegate.onQueryProgress(totalProgress);
 		super.onProgressUpdate(values);
 	}
 

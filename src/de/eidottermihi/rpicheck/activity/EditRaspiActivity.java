@@ -28,6 +28,7 @@ import com.lamerman.FileDialog;
 import com.lamerman.SelectionMode;
 
 import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
@@ -92,7 +93,7 @@ public class EditRaspiActivity extends SherlockActivity implements
 
 		// read device information
 		int deviceId = this.getIntent().getExtras()
-				.getInt(MainActivity.EXTRA_DEVICE_ID);
+				.getInt(Constants.EXTRA_DEVICE_ID);
 		deviceBean = deviceDb.read(deviceId);
 
 		// init auth spinner
