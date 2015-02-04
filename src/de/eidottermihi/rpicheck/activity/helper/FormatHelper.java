@@ -10,7 +10,7 @@ import java.text.NumberFormat;
  * @author Michael
  * 
  */
-public class Helper {
+public class FormatHelper {
 	public static final String SCALE_CELSIUS = "°C";
 	public static final String SCALE_FAHRENHEIT = "°F";
 
@@ -32,7 +32,8 @@ public class Helper {
 	 *            the scale to use (°C/°F).
 	 * @return the formatted temperature
 	 */
-	public String formatTemperature(double tempInCelsius, String tempScale) {
+	public static String formatTemperature(double tempInCelsius,
+			String tempScale) {
 		if (tempScale.equals(SCALE_CELSIUS)) {
 			return decimalFormat.format(tempInCelsius) + SCALE_CELSIUS;
 		} else {
@@ -41,7 +42,7 @@ public class Helper {
 		}
 	}
 
-	private double celsiusToFahrenheit(double celsius) {
+	private static double celsiusToFahrenheit(double celsius) {
 		return celsius * 1.8 + 32;
 	}
 
@@ -54,7 +55,7 @@ public class Helper {
 	 *            the scale (Hz/MHz/GHz)
 	 * @return the formatted frequency
 	 */
-	public String formatFrequency(long frequencyInHz, String scale) {
+	public static String formatFrequency(long frequencyInHz, String scale) {
 		if (scale.equals(SCALE_HZ)) {
 			return decimalFormat.format(frequencyInHz) + " " + scale;
 		} else if (scale.equals(SCALE_GHZ)) {
@@ -77,7 +78,7 @@ public class Helper {
 	 *            max fraction digits
 	 * @return the formatted number
 	 */
-	public String formatDecimal(double number) {
+	public static String formatDecimal(double number) {
 		return decimalFormat.format(number);
 	}
 
@@ -88,7 +89,7 @@ public class Helper {
 	 *            the percentage value (0-100).
 	 * @return formatted string "[percentage] %".
 	 */
-	public String formatPercentage(Integer percentage) {
+	public static String formatPercentage(Integer percentage) {
 		if (percentage != null) {
 			return percentage + " %";
 		} else {
@@ -104,7 +105,7 @@ public class Helper {
 	 *            the signal (may be null)
 	 * @return the formatted signal
 	 */
-	public String formatWifiSignale(Integer signal) {
+	public static String formatWifiSignale(Integer signal) {
 		if (signal != null) {
 			if (signal > 0) {
 				// percent value
@@ -125,7 +126,7 @@ public class Helper {
 	 *            the wifi signal in dBm
 	 * @return the formatted dBm signal
 	 */
-	public String formatDbmValue(Integer signal) {
+	public static String formatDbmValue(Integer signal) {
 		if (signal != null) {
 			return signal + " dBm";
 		} else {

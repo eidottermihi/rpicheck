@@ -45,7 +45,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import de.eidottermihi.rpicheck.R;
-import de.eidottermihi.rpicheck.activity.helper.Helper;
+import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
@@ -80,8 +80,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final String TYPE_HALT = "halt";
 
 	private static final String KEY_PREF_REFRESH_BY_ACTION_COUNT = "refreshCountByAction";
-
-	private final Helper helper = new Helper();
 
 	private Intent settingsIntent;
 	private Intent newRaspiIntent;
@@ -259,19 +257,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 		final String tempScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
 				getString(R.string.pref_temperature_scala_default));
-		coreTempText.setText(helper.formatTemperature(currentDevice
+		coreTempText.setText(FormatHelper.formatTemperature(currentDevice
 				.getLastQueryData().getVcgencmdInfo().getCpuTemperature(),
 				tempScale));
 		final String freqScale = sharedPrefs.getString(
 				SettingsActivity.KEY_PREF_FREQUENCY_UNIT,
 				getString(R.string.pref_frequency_unit_default));
-		armFreqText.setText(helper.formatFrequency(currentDevice
+		armFreqText.setText(FormatHelper.formatFrequency(currentDevice
 				.getLastQueryData().getVcgencmdInfo().getArmFrequency(),
 				freqScale));
-		coreFreqText.setText(helper.formatFrequency(currentDevice
+		coreFreqText.setText(FormatHelper.formatFrequency(currentDevice
 				.getLastQueryData().getVcgencmdInfo().getCoreFrequency(),
 				freqScale));
-		coreVoltText.setText(helper.formatDecimal(currentDevice
+		coreVoltText.setText(FormatHelper.formatDecimal(currentDevice
 				.getLastQueryData().getVcgencmdInfo().getCoreVolts()));
 		firmwareText.setText(currentDevice.getLastQueryData().getVcgencmdInfo()
 				.getVersion());
@@ -354,9 +352,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (interfaceInformation.getWlanInfo() != null) {
 			final WlanBean wlan = interfaceInformation.getWlanInfo();
 			tempRow.addView(createTextView(
-					helper.formatPercentage(wlan.getSignalLevel()), 3));
+					FormatHelper.formatPercentage(wlan.getSignalLevel()), 3));
 			tempRow.addView(createTextView(
-					helper.formatPercentage(wlan.getLinkQuality()), 3));
+					FormatHelper.formatPercentage(wlan.getLinkQuality()), 3));
 		} else {
 			tempRow.addView(createTextView(" - ", 3));
 			tempRow.addView(createTextView(" - ", 3));
