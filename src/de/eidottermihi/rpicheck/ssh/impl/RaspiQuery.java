@@ -197,7 +197,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryVcgencmd()
 	 */
 	@Override
@@ -358,7 +360,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryNetworkInformation()
 	 */
 	@Override
@@ -635,8 +639,11 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryVolts(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.eidottermihi.rpicheck.ssh.IQueryService#queryVolts(java.lang.String)
 	 */
 	@Override
 	public final Double queryVolts(String vcgencmdPath)
@@ -668,7 +675,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryUptime()
 	 */
 	@Override
@@ -698,7 +707,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryCpuSerial()
 	 */
 	@Override
@@ -728,7 +739,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryMemoryInformation()
 	 */
 	@Override
@@ -758,7 +771,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryDiskUsage()
 	 */
 	@Override
@@ -788,7 +803,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryDistributionName()
 	 */
 	@Override
@@ -817,7 +834,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryProcesses(boolean)
 	 */
 	@Override
@@ -849,8 +868,12 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#sendRebootSignal(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.eidottermihi.rpicheck.ssh.IQueryService#sendRebootSignal(java.lang
+	 * .String)
 	 */
 	@Override
 	public final void sendRebootSignal(String sudoPassword)
@@ -903,8 +926,12 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#sendHaltSignal(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.eidottermihi.rpicheck.ssh.IQueryService#sendHaltSignal(java.lang.String
+	 * )
 	 */
 	@Override
 	public final void sendHaltSignal(String sudoPassword)
@@ -1163,7 +1190,9 @@ public final class RaspiQuery implements IQueryService {
 		return formatted;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#connect(java.lang.String)
 	 */
 	@Override
@@ -1188,8 +1217,12 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#connectWithPubKeyAuth(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.eidottermihi.rpicheck.ssh.IQueryService#connectWithPubKeyAuth(java
+	 * .lang.String)
 	 */
 	@Override
 	public final void connectWithPubKeyAuth(final String keyfilePath)
@@ -1219,8 +1252,12 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#connectWithPubKeyAuthAndPassphrase(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.eidottermihi.rpicheck.ssh.IQueryService#connectWithPubKeyAuthAndPassphrase
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void connectWithPubKeyAuthAndPassphrase(String path,
@@ -1251,7 +1288,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#disconnect()
 	 */
 	@Override
@@ -1269,7 +1308,9 @@ public final class RaspiQuery implements IQueryService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#getFile(java.lang.String)
 	 */
 	@Override
@@ -1289,7 +1330,9 @@ public final class RaspiQuery implements IQueryService {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#getHostname()
 	 */
 	@Override
@@ -1297,15 +1340,20 @@ public final class RaspiQuery implements IQueryService {
 		return hostname;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#setHostname(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.eidottermihi.rpicheck.ssh.IQueryService#setHostname(java.lang.String)
 	 */
 	@Override
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#run(java.lang.String)
 	 */
 	@Override
@@ -1343,6 +1391,15 @@ public final class RaspiQuery implements IQueryService {
 					"You must establish a connection first.");
 		}
 
+	}
+
+	/**
+	 * Visible for testing.
+	 * 
+	 * @param client
+	 */
+	public void setClient(SSHClient client) {
+		this.client = client;
 	}
 
 }
