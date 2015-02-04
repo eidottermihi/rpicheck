@@ -72,7 +72,7 @@
                     android:icon="?attr/ic_settings_email" >
                     <intent
                         android:action="android.intent.action.VIEW"
-                        android:data="mailto:eidottermihi@gmail.com?subject=RasPi Check" />
+                        android:data="mailto:eidottermihi+raspicheck@gmail.com?subject=RasPi Check" />
                 </Preference>
                 <Preference
                     android:summary="@string/pref_rate_app_summary"

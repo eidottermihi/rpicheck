@@ -76,7 +76,7 @@
     <string name="network_signal">Signal</string>
     <string name="network_link">Qualität</string>
     <string name="pref_group_about">Über RasPi Check</string>
-    <string name="pref_github">Bugs / Fehler / Wünsche</string>
+    <string name="pref_github">Source Code / Fehler</string>
     <string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
     <string name="pref_dev_email">Entwickler kontaktieren</string>
     <string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
@@ -121,13 +121,13 @@
     <string name="title_filedialog">Key auswählen</string>
     <string name="no_keyfile_present">Bitte wähle einen existierenden privaten Key aus.</string>
     <string name="raspi_key_checkbox_text">Immer nach Passphrase fragen</string>
-	<string name="validation_msg_keyfile">Bitte einen Keyfile auswählen.</string>
-	<string name="validation_msg_key_passphrase">Key Passphrase darf nicht leer sein.</string>
-	<string name="dialog_save_passphrase">Passphrase merken</string>
-	<string name="dialog_passphrase_hint">Passphrase</string>
-	<string name="dialog_passphrase_needed">Passphrase darf nicht leer sein.</string>
-	<string name="dialog_passphrase_text">Bitte gib die Passphrase für den privaten Key an.</string>
-	<string name="button_commands">Kommandos</string>
+    <string name="validation_msg_keyfile">Bitte einen Keyfile auswählen.</string>
+    <string name="validation_msg_key_passphrase">Key Passphrase darf nicht leer sein.</string>
+    <string name="dialog_save_passphrase">Passphrase merken</string>
+    <string name="dialog_passphrase_hint">Passphrase</string>
+    <string name="dialog_passphrase_needed">Passphrase darf nicht leer sein.</string>
+    <string name="dialog_passphrase_text">Bitte gib die Passphrase für den privaten Key an.</string>
+    <string name="button_commands">Kommandos</string>
     <string name="activity_title_commands">Eigene Kommandos</string>
     <string name="activity_title_new_command">Neues Kommando</string>
     <string name="activity_title_edit_command">Kommando bearbeiten</string>
@@ -143,34 +143,28 @@
     <string name="command_context_delete">Löschen</string>
     <string name="command_context_run">Ausführen</string>
     <string name="run_cmd_dialog_title">%1$s ausführen</string>
-    
     <string name="hint_pulltorefresh">Nur als Hinweis: Du kannst auch aktualisieren, indem du den Bildschirm nach unten ziehst!</string>
 
     <!-- ActionButton Strings -->
-    
+
     <string name="action_new">Neu</string>
     <string name="action_new_raspi">Pi hinzufügen</string>
     <string name="action_new_command">Kommando hinzufügen</string>
-    
     <string name="action_save">Speichern</string>
     <string name="action_save_raspi">Pi Speichern</string>
     <string name="action_save_command">Kommando speichern</string>
-    
     <string name="action_edit">Bearbeiten</string>
     <string name="action_edit_raspi">Pi Bearbeiten</string>
     <string name="action_edit_command">Kommando Bearbeiten</string>
-    
     <string name="action_delete">Entfernen</string>
     <string name="action_delete_raspi">Pi entfernen</string>
     <string name="action_delete_command">Kommando Entfernen</string>
-    
     <string name="action_settings">Einstellungen</string>
     <string name="action_shutdown">Herunterfahren</string>
     <string name="action_refresh">Aktualisieren</string>
-    
     <string name="title_placeholders">Platzhalter</string>
     <string name="placeholders_button_ok">OK</string>
     <string name="placeholder_hint_text">Du kann Platzhalter wie z.B. \'${my_secret}\' verwenden. Diese werden erst durch deine Eingabe beim Ausführen des Kommandos ersetzt.</string>
     <string name="placeholder_hint">Tipp:</string>
-    
+
 </resources>
