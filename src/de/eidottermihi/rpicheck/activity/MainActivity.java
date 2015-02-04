@@ -61,8 +61,6 @@ import de.eidottermihi.rpicheck.fragment.QueryErrorMessagesDialog;
 import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
-import de.eidottermihi.rpicheck.ssh.IQueryService;
-import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class MainActivity extends SherlockFragmentActivity implements
@@ -76,8 +74,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final String CURRENT_DEVICE = "currentDevice";
 	private static final String ALL_DEVICES = "allDevices";
 
-	private static final String TYPE_REBOOT = "reboot";
-	private static final String TYPE_HALT = "halt";
+	static final String TYPE_REBOOT = "reboot";
+	static final String TYPE_HALT = "halt";
 
 	private static final String KEY_PREF_REFRESH_BY_ACTION_COUNT = "refreshCountByAction";
 
@@ -85,7 +83,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Intent newRaspiIntent;
 	private Intent editRaspiIntent;
 	private Intent commandIntent;
-	IQueryService raspiQuery;
 
 	private TextView coreTempText;
 	private TextView armFreqText;
@@ -120,10 +117,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private SimpleCursorAdapter spinadapter;
 
 	// Need handler for callbacks to the UI thread
-	final Handler callbackUiHandler = new Handler();
+	private final Handler callbackUiHandler = new Handler();
 
 	// Create runnable for posting
-	final Runnable updateQueryResultsRunnable = new Runnable() {
+	private final Runnable updateQueryResultsRunnable = new Runnable() {
 		public void run() {
 			// gets called from AsyncTask when data was queried
 			updateResultsInUi();
@@ -131,7 +128,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	};
 
 	// Runnable for reboot result
-	final Runnable rebootRunnable = new Runnable() {
+	private final Runnable rebootRunnable = new Runnable() {
 		public void run() {
 			// gets called from AsyncTask when reboot command was sent
 			afterShutdown();
@@ -627,8 +624,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
 				// ssh password
 				final String pass = currentDevice.getPass();
-				new SSHShutdownTask().execute(host, user, pass, port, sudoPass,
-						type, null, null);
+				new SSHShutdownTask(shutdownResult, callbackUiHandler,
+						rebootRunnable).execute(host, user, pass, port,
+						sudoPass, type, null, null);
 			} else if (currentDevice.getAuthMethod().equals(
 					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
 				// keyfile
@@ -636,7 +634,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				if (keyfilePath != null) {
 					final File privateKey = new File(keyfilePath);
 					if (privateKey.exists()) {
-						new SSHShutdownTask().execute(host, user, null, port,
+						new SSHShutdownTask(shutdownResult, callbackUiHandler,
+								rebootRunnable).execute(host, user, null, port,
 								sudoPass, type, keyfilePath, null);
 					} else {
 						Toast.makeText(this,
@@ -658,9 +657,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 								.getKeyfilePass())) {
 							final String passphrase = currentDevice
 									.getKeyfilePass();
-							new SSHShutdownTask().execute(host, user, null,
-									port, sudoPass, type, keyfilePath,
-									passphrase);
+							new SSHShutdownTask(shutdownResult,
+									callbackUiHandler, rebootRunnable).execute(
+									host, user, null, port, sudoPass, type,
+									keyfilePath, passphrase);
 						} else {
 							final String dialogType = type.equals(TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN
 									: PassphraseDialog.SSH_HALT;
@@ -818,60 +818,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// stop refresh animation from pull-to-refresh
 			refreshableScrollView.onRefreshComplete();
 		}
-	}
-
-	private class SSHShutdownTask extends
-			AsyncTask<String, Integer, ShutdownResult> {
-
-		/**
-		 * Send the reboot command. Returns true, when no Exception was raised.
-		 */
-		@Override
-		protected ShutdownResult doInBackground(String... params) {
-			raspiQuery = new RaspiQuery((String) params[0], (String) params[1],
-					Integer.parseInt(params[3]));
-			final String pass = params[2];
-			final String sudoPass = params[4];
-			final String type = params[5];
-			final String keyfile = params[6];
-			final String keypass = params[7];
-			final ShutdownResult result = new ShutdownResult();
-			result.setType(type);
-			try {
-				if (keyfile != null) {
-					File f = new File(keyfile);
-					if (keypass == null) {
-						// connect with private key only
-						raspiQuery.connectWithPubKeyAuth(f.getPath());
-					} else {
-						// connect with key and passphrase
-						raspiQuery.connectWithPubKeyAuthAndPassphrase(
-								f.getPath(), keypass);
-					}
-				} else {
-					raspiQuery.connect(pass);
-				}
-				if (type.equals(TYPE_REBOOT)) {
-					raspiQuery.sendRebootSignal(sudoPass);
-				} else if (type.equals(TYPE_HALT)) {
-					raspiQuery.sendHaltSignal(sudoPass);
-				}
-				raspiQuery.disconnect();
-				return result;
-			} catch (RaspiQueryException e) {
-				LOGGER.error(e.getMessage(), e);
-				result.setExcpetion(e);
-				return result;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(ShutdownResult result) {
-			shutdownResult = result;
-			// inform handler
-			callbackUiHandler.post(rebootRunnable);
-		}
-
 	}
 
 	@Override
@@ -1043,12 +989,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 					currentDevice.getPort() + "", hideRoot.toString(),
 					currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {
-			new SSHShutdownTask().execute(currentDevice.getHost(),
+			new SSHShutdownTask(shutdownResult, callbackUiHandler,
+					rebootRunnable).execute(currentDevice.getHost(),
 					currentDevice.getUser(), null,
 					currentDevice.getPort() + "", currentDevice.getSudoPass(),
 					TYPE_REBOOT, currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_HALT)) {
-			new SSHShutdownTask().execute(currentDevice.getHost(),
+			new SSHShutdownTask(shutdownResult, callbackUiHandler,
+					rebootRunnable).execute(currentDevice.getHost(),
 					currentDevice.getUser(), null,
 					currentDevice.getPort() + "", currentDevice.getSudoPass(),
 					TYPE_HALT, currentDevice.getKeyfilePath(), passphrase);
