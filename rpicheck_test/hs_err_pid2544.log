@@ -1,0 +1,131 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (javaClasses.cpp:126), pid=2544, tid=3768
+#  fatal error: Invalid layout of preloaded class
+#
+# JRE version:  (8.0_20-b26) (build )
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.20-b23 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000000000245f800):  JavaThread "Unknown thread" [_thread_in_vm, id=3768, stack(0x0000000002600000,0x0000000002700000)]
+
+Stack: [0x0000000002600000,0x0000000002700000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x3152fa]
+V  [jvm.dll+0x265d03]
+V  [jvm.dll+0x266943]
+V  [jvm.dll+0x25e1e6]
+V  [jvm.dll+0x5e64c]
+V  [jvm.dll+0x5e743]
+V  [jvm.dll+0x7316a]
+V  [jvm.dll+0x734c8]
+V  [jvm.dll+0xe3937]
+V  [jvm.dll+0xe3cc6]
+V  [jvm.dll+0x1f89d7]
+V  [jvm.dll+0x229fc4]
+V  [jvm.dll+0x14c6f1]
+C  [javaw.exe+0x20c6]
+C  [javaw.exe+0xc9eb]
+C  [javaw.exe+0xca7f]
+C  [kernel32.dll+0x159ed]
+C  [ntdll.dll+0x2c541]
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x000000000245f800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=3768, stack(0x0000000002600000,0x0000000002700000)]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (10 events):
+Event: 0.008 loading class java/lang/CharSequence done
+Event: 0.008 loading class java/lang/String done
+Event: 0.008 loading class java/lang/Class
+Event: 0.008 loading class java/lang/reflect/AnnotatedElement
+Event: 0.008 loading class java/lang/reflect/AnnotatedElement done
+Event: 0.008 loading class java/lang/reflect/GenericDeclaration
+Event: 0.008 loading class java/lang/reflect/GenericDeclaration done
+Event: 0.008 loading class java/lang/reflect/Type
+Event: 0.008 loading class java/lang/reflect/Type done
+Event: 0.008 loading class java/lang/Class done
+
+
+Dynamic libraries:
+0x000000013f8b0000 - 0x000000013f8e4000 	C:\Program Files\Java\jre1.8.0_20\bin\javaw.exe
+0x0000000077640000 - 0x00000000777e9000 	C:\Windows\SYSTEM32\ntdll.dll
+0x0000000077520000 - 0x000000007763f000 	C:\Windows\system32\kernel32.dll
+0x000007fefd750000 - 0x000007fefd7bc000 	C:\Windows\system32\KERNELBASE.dll
+0x000007feff870000 - 0x000007feff94b000 	C:\Windows\system32\ADVAPI32.dll
+0x000007fefe390000 - 0x000007fefe42f000 	C:\Windows\system32\msvcrt.dll
+0x000007fefe430000 - 0x000007fefe44f000 	C:\Windows\SYSTEM32\sechost.dll
+0x000007fefe5c0000 - 0x000007fefe6ed000 	C:\Windows\system32\RPCRT4.dll
+0x0000000077420000 - 0x000000007751a000 	C:\Windows\system32\USER32.dll
+0x000007feff490000 - 0x000007feff4f7000 	C:\Windows\system32\GDI32.dll
+0x000007feff480000 - 0x000007feff48e000 	C:\Windows\system32\LPK.dll
+0x000007fefdb30000 - 0x000007fefdbf9000 	C:\Windows\system32\USP10.dll
+0x000007fefbd20000 - 0x000007fefbf14000 	C:\Windows\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.17514_none_fa396087175ac9ac\COMCTL32.dll
+0x000007feff770000 - 0x000007feff7e1000 	C:\Windows\system32\SHLWAPI.dll
+0x000007fefdfb0000 - 0x000007fefdfde000 	C:\Windows\system32\IMM32.DLL
+0x000007fefe450000 - 0x000007fefe559000 	C:\Windows\system32\MSCTF.dll
+0x000000006f960000 - 0x000000006fa32000 	C:\Program Files\Java\jre1.8.0_20\bin\msvcr100.dll
+0x000000006c9b0000 - 0x000000006d208000 	C:\Program Files\Java\jre1.8.0_20\bin\server\jvm.dll
+0x000007fef3fd0000 - 0x000007fef3fd9000 	C:\Windows\system32\WSOCK32.dll
+0x000007fefe2a0000 - 0x000007fefe2ed000 	C:\Windows\system32\WS2_32.dll
+0x000007fefde10000 - 0x000007fefde18000 	C:\Windows\system32\NSI.dll
+0x000007fefb140000 - 0x000007fefb17b000 	C:\Windows\system32\WINMM.dll
+0x0000000077810000 - 0x0000000077817000 	C:\Windows\system32\PSAPI.DLL
+0x0000000070740000 - 0x000000007074f000 	C:\Program Files\Java\jre1.8.0_20\bin\verify.dll
+0x0000000070710000 - 0x0000000070738000 	C:\Program Files\Java\jre1.8.0_20\bin\java.dll
+0x00000000701f0000 - 0x0000000070206000 	C:\Program Files\Java\jre1.8.0_20\bin\zip.dll
+0x000007fef26f0000 - 0x000007fef2815000 	C:\Windows\system32\dbghelp.dll
+
+VM Arguments:
+jvm_args: -Dfile.encoding=Cp1252 -Xbootclasspath:C:\Android\sdk\platforms\android-19\android.jar 
+java_command: org.eclipse.jdt.internal.junit.runner.RemoteTestRunner -version 3 -port 50975 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames de.eidottermihi.rpicheck.test.VcgencmdTest
+java_class_path (initial): C:\Android\workspace_adt\rpicheck_test\bin\classes;F:\Users\Michael\git\rpicheck\bin\classes;F:\Users\Michael\git\rpicheck\libs\sc-light-jdk15on-1.47.0.3.jar;F:\Users\Michael\git\rpicheck\libs\slf4j-api-1.7.6.jar;F:\Users\Michael\git\rpicheck\libs\sshj-0.9.1-SNAPSHOT.jar;F:\Users\Michael\git\rpicheck\libs\actionbarsherlock\libs\android-support-v4.jar;F:\Users\Michael\git\rpicheck\libs\scprov-jdk15on-1.47.0.3.jar;F:\Users\Michael\git\rpicheck\libs\guava-16.0.1.jar;F:\Users\Michael\git\rpicheck\libs\prettytime-2.1.2.Final.jar;F:\Users\Michael\git\rpicheck\libs\scpkix-jdk15on-1.47.0.3.jar;F:\Users\Michael\git\rpicheck\libs\logback-android-1.0.10-2.jar;F:\Users\Michael\git\rpicheck\libs\android-pulltorefresh\bin\android-pulltorefresh.jar;F:\Users\Michael\git\rpicheck\libs\actionbarsherlock\bin\actionbarsherlock.jar;F:\Users\Michael\git\rpicheck\libs\FileExplorer\bin\filedialog.jar;C:\Android\eclipse-java-luna-R-win32-x86_64\eclipse\plugins\org.junit_4.11.0.v201303080030\junit.jar;C:\Android\eclipse-java-luna-R-win32-x86_64\eclipse\plugins\org.hamcrest.core_1.3.0.v201303031735.jar;C:\Android\workspace_adt\rpicheck_test\libs\mockito-all-1.9.5.jar;/C:/Android/eclipse-java-luna-R-win32-x86_64/eclipse/configuration/org.eclipse.osgi/205/0/.cp/;/C:/Android/eclipse-java-luna-R-win32-x86_64/eclipse/configuration/org.eclipse.osgi/204/0/.cp/
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java
+PATH=C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\ProgramData\Oracle\Java\javapath;C:\Python33\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\Entwicklung\apache-maven-3.2.1\bin;C:\Program Files\Java\bin;C:\Program Files\Calibre2\;E:\Entwicklung\gradle-1.11-all\gradle-1.11\bin;C:\Program Files\qemu;C:\Program Files\TortoiseSVN\bin;D:\texlive\2013\bin\win32
+USERNAME=Michael
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 42 Stepping 7, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 , 64 bit Build 7601 Service Pack 1
+
+CPU:total 4 (4 cores per cpu, 1 threads per core) family 6 model 42 stepping 7, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, clmul, tsc, tscinvbit
+
+Memory: 4k page, physical 16743568k(11694592k free), swap 33485276k(27767936k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.20-b23) for windows-amd64 JRE (1.8.0_20-b26), built on Jul 30 2014 13:51:23 by "java_re" with MS VC++ 10.0 (VS2010)
+
+time: Thu Feb 05 22:28:14 2015
+elapsed time: 0 seconds (0d 0h 0m 0s)
+

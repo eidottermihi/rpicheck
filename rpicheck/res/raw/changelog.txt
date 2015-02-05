@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <style type='text/css'>
+      a            { color:#a0a0e0 }
+      div.title    { 
+          color:#C0F0C0; 
+          font-size:1.2em; 
+          font-weight:bold; 
+          margin-top:1em; 
+          margin-bottom:0.5em; 
+          text-align:center }
+      div.subtitle { 
+          color:#C0F0C0; 
+          font-size:0.8em; 
+          margin-bottom:1em; 
+          text-align:center }
+      div.freetext { color:#F0F0F0 }
+      div.list     { color:#C0C0F0 }
+    </style>
+  </head>
+  <body>
+$ 1.6.2
+  % Version 1.6.2
+  _ 2015-01-25
+    * bugfix: fix crash on screen orientation change
+$ 1.6.1
+  % Version 1.6.1
+  _ 2014-11-12
+    * bugfix: make it possible to edit/delete commands again
+$ 1.6.0
+  % Version 1.6.0
+  _ 2014-11-11
+    * added placeholder for custom commands
+    * bugfix: show disks with whitespace in mount point correctly
+    * internal: access database in background thread (thanks to yulin2)
+$ 1.5.2
+  % Version 1.5.2
+  _ 2014-08-27
+    * fixed keyphrase not specified bug for custom commands
+$ 1.5.1
+  % Version 1.5.1
+  _ 2014-04-23
+    * fixed too low timeout for slow connections
+    * refresh action item is back
+$ 1.5.0
+  % Version 1.5.0
+  _ 2014-04-22
+    * Custom commands
+    * Solid Actionbar and custom theme (thanks to larsgrefer)
+    * fixed crash when app is going to background during refresh
+    * fixed refresh freeze
+$ 1.4.2
+  % Version 1.4.2
+  _ 2014-03-30
+    * Reboot/Halt now working on OpenELEC (thanks to Mafarricos)
+$ 1.4.1
+  % Version 1.4.1
+  _ 2013-10-16
+    * fixed various crashes
+$ 1.4.0
+  % Version 1.4.0
+  _ 2013-10-13
+    * added authentification with keys (PKCS8/OpenSSH file format)
+    * removed background of app icon
+$ 1.3.1
+  % Version 1.3.1
+  _ 2013-05-31
+    * query data will now be saved during app runtime
+    * fixed bug in parsing the IP address
+$ 1.3.0
+  % Version 1.3.0
+  _ 2013-05-26
+    * added safe shutdown (halt)
+    * reworked overclocking queries
+    * reworked network information
+    * added Wifi-signal query
+    * added firmware version
+    * added logging to sd-card
+    * allowing empty sudo password
+    * reworked settings
+    * thanks go to Matthias, Joost, Jamie and grafenhofer for their help and support
+$ 1.2.2
+  % Version 1.2.2
+  _ 2013-03-23
+    * added full path for vcgencmd queries
+$ 1.0
+  % Version 1.0
+  _ 2013-02-13
+    * initial release
+$ END_OF_CHANGE_LOG
+  </body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="shutdown_options">
+        <item>Neustarten</item>
+        <item>System anhalten</item>
+    </string-array>
+    <string-array name="auth_methods">
+        <item>Passwort</item>
+        <item>Private key</item>
+        <item>Private key m. Passwort</item>
+    </string-array>
+
+</resources>

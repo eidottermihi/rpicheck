@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="temp_scales">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+    <string-array name="temp_scales_values">
+        <item>°C</item>
+        <item>°F</item>
+    </string-array>
+    <string-array name="pref_frequency_units">
+        <item>Hz</item>
+        <item>MHz</item>
+        <item>GHz</item>
+    </string-array>
+    <string-array name="pref_frequency_unit_values">
+        <item>Hz</item>
+        <item>MHz</item>
+        <item>GHz</item>
+    </string-array>
+    <string-array name="shutdown_options">
+        <item>Reboot</item>
+        <item>Halt</item>
+    </string-array>
+    <string-array name="auth_methods">
+        <item>password</item>
+        <item>private key</item>
+        <item>private key w. password</item>
+    </string-array>
+
+</resources>
