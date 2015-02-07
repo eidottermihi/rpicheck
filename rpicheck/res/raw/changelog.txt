@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.6.3
+  % Version 1.6.3
+  _ 2015-02-07
+    * Average Load now shows values of "/proc/loadavg"
 $ 1.6.2
   % Version 1.6.2
   _ 2015-01-25
