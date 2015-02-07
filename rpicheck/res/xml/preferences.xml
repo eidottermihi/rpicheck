@@ -29,19 +29,28 @@
             android:summaryOff="@string/pref_query_hide_root_summaryOff"
             android:summaryOn="@string/pref_query_hide_root_summaryOn"
             android:title="@string/pref_query_hide_root_title" />
+
+        <ListPreference
+            android:defaultValue="@string/pref_load_avg_default"
+            android:entries="@array/pref_load_avg"
+            android:entryValues="@array/pref_load_avg_values"
+            android:key="pref_load_avg"
+            android:summary="@string/pref_load_avg_summary"
+            android:title="@string/pref_load_avg_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_log" >
         <Preference
             android:key="pref_log"
             android:summary="@string/pref_log_title_summary"
             android:title="@string/pref_log_title" />
-        <CheckBoxPreference 
+
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_debug_log"
             android:summary="@string/pref_debug_log_summary"
-            android:summaryOn="@string/pref_debug_log_summary_on"
             android:summaryOff="@string/pref_debug_log_summary_off"
-            android:title="@string/pref_debug_log_title"/>
+            android:summaryOn="@string/pref_debug_log_summary_on"
+            android:title="@string/pref_debug_log_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_about" >
         <PreferenceScreen
@@ -56,28 +65,27 @@
                     android:title="@string/pref_version" />
                 <Preference
                     android:key="pref_changelog"
-                    android:summary="@string/pref_changelog_title_summary"
                     android:title="@string/pref_changelog_title" />
                 <Preference
+                    android:icon="?attr/ic_settings_github"
                     android:summary="@string/pref_github_summary"
-                    android:title="@string/pref_github"
-                    android:icon="?attr/ic_settings_github" >
+                    android:title="@string/pref_github" >
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="https://github.com/eidottermihi/rpicheck/issues" />
                 </Preference>
                 <Preference
+                    android:icon="?attr/ic_settings_email"
                     android:summary="@string/pref_dev_email_summary"
-                    android:title="@string/pref_dev_email"
-                    android:icon="?attr/ic_settings_email" >
+                    android:title="@string/pref_dev_email" >
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="mailto:eidottermihi+raspicheck@gmail.com?subject=RasPi Check" />
                 </Preference>
                 <Preference
+                    android:icon="?attr/ic_settings_rate"
                     android:summary="@string/pref_rate_app_summary"
-                    android:title="@string/pref_rate_app"
-                    android:icon="?attr/ic_settings_rate" >
+                    android:title="@string/pref_rate_app" >
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="market://details?id=de.eidottermihi.rpicheck" />

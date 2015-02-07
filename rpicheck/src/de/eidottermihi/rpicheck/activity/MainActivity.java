@@ -61,6 +61,7 @@ import de.eidottermihi.rpicheck.fragment.QueryErrorMessagesDialog;
 import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
+import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class MainActivity extends SherlockFragmentActivity implements
@@ -725,8 +726,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 					this.showPullToRefreshHint();
 				}
 				// execute query
-				new SSHQueryTask(this).execute(host, user, pass, port,
-						hideRoot.toString(), keyPath, keyPass);
+				new SSHQueryTask(this, getLoadAveragePreference()).execute(
+						host, user, pass, port, hideRoot.toString(), keyPath,
+						keyPass);
 			}
 		} else {
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
@@ -734,6 +736,28 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// stop refresh animation from pull-to-refresh
 			refreshableScrollView.onRefreshComplete();
 		}
+	}
+
+	private LoadAveragePeriod getLoadAveragePreference() {
+		final String loadAvgPrefString = sharedPrefs.getString("pref_load_avg",
+				"FIVE_MINUTES");
+		LoadAveragePeriod period;
+		switch (loadAvgPrefString) {
+		case "ONE_MINUTE":
+			period = LoadAveragePeriod.ONE_MINUTE;
+			break;
+		case "FIVE_MINUTES":
+			period = LoadAveragePeriod.FIVE_MINUTES;
+			break;
+		case "FIFTEEN_MINUTES":
+			period = LoadAveragePeriod.FIFTEEN_MINUTES;
+			break;
+		default:
+			period = LoadAveragePeriod.FIVE_MINUTES;
+			break;
+		}
+		LOGGER.debug("Load average preference: {}", period);
+		return period;
 	}
 
 	@Override
@@ -900,8 +924,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// connect
 			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
 					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
-			new SSHQueryTask(this).execute(currentDevice.getHost(),
-					currentDevice.getUser(), null,
+			new SSHQueryTask(this, getLoadAveragePreference()).execute(
+					currentDevice.getHost(), currentDevice.getUser(), null,
 					currentDevice.getPort() + "", hideRoot.toString(),
 					currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {

@@ -28,5 +28,15 @@
         <item>private key</item>
         <item>private key w. password</item>
     </string-array>
+    <string-array name="pref_load_avg_values">
+        <item>ONE_MINUTE</item>
+        <item>FIVE_MINUTES</item>
+        <item>FIFTEEN_MINUTES</item>
+    </string-array>
+    <string-array name="pref_load_avg">
+        <item>1 Minute</item>
+        <item>5 Minutes</item>
+        <item>15 Minutes</item>
+    </string-array>
 
 </resources>

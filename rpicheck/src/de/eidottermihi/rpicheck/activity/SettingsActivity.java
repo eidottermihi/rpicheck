@@ -46,6 +46,7 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 
 	private static final String KEY_PREF_LOG = "pref_log";
 	private static final String KEY_PREF_CHANGELOG = "pref_changelog";
+	private static final String KEY_PREF_LOAD_AVG_PERIOD = "pref_load_avg";
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SettingsActivity.class);
@@ -66,23 +67,19 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void initSummaries() {
 		final SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		// temperature
-		final Preference tempPref = findPreference(KEY_PREF_TEMPERATURE_SCALE);
-		final String tempPrefValue = prefs.getString(
-				KEY_PREF_TEMPERATURE_SCALE, null);
-		if (tempPrefValue != null) {
-			tempPref.setSummary(tempPrefValue);
-		}
-		// frequency
-		final Preference tempFreq = findPreference(KEY_PREF_FREQUENCY_UNIT);
-		final String tempFreqValue = prefs.getString(KEY_PREF_FREQUENCY_UNIT,
-				null);
-		if (tempFreqValue != null) {
-			tempFreq.setSummary(tempFreqValue);
+		initSummary(prefs, KEY_PREF_TEMPERATURE_SCALE);
+		initSummary(prefs, KEY_PREF_FREQUENCY_UNIT);
+	}
+
+	@SuppressWarnings("deprecation")
+	private void initSummary(SharedPreferences prefs, String prefKey) {
+		final Preference pref = findPreference(prefKey);
+		final String prefValue = prefs.getString(prefKey, null);
+		if (prefValue != null) {
+			pref.setSummary(prefValue);
 		}
 	}
 
@@ -97,23 +94,14 @@ public class SettingsActivity extends SherlockPreferenceActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if (key.equals(KEY_PREF_FREQUENCY_UNIT)) {
-			findPreference(key).setSummary(
-					sharedPreferences.getString(KEY_PREF_FREQUENCY_UNIT,
-							getString(R.string.pref_frequency_unit_default)));
-
+			initSummary(sharedPreferences, KEY_PREF_FREQUENCY_UNIT);
 		}
 		if (key.equals(KEY_PREF_TEMPERATURE_SCALE)) {
-			findPreference(key)
-					.setSummary(
-							sharedPreferences
-									.getString(
-											KEY_PREF_TEMPERATURE_SCALE,
-											getString(R.string.pref_temperature_scala_default)));
+			initSummary(sharedPreferences, KEY_PREF_TEMPERATURE_SCALE);
 		}
 		if (key.equals(KEY_PREF_DEBUG_LOGGING)) {
 			boolean debugEnabled = sharedPreferences.getBoolean(key, false);

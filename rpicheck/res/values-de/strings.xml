@@ -164,7 +164,10 @@
     <string name="action_refresh">Aktualisieren</string>
     <string name="title_placeholders">Platzhalter</string>
     <string name="placeholders_button_ok">OK</string>
-    <string name="placeholder_hint_text">Du kann Platzhalter wie z.B. \'${my_secret}\' verwenden. Diese werden erst durch deine Eingabe beim Ausführen des Kommandos ersetzt.</string>
+    <string name="placeholder_hint_text">Du kannst Platzhalter wie z.B. \'${my_secret}\' verwenden. Diese werden erst durch deine Eingabe beim Ausführen des Kommandos ersetzt.</string>
     <string name="placeholder_hint">Tipp:</string>
+    
+    <string name="pref_load_avg_summary">Zeitspanne für die Berechnung der Auslastung.</string>
+    <string name="pref_load_avg_title">Zeitspanne für durchschn. Auslastung</string>
 
 </resources>
