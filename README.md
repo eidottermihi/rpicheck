@@ -14,12 +14,12 @@ RasPi Check is avalaible at [Google Play](https://play.google.com/store/apps/det
 
 Bugs
 ------------
-If you find any bugs and glitches, feel free to open an [issue here](https://github.com/eidottermihi/rpicheck/issues).
+If you find any bugs and glitches please open an [issue here](https://github.com/eidottermihi/rpicheck/issues).
 
 
 Contributing
 ------------
-Feel free to fork and open up pull request!
+Feel free to fork create pull requests!
 
 Used android libraries are included under libs/, just make sure you import them to your Eclipse workspace as Android projects.
-
+rpicheck_test is an Android Test Project, so import it accordingly.
