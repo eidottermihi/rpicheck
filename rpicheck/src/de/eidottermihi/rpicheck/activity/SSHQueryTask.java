@@ -1,6 +1,7 @@
 package de.eidottermihi.rpicheck.activity;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +18,7 @@ import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.beans.UptimeBean;
 import de.eidottermihi.rpicheck.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
+import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
@@ -24,14 +26,25 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SSHQueryTask.class);
-
-	private IQueryService queryService;
+	private static final NumberFormat NUMBER_FORMAT = NumberFormat
+			.getPercentInstance();
 
 	private final AsyncQueryDataUpdate delegate;
+
+	private IQueryService queryService;
+	private LoadAveragePeriod loadAveragePeriod;
+
+	public SSHQueryTask(AsyncQueryDataUpdate delegate,
+			LoadAveragePeriod loadAvgPeriod) {
+		super();
+		this.delegate = delegate;
+		this.loadAveragePeriod = loadAvgPeriod;
+	}
 
 	public SSHQueryTask(AsyncQueryDataUpdate delegate) {
 		super();
 		this.delegate = delegate;
+		this.loadAveragePeriod = LoadAveragePeriod.FIVE_MINUTES;
 	}
 
 	@Override
@@ -63,8 +76,11 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 			}
 			publishProgress(20);
 			final VcgencmdBean vcgencmdBean = queryService.queryVcgencmd();
+			publishProgress(40);
+			final Double loadAvg = queryService
+					.queryLoadAverage(this.loadAveragePeriod);
 			publishProgress(50);
-			UptimeBean uptime = queryService.queryUptime();
+			final Double uptime = queryService.queryUptime();
 			publishProgress(60);
 			RaspiMemoryBean memory = queryService.queryMemoryInformation();
 			publishProgress(70);
@@ -83,13 +99,8 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 			publishProgress(100);
 			bean.setVcgencmdInfo(vcgencmdBean);
 			bean.setLastUpdate(Calendar.getInstance().getTime());
-			// uptimeBean may contain messages
-			if (uptime.getErrorMessage() != null) {
-				bean.getErrorMessages().add(uptime.getErrorMessage());
-			} else {
-				bean.setStartup(uptime.getRunningPretty());
-				bean.setAvgLoad(uptime.getAverageLoad());
-			}
+			bean.setStartup(new UptimeBean(uptime).getRunningPretty());
+			bean.setAvgLoad(NUMBER_FORMAT.format(loadAvg));
 			if (memory.getErrorMessage() != null) {
 				bean.getErrorMessages().add(memory.getErrorMessage());
 			} else {

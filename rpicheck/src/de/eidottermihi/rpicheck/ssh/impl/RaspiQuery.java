@@ -31,10 +31,10 @@ import de.eidottermihi.rpicheck.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.beans.ProcessBean;
 import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
-import de.eidottermihi.rpicheck.beans.UptimeBean;
 import de.eidottermihi.rpicheck.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.beans.WlanBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
+import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 
 /**
  * Simple API for querying a Raspberry Pi computer.
@@ -83,6 +83,8 @@ public class RaspiQuery implements IQueryService {
 	private static final String N_A = "n/a";
 
 	private static final int DEFAULT_SSH_PORT = 22;
+
+	private static final String LOAD_AVG_CMD = "cat /proc/loadavg";
 
 	private SSHClient client;
 	private String hostname;
@@ -681,7 +683,7 @@ public class RaspiQuery implements IQueryService {
 	 * @see de.eidottermihi.rpicheck.ssh.IQueryService#queryUptime()
 	 */
 	@Override
-	public final UptimeBean queryUptime() throws RaspiQueryException {
+	public final double queryUptime() throws RaspiQueryException {
 		LOGGER.info("Querying uptime...");
 		if (client != null) {
 			if (client.isConnected() && client.isAuthenticated()) {
@@ -1036,7 +1038,7 @@ public class RaspiQuery implements IQueryService {
 			return distri;
 		} else {
 			LOGGER.error("Could not parse distribution. Make sure 'cat /etc/*-release' works on your distribution.");
-			LOGGER.debug("Output of {}: \n{}", DISTRIBUTION_CMD, output);
+			LOGGER.error("Output of {}: \n{}", DISTRIBUTION_CMD, output);
 			return N_A;
 		}
 	}
@@ -1094,7 +1096,7 @@ public class RaspiQuery implements IQueryService {
 		} else {
 			LOGGER.error("Expected a different output of command: {}",
 					MEMORY_INFO_CMD);
-			LOGGER.debug("Output was : {}", output);
+			LOGGER.error("Output was : {}", output);
 			return new RaspiMemoryBean(
 					"Memory information could not be queried. See the log for details.");
 		}
@@ -1109,23 +1111,20 @@ public class RaspiQuery implements IQueryService {
 			LOGGER.error(
 					"Could not query cpu serial number. Expected another output of '{}'.",
 					CPU_SERIAL_CMD);
-			LOGGER.debug("Output of '{}': \n{}", CPU_SERIAL_CMD, output);
+			LOGGER.error("Output of '{}': \n{}", CPU_SERIAL_CMD, output);
 			return N_A;
 		}
 	}
 
-	private UptimeBean formatUptime(String output) {
+	private double formatUptime(String output) {
 		final String[] split = output.split(" ");
 		if (split.length >= 2) {
-			double uptimeFull = Double.parseDouble(split[0]);
-			double uptimeIdle = Double.parseDouble(split[1]);
-			return new UptimeBean(uptimeFull, uptimeIdle);
+			return Double.parseDouble(split[0]);
 		} else {
 			LOGGER.error("Expected a different output of command: {}",
 					UPTIME_CMD);
-			LOGGER.debug("Actual output was: {}", output);
-			return new UptimeBean(
-					"Uptime and system load could not be queried. See the log for details.");
+			LOGGER.error("Actual output was: {}", output);
+			return 0D;
 		}
 	}
 
@@ -1138,7 +1137,7 @@ public class RaspiQuery implements IQueryService {
 			return Double.parseDouble(volts);
 		} else {
 			LOGGER.error("Could not parse cpu voltage.");
-			LOGGER.debug("Output of 'vcgencmd measure_volts core': \n{}",
+			LOGGER.error("Output of 'vcgencmd measure_volts core': \n{}",
 					output);
 			return 0D;
 		}
@@ -1159,7 +1158,7 @@ public class RaspiQuery implements IQueryService {
 			return temperature;
 		} else {
 			LOGGER.error("Could not parse cpu temperature.");
-			LOGGER.debug("Output of 'vcgencmd measure_temp': \n{}", output);
+			LOGGER.error("Output of 'vcgencmd measure_temp': \n{}", output);
 			return 0D;
 		}
 	}
@@ -1178,13 +1177,13 @@ public class RaspiQuery implements IQueryService {
 				formatted = Long.parseLong(splitted[1]);
 			} catch (NumberFormatException e) {
 				LOGGER.error("Could not parse frequency.");
-				LOGGER.debug(
+				LOGGER.error(
 						"Output of 'vcgencmd measure_clock [core/arm]': \n{}",
 						output);
 			}
 		} else {
 			LOGGER.error("Could not parse frequency.");
-			LOGGER.debug("Output of 'vcgencmd measure_clock [core/arm]': \n{}",
+			LOGGER.error("Output of 'vcgencmd measure_clock [core/arm]': \n{}",
 					output);
 		}
 		return formatted;
@@ -1298,7 +1297,7 @@ public class RaspiQuery implements IQueryService {
 		if (client != null) {
 			if (client.isConnected()) {
 				try {
-					LOGGER.debug("Disconnecting from host {}.",
+					LOGGER.info("Disconnecting from host {}.",
 							this.getHostname());
 					client.disconnect();
 				} catch (IOException e) {
@@ -1398,6 +1397,61 @@ public class RaspiQuery implements IQueryService {
 	 */
 	public SSHClient newAndroidSSHClient() {
 		return new SSHClient(new AndroidConfig());
+	}
+
+	@Override
+	public double queryLoadAverage(LoadAveragePeriod timePeriod)
+			throws RaspiQueryException {
+		LOGGER.info("Querying load average...");
+		if (client != null) {
+			if (client.isConnected() && client.isAuthenticated()) {
+				Session session;
+				try {
+					session = client.startSession();
+					session.allocateDefaultPTY();
+					final Command cmd = session.exec(LOAD_AVG_CMD);
+					cmd.join(30, TimeUnit.SECONDS);
+					cmd.close();
+					final String output = IOUtils.readFully(
+							cmd.getInputStream()).toString();
+					return this.parseLoadAverage(output, timePeriod);
+				} catch (IOException e) {
+					throw RaspiQueryException.createTransportFailure(hostname,
+							e);
+				}
+			} else {
+				throw new IllegalStateException(
+						"You must establish a connection first.");
+			}
+		} else {
+			throw new IllegalStateException(
+					"You must establish a connection first.");
+		}
+	}
+
+	private double parseLoadAverage(String output, LoadAveragePeriod timePeriod) {
+		final String[] split = output.split(" ");
+		double loadAvg = 0D;
+		if (split.length >= 3) {
+			switch (timePeriod) {
+			case ONE_MINUTE:
+				loadAvg = Double.parseDouble(split[0]);
+				break;
+			case FIVE_MINUTES:
+				loadAvg = Double.parseDouble(split[1]);
+				break;
+			case FIFTEEN_MINUTES:
+				loadAvg = Double.parseDouble(split[2]);
+				break;
+			default:
+				throw new RuntimeException("Unknown LoadAveragePeriod!");
+			}
+		} else {
+			LOGGER.error("Expected a different output of command: {}",
+					LOAD_AVG_CMD);
+			LOGGER.error("Actual output was: {}", output);
+		}
+		return loadAvg;
 	}
 
 }

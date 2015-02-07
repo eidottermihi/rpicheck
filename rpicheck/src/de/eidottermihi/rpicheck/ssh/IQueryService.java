@@ -7,7 +7,6 @@ import de.eidottermihi.rpicheck.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.beans.ProcessBean;
 import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
-import de.eidottermihi.rpicheck.beans.UptimeBean;
 import de.eidottermihi.rpicheck.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
@@ -34,17 +33,38 @@ public interface IQueryService {
 	public abstract List<NetworkInterfaceInformation> queryNetworkInformation()
 			throws RaspiQueryException;
 
+	/**
+	 * Queries the current voltage.
+	 * 
+	 * @param vcgencmdPath
+	 *            path to "vcgendcmd"
+	 * @return the current voltage
+	 * @throws RaspiQueryException
+	 *             if something goes wrong
+	 */
 	public abstract Double queryVolts(String vcgencmdPath)
 			throws RaspiQueryException;
 
 	/**
-	 * Queries uptime and average load.
+	 * Queries uptime of the system (via cat /proc/uptime).
 	 * 
-	 * @return a {@link UptimeBean}
+	 * @return uptime in seconds
 	 * @throws RaspiQueryException
 	 *             if something goes wrong
 	 */
-	public abstract UptimeBean queryUptime() throws RaspiQueryException;
+	public abstract double queryUptime() throws RaspiQueryException;
+
+	/**
+	 * Queries the load average (via cat /proc/loadavg).
+	 * 
+	 * @param timePeriod
+	 *            time period for calculation of the load average
+	 * @return the load average (min 0, max 1)
+	 * @throws RaspiQueryException
+	 *             if something goes wrong
+	 */
+	public abstract double queryLoadAverage(LoadAveragePeriod timePeriod)
+			throws RaspiQueryException;
 
 	/**
 	 * Queries the cpu serial.
