@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.6.4
+  % Version 1.6.4
+  _ 2015-02-08
+    * Fix crash when "cat /proc/loadavg" contains copyright headers (as in Raspbmc).
 $ 1.6.3
   % Version 1.6.3
   _ 2015-02-07
