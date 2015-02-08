@@ -3,12 +3,16 @@ package de.eidottermihi.rpicheck.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Command;
 import net.schmizz.sshj.transport.TransportException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -16,6 +20,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import de.eidottermihi.rpicheck.beans.VcgencmdBean;
+import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
@@ -60,6 +65,39 @@ public class VcgencmdTest {
 		assertThat(vcgencmd.getCoreFrequency(), CoreMatchers.is(320000000L));
 		assertEquals(1.200, vcgencmd.getCoreVolts(), 0.00001);
 		assertEquals(41.2, vcgencmd.getCpuTemperature(), 0.00001);
+	}
+
+	@Test
+	public void load_avg() throws IOException, RaspiQueryException {
+		String output = FileUtils.readFileToString(FileUtils
+				.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
+		mockCommand(mockedSession, "cat /proc/loadavg", output);
+		double queryLoadAverage = raspiQuery
+				.queryLoadAverage(LoadAveragePeriod.FIVE_MINUTES);
+		assertEquals(0.58D, queryLoadAverage, 0.001D);
+	}
+
+	@Test
+	public void load_avg_fifteen_minutes() throws IOException,
+			RaspiQueryException {
+		String output = FileUtils.readFileToString(FileUtils
+				.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
+		mockCommand(mockedSession, "cat /proc/loadavg", output);
+		double queryLoadAverage = raspiQuery
+				.queryLoadAverage(LoadAveragePeriod.FIFTEEN_MINUTES);
+		assertEquals(0.53D, queryLoadAverage, 0.001D);
+	}
+
+	@Test
+	public void load_avg_copyright_header() throws IOException,
+			RaspiQueryException {
+		String output = FileUtils
+				.readFileToString(FileUtils
+						.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg_with_copyright.txt"));
+		mockCommand(mockedSession, "cat /proc/loadavg", output);
+		double queryLoadAverage = raspiQuery
+				.queryLoadAverage(LoadAveragePeriod.FIVE_MINUTES);
+		assertEquals(0.58D, queryLoadAverage, 0.001D);
 	}
 
 	private void mockCommand(Session session, String cmd,

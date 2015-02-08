@@ -1430,28 +1430,36 @@ public class RaspiQuery implements IQueryService {
 	}
 
 	private double parseLoadAverage(String output, LoadAveragePeriod timePeriod) {
-		final String[] split = output.split(" ");
-		double loadAvg = 0D;
-		if (split.length >= 3) {
-			switch (timePeriod) {
-			case ONE_MINUTE:
-				loadAvg = Double.parseDouble(split[0]);
-				break;
-			case FIVE_MINUTES:
-				loadAvg = Double.parseDouble(split[1]);
-				break;
-			case FIFTEEN_MINUTES:
-				loadAvg = Double.parseDouble(split[2]);
-				break;
-			default:
-				throw new RuntimeException("Unknown LoadAveragePeriod!");
+		String[] lines = output.split("\n");
+		for (String line : lines) {
+			final String[] split = line.split(" ");
+			double loadAvg = 0D;
+			if (split.length == 5) {
+				try {
+					switch (timePeriod) {
+					case ONE_MINUTE:
+						loadAvg = Double.parseDouble(split[0]);
+						break;
+					case FIVE_MINUTES:
+						loadAvg = Double.parseDouble(split[1]);
+						break;
+					case FIFTEEN_MINUTES:
+						loadAvg = Double.parseDouble(split[2]);
+						break;
+					default:
+						throw new RuntimeException("Unknown LoadAveragePeriod!");
+					}
+					return loadAvg;
+				} catch (NumberFormatException e) {
+					LOGGER.debug("Skipping line: {}", line);
+				}
+			} else {
+				LOGGER.debug("Skipping line: {}", line);
 			}
-		} else {
-			LOGGER.error("Expected a different output of command: {}",
-					LOAD_AVG_CMD);
-			LOGGER.error("Actual output was: {}", output);
 		}
-		return loadAvg;
+		LOGGER.error("Expected a different output of command: {}", LOAD_AVG_CMD);
+		LOGGER.error("Actual output was: {}", output);
+		return 0D;
 	}
 
 }
