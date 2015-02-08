@@ -514,19 +514,20 @@ public class RaspiQuery implements IQueryService {
 	 * @throws RaspiQueryException
 	 */
 	private String queryIpAddress(String name) throws RaspiQueryException {
-		LOGGER.info("Querying ip address of {}...", name);
+		LOGGER.info("Querying ip address of interface {}...", name);
 		if (client != null) {
 			if (client.isConnected() && client.isAuthenticated()) {
 				Session session;
 				try {
 					session = client.startSession();
+					session.allocateDefaultPTY();
 					final String cmdString = "ip -f inet addr show dev " + name
 							+ " | sed -n 2p";
 					final Command cmd = session.exec(cmdString);
 					cmd.join(30, TimeUnit.SECONDS);
 					final String output = IOUtils.readFully(
 							cmd.getInputStream()).toString();
-					LOGGER.debug("Output of ssh query: {}.", output);
+					LOGGER.debug("Output of ip query: {}.", output);
 					final Matcher m = IPADDRESS_PATTERN.matcher(output);
 					if (m.find()) {
 						final String ipAddress = m.group().trim();
@@ -536,6 +537,31 @@ public class RaspiQuery implements IQueryService {
 						LOGGER.error(
 								"IP address pattern: No match found for output: {}.",
 								output);
+					}
+					LOGGER.info(
+							"'ip' command not available. Trying '/sbin/ifconfig' to get ip address of interface {}.",
+							name);
+					session = client.startSession();
+					session.allocateDefaultPTY();
+					final String ifConfigCmd = "/sbin/ifconfig " + name
+							+ " | grep \"inet addr\"";
+					final Command ifCfgCmd = session.exec(ifConfigCmd);
+					ifCfgCmd.join(30, TimeUnit.SECONDS);
+					final String ifconfigOutput = IOUtils.readFully(
+							ifCfgCmd.getInputStream()).toString();
+					LOGGER.debug("Output of ifconfig query: {}.",
+							ifconfigOutput);
+					final Matcher m2 = IPADDRESS_PATTERN
+							.matcher(ifconfigOutput);
+					if (m2.find()) {
+						final String ipAddress = m2.group().trim();
+						LOGGER.info("{} - IP address: {}.", name, ipAddress);
+						return ipAddress;
+					} else {
+						LOGGER.error(
+								"IP address pattern: No match found for output: {}.",
+								ifconfigOutput);
+						LOGGER.error("Querying ip address failed. It seems like 'ip' and 'ifconfig' are not available.");
 						return null;
 					}
 				} catch (IOException e) {
