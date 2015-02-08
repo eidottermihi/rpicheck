@@ -1117,15 +1117,22 @@ public class RaspiQuery implements IQueryService {
 	}
 
 	private double formatUptime(String output) {
-		final String[] split = output.split(" ");
-		if (split.length >= 2) {
-			return Double.parseDouble(split[0]);
-		} else {
-			LOGGER.error("Expected a different output of command: {}",
-					UPTIME_CMD);
-			LOGGER.error("Actual output was: {}", output);
-			return 0D;
+		Iterable<String> lines = Splitter.on("\n").split(output);
+		for (String line : lines) {
+			List<String> split = Splitter.on(" ").splitToList(line);
+			if (split.size() == 2) {
+				try {
+					return Double.parseDouble(split.get(0));
+				} catch (NumberFormatException e) {
+					LOGGER.debug("Skipping line: {}", line);
+				}
+			} else {
+				LOGGER.debug("Skipping line: {}", line);
+			}
 		}
+		LOGGER.error("Expected a different output of command: {}", UPTIME_CMD);
+		LOGGER.error("Actual output was: {}", output);
+		return 0D;
 	}
 
 	private Double formatVolts(String output) {

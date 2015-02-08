@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
+import de.eidottermihi.rpicheck.test.mocks.TestingRaspiQuery;
 
 public class ConnectAndAuthTest {
 
