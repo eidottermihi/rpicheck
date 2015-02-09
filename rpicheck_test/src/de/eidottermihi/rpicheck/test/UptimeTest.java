@@ -23,9 +23,21 @@ public class UptimeTest extends AbstractMockedQueryTest {
 						"cat /proc/uptime",
 						new CommandMocker()
 								.withResponse(
-										"Copyright (C) stuff right here\n\n With multiple line breaks\nAnd other weird stuff in a proc file\n20256.17 80516.80")
+										"Copyright (C) stuff right here\n\nbogus line\n\n With multiple line breaks\nAnd other weird stuff in a proc file\n20256.17 80516.80")
 								.mock());
 		assertEquals(20256.17D, raspiQuery.queryUptime(), 0.0001D);
+	}
+
+	@Test
+	public void uptime_unexpected_output() throws RaspiQueryException {
+		sessionMocker
+				.withCommand(
+						"cat /proc/uptime",
+						new CommandMocker()
+								.withResponse(
+										"Copyright (C) stuff right here\n\nbogus line\n\n With multiple line breaks\nAnd other weird stuff in a proc file\n")
+								.mock());
+		assertEquals(0.0D, raspiQuery.queryUptime(), 0.0001D);
 	}
 
 }

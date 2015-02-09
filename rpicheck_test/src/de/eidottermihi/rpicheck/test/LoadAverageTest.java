@@ -37,6 +37,17 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 	}
 
 	@Test
+	public void load_avg_one_minute() throws IOException, RaspiQueryException {
+		String output = FileUtils.readFileToString(FileUtils
+				.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
+		sessionMocker.withCommand("cat /proc/loadavg", new CommandMocker()
+				.withResponse(output).mock());
+		double queryLoadAverage = raspiQuery
+				.queryLoadAverage(LoadAveragePeriod.ONE_MINUTE);
+		assertEquals(0.60D, queryLoadAverage, 0.001D);
+	}
+
+	@Test
 	public void load_avg_copyright_header() throws IOException,
 			RaspiQueryException {
 		String output = FileUtils

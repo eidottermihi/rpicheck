@@ -397,11 +397,6 @@ public class RaspiQuery implements IQueryService {
 			}
 		}
 		// 3. query signal level and link status of wireless interfaces
-		// NetworkInterfaceInformation wlan0Mock = new
-		// NetworkInterfaceInformation();
-		// wlan0Mock.setHasCarrier(true);
-		// wlan0Mock.setName("wlan0");
-		// wirelessInterfaces.add(wlan0Mock);
 		if (wirelessInterfaces.size() > 0) {
 			this.queryWlanInfo(wirelessInterfaces);
 		}
@@ -433,10 +428,6 @@ public class RaspiQuery implements IQueryService {
 							.toString();
 					LOGGER.debug("Real output of /proc/net/wireless: \n{}",
 							output);
-					// appending mock wlan0 line
-					// StringBuilder sb = new StringBuilder(output);
-					// sb.append("wlan0: 0000 100. 95. 0. 0 0 0 0 0 0\n");
-					// output = sb.toString();
 					this.parseWlan(output, wirelessInterfaces);
 				} catch (IOException e) {
 					throw RaspiQueryException.createTransportFailure(hostname,
