@@ -95,8 +95,7 @@ public class RaspiQueryException extends Exception implements Serializable {
 	 */
 	public static RaspiQueryException createTransportFailure(
 			final String hostname, final Throwable cause) {
-		return new RaspiQueryException(REASON_TRANSPORT_EXCEPTION,
-				"A transport exception occured. Check your connection.", cause);
+		return createTransportFailure(cause);
 	}
 
 	public int getReasonCode() {
@@ -122,5 +121,18 @@ public class RaspiQueryException extends Exception implements Serializable {
 	public static RaspiQueryException createIOException(Throwable cause) {
 		return new RaspiQueryException(REASON_IO_EXCEPTION,
 				"An unexpected IO exception occured.", cause);
+	}
+
+	/**
+	 * Create a exception with message
+	 * "A transport exception occured. Check your connection."
+	 * 
+	 * @param cause
+	 *            cause
+	 * @return the created exception
+	 */
+	public static RaspiQueryException createTransportFailure(Throwable cause) {
+		return new RaspiQueryException(REASON_TRANSPORT_EXCEPTION,
+				"A transport exception occured. Check your connection.", cause);
 	}
 }

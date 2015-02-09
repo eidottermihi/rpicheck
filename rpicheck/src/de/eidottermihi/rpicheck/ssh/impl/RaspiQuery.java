@@ -72,8 +72,6 @@ public class RaspiQuery implements IQueryService {
 	private static final Pattern IPADDRESS_PATTERN = Pattern
 			.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
 	private static final Pattern CPU_PATTERN = Pattern.compile("[0-9.]{4,}");
-	private static final String UPTIME_CMD = "cat /proc/uptime";
-	private static final String CPU_SERIAL_CMD = "cat /proc/cpuinfo | grep Serial";
 	private static final String MEMORY_INFO_CMD = "free | egrep 'Mem' | sed 's/[[:space:]]\\+/,/g'";
 	private static final String DISK_USAGE_CMD = "df -h";
 	private static final String DF_COMMAND_HEADER_START = "Filesystem";
@@ -701,29 +699,7 @@ public class RaspiQuery implements IQueryService {
 	 */
 	@Override
 	public final double queryUptime() throws RaspiQueryException {
-		LOGGER.info("Querying uptime...");
-		if (client != null) {
-			if (client.isConnected() && client.isAuthenticated()) {
-				Session session;
-				try {
-					session = client.startSession();
-					final Command cmd = session.exec(UPTIME_CMD);
-					cmd.join(30, TimeUnit.SECONDS);
-					final String output = IOUtils.readFully(
-							cmd.getInputStream()).toString();
-					return this.formatUptime(output);
-				} catch (IOException e) {
-					throw RaspiQueryException.createTransportFailure(hostname,
-							e);
-				}
-			} else {
-				throw new IllegalStateException(
-						"You must establish a connection first.");
-			}
-		} else {
-			throw new IllegalStateException(
-					"You must establish a connection first.");
-		}
+		return QueryFactory.makeUptimeQuery(client).run();
 	}
 
 	/*
@@ -733,29 +709,7 @@ public class RaspiQuery implements IQueryService {
 	 */
 	@Override
 	public final String queryCpuSerial() throws RaspiQueryException {
-		LOGGER.info("Querying serial number...");
-		if (client != null) {
-			if (client.isConnected() && client.isAuthenticated()) {
-				Session session;
-				try {
-					session = client.startSession();
-					final Command cmd = session.exec(CPU_SERIAL_CMD);
-					cmd.join(30, TimeUnit.SECONDS);
-					String output = IOUtils.readFully(cmd.getInputStream())
-							.toString();
-					return this.formatCpuSerial(output);
-				} catch (IOException e) {
-					throw RaspiQueryException.createTransportFailure(hostname,
-							e);
-				}
-			} else {
-				throw new IllegalStateException(
-						"You must establish a connection first.");
-			}
-		} else {
-			throw new IllegalStateException(
-					"You must establish a connection first.");
-		}
+		return QueryFactory.makeSerialNoQuery(client).run();
 	}
 
 	/*
@@ -1117,39 +1071,6 @@ public class RaspiQuery implements IQueryService {
 			return new RaspiMemoryBean(
 					"Memory information could not be queried. See the log for details.");
 		}
-	}
-
-	private String formatCpuSerial(String output) {
-		final String[] split = output.trim().split(":");
-		if (split.length >= 2) {
-			final String cpuSerial = split[1].trim();
-			return cpuSerial;
-		} else {
-			LOGGER.error(
-					"Could not query cpu serial number. Expected another output of '{}'.",
-					CPU_SERIAL_CMD);
-			LOGGER.error("Output of '{}': \n{}", CPU_SERIAL_CMD, output);
-			return N_A;
-		}
-	}
-
-	private double formatUptime(String output) {
-		Iterable<String> lines = Splitter.on("\n").split(output);
-		for (String line : lines) {
-			List<String> split = Splitter.on(" ").splitToList(line);
-			if (split.size() == 2) {
-				try {
-					return Double.parseDouble(split.get(0));
-				} catch (NumberFormatException e) {
-					LOGGER.debug("Skipping line: {}", line);
-				}
-			} else {
-				LOGGER.debug("Skipping line: {}", line);
-			}
-		}
-		LOGGER.error("Expected a different output of command: {}", UPTIME_CMD);
-		LOGGER.error("Actual output was: {}", output);
-		return 0D;
 	}
 
 	private Double formatVolts(String output) {
