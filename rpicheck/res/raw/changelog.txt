@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.6.5
+  % Version 1.6.5
+  _ 2015-02-13
+    * Query ip address via "ifconfig" if "ip" is not avalaible (as in OSMC)
 $ 1.6.4
   % Version 1.6.4
   _ 2015-02-08
