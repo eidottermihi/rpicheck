@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Strings;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;

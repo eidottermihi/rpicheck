@@ -31,7 +31,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;

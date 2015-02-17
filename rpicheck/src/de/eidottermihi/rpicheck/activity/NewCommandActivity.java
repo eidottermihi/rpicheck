@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -13,7 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;

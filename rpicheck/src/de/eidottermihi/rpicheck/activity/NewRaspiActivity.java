@@ -13,7 +13,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 
 public class NewRaspiActivity extends SherlockActivity {

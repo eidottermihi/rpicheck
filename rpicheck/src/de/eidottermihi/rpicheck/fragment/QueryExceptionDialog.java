@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 
 /**
  * A dialog which shows a error message.

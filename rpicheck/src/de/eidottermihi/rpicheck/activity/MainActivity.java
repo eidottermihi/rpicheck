@@ -43,7 +43,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;

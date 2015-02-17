@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.TypedValue;
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 
 public class RebootDialogFragment extends DialogFragment {
 

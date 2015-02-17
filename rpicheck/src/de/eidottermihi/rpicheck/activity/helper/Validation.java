@@ -6,7 +6,7 @@ import android.widget.EditText;
 
 import com.google.common.base.Strings;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 
 /**
  * A helper class for validating user input.

@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.webkit.WebView;
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 
 /**
  * Dialog for showing error messages that occured during the query.

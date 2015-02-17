@@ -27,7 +27,7 @@ import com.google.common.base.Strings;
 import com.lamerman.FileDialog;
 import com.lamerman.SelectionMode;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;

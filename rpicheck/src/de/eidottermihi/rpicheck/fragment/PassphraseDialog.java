@@ -15,7 +15,7 @@ import android.widget.EditText;
 
 import com.google.common.base.Strings;
 
-import de.eidottermihi.rpicheck.R;
+import de.eidottermihi.raspicheck.R;
 
 public class PassphraseDialog extends DialogFragment {
 
@@ -66,14 +66,14 @@ public class PassphraseDialog extends DialogFragment {
 				getActivity());
 		this.type = this.getArguments().getString(KEY_TYPE);
 		builder.setTitle(R.string.dialog_passphrase_needed);
-		
-		//fetching the theme-dependent icon
+
+		// fetching the theme-dependent icon
 		TypedValue icon = new TypedValue();
 		if (getActivity().getTheme().resolveAttribute(
 				R.attr.ic_dialog_passphrase, icon, true)) {
 			builder.setIcon(icon.resourceId);
 		}
-		
+
 		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		final View view = inflater.inflate(R.layout.dialog_passphrase, null);
 		builder.setView(view);

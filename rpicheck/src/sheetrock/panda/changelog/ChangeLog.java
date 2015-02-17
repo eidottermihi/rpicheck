@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import de.eidottermihi.rpicheck.R;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -32,6 +30,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
+import de.eidottermihi.raspicheck.R;
 
 public class ChangeLog {
 
