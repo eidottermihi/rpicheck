@@ -82,8 +82,6 @@ public class RaspiQuery implements IQueryService {
 
 	private static final int DEFAULT_SSH_PORT = 22;
 
-	private static final String LOAD_AVG_CMD = "cat /proc/loadavg";
-
 	private SSHClient client;
 	private String hostname;
 	private String username;
@@ -1347,64 +1345,7 @@ public class RaspiQuery implements IQueryService {
 	@Override
 	public double queryLoadAverage(LoadAveragePeriod timePeriod)
 			throws RaspiQueryException {
-		LOGGER.info("Querying load average...");
-		if (client != null) {
-			if (client.isConnected() && client.isAuthenticated()) {
-				Session session;
-				try {
-					session = client.startSession();
-					session.allocateDefaultPTY();
-					final Command cmd = session.exec(LOAD_AVG_CMD);
-					cmd.join(30, TimeUnit.SECONDS);
-					cmd.close();
-					final String output = IOUtils.readFully(
-							cmd.getInputStream()).toString();
-					return this.parseLoadAverage(output, timePeriod);
-				} catch (IOException e) {
-					throw RaspiQueryException.createTransportFailure(hostname,
-							e);
-				}
-			} else {
-				throw new IllegalStateException(
-						"You must establish a connection first.");
-			}
-		} else {
-			throw new IllegalStateException(
-					"You must establish a connection first.");
-		}
-	}
-
-	private double parseLoadAverage(String output, LoadAveragePeriod timePeriod) {
-		String[] lines = output.split("\n");
-		for (String line : lines) {
-			final String[] split = line.split(" ");
-			double loadAvg = 0D;
-			if (split.length == 5) {
-				try {
-					switch (timePeriod) {
-					case ONE_MINUTE:
-						loadAvg = Double.parseDouble(split[0]);
-						break;
-					case FIVE_MINUTES:
-						loadAvg = Double.parseDouble(split[1]);
-						break;
-					case FIFTEEN_MINUTES:
-						loadAvg = Double.parseDouble(split[2]);
-						break;
-					default:
-						throw new RuntimeException("Unknown LoadAveragePeriod!");
-					}
-					return loadAvg;
-				} catch (NumberFormatException e) {
-					LOGGER.debug("Skipping line: {}", line);
-				}
-			} else {
-				LOGGER.debug("Skipping line: {}", line);
-			}
-		}
-		LOGGER.error("Expected a different output of command: {}", LOAD_AVG_CMD);
-		LOGGER.error("Actual output was: {}", output);
-		return 0D;
+		return QueryFactory.makeLoadAvgQuery(client, timePeriod).run();
 	}
 
 }
