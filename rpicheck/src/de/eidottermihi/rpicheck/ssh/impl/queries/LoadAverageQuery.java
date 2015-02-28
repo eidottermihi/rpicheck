@@ -39,7 +39,7 @@ public class LoadAverageQuery extends GenericQuery<Double> implements
 
 	@Override
 	public Double run() throws RaspiQueryException {
-		LOGGER.info("Querying load average...");
+		LOGGER.info("Querying load average for time period {}", this.period);
 		Session session;
 		try {
 			session = getSSHClient().startSession();
@@ -59,6 +59,7 @@ public class LoadAverageQuery extends GenericQuery<Double> implements
 		String[] lines = output.split("\n");
 		Double loadAvg = null;
 		for (String line : lines) {
+			LOGGER.debug("Checking line: {}", line);
 			final String[] split = line.split(" ");
 			if (split.length == 5) {
 				try {
@@ -84,7 +85,7 @@ public class LoadAverageQuery extends GenericQuery<Double> implements
 			if (split.length == 1 && loadAvg != null) {
 				// core count line
 				try {
-					Integer coreCount = Integer.parseInt(split[0]) - 1;
+					Integer coreCount = Integer.parseInt(split[0].trim()) - 1;
 					return Math.min(1.0D, loadAvg / coreCount);
 				} catch (NumberFormatException e) {
 					LOGGER.debug("Skipping line: {}", line);

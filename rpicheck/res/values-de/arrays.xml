@@ -10,7 +10,7 @@
         <item>Private key</item>
         <item>Private key m. Passwort</item>
     </string-array>
-    <string-array name="pref_load_avg_values">
+    <string-array name="pref_load_avg">
         <item>1 Minute</item>
         <item>5 Minuten</item>
         <item>15 Minuten</item>

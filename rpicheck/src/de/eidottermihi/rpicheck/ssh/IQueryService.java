@@ -55,7 +55,7 @@ public interface IQueryService {
 	public abstract double queryUptime() throws RaspiQueryException;
 
 	/**
-	 * Queries the load average (via cat /proc/loadavg).
+	 * Queries the load average (via cat /proc/loadavg and /proc/stat).
 	 * 
 	 * @param timePeriod
 	 *            time period for calculation of the load average
