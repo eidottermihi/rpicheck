@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.eidottermihi.raspicheck"
-    android:versionCode="25"
-    android:versionName="@string/app_version" >
+    package="de.eidottermihi.raspicheck" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="19" />
 
     <!-- android:uiOptions="splitActionBarWhenNarrow" -->
     <application
