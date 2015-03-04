@@ -8,7 +8,7 @@
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="de.eidottermihi.rpicheck" />
+        android:targetPackage="de.eidottermihi.raspicheck" />
 
     <application
         android:icon="@drawable/ic_launcher"
