@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
-        <option name="GRADLE_PROJECT_PATH" value=":app" />
+        <option name="GRADLE_PROJECT_PATH" value=":file-explorer" />
       </configuration>
     </facet>
     <facet type="android" name="Android">
@@ -20,6 +20,7 @@
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
         <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
+        <option name="LIBRARY_PROJECT" value="true" />
       </configuration>
     </facet>
   </component>
@@ -83,19 +84,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 7 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="guava-16.0.1" level="project" />
-    <orderEntry type="library" exported="" name="prettytime-2.1.2.Final" level="project" />
-    <orderEntry type="library" exported="" name="scpkix-jdk15on-1.47.0.3" level="project" />
-    <orderEntry type="library" exported="" name="slf4j-api-1.7.6" level="project" />
-    <orderEntry type="library" exported="" name="sshj-0.9.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
-    <orderEntry type="library" exported="" name="logback-android-1.0.10-2" level="project" />
-    <orderEntry type="library" exported="" name="sc-light-jdk15on-1.47.0.3" level="project" />
-    <orderEntry type="library" exported="" name="actionbarsherlock-4.4.0" level="project" />
-    <orderEntry type="library" exported="" name="scprov-jdk15on-1.47.0.3" level="project" />
-    <orderEntry type="module" module-name="file-explorer" exported="" />
   </component>
 </module>
 

@@ -74,10 +74,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity" />
         </activity>
-        <activity
+        <!--activity
             android:name="com.lamerman.FileDialog"
             android:label="@string/title_filedialog" >
-        </activity>
+        </activity-->
     </application>
 
 </manifest>

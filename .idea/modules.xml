@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/file-explorer/file-explorer.iml" filepath="$PROJECT_DIR$/file-explorer/file-explorer.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpicheck.iml" filepath="$PROJECT_DIR$/rpicheck.iml" />
     </modules>
   </component>
