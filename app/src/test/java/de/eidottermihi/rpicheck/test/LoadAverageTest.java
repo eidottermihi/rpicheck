@@ -18,7 +18,7 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 	@Test
 	public void load_avg() throws IOException, RaspiQueryException {
 		String output = FileUtils.readFileToString(FileUtils
-				.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
+				.getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
 		sessionMocker.withCommand(COMMAND,
 				new CommandMocker().withResponse(output).mock());
 		double queryLoadAverage = raspiQuery
@@ -30,7 +30,7 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 	public void load_avg_fifteen_minutes() throws IOException,
 			RaspiQueryException {
 		String output = FileUtils.readFileToString(FileUtils
-				.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
+				.getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
 		sessionMocker.withCommand(COMMAND,
 				new CommandMocker().withResponse(output).mock());
 		double queryLoadAverage = raspiQuery
@@ -41,7 +41,7 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 	@Test
 	public void load_avg_one_minute() throws IOException, RaspiQueryException {
 		String output = FileUtils.readFileToString(FileUtils
-				.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
+				.getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_loadavg.txt"));
 		sessionMocker.withCommand(COMMAND,
 				new CommandMocker().withResponse(output).mock());
 		double queryLoadAverage = raspiQuery
@@ -54,7 +54,7 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 			RaspiQueryException {
 		String output = FileUtils
 				.readFileToString(FileUtils
-						.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg_with_copyright.txt"));
+						.getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_loadavg_with_copyright.txt"));
 		sessionMocker.withCommand(COMMAND,
 				new CommandMocker().withResponse(output).mock());
 		double queryLoadAverage = raspiQuery
@@ -66,7 +66,7 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 	public void load_avg_pi2_one() throws IOException, RaspiQueryException {
 		String output = FileUtils
 				.readFileToString(FileUtils
-						.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg_pi2.txt"));
+						.getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_loadavg_pi2.txt"));
 		sessionMocker.withCommand(COMMAND,
 				new CommandMocker().withResponse(output).mock());
 		assertEquals(1.00D,
@@ -78,7 +78,7 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 	public void load_avg_pi2_five() throws IOException, RaspiQueryException {
 		String output = FileUtils
 				.readFileToString(FileUtils
-						.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg_pi2.txt"));
+						.getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_loadavg_pi2.txt"));
 		sessionMocker.withCommand(COMMAND,
 				new CommandMocker().withResponse(output).mock());
 		assertEquals(0.6475D,
@@ -90,7 +90,7 @@ public class LoadAverageTest extends AbstractMockedQueryTest {
 	public void load_avg_pi2_fifteen() throws IOException, RaspiQueryException {
 		String output = FileUtils
 				.readFileToString(FileUtils
-						.getFile("src/de/eidottermihi/rpicheck/test/proc_loadavg_pi2.txt"));
+						.getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_loadavg_pi2.txt"));
 		sessionMocker.withCommand(COMMAND,
 				new CommandMocker().withResponse(output).mock());
 		assertEquals(0.3125D,
