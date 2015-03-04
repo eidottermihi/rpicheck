@@ -95,6 +95,7 @@
     <orderEntry type="library" exported="" name="sc-light-jdk15on-1.47.0.3" level="project" />
     <orderEntry type="library" exported="" name="actionbarsherlock-4.4.0" level="project" />
     <orderEntry type="library" exported="" name="scprov-jdk15on-1.47.0.3" level="project" />
+    <orderEntry type="module" module-name="android-pulltorefresh" exported="" />
     <orderEntry type="module" module-name="file-explorer" exported="" />
   </component>
 </module>

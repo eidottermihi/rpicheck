@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 24.0.2">
+
+    <issue
+        id="InlinedApi"
+        severity="Warning"
+        message="Field requires API level 11 (current min is 4): `android.view.View#LAYER_TYPE_HARDWARE`"
+        category="Correctness"
+        priority="6"
+        summary="Using inlined constants on older versions"
+        explanation="This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&apos;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and device whether it&apos;s safe and can be suppressed or whether the code needs tbe guarded.
+
+If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.
+If your code is *deliberately* accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.
+"
+        errorLine1="   ViewCompat.setLayerType(mRefreshableViewWrapper, value != 0 ? View.LAYER_TYPE_HARDWARE"
+        errorLine2="                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio,adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/java/com/handmark/pulltorefresh/library/PullToRefreshBase.java"
+            line="974"
+            column="66"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        severity="Warning"
+        message="Field requires API level 11 (current min is 4): `android.view.View#LAYER_TYPE_NONE`"
+        category="Correctness"
+        priority="6"
+        summary="Using inlined constants on older versions"
+        explanation="This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&apos;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and device whether it&apos;s safe and can be suppressed or whether the code needs tbe guarded.
+
+If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.
+If your code is *deliberately* accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.
+"
+        errorLine1="     : View.LAYER_TYPE_NONE);"
+        errorLine2="       ~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio,adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/java/com/handmark/pulltorefresh/library/PullToRefreshBase.java"
+            line="975"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        severity="Warning"
+        message="Field requires API level 8 (current min is 4): `android.widget.LinearLayout.LayoutParams#MATCH_PARENT`"
+        category="Correctness"
+        priority="6"
+        summary="Using inlined constants on older versions"
+        explanation="This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&apos;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and device whether it&apos;s safe and can be suppressed or whether the code needs tbe guarded.
+
+If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.
+If your code is *deliberately* accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.
+"
+        errorLine1="      LinearLayout.LayoutParams.MATCH_PARENT);"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio,adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/java/com/handmark/pulltorefresh/library/PullToRefreshBase.java"
+            line="1219"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        severity="Warning"
+        message="Field requires API level 8 (current min is 4): `android.widget.LinearLayout.LayoutParams#MATCH_PARENT`"
+        category="Correctness"
+        priority="6"
+        summary="Using inlined constants on older versions"
+        explanation="This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&apos;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and device whether it&apos;s safe and can be suppressed or whether the code needs tbe guarded.
+
+If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.
+If your code is *deliberately* accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.
+"
+        errorLine1="    return new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio,adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/java/com/handmark/pulltorefresh/library/PullToRefreshBase.java"
+            line="1222"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        severity="Warning"
+        message="Field requires API level 8 (current min is 4): `android.widget.FrameLayout.LayoutParams#MATCH_PARENT`"
+        category="Correctness"
+        priority="6"
+        summary="Using inlined constants on older versions"
+        explanation="This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&apos;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and device whether it&apos;s safe and can be suppressed or whether the code needs tbe guarded.
+
+If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.
+If your code is *deliberately* accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.
+"
+        errorLine1="   final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,"
+        errorLine2="                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio,adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/java/com/handmark/pulltorefresh/library/PullToRefreshListView.java"
+            line="231"
+            column="69"/>
+    </issue>
+
+    <issue
+        id="LocaleFolder"
+        severity="Warning"
+        message="The locale folder &quot;`he`&quot; should be called &quot;`iw`&quot; instead; see the `java.util.Locale` documentation"
+        category="Correctness"
+        priority="6"
+        summary="Wrong locale name"
+        explanation="From the `java.util.Locale` documentation:
+&quot;Note that Java uses several deprecated two-letter codes. The Hebrew (&quot;he&quot;) language code is rewritten as &quot;iw&quot;, Indonesian (&quot;id&quot;) as &quot;in&quot;, and Yiddish (&quot;yi&quot;) as &quot;ji&quot;. This rewriting happens even if you construct your own Locale object, not just for instances returned by the various lookup methods.
+
+Because of this, if you add your localized resources in for example `values-he` they will not be used, since the system will look for `values-iw` instead.
+
+To work around this, place your resources in a `values` folder using the deprecated language code instead."
+        url="http://developer.android.com/reference/java/util/Locale.html"
+        urls="http://developer.android.com/reference/java/util/Locale.html">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/res/values-he"/>
+    </issue>
+
+    <issue
+        id="OldTargetApi"
+        severity="Warning"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details."
+        category="Correctness"
+        priority="6"
+        summary="Target SDK attribute is not targeting latest version"
+        explanation="When your application runs on a version of Android that is more recent than your `targetSdkVersion` specifies that it has been tested with, various compatibility modes kick in. This ensures that your application continues to work, but it may look out of place. For example, if the `targetSdkVersion` is less than 14, your app may get an option button in the UI.
+
+To fix this issue, set the `targetSdkVersion` to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        url="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        urls="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        errorLine1="        targetSdkVersion 4"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/build.gradle"
+            line="9"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="GradleOverrides"
+        severity="Warning"
+        message="This `minSdkVersion` value (`4`) is not used; it is always overridden by the value specified in the Gradle build script (`4`)"
+        category="Correctness"
+        priority="4"
+        summary="Value overridden by Gradle build script"
+        explanation="The value of (for example) `minSdkVersion` is only used if it is not specified in the `build.gradle` build scripts. When specified in the Gradle build scripts, the manifest value is ignored and can be misleading, so should be removed to avoid ambiguity."
+        errorLine1="    &lt;uses-sdk android:minSdkVersion=&quot;4&quot; />"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/AndroidManifest.xml"
+            line="7"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        severity="Fatal"
+        message="&quot;`pull_to_refresh_from_bottom_pull_label`&quot; is not translated in &quot;ar&quot; (Arabic), &quot;cs&quot; (Czech), &quot;de&quot; (German), &quot;es&quot; (Spanish), &quot;fr&quot; (French), &quot;he&quot; (Hebrew), &quot;it&quot; (Italian), &quot;iw&quot; (Hebrew), &quot;ja&quot; (Japanese), &quot;ko&quot; (Korean), &quot;nl&quot; (Dutch), &quot;pl&quot; (Polish), &quot;pt&quot; (Portuguese), &quot;pt-BR&quot; (Portuguese: Brazil), &quot;ro&quot; (Romanian), &quot;ru&quot; (Russian), &quot;zh&quot; (Chinese)"
+        category="Correctness:Messages"
+        priority="8"
+        summary="Incomplete translation"
+        explanation="If an application has more than one locale, then all the strings declared in one language should also be translated in all other languages.
+
+If the string should *not* be translated, you can add the attribute `translatable=&quot;false&quot;` on the `&lt;string>` element, or you can define all your non-translatable strings in a resource file called `donottranslate.xml`. Or, you can ignore the issue with a `tools:ignore=&quot;MissingTranslation&quot;` attribute.
+
+By default this detector allows regions of a language to just provide a subset of the strings and fall back to the standard language strings. You can require all regions to provide a full translation by setting the environment variable `ANDROID_LINT_COMPLETE_REGIONS`.
+
+You can tell lint (and other tools) which language is the default language in your `res/values/` folder by specifying `tools:locale=&quot;languageCode&quot;` for the root `&lt;resources>` element in your resource file. (The `tools` prefix refers to the namespace declaration `http://schemas.android.com/tools`.)"
+        errorLine1="    &lt;string name=&quot;pull_to_refresh_from_bottom_pull_label&quot;>@string/pull_to_refresh_pull_label&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/res/values/pull_refresh_strings.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        severity="Fatal"
+        message="&quot;`pull_to_refresh_from_bottom_release_label`&quot; is not translated in &quot;ar&quot; (Arabic), &quot;cs&quot; (Czech), &quot;de&quot; (German), &quot;es&quot; (Spanish), &quot;fr&quot; (French), &quot;he&quot; (Hebrew), &quot;it&quot; (Italian), &quot;iw&quot; (Hebrew), &quot;ja&quot; (Japanese), &quot;ko&quot; (Korean), &quot;nl&quot; (Dutch), &quot;pl&quot; (Polish), &quot;pt&quot; (Portuguese), &quot;pt-BR&quot; (Portuguese: Brazil), &quot;ro&quot; (Romanian), &quot;ru&quot; (Russian), &quot;zh&quot; (Chinese)"
+        category="Correctness:Messages"
+        priority="8"
+        summary="Incomplete translation"
+        explanation="If an application has more than one locale, then all the strings declared in one language should also be translated in all other languages.
+
+If the string should *not* be translated, you can add the attribute `translatable=&quot;false&quot;` on the `&lt;string>` element, or you can define all your non-translatable strings in a resource file called `donottranslate.xml`. Or, you can ignore the issue with a `tools:ignore=&quot;MissingTranslation&quot;` attribute.
+
+By default this detector allows regions of a language to just provide a subset of the strings and fall back to the standard language strings. You can require all regions to provide a full translation by setting the environment variable `ANDROID_LINT_COMPLETE_REGIONS`.
+
+You can tell lint (and other tools) which language is the default language in your `res/values/` folder by specifying `tools:locale=&quot;languageCode&quot;` for the root `&lt;resources>` element in your resource file. (The `tools` prefix refers to the namespace declaration `http://schemas.android.com/tools`.)"
+        errorLine1="    &lt;string name=&quot;pull_to_refresh_from_bottom_release_label&quot;>@string/pull_to_refresh_release_label&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/res/values/pull_refresh_strings.xml"
+            line="10"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        severity="Fatal"
+        message="&quot;`pull_to_refresh_from_bottom_refreshing_label`&quot; is not translated in &quot;ar&quot; (Arabic), &quot;cs&quot; (Czech), &quot;de&quot; (German), &quot;es&quot; (Spanish), &quot;fr&quot; (French), &quot;he&quot; (Hebrew), &quot;it&quot; (Italian), &quot;iw&quot; (Hebrew), &quot;ja&quot; (Japanese), &quot;ko&quot; (Korean), &quot;nl&quot; (Dutch), &quot;pl&quot; (Polish), &quot;pt&quot; (Portuguese), &quot;pt-BR&quot; (Portuguese: Brazil), &quot;ro&quot; (Romanian), &quot;ru&quot; (Russian), &quot;zh&quot; (Chinese)"
+        category="Correctness:Messages"
+        priority="8"
+        summary="Incomplete translation"
+        explanation="If an application has more than one locale, then all the strings declared in one language should also be translated in all other languages.
+
+If the string should *not* be translated, you can add the attribute `translatable=&quot;false&quot;` on the `&lt;string>` element, or you can define all your non-translatable strings in a resource file called `donottranslate.xml`. Or, you can ignore the issue with a `tools:ignore=&quot;MissingTranslation&quot;` attribute.
+
+By default this detector allows regions of a language to just provide a subset of the strings and fall back to the standard language strings. You can require all regions to provide a full translation by setting the environment variable `ANDROID_LINT_COMPLETE_REGIONS`.
+
+You can tell lint (and other tools) which language is the default language in your `res/values/` folder by specifying `tools:locale=&quot;languageCode&quot;` for the root `&lt;resources>` element in your resource file. (The `tools` prefix refers to the namespace declaration `http://schemas.android.com/tools`.)"
+        errorLine1="    &lt;string name=&quot;pull_to_refresh_from_bottom_refreshing_label&quot;>@string/pull_to_refresh_refreshing_label&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/res/values/pull_refresh_strings.xml"
+            line="11"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="AddJavascriptInterface"
+        severity="Warning"
+        message="`WebView.addJavascriptInterface` should not be called with minSdkVersion &lt; 17 for security reasons: JavaScript can use reflection to manipulate application"
+        category="Security"
+        priority="9"
+        summary="addJavascriptInterface Called"
+        explanation="For applications built for API levels below 17, `WebView#addJavascriptInterface` presents a security hazard as JavaScript on the target web page has the ability to use reflection to access the injected object&apos;s public fields and thus manipulate the host application in unintended ways."
+        url="https://labs.mwrinfosecurity.com/blog/2013/09/24/webview-addjavascriptinterface-remote-code-execution/"
+        urls="https://labs.mwrinfosecurity.com/blog/2013/09/24/webview-addjavascriptinterface-remote-code-execution/"
+        errorLine1="  webView.addJavascriptInterface(mJsCallback, JS_INTERFACE_PKG);"
+        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/java/com/handmark/pulltorefresh/library/extras/PullToRefreshWebView2.java"
+            line="90"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="IconMissingDensityFolder"
+        severity="Warning"
+        message="Missing density variation folders in `src/main/res`: drawable-xxhdpi, drawable-xxxhdpi"
+        category="Usability:Icons"
+        priority="3"
+        summary="Missing density folder"
+        explanation="Icons will look best if a custom version is provided for each of the major screen density classes (low, medium, high, extra-high, extra-extra-high). This lint check identifies folders which are missing, such as `drawable-hdpi`.
+Low density is not really used much anymore, so this check ignores the ldpi density. To force lint to include it, set the environment variable `ANDROID_LINT_INCLUDE_LDPI=true`. For more information on current density usage, see http://developer.android.com/resources/dashboard/screens.html"
+        url="http://developer.android.com/guide/practices/screens_support.html"
+        urls="http://developer.android.com/guide/practices/screens_support.html">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/res"/>
+    </issue>
+
+    <issue
+        id="ViewConstructor"
+        severity="Warning"
+        message="Custom view `RotateLoadingLayout` is missing constructor used by tools: `(Context)` or `(Context,AttributeSet)` or `(Context,AttributeSet,int)`"
+        category="Usability"
+        priority="3"
+        summary="Missing View constructors for XML inflation"
+        explanation="Some layout tools (such as the Android layout editor for Studio &amp; Eclipse) needs to find a constructor with one of the following signatures:
+* `View(Context context)`
+* `View(Context context, AttributeSet attrs)`
+* `View(Context context, AttributeSet attrs, int defStyle)`
+
+If your custom view needs to perform initialization which does not apply when used in a layout editor, you can surround the given code with a check to see if `View#isInEditMode()` is false, since that method will return `false` at runtime but true within a user interface editor."
+        errorLine1="public class RotateLoadingLayout extends LoadingLayout {"
+        errorLine2="             ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/java/com/handmark/pulltorefresh/library/internal/RotateLoadingLayout.java"
+            line="30"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        severity="Warning"
+        message="[Accessibility] Missing `contentDescription` attribute on image"
+        category="Accessibility"
+        priority="3"
+        summary="Image without `contentDescription`"
+        explanation="Non-textual widgets like ImageViews and ImageButtons should use the `contentDescription` attribute to specify a textual description of the widget such that screen readers and other accessibility tools can adequately describe the user interface.
+
+Note that elements in application screens that are purely decorative and do not provide any content or enable a user action should not have accessibility content descriptions. In this case, just suppress the lint warning with a tools:ignore=&quot;ContentDescription&quot; attribute.
+
+Note that for text fields, you should not set both the `hint` and the `contentDescription` attributes since the hint will never be shown. Just set the `hint`. See http://developer.android.com/guide/topics/ui/accessibility/checklist.html#special-cases."
+        errorLine1="        &lt;ImageView"
+        errorLine2="        ^"
+        quickfix="studio,adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/res/layout/pull_to_refresh_header_horizontal.xml"
+            line="13"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        severity="Warning"
+        message="[Accessibility] Missing `contentDescription` attribute on image"
+        category="Accessibility"
+        priority="3"
+        summary="Image without `contentDescription`"
+        explanation="Non-textual widgets like ImageViews and ImageButtons should use the `contentDescription` attribute to specify a textual description of the widget such that screen readers and other accessibility tools can adequately describe the user interface.
+
+Note that elements in application screens that are purely decorative and do not provide any content or enable a user action should not have accessibility content descriptions. In this case, just suppress the lint warning with a tools:ignore=&quot;ContentDescription&quot; attribute.
+
+Note that for text fields, you should not set both the `hint` and the `contentDescription` attributes since the hint will never be shown. Just set the `hint`. See http://developer.android.com/guide/topics/ui/accessibility/checklist.html#special-cases."
+        errorLine1="            &lt;ImageView"
+        errorLine2="            ^"
+        quickfix="studio,adt">
+        <location
+            file="/Users/larsgrefer/git/rpicheck/android-pulltorefresh/src/main/res/layout/pull_to_refresh_header_vertical.xml"
+            line="18"
+            column="13"/>
+    </issue>
+
+</issues>

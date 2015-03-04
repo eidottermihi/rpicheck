@@ -29,4 +29,5 @@ dependencies {
     compile 'com.google.guava:guava:16.0.1'
     compile 'com.android.support:support-v4:19.+'
     compile project(':file-explorer')
+    compile project(':android-pulltorefresh')
 }
