@@ -1,0 +1,10 @@
+language: android
+jdk:
+  - openjdk7
+  - oraclejdk7
+  - oraclejdk8
+android:
+  components:
+    - build-tools-19.1.0    #needed by :android-pulltorefresh
+    - android-7             #needed by :file-explorer
+script: ./gradlew build check
