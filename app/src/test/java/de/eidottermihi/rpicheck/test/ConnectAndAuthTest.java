@@ -24,11 +24,6 @@ public class ConnectAndAuthTest {
 	}
 
 	@Test
-	public void test_test() throws Exception {
-		throw new Exception();
-	}
-
-	@Test
 	public void connect_ok() throws RaspiQueryException {
 		raspiQuery.connect("123");
 	}
