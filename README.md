@@ -21,8 +21,8 @@ Contributing
 ------------
 Feel free to fork create pull requests!
 
-Used android libraries are included under libs/, just make sure you import them to your Eclipse workspace as Android projects.
-rpicheck_test is an Android Test Project, so import it accordingly.
+Just open the whole thing in AndroidStudio and everything should work fine.
+All dependencies will be integrated automatically by gradle.
 
 App Logo
 ------------
