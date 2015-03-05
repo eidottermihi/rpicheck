@@ -1,6 +1,8 @@
 language: android
-
 jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+android:
+  components:
+    - build-tools-19.1.0
