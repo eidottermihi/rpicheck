@@ -1,4 +1,5 @@
 language: android
+
 jdk:
   - openjdk7
   - oraclejdk7
