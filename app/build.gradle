@@ -28,13 +28,19 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.9.5'
-    testCompile fileTree(dir: 'libsTest', include: ['*.jar'])
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.google.guava:guava:16.0.1'
     compile 'com.android.support:support-v4:19.+'
+    compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
+    compile 'com.github.tony19:logback-android-classic:1.0.10-2'
+    compile 'org.slf4j:slf4j-api:1.7.6'
+    compile 'com.madgag:sc-light-jdk15on:1.47.0.3'
+    compile 'com.madgag:scpkix-jdk15on:1.47.0.3'
+    compile 'com.madgag:scprov-jdk15on:1.47.0.3'
     compile project(':file-explorer')
     compile project(':android-pulltorefresh')
-    compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+    testCompile 'commons-io:commons-io:2.4'
 }
