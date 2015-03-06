@@ -1,4 +1,4 @@
-rpicheck - RasPi Check
+RasPi Check [![Build Status](https://travis-ci.org/eidottermihi/rpicheck.svg?branch=master)](https://travis-ci.org/eidottermihi/rpicheck)
 ========
 
 Android app for checking your Raspberry Pi status.
@@ -21,8 +21,8 @@ Contributing
 ------------
 Feel free to fork create pull requests!
 
-Just open the whole thing in AndroidStudio and everything should work fine.
-All dependencies will be integrated automatically by gradle.
+Just open the whole thing in Android Studio and everything should work fine.
+All dependencies will be integrated automatically by Gradle.
 
 App Logo
 ------------
