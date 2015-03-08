@@ -1,3 +1,1 @@
-include ':app'
-include ':file-explorer'
-include ':android-pulltorefresh'
+include ':libraries:file-explorer', ':libraries:ssh', ':libraries:android-pulltorefresh', ':app'

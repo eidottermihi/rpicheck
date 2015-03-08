@@ -90,16 +90,16 @@
     <orderEntry type="library" exported="" name="prettytime-2.1.2.Final" level="project" />
     <orderEntry type="library" exported="" name="scpkix-jdk15on-1.47.0.3" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.6" level="project" />
-    <orderEntry type="library" exported="" name="sshj-0.9.1-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
     <orderEntry type="library" exported="" name="logback-android-classic-1.0.10-2" level="project" />
+    <orderEntry type="library" exported="" name="sc-light-jdk15on-1.47.0.3" level="project" />
     <orderEntry type="library" exported="" name="apktool-lib-1.4.4-3" level="project" />
     <orderEntry type="library" exported="" name="logback-android-core-1.0.10-2" level="project" />
-    <orderEntry type="library" exported="" name="sc-light-jdk15on-1.47.0.3" level="project" />
     <orderEntry type="library" exported="" name="actionbarsherlock-4.4.0" level="project" />
     <orderEntry type="library" exported="" name="scprov-jdk15on-1.47.0.3" level="project" />
-    <orderEntry type="module" module-name="android-pulltorefresh" exported="" />
     <orderEntry type="module" module-name="file-explorer" exported="" />
+    <orderEntry type="module" module-name="ssh" exported="" />
+    <orderEntry type="module" module-name="android-pulltorefresh" exported="" />
   </component>
 </module>
 

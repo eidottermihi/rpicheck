@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android-pulltorefresh/android-pulltorefresh.iml" filepath="$PROJECT_DIR$/android-pulltorefresh/android-pulltorefresh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/android-pulltorefresh/android-pulltorefresh.iml" filepath="$PROJECT_DIR$/libraries/android-pulltorefresh/android-pulltorefresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/file-explorer/file-explorer.iml" filepath="$PROJECT_DIR$/file-explorer/file-explorer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/file-explorer/file-explorer.iml" filepath="$PROJECT_DIR$/libraries/file-explorer/file-explorer.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpicheck.iml" filepath="$PROJECT_DIR$/rpicheck.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/ssh/ssh.iml" filepath="$PROJECT_DIR$/libraries/ssh/ssh.iml" />
     </modules>
   </component>
 </project>
