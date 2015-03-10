@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" type="JAVA_MODULE" version="4">
+<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="rpicheck.libraries" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
@@ -14,6 +14,7 @@
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="debug" />
+        <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleDebugAndroidTest" />
@@ -30,7 +31,7 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/intermediates/classes/debug" />
-    <output-test url="file://$MODULE_DIR$/build/classes/test" />
+    <output-test url="file://$MODULE_DIR$/build/intermediates/classes/androidTest/debug" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/debug" isTestSource="false" generated="true" />
@@ -90,13 +91,13 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="guava-16.0.1" level="project" />
+    <orderEntry type="library" exported="" name="sshj-0.9.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="scprov-jdk15on-1.47.0.3" level="project" />
     <orderEntry type="library" exported="" name="prettytime-2.1.2.Final" level="project" />
+    <orderEntry type="library" exported="" name="sc-light-jdk15on-1.47.0.3" level="project" />
     <orderEntry type="library" exported="" name="scpkix-jdk15on-1.47.0.3" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.6" level="project" />
-    <orderEntry type="library" exported="" name="sshj-0.9.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="sc-light-jdk15on-1.47.0.3" level="project" />
-    <orderEntry type="library" exported="" name="scprov-jdk15on-1.47.0.3" level="project" />
+    <orderEntry type="library" exported="" name="guava-16.0.1" level="project" />
   </component>
 </module>
 
