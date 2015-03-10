@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/file-explorer/file-explorer.iml" filepath="$PROJECT_DIR$/libraries/file-explorer/file-explorer.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpicheck.iml" filepath="$PROJECT_DIR$/rpicheck.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/ssh/ssh.iml" filepath="$PROJECT_DIR$/libraries/ssh/ssh.iml" />
     </modules>
