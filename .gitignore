@@ -4,6 +4,8 @@
 /build
 misc.xml
 
+.idea/modules.xml
+
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
