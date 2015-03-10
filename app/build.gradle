@@ -5,13 +5,13 @@ plugins {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "de.eidottermihi.raspicheck"
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 26
         versionName "1.6.5"
     }
@@ -33,11 +33,8 @@ android {
 dependencies {
     compile project(':libraries:ssh')
     compile project(':libraries:file-explorer')
-    compile project(':libraries:android-pulltorefresh')
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-
-    compile 'com.google.guava:guava:16.0.1'
-    compile 'com.android.support:support-v4:19.+'
+    compile 'de.larsgrefer:android-library:0.1'
+    compile 'com.android.support:support-v4:21.0.3'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile 'com.github.tony19:logback-android-classic:1.0.10-2'
     compile 'org.slf4j:slf4j-api:1.7.6'
