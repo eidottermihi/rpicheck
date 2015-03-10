@@ -5,16 +5,16 @@
         <item>Celsius</item>
         <item>Fahrenheit</item>
     </string-array>
-    <string-array name="temp_scales_values">
+    <string-array name="temp_scales_values" translatable="false">
         <item>°C</item>
         <item>°F</item>
     </string-array>
-    <string-array name="pref_frequency_units">
+    <string-array name="pref_frequency_units" translatable="false">
         <item>Hz</item>
         <item>MHz</item>
         <item>GHz</item>
     </string-array>
-    <string-array name="pref_frequency_unit_values">
+    <string-array name="pref_frequency_unit_values" translatable="false">
         <item>Hz</item>
         <item>MHz</item>
         <item>GHz</item>
@@ -28,7 +28,7 @@
         <item>private key</item>
         <item>private key w. password</item>
     </string-array>
-    <string-array name="pref_load_avg_values">
+    <string-array name="pref_load_avg_values" translatable="false">
         <item>ONE_MINUTE</item>
         <item>FIVE_MINUTES</item>
         <item>FIFTEEN_MINUTES</item>

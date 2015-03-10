@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version">1.6.5</string>
+    <string name="app_version" translatable="false">1.6.5</string>
 </resources>

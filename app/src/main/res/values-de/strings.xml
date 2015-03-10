@@ -101,6 +101,10 @@
     <string name="unexpected_exception">Ein unerwarteter Fehler ist aufgetreten. Probier es noch einmal.</string>
     <string name="exception_vcgencmd">Das Programm \'vcgencmd\' konnte auf deinem Pi nicht gefunden werden. Stelle sicher, dass es im Verzeichnis \'/usr/bin\' oder \'/opt/vc/bin\' ist.</string>
     <string name="weird_exception">Etwas total komisches ist passiert. Bitte wirf einen Blick in das Logfile.</string>
+    <string name="changelog_full_title">Changelog</string>
+    <string name="changelog_title">Was ist neu</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">mehr...</string>
     <string name="pref_group_log">Log</string>
     <string name="pref_log_title">Log anzeigen</string>
     <string name="pref_log_title_summary">Öffnet den Log dieser App</string>

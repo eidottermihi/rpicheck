@@ -22,10 +22,10 @@
     <string name="raspi_device_user_hint">SSH username</string>
     <string name="raspi_device_password_hint">SSH password</string>
     <string name="raspi_device_description_hint">Description (optional)</string>
-    <string name="default_ssh_port">22</string>
+    <string name="default_ssh_port" translatable="false">22</string>
     <string name="raspi_device_button_new">Save</string>
     <string name="pref_temp_scala_title">Temperature scale</string>
-    <string name="pref_temperature_scala_default">°C</string>
+    <string name="pref_temperature_scala_default" translatable="false">°C</string>
     <string name="pref_group_display_settings_title">Display settings</string>
     <string name="last_update">Last refresh</string>
     <string name="no_device_available">Please add a Raspberry Pi first.</string>
@@ -66,7 +66,7 @@
     <string name="sudo_password">Sudo password</string>
     <string name="reboot_success">Reboot command sent.</string>
     <string name="reboot_fail">Reboot failed. Check your connection settings and sudo password.</string>
-    <string name="pref_frequency_unit_default">MHz</string>
+    <string name="pref_frequency_unit_default" translatable="false">MHz</string>
     <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
     <string name="pref_frequency_unit_title">Frequency unit</string>
     <string name="firmware_version">Firmware</string>
@@ -180,7 +180,7 @@
     <string name="placeholder_hint_text">You can use placeholders like \'${my_secret}\'. They will be replaced by your input when you actually run the command.</string>
     <string name="placeholder_hint">Hint:</string>
     
-    <string name="pref_load_avg_default">FIVE_MINUTES</string>
+    <string name="pref_load_avg_default" translatable="false">FIVE_MINUTES</string>
     <string name="pref_load_avg_summary">Time period for load average calculation.</string>
     <string name="pref_load_avg_title">Load Average time period</string>
 
