@@ -33,13 +33,13 @@ import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.larsgrefer.android.library.injection.annotation.XmlLayout;
 import de.larsgrefer.android.library.injection.annotation.XmlMenu;
+import de.larsgrefer.android.library.injection.annotation.XmlView;
 import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 
 @XmlLayout(R.layout.activity_command_new)
 @XmlMenu(R.menu.activity_command_new)
 public class NewCommandActivity extends InjectionActionBarActivity {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(NewCommandActivity.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NewCommandActivity.class);
 
 	// Requestcode for new command
 	public static final int REQUEST_NEW = 0;
@@ -48,8 +48,10 @@ public class NewCommandActivity extends InjectionActionBarActivity {
 	// Key for CommandBean when edit is requested
 	public static final String CMD_KEY_EDIT = "cmdId";
 
-	EditText nameEditText;
-	EditText commandEditText;
+	@XmlView(R.id.new_cmd_name_editText)
+	private EditText nameEditText;
+	@XmlView(R.id.new_cmd_command_editText)
+	private EditText commandEditText;
 
 	DeviceDbHelper db;
 
@@ -66,15 +68,10 @@ public class NewCommandActivity extends InjectionActionBarActivity {
 
 		db = new DeviceDbHelper(this);
 
-		nameEditText = (EditText) findViewById(R.id.new_cmd_name_editText);
-		commandEditText = (EditText) findViewById(R.id.new_cmd_command_editText);
-
-		if (getIntent().getExtras() != null
-				&& getIntent().getExtras().getLong(CMD_KEY_EDIT, -1L) != -1) {
+		if (getIntent().getExtras() != null && getIntent().getExtras().getLong(CMD_KEY_EDIT, -1L) != -1) {
 			// edit existing command!
 			cmdId = getIntent().getExtras().getLong(CMD_KEY_EDIT);
-			getSupportActionBar().setTitle(
-					getString(R.string.activity_title_edit_command));
+			getSupportActionBar().setTitle(getString(R.string.activity_title_edit_command));
 			new AsyncTask<Void, Void, CommandBean>() {
 				@Override
 				protected CommandBean doInBackground(Void... params) {
@@ -88,22 +85,21 @@ public class NewCommandActivity extends InjectionActionBarActivity {
 				}
 			}.execute();
 		}
-
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			LOGGER.info("Cancelling new/edit command activity.");
-			this.setResult(RESULT_CANCELED);
-			this.finish();
-			return true;
-		case R.id.menu_save:
-			saveCommand();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			case android.R.id.home:
+				LOGGER.info("Cancelling new/edit command activity.");
+				this.setResult(RESULT_CANCELED);
+				this.finish();
+				return true;
+			case R.id.menu_save:
+				saveCommand();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 

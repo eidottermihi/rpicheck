@@ -17,9 +17,6 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +39,9 @@ import com.google.common.base.Strings;
 import com.lamerman.FileDialog;
 import com.lamerman.SelectionMode;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
@@ -49,34 +49,49 @@ import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.larsgrefer.android.library.injection.annotation.XmlLayout;
 import de.larsgrefer.android.library.injection.annotation.XmlMenu;
+import de.larsgrefer.android.library.injection.annotation.XmlView;
 import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 
 @XmlLayout(R.layout.activity_raspi_edit)
 @XmlMenu(R.menu.activity_raspi_edit)
-public class EditRaspiActivity extends InjectionActionBarActivity implements
-		OnItemSelectedListener {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(EditRaspiActivity.class);
+public class EditRaspiActivity extends InjectionActionBarActivity implements OnItemSelectedListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EditRaspiActivity.class);
 
 	public static final int REQUEST_EDIT = 10;
 
-	private Spinner spinnerAuth;
-	private RelativeLayout relLaySshPass;
+	// assigning view elements to fields
+	@XmlView(R.id.edit_raspi_name_editText)
+	private EditText editTextName;
+	@XmlView(R.id.edit_raspi_host_editText)
+	private EditText editTextHost;
+	@XmlView(R.id.edit_raspi_user_editText)
+	private EditText editTextUser;
+	@XmlView(R.id.editText_ssh_password)
 	private EditText editTextPass;
-	private RelativeLayout relLayKeyfile;
-	private Button buttonKeyfile;
+	@XmlView(R.id.edit_raspi_ssh_port_editText)
+	private EditText editTextSshPortOpt;
+	@XmlView(R.id.edit_raspi_desc_editText)
+	private EditText editTextDescription;
+	@XmlView(R.id.edit_raspi_sudoPass_editText)
+	private EditText editTextSudoPass;
 
+	@XmlView(R.id.spinnerAuthMethod)
+	private Spinner spinnerAuth;
+	@XmlView(R.id.rel_pw)
+	private RelativeLayout relLaySshPass;
+	@XmlView(R.id.rel_key)
+	private RelativeLayout relLayKeyfile;
+	@XmlView(R.id.rel_key_pw)
 	private RelativeLayout relLayKeyPassphrase;
-	private TextView textKeyPass;
+	@XmlView(R.id.editTextKeyPw)
 	private EditText editTextKeyfilePass;
+	@XmlView(R.id.buttonKeyfile)
+	private Button buttonKeyfile;
+	@XmlView(R.id.text_key_pw)
+	private TextView textKeyPass;
+	@XmlView(R.id.checkboxAsk)
 	private CheckBox checkboxAskPassphrase;
 
-	private EditText editTextName;
-	private EditText editTextHost;
-	private EditText editTextUser;
-	private EditText editTextSshPortOpt;
-	private EditText editTextDescription;
-	private EditText editTextSudoPass;
 
 	private DeviceDbHelper deviceDb;
 	private RaspberryDeviceBean deviceBean;
@@ -90,45 +105,22 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// assigning view elements to fields
-		editTextName = (EditText) findViewById(R.id.edit_raspi_name_editText);
-		editTextHost = (EditText) findViewById(R.id.edit_raspi_host_editText);
-		editTextUser = (EditText) findViewById(R.id.edit_raspi_user_editText);
-		editTextPass = (EditText) findViewById(R.id.editText_ssh_password);
-		editTextSshPortOpt = (EditText) findViewById(R.id.edit_raspi_ssh_port_editText);
-		editTextDescription = (EditText) findViewById(R.id.edit_raspi_desc_editText);
-		editTextSudoPass = (EditText) findViewById(R.id.edit_raspi_sudoPass_editText);
-
-		spinnerAuth = (Spinner) findViewById(R.id.spinnerAuthMethod);
-		relLaySshPass = (RelativeLayout) findViewById(R.id.rel_pw);
-		relLayKeyfile = (RelativeLayout) findViewById(R.id.rel_key);
-		relLayKeyPassphrase = (RelativeLayout) findViewById(R.id.rel_key_pw);
-		editTextKeyfilePass = (EditText) findViewById(R.id.editTextKeyPw);
-		buttonKeyfile = (Button) findViewById(R.id.buttonKeyfile);
-		textKeyPass = (TextView) findViewById(R.id.text_key_pw);
-		checkboxAskPassphrase = (CheckBox) findViewById(R.id.checkboxAsk);
-
 		// init sql db
 		deviceDb = new DeviceDbHelper(this);
 
 		// read device information
-		int deviceId = this.getIntent().getExtras()
-				.getInt(Constants.EXTRA_DEVICE_ID);
+		int deviceId = this.getIntent().getExtras().getInt(Constants.EXTRA_DEVICE_ID);
 		deviceBean = deviceDb.read(deviceId);
 
 		// init auth spinner
-		final ArrayAdapter<CharSequence> adapter = ArrayAdapter
-				.createFromResource(this, R.array.auth_methods,
-						android.R.layout.simple_spinner_item);
+		final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.auth_methods, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		spinnerAuth.setAdapter(adapter);
 		spinnerAuth.setOnItemSelectedListener(this);
-		if (deviceBean.getAuthMethod().equals(
-				NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+		if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
 			spinnerAuth.setSelection(0);
-		} else if (deviceBean.getAuthMethod().equals(
-				NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+		} else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
 			spinnerAuth.setSelection(1);
 		} else {
 			spinnerAuth.setSelection(2);
@@ -156,40 +148,40 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		case R.id.menu_save:
-			updateRaspi();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			case android.R.id.home:
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+			case R.id.menu_save:
+				updateRaspi();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
 	public void onButtonClick(View view) {
 		switch (view.getId()) {
-		case R.id.buttonKeyfile:
-			openKeyfile();
-			break;
+			case R.id.buttonKeyfile:
+				openKeyfile();
+				break;
 		}
 	}
 
 	public void onCheckboxClick(View view) {
 		boolean checked = ((CheckBox) view).isChecked();
 		switch (view.getId()) {
-		case R.id.checkboxAsk:
-			switchCheckbox(checked);
-			break;
-		default:
-			break;
+			case R.id.checkboxAsk:
+				switchCheckbox(checked);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -210,64 +202,42 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 
 	private void updateRaspi() {
 		final int authMethod = spinnerAuth.getSelectedItemPosition();
-		boolean validationSuccessful = validator.validatePiEditData(this,
-				authMethod, editTextName, editTextHost, editTextUser,
-				editTextPass, editTextSshPortOpt, editTextSudoPass,
-				editTextKeyfilePass, buttonKeyfile,
-				checkboxAskPassphrase.isChecked(), deviceBean.getKeyfilePath());
+		boolean validationSuccessful = validator.validatePiEditData(this, authMethod, editTextName, editTextHost, editTextUser,
+																		   editTextPass, editTextSshPortOpt, editTextSudoPass,
+																		   editTextKeyfilePass, buttonKeyfile,
+																		   checkboxAskPassphrase.isChecked(), deviceBean.getKeyfilePath());
 		if (validationSuccessful) {
 			// getting credentials from textfields
 			final String name = editTextName.getText().toString().trim();
 			final String host = editTextHost.getText().toString().trim();
 			final String user = editTextUser.getText().toString().trim();
-			final String sshPort = editTextSshPortOpt.getText().toString()
-					.trim();
-			final String sudoPass = editTextSudoPass.getText().toString()
-					.trim();
-			final String description = editTextDescription.getText().toString()
-					.trim();
+			final String sshPort = editTextSshPortOpt.getText().toString().trim();
+			final String sudoPass = editTextSudoPass.getText().toString().trim();
+			final String description = editTextDescription.getText().toString().trim();
 			if (authMethod == 0) {
 				final String pass = editTextPass.getText().toString().trim();
-				updateRaspiInDb(name, host, user, pass, sshPort, description,
-						sudoPass,
-						NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
-						null, null);
+				updateRaspiInDb(name, host, user, pass, sshPort, description, sudoPass,
+									   NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+									   null, null);
 			} else if (authMethod == 1) {
 				final String keyfilePath = deviceBean.getKeyfilePath();
-				updateRaspiInDb(name, host, user, null, sshPort, description,
-						sudoPass,
-						NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
-						keyfilePath, null);
+				updateRaspiInDb(name, host, user, null, sshPort, description, sudoPass,
+									   NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+									   keyfilePath, null);
 			} else if (authMethod == 2) {
 				final String keyfilePath = deviceBean.getKeyfilePath();
 				if (checkboxAskPassphrase.isChecked()) {
-					updateRaspiInDb(
-							name,
-							host,
-							user,
-							null,
-							sshPort,
-							description,
-							sudoPass,
-							NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
-							keyfilePath, null);
+					updateRaspiInDb(name, host, user, null, sshPort, description, sudoPass,
+										   NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+										   keyfilePath, null);
 				} else {
-					final String keyfilePass = editTextKeyfilePass.getText()
-							.toString().trim();
-					updateRaspiInDb(
-							name,
-							host,
-							user,
-							null,
-							sshPort,
-							description,
-							sudoPass,
-							NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
-							keyfilePath, keyfilePass);
+					final String keyfilePass = editTextKeyfilePass.getText().toString().trim();
+					updateRaspiInDb(name, host, user, null, sshPort, description,
+										   sudoPass, NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+										   keyfilePath, keyfilePass);
 				}
 			}
-			Toast.makeText(this, R.string.update_successful, Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, R.string.update_successful, Toast.LENGTH_SHORT).show();
 			// back to main
 			this.setResult(RESULT_OK);
 			this.finish();
@@ -275,8 +245,8 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 	}
 
 	private void updateRaspiInDb(String name, String host, String user,
-			String pass, String sshPort, String description, String sudoPass,
-			String authMethod, String keyfilePath, String keyfilePass) {
+								 String pass, String sshPort, String description, String sudoPass,
+								 String authMethod, String keyfilePath, String keyfilePass) {
 		// if sudoPass is null use empty pass
 		if (Strings.isNullOrEmpty(sudoPass)) {
 			sudoPass = "";
@@ -323,7 +293,7 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 				checkboxAskPassphrase.setChecked(false);
 				editTextKeyfilePass.setText(deviceBean.getKeyfilePass());
 			} else if (!Strings.isNullOrEmpty(editTextKeyfilePass.getText()
-					.toString())) {
+													  .toString())) {
 				relLayKeyPassphrase.setVisibility(View.VISIBLE);
 				checkboxAskPassphrase.setChecked(false);
 			} else {
@@ -336,14 +306,14 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 	private void initButtonKeyfile() {
 		if (deviceBean.getKeyfilePath() != null) {
 			buttonKeyfile.setText(NewRaspiAuthActivity
-					.getFilenameFromPath(deviceBean.getKeyfilePath()));
+										  .getFilenameFromPath(deviceBean.getKeyfilePath()));
 		}
 	}
 
 	private void openKeyfile() {
 		final Intent intent = new Intent(getBaseContext(), FileDialog.class);
 		intent.putExtra(FileDialog.START_PATH, Environment
-				.getExternalStorageDirectory().getPath());
+													   .getExternalStorageDirectory().getPath());
 
 		// can user select directories or not
 		intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
@@ -357,7 +327,7 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
-			long arg3) {
+							   long arg3) {
 		final String selectedAuthMethod = NewRaspiAuthActivity.SPINNER_AUTH_METHODS[pos];
 		LOGGER.debug("Auth method selected: {}", selectedAuthMethod);
 		this.switchAuthMethodsInView(selectedAuthMethod);
@@ -373,12 +343,12 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements
 		if (resultCode == Activity.RESULT_OK) {
 			if (requestCode == NewRaspiAuthActivity.REQUEST_LOAD) {
 				final String filePath = data
-						.getStringExtra(FileDialog.RESULT_PATH);
+												.getStringExtra(FileDialog.RESULT_PATH);
 				LOGGER.debug("Path of selected keyfile: {}", filePath);
 				deviceBean.setKeyfilePath(filePath);
 				// set text to filename, not full path
 				String fileName = NewRaspiAuthActivity
-						.getFilenameFromPath(filePath);
+										  .getFilenameFromPath(filePath);
 				buttonKeyfile.setText(fileName);
 			}
 		} else if (resultCode == Activity.RESULT_CANCELED) {
