@@ -19,10 +19,10 @@
         <item name="ic_settings_github">@drawable/ic_settings_github</item>
         <item name="ic_settings_email">@drawable/ic_settings_email_dark</item>
         <item name="ic_settings_rate">@drawable/ic_settings_rate_dark</item>
-        
-        <item name="ic_dialog_run">@drawable/ic_dialog_run_dark</item>
-        <item name="ic_dialog_shutdown">@drawable/ic_dialog_shutdown</item>
-        <item name="ic_dialog_passphrase">@drawable/ic_dialog_passphrase_dark</item>
+
+        <item name="ic_dialog_run">@drawable/ic_play_arrow_white_36dp</item>
+        <item name="ic_dialog_shutdown">@drawable/ic_settings_power_white_36dp</item>
+        <item name="ic_dialog_passphrase">@drawable/ic_vpn_key_white_36dp</item>
     </style>
     
 </resources>
