@@ -17,19 +17,6 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
-import java.io.File;
-import java.security.Security;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.larsgrefer.android.library.injection.annotation.XmlLayout;
-import de.larsgrefer.android.library.injection.annotation.XmlView;
-import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
-import sheetrock.panda.changelog.ChangeLog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,6 +27,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -49,8 +37,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -58,6 +44,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.security.Security;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
@@ -79,14 +74,17 @@ import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
+import de.larsgrefer.android.library.injection.annotation.XmlLayout;
+import de.larsgrefer.android.library.injection.annotation.XmlView;
+import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
+import sheetrock.panda.changelog.ChangeLog;
 
 @XmlLayout(R.layout.activity_main)
 public class MainActivity extends InjectionActionBarActivity implements
 		ActionBar.OnNavigationListener,
-		ShutdownDialogListener, PassphraseDialogListener, AsyncQueryDataUpdate,
-		AsyncShutdownUpdate {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MainActivity.class);
+				ShutdownDialogListener, PassphraseDialogListener, AsyncQueryDataUpdate,
+				AsyncShutdownUpdate {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MainActivity.class);
 
 	private static final String CURRENT_DEVICE = "currentDevice";
 	private static final String ALL_DEVICES = "allDevices";
@@ -98,22 +96,40 @@ public class MainActivity extends InjectionActionBarActivity implements
 	private Intent editRaspiIntent;
 	private Intent commandIntent;
 
-	private TextView coreTempText;
-	private TextView armFreqText;
-	private TextView coreFreqText;
-	private TextView coreVoltText;
-	private TextView lastUpdateText;
-	private TextView uptimeText;
-	private TextView averageLoadText;
-	private TextView totalMemoryText;
-	private TextView freeMemoryText;
-	private TextView serialNoText;
-	private TextView distriText;
-	private TextView firmwareText;
-	private TableLayout diskTable;
-	private TableLayout processTable;
-	private TableLayout networkTable;
+	@XmlView(R.id.commandButton)
 	private Button commandButton;
+
+	// assigning textviews to fields
+	@XmlView(R.id.armFreqText)
+	private TextView armFreqText;
+	@XmlView(R.id.coreFreqText)
+	private TextView coreFreqText;
+	@XmlView(R.id.coreVoltText)
+	private TextView coreVoltText;
+	@XmlView(R.id.coreTempText)
+	private TextView coreTempText;
+	@XmlView(R.id.firmwareText)
+	private TextView firmwareText;
+	@XmlView(R.id.lastUpdateText)
+	private TextView lastUpdateText;
+	@XmlView(R.id.startedText)
+	private TextView uptimeText;
+	@XmlView(R.id.loadText)
+	private TextView averageLoadText;
+	@XmlView(R.id.totalMemText)
+	private TextView totalMemoryText;
+	@XmlView(R.id.freeMemText)
+	private TextView freeMemoryText;
+	@XmlView(R.id.cpuSerialText)
+	private TextView serialNoText;
+	@XmlView(R.id.distriText)
+	private TextView distriText;
+	@XmlView(R.id.diskTable)
+	private TableLayout diskTable;
+	@XmlView(R.id.processTable)
+	private TableLayout processTable;
+	@XmlView(R.id.networkTable)
+	private TableLayout networkTable;
 
 	@XmlView(R.id.swipeRefreshLayout)
 	private SwipeRefreshLayout swipeRefreshLayout;
@@ -132,15 +148,12 @@ public class MainActivity extends InjectionActionBarActivity implements
 	private static boolean isOnBackground;
 
 	static {
-		Security.insertProviderAt(
-				new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+		Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// LOGGER.debug("onCreate()....");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
 		// assigning Shared Preferences
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -148,40 +161,19 @@ public class MainActivity extends InjectionActionBarActivity implements
 		settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
 		newRaspiIntent = new Intent(MainActivity.this, NewRaspiActivity.class);
 		editRaspiIntent = new Intent(MainActivity.this, EditRaspiActivity.class);
-		commandIntent = new Intent(MainActivity.this,
-				CustomCommandActivity.class);
+		commandIntent = new Intent(MainActivity.this, CustomCommandActivity.class);
 
-		// assigning progressbar and command button
-		commandButton = (Button) findViewById(R.id.commandButton);
-
-		// assigning textviews to fields
-		armFreqText = (TextView) findViewById(R.id.armFreqText);
-		coreFreqText = (TextView) findViewById(R.id.coreFreqText);
-		coreVoltText = (TextView) findViewById(R.id.coreVoltText);
-		coreTempText = (TextView) findViewById(R.id.coreTempText);
-		firmwareText = (TextView) findViewById(R.id.firmwareText);
-		lastUpdateText = (TextView) findViewById(R.id.lastUpdateText);
-		uptimeText = (TextView) findViewById(R.id.startedText);
-		averageLoadText = (TextView) findViewById(R.id.loadText);
-		totalMemoryText = (TextView) findViewById(R.id.totalMemText);
-		freeMemoryText = (TextView) findViewById(R.id.freeMemText);
-		serialNoText = (TextView) findViewById(R.id.cpuSerialText);
-		distriText = (TextView) findViewById(R.id.distriText);
-		diskTable = (TableLayout) findViewById(R.id.diskTable);
-		processTable = (TableLayout) findViewById(R.id.processTable);
-		networkTable = (TableLayout) findViewById(R.id.networkTable);
 
 		// assigning refreshable root scrollview
 		initSwipeRefreshLayout();
 
-		boolean isDebugLogging = sharedPrefs.getBoolean(
-				SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
+		boolean isDebugLogging = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
 		LoggingHelper.changeLogger(isDebugLogging);
 
 		// Changelog
-		final ChangeLog cl = new ChangeLog(this);
-		if (cl.firstRun()) {
-			cl.getLogDialog().show();
+		final ChangeLog changeLog = new ChangeLog(this);
+		if (changeLog.firstRun()) {
+			changeLog.getLogDialog().show();
 		}
 
 		// init device database
@@ -196,8 +188,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 			@Override
 			protected void onPostExecute(Void r) {
 				if (deviceCursor.getCount() == 0) {
-					MainActivity.this.startActivityForResult(newRaspiIntent,
-							NewRaspiActivity.REQUEST_SAVE);
+					MainActivity.this.startActivityForResult(newRaspiIntent, NewRaspiActivity.REQUEST_SAVE);
 				} else {
 					// init spinner
 					initSpinner();
@@ -257,40 +248,26 @@ public class MainActivity extends InjectionActionBarActivity implements
 	}
 
 	private void updateQueryDataInView(QueryBean result) {
-		final String tempScale = sharedPrefs.getString(
-				SettingsActivity.KEY_PREF_TEMPERATURE_SCALE,
-				getString(R.string.pref_temperature_scala_default));
-		coreTempText.setText(FormatHelper.formatTemperature(currentDevice
-				.getLastQueryData().getVcgencmdInfo().getCpuTemperature(),
-				tempScale));
-		final String freqScale = sharedPrefs.getString(
-				SettingsActivity.KEY_PREF_FREQUENCY_UNIT,
-				getString(R.string.pref_frequency_unit_default));
-		armFreqText.setText(FormatHelper.formatFrequency(currentDevice
-				.getLastQueryData().getVcgencmdInfo().getArmFrequency(),
-				freqScale));
-		coreFreqText.setText(FormatHelper.formatFrequency(currentDevice
-				.getLastQueryData().getVcgencmdInfo().getCoreFrequency(),
-				freqScale));
-		coreVoltText.setText(FormatHelper.formatDecimal(currentDevice
-				.getLastQueryData().getVcgencmdInfo().getCoreVolts()));
+		final String tempScale = sharedPrefs.getString(SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, getString(R.string.pref_temperature_scala_default));
+		coreTempText.setText(FormatHelper.formatTemperature(currentDevice.getLastQueryData().getVcgencmdInfo().getCpuTemperature(), tempScale));
+		final String freqScale = sharedPrefs.getString(SettingsActivity.KEY_PREF_FREQUENCY_UNIT, getString(R.string.pref_frequency_unit_default));
+		armFreqText.setText(FormatHelper.formatFrequency(currentDevice.getLastQueryData().getVcgencmdInfo().getArmFrequency(), freqScale));
+		coreFreqText.setText(FormatHelper.formatFrequency(currentDevice.getLastQueryData().getVcgencmdInfo().getCoreFrequency(), freqScale));
+		coreVoltText.setText(FormatHelper.formatDecimal(currentDevice.getLastQueryData().getVcgencmdInfo().getCoreVolts()));
 		firmwareText.setText(result.getVcgencmdInfo().getVersion());
-		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(
-				result.getLastUpdate()));
+		lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(result.getLastUpdate()));
 		// uptime and average load may contain errors
 		if (result.getAvgLoad() != null) {
-			averageLoadText.setText(result.getAvgLoad().toString());
+			averageLoadText.setText(result.getAvgLoad());
 		}
 		if (result.getStartup() != null) {
 			uptimeText.setText(result.getStartup());
 		}
 		if (result.getFreeMem() != null) {
-			freeMemoryText.setText(result.getFreeMem().humanReadableByteCount(
-					false));
+			freeMemoryText.setText(result.getFreeMem().humanReadableByteCount(false));
 		}
 		if (result.getTotalMem() != null) {
-			totalMemoryText.setText(result.getTotalMem()
-					.humanReadableByteCount(false));
+			totalMemoryText.setText(result.getTotalMem().humanReadableByteCount(false));
 		}
 		serialNoText.setText(result.getSerialNo());
 		distriText.setText(result.getDistri());
@@ -303,21 +280,18 @@ public class MainActivity extends InjectionActionBarActivity implements
 
 	/**
 	 * Shows a dialog containing the ErrorMessages.
-	 * 
-	 * @param errorMessages
-	 *            the messages
+	 *
+	 * @param errorMessages the messages
 	 */
 	private void handleQueryError(List<String> errorMessages) {
-		final ArrayList<String> messages = new ArrayList<String>(errorMessages);
+		final ArrayList<String> messages = new ArrayList<>(errorMessages);
 		if (errorMessages.size() > 0 && !isOnBackground) {
 			LOGGER.debug("Showing query error messages.");
 			Bundle args = new Bundle();
-			args.putStringArrayList(
-					QueryErrorMessagesDialog.KEY_ERROR_MESSAGES, messages);
+			args.putStringArrayList(QueryErrorMessagesDialog.KEY_ERROR_MESSAGES, messages);
 			final QueryErrorMessagesDialog messageDialog = new QueryErrorMessagesDialog();
 			messageDialog.setArguments(args);
-			messageDialog.show(getSupportFragmentManager(),
-					"QueryErrorMessagesDialog");
+			messageDialog.show(getSupportFragmentManager(), "QueryErrorMessagesDialog");
 		}
 	}
 
@@ -325,16 +299,14 @@ public class MainActivity extends InjectionActionBarActivity implements
 		// remove rows except header
 		networkTable.removeViews(1, networkTable.getChildCount() - 1);
 		if (result != null && result.getNetworkInfo() != null) {
-			for (NetworkInterfaceInformation interfaceInformation : result
-					.getNetworkInfo()) {
+			for (NetworkInterfaceInformation interfaceInformation : result.getNetworkInfo()) {
 				networkTable.addView(createNetworkRow(interfaceInformation));
 			}
 
 		}
 	}
 
-	private View createNetworkRow(
-			NetworkInterfaceInformation interfaceInformation) {
+	private View createNetworkRow(NetworkInterfaceInformation interfaceInformation) {
 		final TableRow tempRow = new TableRow(this);
 		tempRow.addView(createTextView(interfaceInformation.getName()));
 		CharSequence statusText;
@@ -351,10 +323,8 @@ public class MainActivity extends InjectionActionBarActivity implements
 		}
 		if (interfaceInformation.getWlanInfo() != null) {
 			final WlanBean wlan = interfaceInformation.getWlanInfo();
-			tempRow.addView(createTextView(
-					FormatHelper.formatPercentage(wlan.getSignalLevel()), 3));
-			tempRow.addView(createTextView(
-					FormatHelper.formatPercentage(wlan.getLinkQuality()), 3));
+			tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getSignalLevel()), 3));
+			tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getLinkQuality()), 3));
 		} else {
 			tempRow.addView(createTextView(" - ", 3));
 			tempRow.addView(createTextView(" - ", 3));
@@ -399,8 +369,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 		final TextView tempText = new TextView(this);
 		tempText.setText(text);
 		if (paddingLeft != null) {
-			float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-					paddingLeft.intValue(), getResources().getDisplayMetrics());
+			float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingLeft, getResources().getDisplayMetrics());
 			tempText.setPadding((int) (pix), 0, 0, 0);
 		}
 		return tempText;
@@ -417,7 +386,6 @@ public class MainActivity extends InjectionActionBarActivity implements
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void initSpinner() {
 		new AsyncTask<Void, Void, Void>() {
 			@Override
@@ -433,20 +401,16 @@ public class MainActivity extends InjectionActionBarActivity implements
 				if (deviceCursor.getCount() > 0) {
 					// make adapter
 					spinadapter = new SimpleCursorAdapter(MainActivity.this,
-							android.R.layout.simple_spinner_dropdown_item,
-							deviceCursor, new String[] { "name", "_id" },
-							new int[] { android.R.id.text1 });
-					spinadapter
-							.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-					getSupportActionBar().setNavigationMode(
-							ActionBar.NAVIGATION_MODE_LIST);
-					getSupportActionBar().setListNavigationCallbacks(
-							spinadapter, MainActivity.this);
+																 android.R.layout.simple_spinner_dropdown_item,
+																 deviceCursor, new String[]{"name", "_id"},
+																 new int[]{android.R.id.text1});
+					spinadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+					getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+					getSupportActionBar().setListNavigationCallbacks(spinadapter, MainActivity.this);
 					getSupportActionBar().setDisplayShowTitleEnabled(false);
 					commandButton.setVisibility(View.VISIBLE);
 				} else {
-					getSupportActionBar().setNavigationMode(
-							ActionBar.DISPLAY_SHOW_TITLE);
+					getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 					getSupportActionBar().setDisplayShowTitleEnabled(true);
 					currentDevice = null;
 					// disable edit/restart/delete action menu items
@@ -460,7 +424,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 
 	/**
 	 * Shows a dialog with a detailed error message.
-	 * 
+	 *
 	 * @param exception
 	 */
 	private void handleQueryException(final RaspiQueryException exception) {
@@ -470,36 +434,34 @@ public class MainActivity extends InjectionActionBarActivity implements
 			LOGGER.debug("Query caused exception. Showing dialog.");
 			// build dialog
 			Bundle dialogArgs = new Bundle();
-			dialogArgs
-					.putString(QueryExceptionDialog.MESSAGE_KEY, errorMessage);
+			dialogArgs.putString(QueryExceptionDialog.MESSAGE_KEY, errorMessage);
 			QueryExceptionDialog dialogFragment = new QueryExceptionDialog();
 			dialogFragment.setArguments(dialogArgs);
-			dialogFragment.show(getSupportFragmentManager(),
-					"QueryExceptionDialog");
+			dialogFragment.show(getSupportFragmentManager(), "QueryExceptionDialog");
 		}
 	}
 
 	private String mapExceptionToErrorMessage(RaspiQueryException exception) {
 		String message = null;
 		switch (exception.getReasonCode()) {
-		case RaspiQueryException.REASON_CONNECTION_FAILED:
-			message = getString(R.string.connection_failed);
-			break;
-		case RaspiQueryException.REASON_AUTHENTIFICATION_FAILED:
-			message = getString(R.string.authentication_failed);
-			break;
-		case RaspiQueryException.REASON_TRANSPORT_EXCEPTION:
-			message = getString(R.string.transport_exception);
-			break;
-		case RaspiQueryException.REASON_IO_EXCEPTION:
-			message = getString(R.string.unexpected_exception);
-			break;
-		case RaspiQueryException.REASON_VCGENCMD_NOT_FOUND:
-			message = getString(R.string.exception_vcgencmd);
-			break;
-		default:
-			message = getString(R.string.weird_exception);
-			break;
+			case RaspiQueryException.REASON_CONNECTION_FAILED:
+				message = getString(R.string.connection_failed);
+				break;
+			case RaspiQueryException.REASON_AUTHENTIFICATION_FAILED:
+				message = getString(R.string.authentication_failed);
+				break;
+			case RaspiQueryException.REASON_TRANSPORT_EXCEPTION:
+				message = getString(R.string.transport_exception);
+				break;
+			case RaspiQueryException.REASON_IO_EXCEPTION:
+				message = getString(R.string.unexpected_exception);
+				break;
+			case RaspiQueryException.REASON_VCGENCMD_NOT_FOUND:
+				message = getString(R.string.exception_vcgencmd);
+				break;
+			default:
+				message = getString(R.string.weird_exception);
+				break;
 		}
 		return message;
 	}
@@ -508,7 +470,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		// set delete, edit and reboot visible if there is a current device
-		boolean currDevice = currentDevice != null ? true : false;
+		boolean currDevice = currentDevice != null;
 		menu.findItem(R.id.menu_delete).setVisible(currDevice);
 		menu.findItem(R.id.menu_edit_raspi).setVisible(currDevice);
 		menu.findItem(R.id.menu_reboot).setVisible(currDevice);
@@ -518,43 +480,40 @@ public class MainActivity extends InjectionActionBarActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_settings:
-			this.startActivity(settingsIntent);
-			break;
-		case R.id.menu_new_raspi:
-			this.startActivityForResult(newRaspiIntent,
-					NewRaspiActivity.REQUEST_SAVE);
-			break;
-		case R.id.menu_delete:
-			this.deleteCurrentDevice();
-			break;
-		case R.id.menu_edit_raspi:
-			final Bundle extras = new Bundle();
-			extras.putInt(Constants.EXTRA_DEVICE_ID, currentDevice.getId());
-			editRaspiIntent.putExtras(extras);
-			this.startActivityForResult(editRaspiIntent,
-					EditRaspiActivity.REQUEST_EDIT);
-			break;
-		case R.id.menu_reboot:
-			this.showRebootDialog();
-			break;
-		case R.id.menu_refresh:
-			swipeRefreshLayout.setRefreshing(true);
-			this.doQuery(false);
-			break;
+			case R.id.menu_settings:
+				this.startActivity(settingsIntent);
+				break;
+			case R.id.menu_new_raspi:
+				this.startActivityForResult(newRaspiIntent, NewRaspiActivity.REQUEST_SAVE);
+				break;
+			case R.id.menu_delete:
+				this.deleteCurrentDevice();
+				break;
+			case R.id.menu_edit_raspi:
+				final Bundle extras = new Bundle();
+				extras.putInt(Constants.EXTRA_DEVICE_ID, currentDevice.getId());
+				editRaspiIntent.putExtras(extras);
+				this.startActivityForResult(editRaspiIntent, EditRaspiActivity.REQUEST_EDIT);
+				break;
+			case R.id.menu_reboot:
+				this.showRebootDialog();
+				break;
+			case R.id.menu_refresh:
+				swipeRefreshLayout.setRefreshing(true);
+				this.doQuery(false);
+				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * Shows 3 toasts if refresh is happening via action button and not pull to refresh
+	 */
 	private void showPullToRefreshHint() {
-		// Shows 3 toasts if refresh is happening via action button and not pull
-		// to refresh
 		int count = sharedPrefs.getInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, 0);
 		if (count < 3) {
-			Toast.makeText(this, getString(R.string.hint_pulltorefresh),
-					Toast.LENGTH_LONG).show();
-			sharedPrefs.edit()
-					.putInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, ++count).commit();
+			Toast.makeText(this, getString(R.string.hint_pulltorefresh), Toast.LENGTH_LONG).show();
+			sharedPrefs.edit().putInt(KEY_PREF_REFRESH_BY_ACTION_COUNT, ++count).apply();
 		}
 	}
 
@@ -574,70 +533,50 @@ public class MainActivity extends InjectionActionBarActivity implements
 			final String user = currentDevice.getUser();
 			final String port = currentDevice.getPort() + "";
 			final String sudoPass = currentDevice.getSudoPass();
-			if (currentDevice.getAuthMethod().equals(
-					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+			if (currentDevice.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
 				// ssh password
 				final String pass = currentDevice.getPass();
-				new SSHShutdownTask(this).execute(host, user, pass, port,
-						sudoPass, type, null, null);
-			} else if (currentDevice.getAuthMethod().equals(
-					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+				new SSHShutdownTask(this).execute(host, user, pass, port, sudoPass, type, null, null);
+			} else if (currentDevice.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
 				// keyfile
 				final String keyfilePath = currentDevice.getKeyfilePath();
 				if (keyfilePath != null) {
 					final File privateKey = new File(keyfilePath);
 					if (privateKey.exists()) {
-						new SSHShutdownTask(this).execute(host, user, null,
-								port, sudoPass, type, keyfilePath, null);
+						new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, null);
 					} else {
-						Toast.makeText(this,
-								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG);
+						Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG);
 					}
 				} else {
-					Toast.makeText(this, "No keyfile specified!",
-							Toast.LENGTH_LONG);
+					Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG);
 				}
-			} else if (currentDevice.getAuthMethod().equals(
-					NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+			} else if (currentDevice.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
 				// keyfile and passphrase
 				final String keyfilePath = currentDevice.getKeyfilePath();
 				if (keyfilePath != null) {
 					final File privateKey = new File(keyfilePath);
 					if (privateKey.exists()) {
-						if (!Strings.isNullOrEmpty(currentDevice
-								.getKeyfilePass())) {
-							final String passphrase = currentDevice
-									.getKeyfilePass();
-							new SSHShutdownTask(this).execute(host, user, null,
-									port, sudoPass, type, keyfilePath,
-									passphrase);
+						if (!Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
+							final String passphrase = currentDevice.getKeyfilePass();
+							new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, passphrase);
 						} else {
-							final String dialogType = type
-									.equals(Constants.TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN
-									: PassphraseDialog.SSH_HALT;
+							final String dialogType = type.equals(Constants.TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN : PassphraseDialog.SSH_HALT;
 							final DialogFragment passphraseDialog = new PassphraseDialog();
 							final Bundle args = new Bundle();
-							args.putString(PassphraseDialog.KEY_TYPE,
-									dialogType);
+							args.putString(PassphraseDialog.KEY_TYPE, dialogType);
 							passphraseDialog.setArguments(args);
 							passphraseDialog.setCancelable(false);
-							passphraseDialog.show(getSupportFragmentManager(),
-									"passphrase");
+							passphraseDialog.show(getSupportFragmentManager(), "passphrase");
 						}
 					} else {
-						Toast.makeText(this,
-								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG);
+						Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG);
 					}
 				} else {
-					Toast.makeText(this, "No keyfile specified!",
-							Toast.LENGTH_LONG);
+					Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG);
 				}
 			}
 		} else {
-			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -653,8 +592,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 	private void doQuery(boolean initByPullToRefresh) {
 		if (currentDevice == null) {
 			// no device available, show hint for user
-			Toast.makeText(this, R.string.no_device_available,
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.no_device_available, Toast.LENGTH_LONG).show();
 			// stop refresh animation from pull-to-refresh
 			swipeRefreshLayout.setRefreshing(false);
 			return;
@@ -668,8 +606,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 			String port = currentDevice.getPort() + "";
 			String pass = null;
 			// reading process preference
-			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
-					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
+			final Boolean hideRoot = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true);
 			String keyPath = null;
 			String keyPass = null;
 			boolean canConnect = false;
@@ -681,11 +618,9 @@ public class MainActivity extends InjectionActionBarActivity implements
 				if (pass != null) {
 					canConnect = true;
 				} else {
-					Toast.makeText(this, R.string.no_password_specified,
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(this, R.string.no_password_specified, Toast.LENGTH_LONG).show();
 				}
-			} else if (authMethod
-					.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+			} else if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
 				// keyfile must be present
 				final String keyfilePath = currentDevice.getKeyfilePath();
 				if (keyfilePath != null) {
@@ -694,59 +629,43 @@ public class MainActivity extends InjectionActionBarActivity implements
 						keyPath = keyfilePath;
 						canConnect = true;
 					} else {
-						Toast.makeText(
-								this,
-								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG)
-								.show();
+						Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG).show();
 					}
 				} else {
-					Toast.makeText(this, "No keyfile specified!",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG).show();
 				}
-			} else if (authMethod
-					.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+			} else if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
 				// keyfile and keypass must be present
 				final String keyfilePath = currentDevice.getKeyfilePath();
 				if (keyfilePath != null) {
 					final File privateKey = new File(keyfilePath);
 					if (privateKey.exists()) {
 						keyPath = keyfilePath;
-						final String keyfilePass = currentDevice
-								.getKeyfilePass();
+						final String keyfilePass = currentDevice.getKeyfilePass();
 						if (keyfilePass != null) {
 							canConnect = true;
 							keyPass = keyfilePass;
 						} else {
 							final DialogFragment newFragment = new PassphraseDialog();
 							final Bundle args = new Bundle();
-							args.putString(PassphraseDialog.KEY_TYPE,
-									PassphraseDialog.SSH_QUERY);
+							args.putString(PassphraseDialog.KEY_TYPE, PassphraseDialog.SSH_QUERY);
 							newFragment.setArguments(args);
 							newFragment.setCancelable(false);
-							newFragment.show(getSupportFragmentManager(),
-									"passphrase");
+							newFragment.show(getSupportFragmentManager(), "passphrase");
 							canConnect = false;
 						}
 					} else {
-						Toast.makeText(
-								this,
-								"Cannot find keyfile at location: "
-										+ keyfilePath, Toast.LENGTH_LONG)
-								.show();
+						Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG).show();
 					}
 				} else {
-					Toast.makeText(this, "No keyfile specified!",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG).show();
 				}
 			}
 			if (host == null) {
-				Toast.makeText(this, R.string.no_hostname_specified,
-						Toast.LENGTH_LONG);
+				Toast.makeText(this, R.string.no_hostname_specified, Toast.LENGTH_LONG).show();
 				canConnect = false;
 			} else if (user == null) {
-				Toast.makeText(this, R.string.no_username_specified,
-						Toast.LENGTH_LONG);
+				Toast.makeText(this, R.string.no_username_specified, Toast.LENGTH_LONG).show();
 				canConnect = false;
 			}
 			if (canConnect) {
@@ -756,35 +675,31 @@ public class MainActivity extends InjectionActionBarActivity implements
 					this.showPullToRefreshHint();
 				}
 				// execute query
-				new SSHQueryTask(this, getLoadAveragePreference()).execute(
-						host, user, pass, port, hideRoot.toString(), keyPath,
-						keyPass);
+				new SSHQueryTask(this, getLoadAveragePreference()).execute(host, user, pass, port, hideRoot.toString(), keyPath, keyPass);
 			}
 		} else {
-			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT).show();
 			// stop refresh animation from pull-to-refresh
 			swipeRefreshLayout.setRefreshing(false);
 		}
 	}
 
 	private LoadAveragePeriod getLoadAveragePreference() {
-		final String loadAvgPrefString = sharedPrefs.getString("pref_load_avg",
-				"FIVE_MINUTES");
+		final String loadAvgPrefString = sharedPrefs.getString("pref_load_avg", "FIVE_MINUTES");
 		LoadAveragePeriod period;
 		switch (loadAvgPrefString) {
-		case "ONE_MINUTE":
-			period = LoadAveragePeriod.ONE_MINUTE;
-			break;
-		case "FIVE_MINUTES":
-			period = LoadAveragePeriod.FIVE_MINUTES;
-			break;
-		case "FIFTEEN_MINUTES":
-			period = LoadAveragePeriod.FIFTEEN_MINUTES;
-			break;
-		default:
-			period = LoadAveragePeriod.FIVE_MINUTES;
-			break;
+			case "ONE_MINUTE":
+				period = LoadAveragePeriod.ONE_MINUTE;
+				break;
+			case "FIVE_MINUTES":
+				period = LoadAveragePeriod.FIVE_MINUTES;
+				break;
+			case "FIFTEEN_MINUTES":
+				period = LoadAveragePeriod.FIFTEEN_MINUTES;
+				break;
+			default:
+				period = LoadAveragePeriod.FIVE_MINUTES;
+				break;
 		}
 		LOGGER.debug("Load average preference: {}", period);
 		return period;
@@ -793,7 +708,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 	@Override
 	public boolean onNavigationItemSelected(final int itemPosition, long itemId) {
 		LOGGER.debug("Spinner item selected: pos=" + itemPosition + ", id="
-				+ itemId);
+							 + itemId);
 		new AsyncTask<Long, Void, RaspberryDeviceBean>() {
 			@Override
 			protected RaspberryDeviceBean doInBackground(Long... params) {
@@ -810,24 +725,17 @@ public class MainActivity extends InjectionActionBarActivity implements
 					// data get
 					// lost otherwise)
 					if (read.getId() != currentDevice.getId()) {
-						LOGGER.debug(
-								"Switch from device id {} to device id {}.",
-								currentDevice.getId(), read.getId());
+						LOGGER.debug("Switch from device id {} to device id {}.", currentDevice.getId(), read.getId());
 						currentDevice = read;
 						// switched to other device
 						// check if last query data for new device is present
 						boolean lastQueryPresent = false;
 						if (allDevices != null) {
-							RaspberryDeviceBean deviceBean = allDevices
-									.get(currentDevice.getId());
+							RaspberryDeviceBean deviceBean = allDevices.get(currentDevice.getId());
 							if (deviceBean != null) {
-								if (deviceBean.getLastQueryData() != null
-										&& deviceBean.getLastQueryData()
-												.getException() == null) {
-									currentDevice.setLastQueryData(deviceBean
-											.getLastQueryData());
-									updateQueryDataInView(currentDevice
-											.getLastQueryData());
+								if (deviceBean.getLastQueryData() != null && deviceBean.getLastQueryData().getException() == null) {
+									currentDevice.setLastQueryData(deviceBean.getLastQueryData());
+									updateQueryDataInView(currentDevice.getLastQueryData());
 									lastQueryPresent = true;
 								}
 							}
@@ -838,8 +746,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 					} else {
 						// device was maybe updated
 						if (currentDevice.getLastQueryData() != null) {
-							final QueryBean data = currentDevice
-									.getLastQueryData();
+							final QueryBean data = currentDevice.getLastQueryData();
 							currentDevice = read;
 							currentDevice.setLastQueryData(data);
 						} else {
@@ -856,9 +763,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 				// new
 				// raspi activity
 				if (currentDevice == null) {
-					Toast.makeText(MainActivity.this,
-							R.string.please_add_a_raspberry_pi,
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, R.string.please_add_a_raspberry_pi, Toast.LENGTH_LONG).show();
 					startActivity(newRaspiIntent);
 				}
 			}
@@ -889,20 +794,17 @@ public class MainActivity extends InjectionActionBarActivity implements
 	}
 
 	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		if (savedInstanceState.getSerializable(CURRENT_DEVICE) != null) {
 			LOGGER.debug("Restoring device..");
-			currentDevice = (RaspberryDeviceBean) savedInstanceState
-					.getSerializable(CURRENT_DEVICE);
+			currentDevice = (RaspberryDeviceBean) savedInstanceState.getSerializable(CURRENT_DEVICE);
 			// restoring tables
 			LOGGER.debug("Setting spinner to show last Pi.");
-			this.getSupportActionBar().setNavigationMode(
-					ActionBar.NAVIGATION_MODE_LIST);
-			this.getSupportActionBar().setSelectedNavigationItem(
-					currentDevice.getSpinnerPosition());
+			this.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			this.getSupportActionBar().setSelectedNavigationItem(currentDevice.getSpinnerPosition());
 			if (currentDevice.getLastQueryData() != null
-					&& currentDevice.getLastQueryData().getException() == null) {
+						&& currentDevice.getLastQueryData().getException() == null) {
 				LOGGER.debug("Restoring query data..");
 				this.updateQueryDataInView(currentDevice.getLastQueryData());
 			} else {
@@ -913,7 +815,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 		if (savedInstanceState.getSparseParcelableArray(ALL_DEVICES) != null) {
 			LOGGER.debug("Restoring all devices.");
 			allDevices = savedInstanceState
-					.getSparseParcelableArray(ALL_DEVICES);
+								 .getSparseParcelableArray(ALL_DEVICES);
 		}
 	}
 
@@ -931,11 +833,10 @@ public class MainActivity extends InjectionActionBarActivity implements
 
 	@Override
 	public void onPassphraseOKClick(DialogFragment dialog, String passphrase,
-			boolean savePassphrase, String type) {
+									boolean savePassphrase, String type) {
 		if (savePassphrase) {
 			// save passphrase in db
-			LOGGER.debug("Saving passphrase for device {}.",
-					currentDevice.getName());
+			LOGGER.debug("Saving passphrase for device {}.", currentDevice.getName());
 			currentDevice.setKeyfilePass(passphrase);
 			new Thread() {
 				@Override
@@ -946,24 +847,22 @@ public class MainActivity extends InjectionActionBarActivity implements
 		}
 		if (type.equals(PassphraseDialog.SSH_QUERY)) {
 			// connect
-			final Boolean hideRoot = Boolean.valueOf(sharedPrefs.getBoolean(
-					SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true));
-			new SSHQueryTask(this, getLoadAveragePreference()).execute(
-					currentDevice.getHost(), currentDevice.getUser(), null,
-					currentDevice.getPort() + "", hideRoot.toString(),
-					currentDevice.getKeyfilePath(), passphrase);
+			final Boolean hideRoot = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true);
+			new SSHQueryTask(this, getLoadAveragePreference()).execute(currentDevice.getHost(), currentDevice.getUser(), null,
+																			  currentDevice.getPort() + "", hideRoot.toString(),
+																			  currentDevice.getKeyfilePath(), passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {
 			new SSHShutdownTask(this).execute(currentDevice.getHost(),
-					currentDevice.getUser(), null,
-					currentDevice.getPort() + "", currentDevice.getSudoPass(),
-					Constants.TYPE_REBOOT, currentDevice.getKeyfilePath(),
-					passphrase);
+													 currentDevice.getUser(), null,
+													 currentDevice.getPort() + "", currentDevice.getSudoPass(),
+													 Constants.TYPE_REBOOT, currentDevice.getKeyfilePath(),
+													 passphrase);
 		} else if (type.equals(PassphraseDialog.SSH_HALT)) {
 			new SSHShutdownTask(this).execute(currentDevice.getHost(),
-					currentDevice.getUser(), null,
-					currentDevice.getPort() + "", currentDevice.getSudoPass(),
-					Constants.TYPE_HALT, currentDevice.getKeyfilePath(),
-					passphrase);
+													 currentDevice.getUser(), null,
+													 currentDevice.getPort() + "", currentDevice.getSudoPass(),
+													 Constants.TYPE_HALT, currentDevice.getKeyfilePath(),
+													 passphrase);
 		}
 	}
 
@@ -975,35 +874,35 @@ public class MainActivity extends InjectionActionBarActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
-			Intent intent) {
+									Intent intent) {
 		switch (requestCode) {
-		case NewRaspiActivity.REQUEST_SAVE:
-			initSpinner();
-			break;
-		case EditRaspiActivity.REQUEST_EDIT:
-			initSpinner();
-			break;
-		default:
-			break;
+			case NewRaspiActivity.REQUEST_SAVE:
+				initSpinner();
+				break;
+			case EditRaspiActivity.REQUEST_EDIT:
+				initSpinner();
+				break;
+			default:
+				break;
 		}
 	}
 
 	/**
 	 * Gets called when Command Button is clicked. Starts activity for custom
 	 * Commands.
-	 * 
+	 *
 	 * @param view
 	 */
 	public void onCommandButtonClick(View view) {
 		switch (view.getId()) {
-		case R.id.commandButton:
-			Bundle currPi = new Bundle();
-			currPi.putSerializable("pi", currentDevice);
-			commandIntent.putExtras(currPi);
-			this.startActivity(commandIntent);
-			break;
-		default:
-			break;
+			case R.id.commandButton:
+				Bundle currPi = new Bundle();
+				currPi.putSerializable("pi", currentDevice);
+				commandIntent.putExtras(currPi);
+				this.startActivity(commandIntent);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -1027,7 +926,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 			if (allDevices != null) {
 				allDevices.put(this.currentDevice.getId(), this.currentDevice);
 			} else {
-				allDevices = new SparseArray<RaspberryDeviceBean>();
+				allDevices = new SparseArray<>();
 				allDevices.put(this.currentDevice.getId(), this.currentDevice);
 			}
 		} else {
@@ -1045,19 +944,15 @@ public class MainActivity extends InjectionActionBarActivity implements
 	public void onShutdownFinished(ShutdownResult result) {
 		if (result.getType().equals(Constants.TYPE_REBOOT)) {
 			if (result.getExcpetion() == null) {
-				Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(this, R.string.reboot_success, Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(this, R.string.reboot_fail, Toast.LENGTH_LONG).show();
 			}
 		} else if (result.getType().equals(Constants.TYPE_HALT)) {
 			if (result.getExcpetion() == null) {
-				Toast.makeText(this, R.string.halt_success, Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(this, R.string.halt_success, Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(this, R.string.halt_fail, Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(this, R.string.halt_fail, Toast.LENGTH_LONG).show();
 			}
 		}
 
