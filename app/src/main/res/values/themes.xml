@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/material_green_700</item>
         <item name="colorAccent">@color/material_pink_A200</item>
 
-        <item name="ic_action_new">@drawable/ic_action_new_dark</item>
+        <item name="ic_action_new">@drawable/ic_add_white_24dp</item>
         <item name="ic_action_delete">@drawable/ic_action_delete_dark</item>
         <item name="ic_action_restart">@drawable/ic_action_replay_dark</item>
         <item name="ic_action_edit">@drawable/ic_action_edit_dark</item>
