@@ -17,14 +17,6 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -37,16 +29,23 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.widget.CursorAdapter;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.db.CommandBean;
@@ -57,8 +56,14 @@ import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog.PlaceholdersD
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
+import de.larsgrefer.android.library.injection.annotation.XmlLayout;
+import de.larsgrefer.android.library.injection.annotation.XmlMenu;
+import de.larsgrefer.android.library.injection.annotation.XmlView;
+import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 
-public class CustomCommandActivity extends SherlockFragmentActivity implements
+@XmlLayout(R.layout.activity_commands)
+@XmlMenu(R.menu.activity_commands)
+public class CustomCommandActivity extends InjectionActionBarActivity implements
 		OnItemClickListener, PassphraseDialogListener,
 		PlaceholdersDialogListener {
 	private static final Logger LOGGER = LoggerFactory
@@ -66,6 +71,7 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 
 	private RaspberryDeviceBean currentDevice;
 
+	@XmlView(R.id.commandListView)
 	private ListView commandListView;
 
 	private DeviceDbHelper deviceDb = new DeviceDbHelper(this);
@@ -78,8 +84,6 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_commands);
-		this.commandListView = (ListView) findViewById(R.id.commandListView);
 
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -130,12 +134,6 @@ public class CustomCommandActivity extends SherlockFragmentActivity implements
 			}
 		}.execute();
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_commands, menu);
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override

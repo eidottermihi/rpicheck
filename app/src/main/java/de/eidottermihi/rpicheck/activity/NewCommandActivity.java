@@ -17,24 +17,27 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.EditText;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
+import de.larsgrefer.android.library.injection.annotation.XmlLayout;
+import de.larsgrefer.android.library.injection.annotation.XmlMenu;
+import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 
-public class NewCommandActivity extends SherlockActivity {
+@XmlLayout(R.layout.activity_command_new)
+@XmlMenu(R.menu.activity_command_new)
+public class NewCommandActivity extends InjectionActionBarActivity {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NewCommandActivity.class);
 
@@ -57,7 +60,6 @@ public class NewCommandActivity extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_command_new);
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -87,12 +89,6 @@ public class NewCommandActivity extends SherlockActivity {
 			}.execute();
 		}
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_command_new, menu);
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override

@@ -26,6 +26,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.larsgrefer.android.library.injection.annotation.XmlLayout;
+import de.larsgrefer.android.library.injection.annotation.XmlView;
+import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 import sheetrock.panda.changelog.ChangeLog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,8 +41,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -50,15 +57,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
@@ -81,8 +80,9 @@ import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogList
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
-public class MainActivity extends SherlockFragmentActivity implements
-		ActionBar.OnNavigationListener, OnRefreshListener<ScrollView>,
+@XmlLayout(R.layout.activity_main)
+public class MainActivity extends InjectionActionBarActivity implements
+		ActionBar.OnNavigationListener,
 		ShutdownDialogListener, PassphraseDialogListener, AsyncQueryDataUpdate,
 		AsyncShutdownUpdate {
 	private static final Logger LOGGER = LoggerFactory
@@ -113,9 +113,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private TableLayout diskTable;
 	private TableLayout processTable;
 	private TableLayout networkTable;
-	private ProgressBar progressBar;
 	private Button commandButton;
-	private PullToRefreshScrollView refreshableScrollView;
+
+	@XmlView(R.id.swipeRefreshLayout)
+	private SwipeRefreshLayout swipeRefreshLayout;
 
 	private SharedPreferences sharedPrefs;
 
@@ -151,7 +152,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 				CustomCommandActivity.class);
 
 		// assigning progressbar and command button
-		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
 		commandButton = (Button) findViewById(R.id.commandButton);
 
 		// assigning textviews to fields
@@ -172,8 +172,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		networkTable = (TableLayout) findViewById(R.id.networkTable);
 
 		// assigning refreshable root scrollview
-		refreshableScrollView = (PullToRefreshScrollView) findViewById(R.id.scrollView1);
-		refreshableScrollView.setOnRefreshListener(this);
+		initSwipeRefreshLayout();
 
 		boolean isDebugLogging = sharedPrefs.getBoolean(
 				SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
@@ -205,6 +204,22 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 			}
 		}.execute();
+	}
+
+	private void initSwipeRefreshLayout() {
+		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				LOGGER.trace("Query initiated by PullToRefresh.");
+				doQuery(true);
+			}
+		});
+		TypedValue accentColor = new TypedValue();
+		TypedValue primaryColor = new TypedValue();
+		if (getTheme().resolveAttribute(R.attr.colorAccent, accentColor, true) &&
+					getTheme().resolveAttribute(R.attr.colorPrimary, primaryColor, true)) {
+			swipeRefreshLayout.setColorSchemeResources(accentColor.resourceId, primaryColor.resourceId);
+		}
 	}
 
 	@Override
@@ -418,11 +433,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 				if (deviceCursor.getCount() > 0) {
 					// make adapter
 					spinadapter = new SimpleCursorAdapter(MainActivity.this,
-							R.layout.sherlock_spinner_dropdown_item,
+							android.R.layout.simple_spinner_dropdown_item,
 							deviceCursor, new String[] { "name", "_id" },
 							new int[] { android.R.id.text1 });
 					spinadapter
-							.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+							.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 					getSupportActionBar().setNavigationMode(
 							ActionBar.NAVIGATION_MODE_LIST);
 					getSupportActionBar().setListNavigationCallbacks(
@@ -491,7 +506,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
+		getMenuInflater().inflate(R.menu.activity_main, menu);
 		// set delete, edit and reboot visible if there is a current device
 		boolean currDevice = currentDevice != null ? true : false;
 		menu.findItem(R.id.menu_delete).setVisible(currDevice);
@@ -524,6 +539,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			this.showRebootDialog();
 			break;
 		case R.id.menu_refresh:
+			swipeRefreshLayout.setRefreshing(true);
 			this.doQuery(false);
 			break;
 		}
@@ -640,14 +656,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 			Toast.makeText(this, R.string.no_device_available,
 					Toast.LENGTH_LONG).show();
 			// stop refresh animation from pull-to-refresh
-			refreshableScrollView.onRefreshComplete();
+			swipeRefreshLayout.setRefreshing(false);
 			return;
 		}
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
-			// show progressbar
-			progressBar.setVisibility(View.VISIBLE);
 			// get connection settings from shared preferences
 			String host = currentDevice.getHost();
 			String user = currentDevice.getUser();
@@ -738,7 +752,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			if (canConnect) {
 				// disable pullToRefresh (if refresh initiated by action bar)
 				if (!initByPullToRefresh) {
-					refreshableScrollView.setMode(Mode.DISABLED);
 					// show hint for pull-to-refresh
 					this.showPullToRefreshHint();
 				}
@@ -751,7 +764,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT)
 					.show();
 			// stop refresh animation from pull-to-refresh
-			refreshableScrollView.onRefreshComplete();
+			swipeRefreshLayout.setRefreshing(false);
 		}
 	}
 
@@ -851,12 +864,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 		}.execute(itemId);
 		return true;
-	}
-
-	@Override
-	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
-		LOGGER.trace("Query initiated by PullToRefresh.");
-		this.doQuery(true);
 	}
 
 	@Override
@@ -962,12 +969,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onPassphraseCancelClick() {
-		// hide and reset progress bar
-		progressBar.setVisibility(View.GONE);
-		progressBar.setProgress(0);
 		// update and reset pullToRefresh
-		refreshableScrollView.onRefreshComplete();
-		refreshableScrollView.setMode(Mode.PULL_FROM_START);
+		swipeRefreshLayout.setRefreshing(false);
 	}
 
 	@Override
@@ -1015,12 +1018,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onQueryFinished(QueryBean result) {
 		currentDevice.setLastQueryData(result);
-		// hide and reset progress bar
-		progressBar.setVisibility(View.GONE);
-		progressBar.setProgress(0);
 		// update and reset pullToRefresh
-		refreshableScrollView.onRefreshComplete();
-		refreshableScrollView.setMode(Mode.PULL_FROM_START);
+		swipeRefreshLayout.setRefreshing(false);
 		if (result.getException() == null) {
 			// update view data
 			this.updateQueryDataInView(result);
@@ -1039,7 +1038,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onQueryProgress(int progress) {
-		progressBar.setProgress(progress);
+		//progressBar.setProgress(progress);
 	}
 
 	@Override

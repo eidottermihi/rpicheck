@@ -17,23 +17,23 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
+import de.larsgrefer.android.library.injection.annotation.XmlMenu;
+import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 
-public class NewRaspiActivity extends SherlockActivity {
+@XmlMenu(R.menu.activity_raspi_new)
+public class NewRaspiActivity extends InjectionActionBarActivity {
 	public static final String PI_HOST = "PI_HOST";
 	public static final String PI_NAME = "PI_NAME";
 	public static final String PI_USER = "PI_USER";
@@ -65,12 +65,6 @@ public class NewRaspiActivity extends SherlockActivity {
 		final View text = findViewById(R.id.new_raspi_text);
 		text.setVisibility(View.VISIBLE);
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_raspi_new, menu);
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -37,9 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.common.base.Strings;
 import com.lamerman.FileDialog;
 import com.lamerman.SelectionMode;
@@ -49,8 +47,13 @@ import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.larsgrefer.android.library.injection.annotation.XmlLayout;
+import de.larsgrefer.android.library.injection.annotation.XmlMenu;
+import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 
-public class EditRaspiActivity extends SherlockActivity implements
+@XmlLayout(R.layout.activity_raspi_edit)
+@XmlMenu(R.menu.activity_raspi_edit)
+public class EditRaspiActivity extends InjectionActionBarActivity implements
 		OnItemSelectedListener {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EditRaspiActivity.class);
@@ -148,12 +151,6 @@ public class EditRaspiActivity extends SherlockActivity implements
 		// switch auth method
 		final String method = deviceBean.getAuthMethod();
 		switchAuthMethodsInView(method);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_raspi_edit, menu);
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
