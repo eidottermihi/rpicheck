@@ -8,13 +8,13 @@
         <item name="colorAccent">@color/material_pink_A200</item>
 
         <item name="ic_action_new">@drawable/ic_add_white_24dp</item>
-        <item name="ic_action_delete">@drawable/ic_action_delete_dark</item>
-        <item name="ic_action_restart">@drawable/ic_action_replay_dark</item>
-        <item name="ic_action_edit">@drawable/ic_action_edit_dark</item>
-        <item name="ic_action_settings">@drawable/ic_action_settings_dark</item>
-        <item name="ic_action_next">@drawable/ic_action_next_item_dark</item>
+        <item name="ic_action_delete">@drawable/ic_delete_white_24dp</item>
+        <item name="ic_action_restart">@drawable/ic_settings_power_white_24dp</item>
+        <item name="ic_action_edit">@drawable/ic_edit_white_24dp</item>
+        <item name="ic_action_settings">@drawable/ic_settings_white_24dp</item>
+        <item name="ic_action_next">@drawable/ic_navigate_next_white_24dp</item>
         <item name="ic_action_save">@drawable/ic_save_white_24dp</item>
-        <item name="ic_action_refresh">@drawable/ic_action_refresh_dark</item>
+        <item name="ic_action_refresh">@drawable/ic_refresh_white_24dp</item>
         
         <item name="ic_settings_github">@drawable/ic_settings_github</item>
         <item name="ic_settings_email">@drawable/ic_settings_email_dark</item>
