@@ -16,9 +16,9 @@
         <item name="ic_action_save">@drawable/ic_save_white_24dp</item>
         <item name="ic_action_refresh">@drawable/ic_refresh_white_24dp</item>
         
-        <item name="ic_settings_github">@drawable/ic_settings_github</item>
-        <item name="ic_settings_email">@drawable/ic_settings_email_dark</item>
-        <item name="ic_settings_rate">@drawable/ic_settings_rate_dark</item>
+        <item name="ic_settings_github">@drawable/ic_github_white_36dp</item>
+        <item name="ic_settings_email">@drawable/ic_email_white_36dp</item>
+        <item name="ic_settings_rate">@drawable/ic_star_half_white_36dp</item>
 
         <item name="ic_dialog_run">@drawable/ic_play_arrow_white_36dp</item>
         <item name="ic_dialog_shutdown">@drawable/ic_settings_power_white_36dp</item>
