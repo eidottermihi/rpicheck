@@ -3,10 +3,10 @@ plugins {
 }
 
 // We have to mark this as 'android-library' so that file dependency is contributed to app
-apply plugin : 'android-library'
+apply plugin : 'com.android.library'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
     compileOptions {
@@ -14,13 +14,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     lintOptions {
-        abortOnError false
+        disable 'InvalidPackage'
     }
 }
 
 dependencies {
     compile files('libs/sshj-0.9.1-SNAPSHOT.jar')
-    compile 'com.google.guava:guava:16.0.1'
+    compile 'com.google.guava:guava:18.0'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile 'org.slf4j:slf4j-api:1.7.6'
     compile 'com.madgag:sc-light-jdk15on:1.47.0.3'

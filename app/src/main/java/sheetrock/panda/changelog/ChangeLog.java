@@ -32,6 +32,8 @@ import android.view.View;
 import android.webkit.WebView;
 import de.eidottermihi.raspicheck.R;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 public class ChangeLog {
 
 	private final Context context;
@@ -39,7 +41,7 @@ public class ChangeLog {
 
 	// this is API Level 3 code
 	// if you use higher APIs anyway, you can use the field SDK_INT instead
-	private final static int API_LEVEL = Integer.parseInt(Build.VERSION.SDK);
+	private final static int API_LEVEL = SDK_INT;
 
 	// this is the key for storing the version name in SharedPreferences
 	private static final String VERSION_KEY = "PREFS_VERSION_KEY";

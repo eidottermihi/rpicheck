@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <style name="Theme.rpiCheck.Base.Dark" parent="Theme.Sherlock">
-        <item name="actionBarStyle">@style/Widget.Sherlock.ActionBar.Solid</item>
-    </style>
-    
-    <style name="Theme.rpiCheck.Dark" parent="Theme.rpiCheck.Base.Dark">
-        <item name="ic_action_new">@drawable/ic_action_new_dark</item>
-        <item name="ic_action_delete">@drawable/ic_action_delete_dark</item>
-        <item name="ic_action_restart">@drawable/ic_action_replay_dark</item>
-        <item name="ic_action_edit">@drawable/ic_action_edit_dark</item>
-        <item name="ic_action_settings">@drawable/ic_action_settings_dark</item>
-        <item name="ic_action_next">@drawable/ic_action_next_item_dark</item>
-        <item name="ic_action_save">@drawable/ic_action_save_dark</item>
-        <item name="ic_action_refresh">@drawable/ic_action_refresh_dark</item>
+
+    <style name="Theme.rpiCheck.Dark" parent="Theme.AppCompat">
+
+        <item name="colorPrimary">@color/material_green_500</item>
+        <item name="colorPrimaryDark">@color/material_green_700</item>
+        <item name="colorAccent">@color/material_pink_A200</item>
+
+        <item name="ic_action_new">@drawable/ic_add_white_24dp</item>
+        <item name="ic_action_delete">@drawable/ic_delete_white_24dp</item>
+        <item name="ic_action_restart">@drawable/ic_settings_power_white_24dp</item>
+        <item name="ic_action_edit">@drawable/ic_edit_white_24dp</item>
+        <item name="ic_action_settings">@drawable/ic_settings_white_24dp</item>
+        <item name="ic_action_next">@drawable/ic_navigate_next_white_24dp</item>
+        <item name="ic_action_save">@drawable/ic_save_white_24dp</item>
+        <item name="ic_action_refresh">@drawable/ic_refresh_white_24dp</item>
         
-        <item name="ic_settings_github">@drawable/ic_settings_github</item>
-        <item name="ic_settings_email">@drawable/ic_settings_email_dark</item>
-        <item name="ic_settings_rate">@drawable/ic_settings_rate_dark</item>
-        
-        <item name="ic_dialog_run">@drawable/ic_dialog_run_dark</item>
-        <item name="ic_dialog_shutdown">@drawable/ic_dialog_shutdown</item>
-        <item name="ic_dialog_passphrase">@drawable/ic_dialog_passphrase_dark</item>
+        <item name="ic_settings_github">@drawable/ic_github_white_36dp</item>
+        <item name="ic_settings_email">@drawable/ic_email_white_36dp</item>
+        <item name="ic_settings_rate">@drawable/ic_star_half_white_36dp</item>
+
+        <item name="ic_dialog_run">@drawable/ic_play_arrow_white_36dp</item>
+        <item name="ic_dialog_shutdown">@drawable/ic_settings_power_white_36dp</item>
+        <item name="ic_dialog_passphrase">@drawable/ic_vpn_key_white_36dp</item>
     </style>
     
 </resources>
