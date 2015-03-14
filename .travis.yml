@@ -1,9 +1,10 @@
 language: android
 jdk:
-  - openjdk7
   - oraclejdk7
-  - oraclejdk8
 android:
   components:
+    - android-21            #needed by :app
     - android-7             #needed by :file-explorer
+    - build-tools-21.1.2
+
 script: ./gradlew build check
