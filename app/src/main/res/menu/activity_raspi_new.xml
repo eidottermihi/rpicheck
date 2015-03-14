@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-    
-    <item 
-        android:id="@+id/menu_continue" 
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_continue"
         app:showAsAction="always|withText"
         android:title="@string/new_raspi_continue"
-        android:icon="?attr/ic_action_next"/>
-  
+        android:icon="?attr/ic_action_next" />
+
 </menu>

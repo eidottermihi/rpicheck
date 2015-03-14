@@ -3,7 +3,7 @@ plugins {
 }
 
 // We have to mark this as 'android-library' so that file dependency is contributed to app
-apply plugin : 'com.android.library'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 21

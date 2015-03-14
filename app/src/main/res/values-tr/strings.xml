@@ -147,31 +147,31 @@
     <string name="command_context_delete">Sil</string>
     <string name="command_context_run">Çalıştır</string>
     <string name="run_cmd_dialog_title">Çalışıyor %1$s</string>
-    
+
     <string name="hint_pulltorefresh">İp ucu: Aşagı kaydırarak da yeniliye bilirsiniz!</string>
-    
+
     <!-- ActionButton Strings -->
-    
+
     <string name="action_new">Yeni</string>
     <string name="action_new_raspi">Yeni Pi</string>
     <string name="action_new_command">Yeni komut</string>
-    
+
     <string name="action_save">Kaydet</string>
     <string name="action_save_raspi">Pi\'yi kaydet</string>
     <string name="action_save_command">Komutu kaydet</string>
-    
+
     <string name="action_edit">Düzenle</string>
     <string name="action_edit_raspi">Pi\'yi düzenle\'</string>
     <string name="action_edit_command">Komutu düzenle</string>
-    
+
     <string name="action_delete">Sil</string>
     <string name="action_delete_raspi">Pi\'yi sil</string>
     <string name="action_delete_command">Komutu sil</string>
-    
+
     <string name="action_settings">Ayarlar</string>
     <string name="action_shutdown">Kapat</string>
     <string name="action_refresh">Yenile</string>
-    
+
     <string name="title_placeholders">Yer belirleyiciler</string>
     <string name="placeholders_button_ok">Tamam</string>
     <string name="placeholder_hint_text">Yer belirleyiciyi \'${my_secret}\' gibi kullana bilirsiniz. Yer belirleyici siz komutu çalıştırdığınızda değişecektir.</string>

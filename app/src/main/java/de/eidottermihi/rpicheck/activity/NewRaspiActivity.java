@@ -35,88 +35,88 @@ import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 
 @XmlMenu(R.menu.activity_raspi_new)
 public class NewRaspiActivity extends InjectionActionBarActivity {
-	public static final String PI_HOST = "PI_HOST";
-	public static final String PI_NAME = "PI_NAME";
-	public static final String PI_USER = "PI_USER";
-	public static final String PI_DESC = "PI_DESC";
-	public static final String PI_BUNDLE = "PI_BUNDLE";
-	public static final int REQUEST_SAVE = 0;
-	private static final Logger LOGGER = LoggerFactory.getLogger(NewRaspiActivity.class);
+    public static final String PI_HOST = "PI_HOST";
+    public static final String PI_NAME = "PI_NAME";
+    public static final String PI_USER = "PI_USER";
+    public static final String PI_DESC = "PI_DESC";
+    public static final String PI_BUNDLE = "PI_BUNDLE";
+    public static final int REQUEST_SAVE = 0;
+    private static final Logger LOGGER = LoggerFactory.getLogger(NewRaspiActivity.class);
 
-	// assigning view elements to fields
-	@XmlView(R.id.edit_raspi_name_editText)
-	private EditText editTextName;
-	@XmlView(R.id.edit_raspi_host_editText)
-	private EditText editTextHost;
-	@XmlView(R.id.edit_raspi_user_editText)
-	private EditText editTextUser;
-	@XmlView(R.id.edit_raspi_desc_editText)
-	private EditText editTextDescription;
+    // assigning view elements to fields
+    @XmlView(R.id.edit_raspi_name_editText)
+    private EditText editTextName;
+    @XmlView(R.id.edit_raspi_host_editText)
+    private EditText editTextHost;
+    @XmlView(R.id.edit_raspi_user_editText)
+    private EditText editTextUser;
+    @XmlView(R.id.edit_raspi_desc_editText)
+    private EditText editTextDescription;
 
 
-	private Validation validator = new Validation();
+    private Validation validator = new Validation();
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_raspi_new);
-		// Show the Up button in the action bar.
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_raspi_new);
+        // Show the Up button in the action bar.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// Show information text
-		final View text = findViewById(R.id.new_raspi_text);
-		text.setVisibility(View.VISIBLE);
+        // Show information text
+        final View text = findViewById(R.id.new_raspi_text);
+        text.setVisibility(View.VISIBLE);
 
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this
-				// activity, the Up button is shown. Use NavUtils to allow users
-				// to navigate up one level in the application structure. For
-				// more details, see the Navigation pattern on Android Design:
-				//
-				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-				//
-				NavUtils.navigateUpFromSameTask(this);
-				return true;
-			case R.id.menu_continue:
-				continueToAuthMethodActivity();
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
-		}
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // This ID represents the Home or Up button. In the case of this
+                // activity, the Up button is shown. Use NavUtils to allow users
+                // to navigate up one level in the application structure. For
+                // more details, see the Navigation pattern on Android Design:
+                //
+                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+                //
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            case R.id.menu_continue:
+                continueToAuthMethodActivity();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-	private void continueToAuthMethodActivity() {
-		boolean validationSuccessful = validator.validatePiCoreData(this, editTextName, editTextHost, editTextUser);
-		if (validationSuccessful) {
-			// getting credentials from textfields
-			final String name = editTextName.getText().toString().trim();
-			final String host = editTextHost.getText().toString().trim();
-			final String user = editTextUser.getText().toString().trim();
-			final String description = editTextDescription.getText().toString().trim();
-			// continue to auth activity
-			final Intent intent = new Intent(NewRaspiActivity.this, NewRaspiAuthActivity.class);
-			final Bundle bundle = new Bundle();
-			bundle.putString(PI_NAME, name);
-			bundle.putString(PI_HOST, host);
-			bundle.putString(PI_USER, user);
-			bundle.putString(PI_DESC, description);
-			intent.putExtra(PI_BUNDLE, bundle);
-			this.startActivityForResult(intent, REQUEST_SAVE);
-		}
-	}
+    private void continueToAuthMethodActivity() {
+        boolean validationSuccessful = validator.validatePiCoreData(this, editTextName, editTextHost, editTextUser);
+        if (validationSuccessful) {
+            // getting credentials from textfields
+            final String name = editTextName.getText().toString().trim();
+            final String host = editTextHost.getText().toString().trim();
+            final String user = editTextUser.getText().toString().trim();
+            final String description = editTextDescription.getText().toString().trim();
+            // continue to auth activity
+            final Intent intent = new Intent(NewRaspiActivity.this, NewRaspiAuthActivity.class);
+            final Bundle bundle = new Bundle();
+            bundle.putString(PI_NAME, name);
+            bundle.putString(PI_HOST, host);
+            bundle.putString(PI_USER, user);
+            bundle.putString(PI_DESC, description);
+            intent.putExtra(PI_BUNDLE, bundle);
+            this.startActivityForResult(intent, REQUEST_SAVE);
+        }
+    }
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_SAVE && resultCode == RESULT_OK) {
-			// user saved the new raspi
-			setResult(RESULT_OK);
-			finish();
-		}
-	}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SAVE && resultCode == RESULT_OK) {
+            // user saved the new raspi
+            setResult(RESULT_OK);
+            finish();
+        }
+    }
 
 }

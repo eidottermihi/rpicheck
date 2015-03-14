@@ -1,5 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_edit_raspi"
@@ -7,35 +7,35 @@
         app:showAsAction="always|withText"
         android:title="@string/action_edit_raspi"
         android:titleCondensed="@string/action_edit"
-        android:visible="false"/>
+        android:visible="false" />
     <item
         android:id="@+id/menu_reboot"
         android:icon="?attr/ic_action_restart"
         app:showAsAction="always|withText"
         android:title="@string/action_shutdown"
-        android:visible="false"/>
+        android:visible="false" />
     <item
         android:id="@+id/menu_new_raspi"
         android:icon="?attr/ic_action_new"
         app:showAsAction="ifRoom"
         android:title="@string/action_new_raspi"
-        android:titleCondensed="@string/action_new"/>
+        android:titleCondensed="@string/action_new" />
     <item
         android:id="@+id/menu_refresh"
         android:icon="?attr/ic_action_refresh"
         app:showAsAction="never"
-        android:title="@string/action_refresh"/>
+        android:title="@string/action_refresh" />
     <item
         android:id="@+id/menu_delete"
         android:icon="?attr/ic_action_delete"
         app:showAsAction="never"
         android:title="@string/action_delete_raspi"
         android:titleCondensed="@string/action_delete"
-        android:visible="false"/>
+        android:visible="false" />
     <item
         android:id="@+id/menu_settings"
         android:icon="?attr/ic_action_settings"
         app:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings" />
 
 </menu>

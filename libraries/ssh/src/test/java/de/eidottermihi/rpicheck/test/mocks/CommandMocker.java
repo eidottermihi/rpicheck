@@ -25,27 +25,26 @@ import org.mockito.Mockito;
 
 /**
  * Mocker for {@link Command}
- * 
- * @author Michael
  *
+ * @author Michael
  */
 public class CommandMocker {
 
-	private Session.Command command = Mockito.mock(Session.Command.class);
+    private Session.Command command = Mockito.mock(Session.Command.class);
 
-	public CommandMocker withResponse(String output) {
-		Mockito.when(command.getInputStream()).thenReturn(
-				IOUtils.toInputStream(output));
-		return this;
-	}
+    public CommandMocker withResponse(String output) {
+        Mockito.when(command.getInputStream()).thenReturn(
+                IOUtils.toInputStream(output));
+        return this;
+    }
 
-	public CommandMocker withExitStatus(int status) {
-		Mockito.when(command.getExitStatus()).thenReturn(status);
-		return this;
-	}
+    public CommandMocker withExitStatus(int status) {
+        Mockito.when(command.getExitStatus()).thenReturn(status);
+        return this;
+    }
 
-	public Command mock() {
-		return this.command;
-	}
+    public Command mock() {
+        return this.command;
+    }
 
 }

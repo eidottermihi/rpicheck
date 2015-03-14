@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,12 +13,12 @@
         android:paddingRight="16dp"
         android:paddingTop="4dp"
         android:showDividers="beginning|middle|end"
-        tools:context=".NewRaspiActivity" >
+        tools:context=".NewRaspiActivity">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
+            android:paddingTop="8dp">
 
             <TextView
                 android:id="@+id/textAuthMethod"
@@ -41,7 +41,7 @@
             android:id="@+id/rel_pw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
+            android:paddingTop="8dp">
 
             <TextView
                 android:id="@+id/text_ssh_password"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_ssh_password"
                 android:ems="10"
-                android:inputType="textPassword" >
+                android:inputType="textPassword">
 
                 <requestFocus />
             </EditText>
@@ -65,7 +65,7 @@
         <RelativeLayout
             android:id="@+id/rel_key"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/text_key_file"
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/checkboxAsk"
-                android:visibility="gone" >
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/text_key_pw"
@@ -117,18 +117,18 @@
 
             </RelativeLayout>
         </RelativeLayout>
-        
+
         <RelativeLayout
             android:id="@+id/relativeLayoutPortSudo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
+            android:paddingTop="8dp">
 
             <RelativeLayout
                 android:id="@+id/relativeLayoutPort"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp" >
+                android:paddingTop="8dp">
 
                 <EditText
                     android:id="@+id/edit_raspi_ssh_port_editText"
@@ -156,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/relativeLayoutPort"
-                android:paddingTop="8dp" >
+                android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/labelSudoPass"

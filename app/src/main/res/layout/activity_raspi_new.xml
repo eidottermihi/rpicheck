@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
-   <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -13,8 +13,8 @@
         android:paddingRight="16dp"
         android:paddingTop="4dp"
         android:showDividers="beginning|middle|end"
-        tools:context=".NewRaspiActivity" >
-        
+        tools:context=".NewRaspiActivity">
+
         <TextView
             android:id="@+id/new_raspi_text"
             android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
+            android:paddingTop="8dp">
 
             <TextView
                 android:id="@+id/labelName"
@@ -53,7 +53,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
+            android:paddingTop="8dp">
 
             <EditText
                 android:id="@+id/edit_raspi_host_editText"
@@ -79,7 +79,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
+            android:paddingTop="8dp">
 
             <EditText
                 android:id="@+id/edit_raspi_user_editText"
@@ -105,28 +105,26 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
-        </RelativeLayout>
+            android:paddingTop="8dp"></RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/relativeLayoutPortSudo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp" >
+            android:paddingTop="8dp">
 
             <RelativeLayout
                 android:id="@+id/relativeLayoutPort"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp" >
-            </RelativeLayout>
+                android:paddingTop="8dp"></RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/relativeLayoutSudo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/relativeLayoutPort"
-                android:paddingTop="8dp" >
+                android:paddingTop="8dp">
 
             </RelativeLayout>
         </RelativeLayout>
@@ -146,8 +144,7 @@
             android:ems="10"
             android:hint="@string/new_raspi_description_hint"
             android:inputType="textMultiLine"
-            android:paddingTop="8dp" >
-        </EditText>
+            android:paddingTop="8dp"></EditText>
 
     </LinearLayout>
 
