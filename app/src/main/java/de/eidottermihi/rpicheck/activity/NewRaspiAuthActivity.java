@@ -57,7 +57,10 @@ import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
 public class NewRaspiAuthActivity extends InjectionActionBarActivity implements OnItemSelectedListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewRaspiAuthActivity.class);
 
-    public static final String[] SPINNER_AUTH_METHODS = {"password", "keys", "keysWithPassword"};
+    public static final String AUTH_PASSWORD = "password";
+    public static final String AUTH_PUBLIC_KEY = "keys";
+    public static final String AUTH_PUBLIC_KEY_WITH_PASSWORD = "keysWithPassword";
+    public static final String[] SPINNER_AUTH_METHODS = {AUTH_PASSWORD, AUTH_PUBLIC_KEY, AUTH_PUBLIC_KEY_WITH_PASSWORD};
 
     public static final int REQUEST_LOAD = 0;
 

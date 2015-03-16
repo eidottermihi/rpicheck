@@ -221,15 +221,15 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SSHPORT, sshPort);
         values.put(COLUMN_SUDOPW, sudoPass);
         values.put(COLUMN_AUTH_METHOD, authMethod);
-        if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+        if (authMethod.equals(NewRaspiAuthActivity.AUTH_PASSWORD)) {
             // insert only ssh password
             values.put(COLUMN_PASSWD, pass);
         } else if (authMethod
-                .equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+                .equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY)) {
             // insert only location of keyfile
             values.put(COLUMN_KEYFILE_PATH, keyFilePath);
         } else if (authMethod
-                .equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+                .equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
             // insert keyfile path and password
             values.put(COLUMN_KEYFILE_PATH, keyFilePath);
             values.put(COLUMN_KEYFILE_PASS, keyFilePass);

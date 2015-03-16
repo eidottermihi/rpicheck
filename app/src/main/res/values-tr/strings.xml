@@ -179,4 +179,6 @@
     <string name="pref_load_avg_summary">Yük ortalaması hesaplama için süre.</string>
     <string name="pref_load_avg_title">Ortalama süre yükleyin</string>
 
+    <string name="widget_pi">Choose Raspberry Pi</string>
+
 </resources>

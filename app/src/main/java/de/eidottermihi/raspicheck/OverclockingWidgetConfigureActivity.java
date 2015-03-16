@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2015  RasPi Check Contributors
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 package de.eidottermihi.raspicheck;
 
 import android.appwidget.AppWidgetManager;
@@ -7,12 +24,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
+import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.larsgrefer.android.library.injection.annotation.XmlLayout;
 import de.larsgrefer.android.library.injection.annotation.XmlMenu;
 import de.larsgrefer.android.library.injection.annotation.XmlView;
@@ -105,6 +125,12 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                 //String widgetText = mAppWidgetText.getText().toString();
                 long selectedItemId = widgetPiSpinner.getSelectedItemId();
                 LOGGER.info("Selected Device - Item ID = {}", selectedItemId);
+                RaspberryDeviceBean deviceBean = deviceDbHelper.read(selectedItemId);
+                if(deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null){
+                    // TODO i18n
+                    Toast.makeText(context, "You need to save your keyfile passphrase because widgets cannot prompt for it.", Toast.LENGTH_LONG).show();
+                    return super.onOptionsItemSelected(item);
+                }
                 // save Device ID in prefs
                 saveChosenDevicePref(context, mAppWidgetId, selectedItemId);
 
