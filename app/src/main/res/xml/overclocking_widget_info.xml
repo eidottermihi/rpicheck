@@ -3,7 +3,7 @@
                     android:minWidth="300dp"
                     android:minHeight="60dp"
                     android:updatePeriodMillis="0"
-                    android:previewImage="@drawable/example_appwidget_preview"
+                    android:previewImage="@drawable/appwidget_overclocking_preview"
                     android:initialLayout="@layout/overclocking_widget"
                     android:configure="de.eidottermihi.raspicheck.OverclockingWidgetConfigureActivity"
                     android:resizeMode="horizontal|vertical"
