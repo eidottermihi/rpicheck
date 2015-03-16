@@ -3,31 +3,63 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              android:padding="16dp">
+              android:padding="@dimen/padding_large">
 
     <TextView
+        android:id="@+id/widget_pi_spinner_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:padding="@dimen/padding_small"
         android:text="@string/widget_pi"
-        android:id="@+id/widget_pi_spinner_text"/>
+        android:textAppearance="?android:attr/textAppearanceMedium">
+
+        <requestFocus/>
+    </TextView>
 
     <Spinner
+        android:id="@+id/widgetPiSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/widgetPiSpinner"/>
+        android:padding="@dimen/padding_small"
+        />
 
-    <TextView
+    <CheckBox
+        android:id="@+id/checkBoxAutoUpdates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/widget_update_interval"
-        android:id="@+id/updateIntervalText"/>
+        android:padding="@dimen/padding_small"
+        android:text="@string/widget_cb_updates"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
 
-    <EditText
+    <LinearLayout
+        android:id="@+id/linLayoutUpdateInterval"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:id="@+id/textEditUpdateInterval"
-        android:text="@string/default_update_interval"/>
+        android:orientation="vertical"
+        android:visibility="gone">
 
+        <TextView
+            android:id="@+id/updateIntervalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:text="@string/widget_update_interval"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <EditText
+            android:id="@+id/textEditUpdateInterval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:padding="@dimen/padding_small"
+            android:text="@string/default_update_interval"/>
+
+    </LinearLayout>
 </LinearLayout>
+
+
+
+

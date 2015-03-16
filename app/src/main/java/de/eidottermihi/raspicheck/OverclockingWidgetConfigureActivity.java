@@ -25,7 +25,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -49,7 +53,7 @@ import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
  */
 @XmlLayout(R.layout.overclocking_widget_configure)
 @XmlMenu(R.menu.activity_overclocking_widget_configure)
-public class OverclockingWidgetConfigureActivity extends InjectionActionBarActivity {
+public class OverclockingWidgetConfigureActivity extends InjectionActionBarActivity implements CompoundButton.OnCheckedChangeListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidgetConfigureActivity.class);
     private static final String PREFS_NAME = "de.eidottermihi.raspicheck.OverclockingWidget";
@@ -60,6 +64,10 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private Spinner widgetPiSpinner;
     @XmlView(R.id.textEditUpdateInterval)
     private EditText textEditUpdateInterval;
+    @XmlView(R.id.checkBoxAutoUpdates)
+    private CheckBox checkBoxAutoUpdates;
+    @XmlView(R.id.linLayoutUpdateInterval)
+    private LinearLayout linLayoutUpdateInterval;
 
     private DeviceDbHelper deviceDbHelper;
 
@@ -125,9 +133,9 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         }
 
         this.getSupportActionBar().setTitle(getString(R.string.widget_configure_title));
-
         deviceDbHelper = new DeviceDbHelper(this);
         initSpinner();
+        checkBoxAutoUpdates.setOnCheckedChangeListener(this);
     }
 
     private void initSpinner() {
@@ -149,20 +157,32 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                     Toast.makeText(context, getString(R.string.widget_key_pass_error), Toast.LENGTH_LONG).show();
                     return super.onOptionsItemSelected(item);
                 }
-                String s = textEditUpdateInterval.getText().toString().trim();
-                if (Strings.isNullOrEmpty(s)) {
-                    textEditUpdateInterval.setError(getString(R.string.widget_update_interval_error));
-                    return super.onOptionsItemSelected(item);
+                int updateIntervalInMinutes = 0;
+                if (checkBoxAutoUpdates.isChecked()) {
+                    String s = textEditUpdateInterval.getText().toString().trim();
+                    if (Strings.isNullOrEmpty(s)) {
+                        textEditUpdateInterval.setError(getString(R.string.widget_update_interval_error));
+                        return super.onOptionsItemSelected(item);
+                    }
+                    updateIntervalInMinutes = Integer.parseInt(s);
+                    if (updateIntervalInMinutes == 0) {
+                        textEditUpdateInterval.setError(getString(R.string.widget_update_interval_zero));
+                        return super.onOptionsItemSelected(item);
+                    }
                 }
-                int updateIntervalInMinutes = Integer.parseInt(s);
                 // save Device ID in prefs
                 saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateIntervalInMinutes);
-                long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
-                // Setting alarm via AlarmManager
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, mAppWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
-                OverclockingWidget.addUri(mAppWidgetId, OverclockingWidget.getPendingIntentUri(mAppWidgetId));
+                if (updateIntervalInMinutes > 0) {
+                    long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
+                    // Setting alarm via AlarmManager
+                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, mAppWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
+                    OverclockingWidget.addUri(mAppWidgetId, OverclockingWidget.getPendingIntentUri(mAppWidgetId));
+                    LOGGER.debug("Added alarm for periodic updates of Wigdet[ID={}], update interval: {} ms.", mAppWidgetId, updateIntervalMillis);
+                } else {
+                    LOGGER.debug("No periodic updates for Widget[ID={}].", mAppWidgetId);
+                }
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 OverclockingWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId, deviceDbHelper);
@@ -177,6 +197,14 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         }
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            linLayoutUpdateInterval.setVisibility(View.VISIBLE);
+        } else {
+            linLayoutUpdateInterval.setVisibility(View.GONE);
+        }
+    }
 }
 
 

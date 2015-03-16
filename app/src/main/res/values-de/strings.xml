@@ -179,5 +179,7 @@
     <string name="widget_update_interval">Update-Intervall (Minuten)</string>
     <string name="widget_update_interval_error">Kein gültiges Update-Intervall.</string>
     <string name="widget_key_pass_error">You need to save your keyfile passphrase because widgets cannot prompt for it.</string>
+    <string name="widget_cb_updates">Automatische Updates aktivieren</string>
+    <string name="widget_update_interval_zero">Muss größer als 0 sein.</string>
 
 </resources>

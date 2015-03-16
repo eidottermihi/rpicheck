@@ -190,5 +190,7 @@
     <string name="default_update_interval" translatable="false">60</string>
     <string name="widget_update_interval_error">Not a valid update interval.</string>
     <string name="widget_key_pass_error">You need to save your keyfile passphrase because widgets cannot prompt for it.</string>
+    <string name="widget_cb_updates">Enable automatic updates</string>
+    <string name="widget_update_interval_zero">Must be greater than zero.</string>
 
 </resources>
