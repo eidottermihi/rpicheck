@@ -38,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
+import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
 import de.eidottermihi.rpicheck.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.beans.ProcessBean;
@@ -112,13 +114,13 @@ public class MainActivity extends InjectionActionBarActivity implements
     private TextView firmwareText;
     @XmlView(R.id.lastUpdateText)
     private TextView lastUpdateText;
-    @XmlView(R.id.startedText)
+    @XmlView(R.id.uptimeText)
     private TextView uptimeText;
-    @XmlView(R.id.loadText)
+    @XmlView(R.id.averageLoadText)
     private TextView averageLoadText;
-    @XmlView(R.id.totalMemText)
+    @XmlView(R.id.totalMemoryText)
     private TextView totalMemoryText;
-    @XmlView(R.id.freeMemText)
+    @XmlView(R.id.freeMemoryText)
     private TextView freeMemoryText;
     @XmlView(R.id.cpuSerialText)
     private TextView serialNoText;
@@ -143,7 +145,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 
     private Cursor deviceCursor;
 
-    private SimpleCursorAdapter spinadapter;
+    private SpinnerAdapter spinadapter;
 
     private static boolean isOnBackground;
 
@@ -400,11 +402,12 @@ public class MainActivity extends InjectionActionBarActivity implements
                 // only show spinner if theres already a device to show
                 if (deviceCursor.getCount() > 0) {
                     // make adapter
-                    spinadapter = new SimpleCursorAdapter(MainActivity.this,
-                            android.R.layout.simple_spinner_dropdown_item,
-                            deviceCursor, new String[]{"name", "_id"},
-                            new int[]{android.R.id.text1});
-                    spinadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    //spinadapter = new SimpleCursorAdapter(MainActivity.this,
+                    //        android.R.layout.simple_spinner_dropdown_item,
+                    //        deviceCursor, new String[]{"name", "_id"},
+                    //        new int[]{android.R.id.text1});
+                    spinadapter = new DeviceSpinnerAdapter(MainActivity.this, deviceCursor, true);
+                    //spinadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
                     getSupportActionBar().setListNavigationCallbacks(spinadapter, MainActivity.this);
                     getSupportActionBar().setDisplayShowTitleEnabled(false);

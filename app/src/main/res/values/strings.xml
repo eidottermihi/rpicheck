@@ -183,5 +183,9 @@
     <string name="pref_load_avg_default" translatable="false">FIVE_MINUTES</string>
     <string name="pref_load_avg_summary">Time period for load average calculation.</string>
     <string name="pref_load_avg_title">Load Average time period</string>
+    <string name="appwidget_text">pi2 - pi@192.168.0.5</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="widget_pi">Choose Raspberry Pi</string>
 
 </resources>

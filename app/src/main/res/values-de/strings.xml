@@ -173,5 +173,6 @@
 
     <string name="pref_load_avg_summary">Zeitspanne für die Berechnung der Auslastung.</string>
     <string name="pref_load_avg_title">Zeitspanne für durchschn. Auslastung</string>
+    <string name="widget_pi">Raspberry Pi auswählen</string>
 
 </resources>

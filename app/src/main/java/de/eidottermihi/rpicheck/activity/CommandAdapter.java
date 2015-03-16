@@ -44,16 +44,16 @@ public class CommandAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        TextView name = (TextView) view.findViewById(R.id.commandRowName);
-        TextView command = (TextView) view.findViewById(R.id.commandRowCommand);
-        CommandBean bean = CursorHelper.readCommand(cursor);
+        final TextView name = (TextView) view.findViewById(R.id.commandRowName);
+        final TextView command = (TextView) view.findViewById(R.id.commandRowCommand);
+        final CommandBean bean = CursorHelper.readCommand(cursor);
         name.setText(bean.getName());
         command.setText(bean.getCommand());
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View v = inflater.inflate(R.layout.command_row, parent, false);
+        final View v = inflater.inflate(R.layout.command_row, parent, false);
         return v;
     }
 
