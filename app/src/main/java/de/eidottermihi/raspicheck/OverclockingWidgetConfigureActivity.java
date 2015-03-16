@@ -17,6 +17,8 @@
  */
 package de.eidottermihi.raspicheck;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -152,10 +154,15 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                     textEditUpdateInterval.setError(getString(R.string.widget_update_interval_error));
                     return super.onOptionsItemSelected(item);
                 }
-                int updateInterval = Integer.parseInt(s);
+                int updateIntervalInMinutes = Integer.parseInt(s);
                 // save Device ID in prefs
-                saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateInterval);
-
+                saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateIntervalInMinutes);
+                long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
+                // Setting alarm via AlarmManager
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, mAppWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
+                OverclockingWidget.addUri(mAppWidgetId, OverclockingWidget.getPendingIntentUri(mAppWidgetId));
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 OverclockingWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId, deviceDbHelper);
