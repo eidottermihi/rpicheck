@@ -23,8 +23,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +52,13 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidgetConfigureActivity.class);
     private static final String PREFS_NAME = "de.eidottermihi.raspicheck.OverclockingWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
+    private static final String PREF_UPDATE_INTERVAL_SUFFIX = "_interval";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     @XmlView(R.id.widgetPiSpinner)
-    Spinner widgetPiSpinner;
+    private Spinner widgetPiSpinner;
+    @XmlView(R.id.textEditUpdateInterval)
+    private EditText textEditUpdateInterval;
+
     private DeviceDbHelper deviceDbHelper;
 
     public OverclockingWidgetConfigureActivity() {
@@ -63,9 +70,10 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
      * @param appWidgetId
      * @param deviceId    ID of the chosen device
      */
-    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId) {
+    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId, int updateInterval) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putLong(PREF_PREFIX_KEY + appWidgetId, deviceId);
+        prefs.putInt(PREF_PREFIX_KEY + appWidgetId + PREF_UPDATE_INTERVAL_SUFFIX, updateInterval);
         prefs.commit();
     }
 
@@ -79,9 +87,16 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         }
     }
 
+    static Integer loadUpdateInterval(Context context, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        int updateInterval = prefs.getInt(PREF_PREFIX_KEY + appWidgetId + PREF_UPDATE_INTERVAL_SUFFIX, Integer.parseInt(context.getString(R.string.default_update_interval)));
+        return updateInterval;
+    }
+
     static void deleteDevicePref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
+        prefs.remove(PREF_PREFIX_KEY + appWidgetId + PREF_UPDATE_INTERVAL_SUFFIX);
         prefs.commit();
     }
 
@@ -107,6 +122,8 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
             return;
         }
 
+        this.getSupportActionBar().setTitle(getString(R.string.widget_configure_title));
+
         deviceDbHelper = new DeviceDbHelper(this);
         initSpinner();
     }
@@ -126,13 +143,18 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                 long selectedItemId = widgetPiSpinner.getSelectedItemId();
                 LOGGER.info("Selected Device - Item ID = {}", selectedItemId);
                 RaspberryDeviceBean deviceBean = deviceDbHelper.read(selectedItemId);
-                if(deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null){
-                    // TODO i18n
-                    Toast.makeText(context, "You need to save your keyfile passphrase because widgets cannot prompt for it.", Toast.LENGTH_LONG).show();
+                if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null) {
+                    Toast.makeText(context, getString(R.string.widget_key_pass_error), Toast.LENGTH_LONG).show();
                     return super.onOptionsItemSelected(item);
                 }
+                String s = textEditUpdateInterval.getText().toString().trim();
+                if (Strings.isNullOrEmpty(s)) {
+                    textEditUpdateInterval.setError(getString(R.string.widget_update_interval_error));
+                    return super.onOptionsItemSelected(item);
+                }
+                int updateInterval = Integer.parseInt(s);
                 // save Device ID in prefs
-                saveChosenDevicePref(context, mAppWidgetId, selectedItemId);
+                saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateInterval);
 
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

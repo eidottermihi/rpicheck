@@ -34,13 +34,24 @@
         android:id="@+id/textStatusValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textDeviceValue"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:padding="4dp"
         android:singleLine="true"
         android:text="online 16:32"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_alignBaseline="@+id/textDeviceValue"
+        android:layout_toLeftOf="@+id/buttonRefresh"
+        android:layout_toStartOf="@+id/buttonRefresh"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonRefresh"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/textDeviceValue"
+        android:layout_above="@+id/relLayoutData"
+        android:src="@drawable/ic_refresh_white_24dp"/>
 
     <RelativeLayout
         android:id="@+id/relLayoutData"

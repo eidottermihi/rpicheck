@@ -180,5 +180,10 @@
     <string name="pref_load_avg_title">Ortalama süre yükleyin</string>
 
     <string name="widget_pi">Choose Raspberry Pi</string>
+    <string name="widget_refreshing">refreshing...</string>
+    <string name="widget_configure_title">Configure widget</string>
+    <string name="widget_update_interval">Update interval (Minutes)</string>
+    <string name="widget_update_interval_error">Not a valid update interval.</string>
+    <string name="widget_key_pass_error">You need to save your keyfile passphrase because widgets cannot prompt for it.</string>
 
 </resources>

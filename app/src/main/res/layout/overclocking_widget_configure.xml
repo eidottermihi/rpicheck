@@ -16,4 +16,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/widgetPiSpinner"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/widget_update_interval"
+        android:id="@+id/updateIntervalText"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:id="@+id/textEditUpdateInterval"
+        android:text="@string/default_update_interval"/>
+
 </LinearLayout>

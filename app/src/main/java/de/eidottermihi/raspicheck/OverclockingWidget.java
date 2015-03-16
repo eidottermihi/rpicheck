@@ -17,12 +17,16 @@
  */
 package de.eidottermihi.raspicheck;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -51,25 +55,41 @@ import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 public class OverclockingWidget extends AppWidgetProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidget.class);
+    private static final String URI_SCHEME = "raspicheck";
+    private static final String ACTION_WIDGET_UPDATE_ONE = "updateOneWidget";
 
     private DeviceDbHelper deviceDb;
+
+    private static void connect(IQueryService raspiQuery, RaspberryDeviceBean deviceBean) throws RaspiQueryException {
+        if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PASSWORD)) {
+            raspiQuery.connect(deviceBean.getPass());
+        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY)) {
+            raspiQuery.connectWithPubKeyAuth(deviceBean.getKeyfilePath());
+        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+            raspiQuery.connectWithPubKeyAuthAndPassphrase(deviceBean.getKeyfilePath(), deviceBean.getKeyfilePass());
+        } else {
+            LOGGER.error("Unknown authentification combination!");
+        }
+    }
 
     static void updateAppWidget(Context context, final AppWidgetManager appWidgetManager,
                                 final int appWidgetId, DeviceDbHelper deviceDb) {
         Long deviceId = OverclockingWidgetConfigureActivity.loadDeviceId(context, appWidgetId);
         if (deviceId != null) {
+            // get update interval
+            Integer updateInterval = OverclockingWidgetConfigureActivity.loadUpdateInterval(context, appWidgetId);
             RaspberryDeviceBean deviceBean = deviceDb.read(deviceId);
-            LOGGER.debug("Updating widgetId {} for device {}", appWidgetId, deviceBean.getName());
+            LOGGER.debug("Updating Widget[ID={}] for device {} - update interval: {} mins", appWidgetId, deviceBean.getName(), updateInterval);
             // Construct the RemoteViews object
             final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.overclocking_widget);
+            views.setOnClickPendingIntent(R.id.buttonRefresh, getSelfPendingIntent(context, appWidgetId));
             views.setTextViewText(R.id.textDeviceValue, deviceBean.getName());
             views.setTextViewText(R.id.textDeviceUserHost, String.format("%s@%s", deviceBean.getUser(), deviceBean.getHost()));
             final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 LOGGER.debug("Network available - querying device...");
-                views.setTextViewText(R.id.textStatusValue, "refreshing...");
-                views.setViewVisibility(R.id.relLayoutData, View.GONE);
+                views.setTextViewText(R.id.textStatusValue, context.getString(R.string.widget_refreshing));
                 appWidgetManager.updateAppWidget(appWidgetId, views);
                 // query in AsyncTask
                 new AsyncTask<RaspberryDeviceBean, Void, Map<String, String>>() {
@@ -100,43 +120,28 @@ public class OverclockingWidget extends AppWidgetProvider {
                         super.onPostExecute(stringStringMap);
                         String status = stringStringMap.get("status");
                         views.setTextViewText(R.id.textStatusValue, status + " - " + new SimpleDateFormat("HH:mm").format(new Date()));
-                        views.setViewVisibility(R.id.relLayoutData, View.VISIBLE);
                         if ("online".equals(status)) {
                             String temp = stringStringMap.get("temp");
                             if (temp != null) {
                                 views.setTextViewText(R.id.textTempValue, temp + "°C");
-                                double tempDouble = Double.valueOf(temp);
-                                if (tempDouble > 90.0) {
-                                    tempDouble = 90.0;
-                                }
-                                views.setProgressBar(R.id.progressBarTempValue, 90, (int) (tempDouble), false);
+                                double tempValue = Double.parseDouble(temp);
+                                updateProgressbar(views, R.id.progressBarTempValue, 0, 90, tempValue);
                             }
                             String armFreq = stringStringMap.get("armFreq");
                             if (armFreq != null) {
                                 double armFreqDouble = Double.valueOf(armFreq) / 1000 / 1000;
                                 views.setTextViewText(R.id.textArmValue, armFreqDouble + " MHz");
-                                double min = 500.0;
-                                double max = 1200.0;
-                                double value = armFreqDouble;
-                                if (value > max) {
-                                    value = max;
-                                } else if (value < min) {
-                                    value = min;
-                                }
-                                int progressValue = (int) (((value - min) / (max - min)) * 100);
-                                views.setProgressBar(R.id.progressBarArmValue, 100, progressValue, false);
+                                updateProgressbar(views, R.id.progressBarArmValue, 500, 1200, armFreqDouble);
                             }
                             String loadAvg = stringStringMap.get("loadAvg");
                             if (loadAvg != null) {
-                                views.setTextViewText(R.id.textLoadValue, loadAvg + " %");
                                 double loadAvgDouble = Double.parseDouble(loadAvg);
-                                if (loadAvgDouble > 1.0) {
-                                    loadAvgDouble = 1.0;
-                                }
                                 int progressValue = (int) (loadAvgDouble * 100);
-                                views.setProgressBar(R.id.progressBarLoad, 100, progressValue, false);
+                                views.setTextViewText(R.id.textLoadValue, progressValue + " %");
+                                updateProgressbar(views, R.id.progressBarLoad, 0, 100, progressValue);
                             }
                         } else {
+                            LOGGER.debug("Query failed, showing device as offline.");
                             views.setViewVisibility(R.id.textTempValue, View.GONE);
                             views.setViewVisibility(R.id.progressBarTempValue, View.GONE);
                             views.setViewVisibility(R.id.textArmValue, View.GONE);
@@ -145,8 +150,20 @@ public class OverclockingWidget extends AppWidgetProvider {
                             views.setViewVisibility(R.id.progressBarLoad, View.GONE);
                         }
                         // Instruct the widget manager to update the widget
-                        LOGGER.debug("Query performed - updating widget data.");
+                        LOGGER.debug("Updating widget[ID={}] view.", appWidgetId);
                         appWidgetManager.updateAppWidget(appWidgetId, views);
+                    }
+
+                    private void updateProgressbar(RemoteViews views, int progressBarId, double min, double max, double value) {
+                        LOGGER.debug("min: {}  max: {} value: {}", min, max, value);
+                        if (value > max) {
+                            value = max;
+                        } else if (value < min) {
+                            value = min;
+                        }
+                        double scaledValue = ((value - min) / (max - min)) * 100;
+                        LOGGER.debug("Updating progressbar: scaledValue = {}", scaledValue);
+                        views.setProgressBar(progressBarId, 100, (int) scaledValue, false);
                     }
                 }.execute(deviceBean);
             } else {
@@ -155,16 +172,15 @@ public class OverclockingWidget extends AppWidgetProvider {
         }
     }
 
-    private static void connect(IQueryService raspiQuery, RaspberryDeviceBean deviceBean) throws RaspiQueryException {
-        if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PASSWORD)) {
-            raspiQuery.connect(deviceBean.getPass());
-        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY)) {
-            raspiQuery.connectWithPubKeyAuth(deviceBean.getKeyfilePath());
-        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
-            raspiQuery.connectWithPubKeyAuthAndPassphrase(deviceBean.getKeyfilePath(), deviceBean.getKeyfilePass());
-        } else {
-            LOGGER.error("Unknown authentification combination!");
-        }
+    private static PendingIntent getSelfPendingIntent(Context context, int appWidgetId) {
+        Intent i = new Intent(context, OverclockingWidget.class);
+        i.setAction(ACTION_WIDGET_UPDATE_ONE);
+        i.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        Uri data = Uri.withAppendedPath(
+                Uri.parse(URI_SCHEME + "://widget/id/")
+                , String.valueOf(appWidgetId));
+        i.setData(data);
+        return PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
@@ -175,6 +191,12 @@ public class OverclockingWidget extends AppWidgetProvider {
         for (int i = 0; i < N; i++) {
             updateAppWidget(context, appWidgetManager, appWidgetIds[i], deviceDb);
         }
+    }
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+        // handle hiding/showing of information based on available screen size here...
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 
     @Override
@@ -194,6 +216,23 @@ public class OverclockingWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        LOGGER.debug("onReveice: action={}", action);
+        if (action.equals(ACTION_WIDGET_UPDATE_ONE)) {
+            int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            LOGGER.debug("AppWidgetID: {}", widgetId);
+            if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                super.onReceive(context, intent);
+            } else {
+                this.onUpdate(context, AppWidgetManager.getInstance(context), new int[]{widgetId});
+            }
+        } else {
+            super.onReceive(context, intent);
+        }
     }
 }
 
