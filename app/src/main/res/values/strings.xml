@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="en" >
 
     <string name="app_name">RasPi Check</string>
     <string name="title_activity_main">RasPi Check</string>
@@ -52,9 +54,9 @@
     <string name="disk_header_mounted_on">Mounted on</string>
     <string name="temperature_scala_summary">Temperature scala to use (Celsius, Fahrenheit)</string>
     <string name="process_header">Processes</string>
-    <string name="header_pid">PID</string>
-    <string name="header_tty">TTY</string>
-    <string name="header_cpu_time">CPU</string>
+    <string name="header_pid" translatable="false">PID</string>
+    <string name="header_tty" translatable="false">TTY</string>
+    <string name="header_cpu_time" translatable="false">CPU</string>
     <string name="header_command">Command</string>
     <string name="pref_group_query_settings_title">Query</string>
     <string name="pref_query_hide_root_title">Hide root processes</string>
@@ -75,14 +77,14 @@
     <string name="network_status">Status</string>
     <string name="network_status_up">Up</string>
     <string name="network_status_down">Down</string>
-    <string name="network_ip">IP</string>
+    <string name="network_ip" translatable="false">IP</string>
     <string name="network_signal">Signal</string>
     <string name="network_link">Quality</string>
     <string name="pref_group_about">About</string>
     <string name="pref_github">Source / Issue Tracker</string>
-    <string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
+    <string name="pref_github_summary" translatable="false">github.com/eidottermihi/rpicheck</string>
     <string name="pref_dev_email">Contact developer</string>
-    <string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
+    <string name="pref_dev_email_summary" translatable="false">eidottermihi@gmail.com</string>
     <string name="pref_rate_app">Rate app</string>
     <string name="pref_rate_app_summary">If you like RasPi Check, take a moment and rate it.</string>
     <string name="pref_version">Version</string>
@@ -203,10 +205,10 @@
     <string name="widget_update_interval_custom_text">Update interval (in minutes)</string>
     <string name="widget_device_removed">The Raspberry Pi for this widget has been removed.</string>
     <string name="used_memory">Used memory</string>
-    <string name="widget_memory_header">RAM</string>
-    <string name="widget_load_header">LOAD</string>
-    <string name="widget_arm_header">ARM</string>
-    <string name="widget_temp_header">TEMP</string>
+    <string name="widget_memory_header" translatable="false">RAM</string>
+    <string name="widget_load_header" translatable="false">LOAD</string>
+    <string name="widget_arm_header" translatable="false">ARM</string>
+    <string name="widget_temp_header" translatable="false">TEMP</string>
 
 
 </resources>
