@@ -31,10 +31,10 @@ import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
-import de.larsgrefer.android.library.injection.annotation.XmlLayout;
-import de.larsgrefer.android.library.injection.annotation.XmlMenu;
-import de.larsgrefer.android.library.injection.annotation.XmlView;
-import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
+import de.fhconfig.android.library.injection.annotation.XmlLayout;
+import de.fhconfig.android.library.injection.annotation.XmlMenu;
+import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 @XmlLayout(R.layout.activity_command_new)
 @XmlMenu(R.menu.activity_command_new)
