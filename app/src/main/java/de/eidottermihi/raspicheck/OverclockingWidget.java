@@ -131,14 +131,14 @@ public class OverclockingWidget extends AppWidgetProvider {
                         if ("online".equals(status)) {
                             String temp = stringStringMap.get("temp");
                             if (temp != null) {
-                                views.setTextViewText(R.id.textTempValue, temp + "°C");
                                 double tempValue = Double.parseDouble(temp);
+                                views.setTextViewText(R.id.textTempValue, ((int)tempValue) + " °C");
                                 updateProgressbar(views, R.id.progressBarTempValue, 0, 90, tempValue);
                             }
                             String armFreq = stringStringMap.get("armFreq");
                             if (armFreq != null) {
                                 double armFreqDouble = Double.valueOf(armFreq) / 1000 / 1000;
-                                views.setTextViewText(R.id.textArmValue, armFreqDouble + " MHz");
+                                views.setTextViewText(R.id.textArmValue, (int)(armFreqDouble) + " MHz");
                                 updateProgressbar(views, R.id.progressBarArmValue, 500, 1200, armFreqDouble);
                             }
                             String loadAvg = stringStringMap.get("loadAvg");

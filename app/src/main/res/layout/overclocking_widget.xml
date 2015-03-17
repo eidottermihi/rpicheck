@@ -1,143 +1,154 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#99000000"
-                android:padding="@dimen/widget_margin">
-
-    <TextView
-        android:id="@+id/textDeviceValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:padding="4dp"
-        android:text="myPi"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <TextView
-        android:id="@+id/textDeviceUserHost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/textDeviceValue"
-        android:layout_toRightOf="@+id/textDeviceValue"
-        android:text="pi@raspberrypiv2"
-        android:textStyle="italic"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:padding="4dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignBaseline="@+id/textDeviceValue"/>
-
-    <TextView
-        android:id="@+id/textStatusValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:singleLine="true"
-        android:text="online 16:32"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_alignBaseline="@+id/textDeviceValue"
-        android:layout_toLeftOf="@+id/buttonRefresh"
-        android:layout_toStartOf="@+id/buttonRefresh"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonRefresh"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/textDeviceValue"
-        android:layout_above="@+id/relLayoutData"
-        android:src="@drawable/ic_refresh_white_24dp"/>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="#99000000"
+             android:padding="@dimen/widget_margin">
 
     <RelativeLayout
-        android:id="@+id/relLayoutData"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/textDeviceValue">
-
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/textTempValue"
+            android:id="@+id/textDeviceValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:minWidth="80dp"
+            android:layout_alignParentTop="true"
             android:padding="4dp"
-            android:text="22°C"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:singleLine="true"
+            android:text="myPi"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-
-        <ProgressBar
-            android:id="@+id/progressBarTempValue"
-            style="?android:attr/progressBarStyleHorizontal"
+        <TextView
+            android:id="@+id/textDeviceUserHost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textTempValue"
+            android:layout_alignBaseline="@+id/textDeviceValue"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/textDeviceValue"
+            android:layout_toRightOf="@+id/textDeviceValue"
+            android:padding="4dp"
+            android:singleLine="true"
+            android:text="pi@raspberrypiv2"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/textStatusValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textDeviceValue"
+            android:layout_toLeftOf="@+id/buttonRefresh"
+            android:layout_toStartOf="@+id/buttonRefresh"
+            android:padding="4dp"
+            android:singleLine="true"
+            android:text="online 16:32"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+        <ImageButton
+            android:id="@+id/buttonRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linLayoutData"
+            android:layout_alignBottom="@+id/textDeviceValue"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/textTempValue"
-            android:layout_toRightOf="@+id/textTempValue"
-            android:padding="4dp"
-            android:progressDrawable="@drawable/temp_progressbar"
-            />
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_refresh_white_24dp"/>
 
-        <TextView
-            android:id="@+id/textArmValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textTempValue"
-            android:layout_toLeftOf="@+id/progressBarTempValue"
-            android:layout_toStartOf="@+id/progressBarTempValue"
-            android:padding="4dp"
-            android:text="700 MHz"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+        <LinearLayout
+            android:id="@+id/linLayoutData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/textDeviceValue"
+            android:orientation="vertical"
+            >
 
-        <ProgressBar
-            android:id="@+id/progressBarArmValue"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textArmValue"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/textArmValue"
-            android:layout_toRightOf="@+id/textArmValue"
-            android:padding="4dp"
-            android:progressDrawable="@drawable/temp_progressbar"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:minHeight="32dp"
+                >
 
-        <TextView
-            android:id="@+id/textLoadValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textArmValue"
-            android:layout_toLeftOf="@+id/progressBarArmValue"
-            android:layout_toStartOf="@+id/progressBarArmValue"
-            android:padding="4dp"
-            android:text="85 %"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+                <TextView
+                    android:id="@+id/textTempValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:minWidth="80dp"
+                    android:padding="4dp"
+                    android:text="22°C"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    />
 
-        <ProgressBar
-            android:id="@+id/progressBarLoad"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textLoadValue"
-            android:layout_alignEnd="@+id/progressBarArmValue"
-            android:layout_alignRight="@+id/progressBarArmValue"
-            android:layout_below="@+id/progressBarArmValue"
-            android:layout_toRightOf="@+id/textLoadValue"
-            android:padding="4dp"
-            android:progressDrawable="@drawable/temp_progressbar"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBarTempValue"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:padding="4dp"
+                    android:progressDrawable="@drawable/temp_progressbar"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:minHeight="32dp"
+                >
+
+                <TextView
+                    android:id="@+id/textArmValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_vertical"
+                    android:minWidth="80dp"
+                    android:padding="4dp"
+                    android:text="700 MHz"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBarArmValue"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:padding="4dp"
+                    android:progressDrawable="@drawable/temp_progressbar"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:minHeight="32dp"
+                >
+
+                <TextView
+                    android:id="@+id/textLoadValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_vertical"
+                    android:minWidth="80dp"
+                    android:padding="4dp"
+                    android:text="85 %"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBarLoad"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:padding="4dp"
+                    android:progressDrawable="@drawable/temp_progressbar"/>
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
-
-
-</RelativeLayout>
+</FrameLayout>
