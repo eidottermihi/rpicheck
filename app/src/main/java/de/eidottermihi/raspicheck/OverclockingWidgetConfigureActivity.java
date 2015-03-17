@@ -23,11 +23,14 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -42,10 +45,10 @@ import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
-import de.larsgrefer.android.library.injection.annotation.XmlLayout;
-import de.larsgrefer.android.library.injection.annotation.XmlMenu;
-import de.larsgrefer.android.library.injection.annotation.XmlView;
-import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
+import de.fhconfig.android.library.injection.annotation.XmlLayout;
+import de.fhconfig.android.library.injection.annotation.XmlMenu;
+import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 
 /**
@@ -53,8 +56,12 @@ import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
  */
 @XmlLayout(R.layout.overclocking_widget_configure)
 @XmlMenu(R.menu.activity_overclocking_widget_configure)
-public class OverclockingWidgetConfigureActivity extends InjectionActionBarActivity implements CompoundButton.OnCheckedChangeListener {
+public class OverclockingWidgetConfigureActivity extends InjectionActionBarActivity implements AdapterView.OnItemSelectedListener {
 
+    public static final String PREF_SHOW_TEMP_SUFFIX = "_temp";
+    public static final String PREF_SHOW_ARM_SUFFIX = "_arm";
+    public static final String PREF_SHOW_LOAD_SUFFIX = "_load";
+    public static final String PREF_SHOW_MEMORY_SUFFIX = "_memory";
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidgetConfigureActivity.class);
     private static final String PREFS_NAME = "de.eidottermihi.raspicheck.OverclockingWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
@@ -64,12 +71,22 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private Spinner widgetPiSpinner;
     @XmlView(R.id.textEditUpdateInterval)
     private EditText textEditUpdateInterval;
-    @XmlView(R.id.checkBoxAutoUpdates)
-    private CheckBox checkBoxAutoUpdates;
-    @XmlView(R.id.linLayoutUpdateInterval)
-    private LinearLayout linLayoutUpdateInterval;
+    @XmlView(R.id.widgetUpdateSpinner)
+    private Spinner widgetUpdateSpinner;
+    @XmlView(R.id.linLayoutCustomUpdateInterval)
+    private LinearLayout linLayoutCustomInterval;
+    @XmlView(R.id.checkBoxArm)
+    private CheckBox checkBoxArm;
+    @XmlView(R.id.checkBoxLoad)
+    private CheckBox checkBoxLoad;
+    @XmlView(R.id.checkBoxTemp)
+    private CheckBox checkBoxTemp;
+    @XmlView(R.id.checkBoxRam)
+    private CheckBox checkBoxRam;
 
     private DeviceDbHelper deviceDbHelper;
+
+    private int[] updateIntervalsMinutes;
 
     public OverclockingWidgetConfigureActivity() {
         super();
@@ -80,11 +97,24 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
      * @param appWidgetId
      * @param deviceId    ID of the chosen device
      */
-    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId, int updateInterval) {
+    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId, int updateInterval, boolean showTemp, boolean showArm, boolean showLoad, boolean showMemory) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putLong(PREF_PREFIX_KEY + appWidgetId, deviceId);
-        prefs.putInt(PREF_PREFIX_KEY + appWidgetId + PREF_UPDATE_INTERVAL_SUFFIX, updateInterval);
+        prefs.putInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval);
+        prefs.putBoolean(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId), showTemp);
+        prefs.putBoolean(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm);
+        prefs.putBoolean(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad);
+        prefs.putBoolean(prefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory);
         prefs.commit();
+    }
+
+    static String prefKey(String key, int appWidgetId) {
+        return PREF_PREFIX_KEY + appWidgetId + key;
+    }
+
+    static boolean loadShowStatus(Context context, String key, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getBoolean(prefKey(key, appWidgetId), true);
     }
 
     static Long loadDeviceId(Context context, int appWidgetId) {
@@ -99,14 +129,16 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
 
     static Integer loadUpdateInterval(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        int updateInterval = prefs.getInt(PREF_PREFIX_KEY + appWidgetId + PREF_UPDATE_INTERVAL_SUFFIX, Integer.parseInt(context.getString(R.string.default_update_interval)));
-        return updateInterval;
+        return prefs.getInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), Integer.parseInt(context.getString(R.string.default_update_interval)));
     }
 
     static void deleteDevicePref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId + PREF_UPDATE_INTERVAL_SUFFIX);
+        prefs.remove(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId));
+        prefs.remove(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId));
+        prefs.remove(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId));
+        prefs.remove(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId));
         prefs.commit();
     }
 
@@ -134,13 +166,20 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
 
         this.getSupportActionBar().setTitle(getString(R.string.widget_configure_title));
         deviceDbHelper = new DeviceDbHelper(this);
-        initSpinner();
-        checkBoxAutoUpdates.setOnCheckedChangeListener(this);
+        initSpinners();
+        linLayoutCustomInterval.setVisibility(View.GONE);
     }
 
-    private void initSpinner() {
-        widgetPiSpinner.setAdapter(new DeviceSpinnerAdapter(OverclockingWidgetConfigureActivity.this, deviceDbHelper.getFullDeviceCursor(), true));
+    private void initSpinners() {
+        final DeviceSpinnerAdapter deviceSpinnerAdapter = new DeviceSpinnerAdapter(OverclockingWidgetConfigureActivity.this, deviceDbHelper.getFullDeviceCursor(), true);
+        widgetPiSpinner.setAdapter(deviceSpinnerAdapter);
+        this.updateIntervalsMinutes = this.getResources().getIntArray(R.array.widget_update_intervals_values);
+        final ArrayAdapter<CharSequence> updateIntervalAdapter = ArrayAdapter.createFromResource(OverclockingWidgetConfigureActivity.this, R.array.widget_update_intervals, android.R.layout.simple_spinner_item);
+        updateIntervalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        widgetUpdateSpinner.setAdapter(updateIntervalAdapter);
+        widgetUpdateSpinner.setOnItemSelectedListener(this);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -148,8 +187,6 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
             case R.id.menu_save:
                 final Context context = OverclockingWidgetConfigureActivity.this;
 
-                // When the button is clicked, store the string locally
-                //String widgetText = mAppWidgetText.getText().toString();
                 long selectedItemId = widgetPiSpinner.getSelectedItemId();
                 LOGGER.info("Selected Device - Item ID = {}", selectedItemId);
                 RaspberryDeviceBean deviceBean = deviceDbHelper.read(selectedItemId);
@@ -158,7 +195,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                     return super.onOptionsItemSelected(item);
                 }
                 int updateIntervalInMinutes = 0;
-                if (checkBoxAutoUpdates.isChecked()) {
+                if (updateIntervalsMinutes[widgetUpdateSpinner.getSelectedItemPosition()] == -1) {
                     String s = textEditUpdateInterval.getText().toString().trim();
                     if (Strings.isNullOrEmpty(s)) {
                         textEditUpdateInterval.setError(getString(R.string.widget_update_interval_error));
@@ -169,9 +206,11 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                         textEditUpdateInterval.setError(getString(R.string.widget_update_interval_zero));
                         return super.onOptionsItemSelected(item);
                     }
+                } else {
+                    updateIntervalInMinutes = updateIntervalsMinutes[widgetUpdateSpinner.getSelectedItemPosition()];
                 }
                 // save Device ID in prefs
-                saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateIntervalInMinutes);
+                saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateIntervalInMinutes, checkBoxTemp.isChecked(), checkBoxArm.isChecked(), checkBoxLoad.isChecked(), checkBoxRam.isChecked());
                 if (updateIntervalInMinutes > 0) {
                     long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
                     // Setting alarm via AlarmManager
@@ -198,12 +237,20 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked) {
-            linLayoutUpdateInterval.setVisibility(View.VISIBLE);
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        LOGGER.debug("Item pos {}, id {} selected.", position, id);
+        int updateIntervalInMinutes = updateIntervalsMinutes[position];
+        if (updateIntervalInMinutes == -1) {
+            // custom time interval
+            linLayoutCustomInterval.setVisibility(View.VISIBLE);
         } else {
-            linLayoutUpdateInterval.setVisibility(View.GONE);
+            linLayoutCustomInterval.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // nothing to do
     }
 }
 

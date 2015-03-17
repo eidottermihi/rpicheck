@@ -40,6 +40,7 @@ public class MemoryTest extends AbstractMockedQueryTest {
                 .getBytes());
         Assert.assertEquals(275136L * 1000, memoryBean.getTotalUsed()
                 .getBytes());
+        Assert.assertEquals(275136.0/762420.0, memoryBean.getPercentageUsed(), 0.001);
     }
 
 }

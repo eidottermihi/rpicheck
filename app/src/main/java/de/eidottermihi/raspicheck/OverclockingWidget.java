@@ -40,6 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
+import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
+import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
@@ -56,11 +58,18 @@ import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 public class OverclockingWidget extends AppWidgetProvider {
 
     public static final String ACTION_WIDGET_UPDATE_ONE = "updateOneWidget";
-
+    public static final String STATUS = "status";
+    public static final String STATUS_ONLINE = "online";
+    public static final String STATUS_OFFLINE = "offline";
+    public static final String KEY_TEMP = "temp";
+    public static final String KEY_ARM_FREQ = "armFreq";
+    public static final String KEY_LOAD_AVG = "loadAvg";
+    public static final String KEY_MEM_USED = "memUsed";
+    public static final String KEY_MEM_TOTAL = "memTotal";
+    public static final String KEY_MEM_USED_PERCENT = "memUsedPercent";
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidget.class);
     private static final String URI_SCHEME = "raspicheck";
     private static final String ACTION_WIDGET_UPDATE_ONE_MANUAL = "updateOneWidgetManual";
-
     /**
      * Place to store URIs which are used for update via AlarmManager
      */
@@ -86,18 +95,35 @@ public class OverclockingWidget extends AppWidgetProvider {
         if (deviceId != null) {
             // get update interval
             Integer updateInterval = OverclockingWidgetConfigureActivity.loadUpdateInterval(context, appWidgetId);
+            final boolean showTemp = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_TEMP_SUFFIX, appWidgetId);
+            final boolean showArm = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_ARM_SUFFIX, appWidgetId);
+            final boolean showLoad = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_LOAD_SUFFIX, appWidgetId);
+            final boolean showMemory = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_MEMORY_SUFFIX, appWidgetId);
             RaspberryDeviceBean deviceBean = deviceDb.read(deviceId);
+            if (deviceBean == null) {
+                // device has been deleted
+                LOGGER.debug("Device has been deleted, showing alternate view with message.");
+                final RemoteViews removedView = new RemoteViews(context.getPackageName(), R.layout.overclocking_widget_no_device);
+                appWidgetManager.updateAppWidget(appWidgetId, removedView);
+                return;
+            }
             LOGGER.debug("Updating Widget[ID={}] for device {} - update interval: {} mins", appWidgetId, deviceBean.getName(), updateInterval);
             // Construct the RemoteViews object
             final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.overclocking_widget);
             views.setOnClickPendingIntent(R.id.buttonRefresh, getSelfPendingIntent(context, appWidgetId, ACTION_WIDGET_UPDATE_ONE_MANUAL));
             views.setTextViewText(R.id.textDeviceValue, deviceBean.getName());
             views.setTextViewText(R.id.textDeviceUserHost, String.format("%s@%s", deviceBean.getUser(), deviceBean.getHost()));
+            views.setViewVisibility(R.id.linLayoutTemp, showTemp ? View.VISIBLE : View.GONE);
+            views.setViewVisibility(R.id.linLayoutArm, showArm ? View.VISIBLE : View.GONE);
+            views.setViewVisibility(R.id.linLayoutLoad, showLoad ? View.VISIBLE : View.GONE);
+            views.setViewVisibility(R.id.linLayoutMem, showLoad ? View.VISIBLE : View.GONE);
             final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 LOGGER.debug("Network available - querying device...");
-                views.setTextViewText(R.id.textStatusValue, context.getString(R.string.widget_refreshing));
+                views.setViewVisibility(R.id.textStatusValue, View.GONE);
+                views.setViewVisibility(R.id.buttonRefresh, View.GONE);
+                views.setViewVisibility(R.id.refreshProgressBar, View.VISIBLE);
                 appWidgetManager.updateAppWidget(appWidgetId, views);
                 // query in AsyncTask
                 new AsyncTask<RaspberryDeviceBean, Void, Map<String, String>>() {
@@ -108,17 +134,29 @@ public class OverclockingWidget extends AppWidgetProvider {
                         IQueryService query = new RaspiQuery(deviceBean.getHost(), deviceBean.getUser(), deviceBean.getPort());
                         try {
                             connect(query, deviceBean);
-                            result.put("status", "online");
-                            final VcgencmdBean vcgencmdBean = query.queryVcgencmd();
-                            if (vcgencmdBean != null) {
-                                result.put("temp", vcgencmdBean.getCpuTemperature() + "");
-                                result.put("armFreq", vcgencmdBean.getArmFrequency() + "");
+                            result.put(STATUS, STATUS_ONLINE);
+                            if (showArm || showTemp) {
+                                final VcgencmdBean vcgencmdBean = query.queryVcgencmd();
+                                if (vcgencmdBean != null) {
+                                    result.put(KEY_TEMP, vcgencmdBean.getCpuTemperature() + "");
+                                    result.put(KEY_ARM_FREQ, vcgencmdBean.getArmFrequency() + "");
+                                }
                             }
-                            double loadAverage = query.queryLoadAverage(LoadAveragePeriod.FIVE_MINUTES);
-                            result.put("loadAvg", loadAverage + "");
+                            if (showMemory) {
+                                final RaspiMemoryBean memoryBean = query.queryMemoryInformation();
+                                if (memoryBean != null && memoryBean.getErrorMessage() == null) {
+                                    result.put(KEY_MEM_USED, memoryBean.getTotalUsed().humanReadableByteCount(false));
+                                    result.put(KEY_MEM_TOTAL, memoryBean.getTotalMemory().humanReadableByteCount(false));
+                                    result.put(KEY_MEM_USED_PERCENT, String.valueOf(memoryBean.getPercentageUsed()));
+                                }
+                            }
+                            if (showLoad) {
+                                double loadAverage = query.queryLoadAverage(LoadAveragePeriod.FIVE_MINUTES);
+                                result.put(KEY_LOAD_AVG, String.valueOf(loadAverage));
+                            }
                             query.disconnect();
                         } catch (RaspiQueryException e) {
-                            result.put("status", "offline");
+                            result.put(STATUS, STATUS_OFFLINE);
                         }
                         return result;
                     }
@@ -126,40 +164,48 @@ public class OverclockingWidget extends AppWidgetProvider {
                     @Override
                     protected void onPostExecute(Map<String, String> stringStringMap) {
                         super.onPostExecute(stringStringMap);
-                        String status = stringStringMap.get("status");
+                        String status = stringStringMap.get(STATUS);
                         views.setTextViewText(R.id.textStatusValue, status + " - " + new SimpleDateFormat("HH:mm").format(new Date()));
-                        if ("online".equals(status)) {
-                            String temp = stringStringMap.get("temp");
+                        views.setViewVisibility(R.id.textStatusValue, View.VISIBLE);
+                        views.setViewVisibility(R.id.buttonRefresh, View.VISIBLE);
+                        views.setViewVisibility(R.id.refreshProgressBar, View.GONE);
+                        if (STATUS_ONLINE.equals(status)) {
+                            String temp = stringStringMap.get(KEY_TEMP);
                             if (temp != null) {
                                 double tempValue = Double.parseDouble(temp);
-                                views.setTextViewText(R.id.textTempValue, ((int)tempValue) + " °C");
+                                views.setTextViewText(R.id.textTempValue, FormatHelper.formatTemperature(tempValue, FormatHelper.SCALE_CELSIUS));
                                 updateProgressbar(views, R.id.progressBarTempValue, 0, 90, tempValue);
                             }
-                            String armFreq = stringStringMap.get("armFreq");
+                            String armFreq = stringStringMap.get(KEY_ARM_FREQ);
                             if (armFreq != null) {
-                                double armFreqDouble = Double.valueOf(armFreq) / 1000 / 1000;
-                                views.setTextViewText(R.id.textArmValue, (int)(armFreqDouble) + " MHz");
-                                updateProgressbar(views, R.id.progressBarArmValue, 500, 1200, armFreqDouble);
+                                long armFreqHz = Long.valueOf(armFreq);
+                                double armFreqDoubleMhz = Double.valueOf(armFreq) / 1000 / 1000;
+                                views.setTextViewText(R.id.textArmValue, FormatHelper.formatFrequency(armFreqHz, FormatHelper.SCALE_MHZ));
+                                updateProgressbar(views, R.id.progressBarArmValue, 500, 1200, armFreqDoubleMhz);
                             }
-                            String loadAvg = stringStringMap.get("loadAvg");
+                            String loadAvg = stringStringMap.get(KEY_LOAD_AVG);
                             if (loadAvg != null) {
                                 double loadAvgDouble = Double.parseDouble(loadAvg);
                                 int progressValue = (int) (loadAvgDouble * 100);
-                                views.setTextViewText(R.id.textLoadValue, progressValue + " %");
+                                views.setTextViewText(R.id.textLoadValue, FormatHelper.formatPercentage(progressValue));
                                 updateProgressbar(views, R.id.progressBarLoad, 0, 100, progressValue);
+                            }
+                            String memUsedPercent = stringStringMap.get(KEY_MEM_USED_PERCENT);
+                            if (memUsedPercent != null) {
+                                updateMemory(memUsedPercent, views);
                             }
                         } else {
                             LOGGER.debug("Query failed, showing device as offline.");
-                            views.setViewVisibility(R.id.textTempValue, View.GONE);
-                            views.setViewVisibility(R.id.progressBarTempValue, View.GONE);
-                            views.setViewVisibility(R.id.textArmValue, View.GONE);
-                            views.setViewVisibility(R.id.progressBarArmValue, View.GONE);
-                            views.setViewVisibility(R.id.textLoadValue, View.GONE);
-                            views.setViewVisibility(R.id.progressBarLoad, View.GONE);
                         }
                         // Instruct the widget manager to update the widget
                         LOGGER.debug("Updating widget[ID={}] view.", appWidgetId);
                         appWidgetManager.updateAppWidget(appWidgetId, views);
+                    }
+
+                    private void updateMemory(String memUsedPercent, RemoteViews views) {
+                        int memUsedPercentInt = (int) (Double.parseDouble(memUsedPercent) * 100);
+                        views.setTextViewText(R.id.textMemoryValue, FormatHelper.formatPercentage(memUsedPercentInt));
+                        updateProgressbar(views, R.id.progressBarMemory, 0, 100, memUsedPercentInt);
                     }
 
                     private void updateProgressbar(RemoteViews views, int progressBarId, double min, double max, double value) {
@@ -193,7 +239,14 @@ public class OverclockingWidget extends AppWidgetProvider {
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    protected static Uri getPendingIntentUri(int appWidgetId){
+    private static PendingIntent getConfigurationPendingIntent(Context context, int appWidgetId){
+        final Intent intent = new Intent(context, OverclockingWidgetConfigureActivity.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.setData(getPendingIntentUri(appWidgetId));
+        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    protected static Uri getPendingIntentUri(int appWidgetId) {
         return Uri.withAppendedPath(Uri.parse(URI_SCHEME + "://widget/id/"), String.valueOf(appWidgetId));
     }
 
@@ -255,7 +308,7 @@ public class OverclockingWidget extends AppWidgetProvider {
 
     private void removeAlarm(Context c, int appWidgetId) {
         Uri removedUri = uris.remove(appWidgetId);
-        if(removedUri != null){
+        if (removedUri != null) {
             LOGGER.debug("Removing alarm for Widget[ID={}].", appWidgetId);
             PendingIntent pendingIntent = getSelfPendingIntent(c, appWidgetId, removedUri, ACTION_WIDGET_UPDATE_ONE);
             AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);

@@ -35,7 +35,7 @@ android {
 dependencies {
     compile project(':libraries:ssh')
     compile project(':libraries:file-explorer')
-    compile 'de.larsgrefer:android-library:0.1'
+    compile 'de.larsgrefer:android-library:0.5'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile 'com.github.tony19:logback-android-classic:1.0.10-2'

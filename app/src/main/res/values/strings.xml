@@ -184,13 +184,29 @@
     <string name="pref_load_avg_summary">Time period for load average calculation.</string>
     <string name="pref_load_avg_title">Load Average time period</string>
     <string name="widget_pi">Choose Raspberry Pi</string>
-    <string name="widget_refreshing">refreshing...</string>
     <string name="widget_configure_title">Configure widget</string>
-    <string name="widget_update_interval">Update interval (Minutes)</string>
+    <string name="widget_update_interval">Automatic updates</string>
     <string name="default_update_interval" translatable="false">60</string>
     <string name="widget_update_interval_error">Not a valid update interval.</string>
     <string name="widget_key_pass_error">You need to save your keyfile passphrase because widgets cannot prompt for it.</string>
     <string name="widget_cb_updates">Enable automatic updates</string>
     <string name="widget_update_interval_zero">Must be greater than zero.</string>
+    <string name="widget_update_interval_none">Manual updates only</string>
+    <string name="widget_update_interval_five_min">5 Minutes</string>
+    <string name="widget_update_interval_ten_min">10 Minutes</string>
+    <string name="widget_update_interval_thirty_min">30 Minutes</string>
+    <string name="widget_update_interval_one_hour">1 Hour</string>
+    <string name="widget_update_interval_two_hours">2 Hours</string>
+    <string name="widget_update_interval_eight_hours">8 Hours</string>
+    <string name="widget_update_interval_one_day">1 Day</string>
+    <string name="widget_update_interval_custom">Custom interval</string>
+    <string name="widget_update_interval_custom_text">Update interval (in minutes)</string>
+    <string name="widget_device_removed">The Raspberry Pi for this widget has been removed.</string>
+    <string name="used_memory">Used memory</string>
+    <string name="widget_memory_header">RAM</string>
+    <string name="widget_load_header">LOAD</string>
+    <string name="widget_arm_header">ARM</string>
+    <string name="widget_temp_header">TEMP</string>
+
 
 </resources>
