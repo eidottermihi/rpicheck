@@ -32,7 +32,7 @@ public class RaspiMemoryBean implements Serializable {
         this.totalMemory = MemoryBean.from(Memory.KB, totalMemory);
         this.totalUsed = MemoryBean.from(Memory.KB, totalUsed);
         this.totalFree = MemoryBean.from(Memory.KB, totalMemory - totalUsed);
-        this.percentageUsed = totalUsed / totalMemory;
+        this.percentageUsed = ((float) totalUsed) / ((float) totalMemory);
     }
 
     public RaspiMemoryBean(String string) {
