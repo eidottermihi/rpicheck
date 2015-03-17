@@ -38,5 +38,28 @@
         <item>5 Minutes</item>
         <item>15 Minutes</item>
     </string-array>
+    <string-array name="widget_update_intervals" translatable="false">
+        <item>@string/widget_update_interval_none</item>
+        <item>@string/widget_update_interval_five_min</item>
+        <item>@string/widget_update_interval_ten_min</item>
+        <item>@string/widget_update_interval_thirty_min</item>
+        <item>@string/widget_update_interval_one_hour</item>
+        <item>@string/widget_update_interval_two_hours</item>
+        <item>@string/widget_update_interval_eight_hours</item>
+        <item>@string/widget_update_interval_one_day</item>
+        <item>@string/widget_update_interval_custom</item>
+    </string-array>
+    <integer-array name="widget_update_intervals_values">
+        <!-- corresponds to widget update intervals -->
+        <item>0</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>480</item>
+        <item>1440</item>
+        <item>-1</item>
+    </integer-array>
 
 </resources>

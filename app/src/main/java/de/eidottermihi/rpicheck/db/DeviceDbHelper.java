@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.activity.helper.CursorHelper;
@@ -58,6 +57,16 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
     private static final String COLUMN_KEYFILE_PATH = "keyfile_path";
     private static final String COLUMN_KEYFILE_PASS = "keyfile_pass";
     private static final String COLUMN_SERIAL = "serial";
+    private static final String DEVICE_TABLE_CREATE = "CREATE TABLE "
+            + DEVICES_TABLE_NAME + " (" + COLUMN_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_NAME
+            + " TEXT ," + COLUMN_DESCRIPTION + " TEXT, " + COLUMN_HOST
+            + " TEXT, " + COLUMN_USER + " TEXT," + COLUMN_PASSWD + " TEXT, "
+            + COLUMN_SUDOPW + " TEXT, " + COLUMN_SSHPORT + " INTEGER, "
+            + COLUMN_CREATED_AT + " INTEGER, " + COLUMN_MODIFIED_AT
+            + " INTEGER, " + COLUMN_SERIAL + " TEXT, " + COLUMN_AUTH_METHOD
+            + " TEXT NOT NULL, " + COLUMN_KEYFILE_PATH + " TEXT, "
+            + COLUMN_KEYFILE_PASS + " TEXT)";
     private static final String COLUMN_QUERY_TIME = "time";
     private static final String COLUMN_QUERY_STATUS = "status";
     private static final String COLUMN_QUERY_DEVICE_ID = "device_id";
@@ -72,21 +81,6 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
     private static final String COLUMN_QUERY_MEM_TOTAL = "mem_total";
     private static final String COLUMN_QUERY_MEM_FREE = "mem_free";
     private static final String COLUMN_QUERY_DISTRIBUTION = "distribution";
-    private static final String COLUMN_CMD_COMMAND = "command";
-    private static final String COLUMN_CMD_FLAGOUTPUT = "flag_output";
-    private static final String COLUMN_CMD_NAME = "name";
-
-    private static final String DEVICE_TABLE_CREATE = "CREATE TABLE "
-            + DEVICES_TABLE_NAME + " (" + COLUMN_ID
-            + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_NAME
-            + " TEXT ," + COLUMN_DESCRIPTION + " TEXT, " + COLUMN_HOST
-            + " TEXT, " + COLUMN_USER + " TEXT," + COLUMN_PASSWD + " TEXT, "
-            + COLUMN_SUDOPW + " TEXT, " + COLUMN_SSHPORT + " INTEGER, "
-            + COLUMN_CREATED_AT + " INTEGER, " + COLUMN_MODIFIED_AT
-            + " INTEGER, " + COLUMN_SERIAL + " TEXT, " + COLUMN_AUTH_METHOD
-            + " TEXT NOT NULL, " + COLUMN_KEYFILE_PATH + " TEXT, "
-            + COLUMN_KEYFILE_PASS + " TEXT)";
-
     private static final String QUERY_TABLE_CREATE = "CREATE TABLE "
             + QUERIES_TABLE_NAME + " (" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
@@ -100,7 +94,9 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
             + COLUMN_QUERY_UPTIME_IDLE + " INTEGER, " + COLUMN_QUERY_MEM_TOTAL
             + " INTEGER, " + COLUMN_QUERY_MEM_FREE + " INTEGER, "
             + COLUMN_QUERY_DISTRIBUTION + " TEXT)";
-
+    private static final String COLUMN_CMD_COMMAND = "command";
+    private static final String COLUMN_CMD_FLAGOUTPUT = "flag_output";
+    private static final String COLUMN_CMD_NAME = "name";
     private static final String COMMAND_TABLE_CREATE = "CREATE TABLE "
             + COMMANDS_TABLE_NAME + " (" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_CMD_NAME
@@ -225,15 +221,15 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SSHPORT, sshPort);
         values.put(COLUMN_SUDOPW, sudoPass);
         values.put(COLUMN_AUTH_METHOD, authMethod);
-        if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+        if (authMethod.equals(NewRaspiAuthActivity.AUTH_PASSWORD)) {
             // insert only ssh password
             values.put(COLUMN_PASSWD, pass);
         } else if (authMethod
-                .equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+                .equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY)) {
             // insert only location of keyfile
             values.put(COLUMN_KEYFILE_PATH, keyFilePath);
         } else if (authMethod
-                .equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+                .equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
             // insert keyfile path and password
             values.put(COLUMN_KEYFILE_PATH, keyFilePath);
             values.put(COLUMN_KEYFILE_PASS, keyFilePass);
@@ -256,30 +252,16 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
      */
     public RaspberryDeviceBean read(long id) {
         LOGGER.trace("Reading device with id = " + id);
-        RaspberryDeviceBean bean = new RaspberryDeviceBean();
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.query(DEVICES_TABLE_NAME, new String[]{COLUMN_ID,
-                        COLUMN_HOST, COLUMN_USER, COLUMN_PASSWD, COLUMN_SSHPORT,
-                        COLUMN_CREATED_AT, COLUMN_MODIFIED_AT, COLUMN_SERIAL,
-                        COLUMN_DESCRIPTION, COLUMN_NAME, COLUMN_SUDOPW,
-                        COLUMN_AUTH_METHOD, COLUMN_KEYFILE_PATH, COLUMN_KEYFILE_PASS},
+        Cursor cursor = db.query(DEVICES_TABLE_NAME, new String[]{COLUMN_ID, COLUMN_NAME,
+                        COLUMN_DESCRIPTION, COLUMN_HOST, COLUMN_USER, COLUMN_PASSWD,
+                        COLUMN_SUDOPW, COLUMN_SSHPORT, COLUMN_CREATED_AT, COLUMN_MODIFIED_AT,
+                        COLUMN_SERIAL, COLUMN_AUTH_METHOD, COLUMN_KEYFILE_PATH,
+                        COLUMN_KEYFILE_PASS},
                 COLUMN_ID + "=" + id, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            bean.setId(cursor.getInt(0));
-            bean.setHost(cursor.getString(1));
-            bean.setUser(cursor.getString(2));
-            bean.setPass(cursor.getString(3));
-            bean.setPort(cursor.getInt(4));
-            bean.setCreatedAt(new Date(cursor.getLong(5)));
-            bean.setModifiedAt(new Date(cursor.getLong(6)));
-            bean.setSerial(cursor.getString(7));
-            bean.setDescription(cursor.getString(8));
-            bean.setName(cursor.getString(9));
-            bean.setSudoPass(cursor.getString(10));
-            bean.setAuthMethod(cursor.getString(11));
-            bean.setKeyfilePath(cursor.getString(12));
-            bean.setKeyfilePass(cursor.getString(13));
+            final RaspberryDeviceBean bean = CursorHelper.readDevice(cursor);
             cursor.close();
             db.close();
             return bean;

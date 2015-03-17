@@ -1,0 +1,270 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/appwidget_dark_bg"
+    android:orientation="horizontal"
+    android:padding="@dimen/widget_margin"
+    android:weightSum="1"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:id="@+id/linLayoutInfo"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:minWidth="120dp"
+        android:orientation="vertical"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                >
+
+
+                <ImageButton
+                    android:id="@+id/buttonRefresh"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/ic_refresh_white_24dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:padding="1dp"
+                    android:background="@null"
+                    />
+                <ProgressBar
+                    android:id="@+id/refreshProgressBar"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_below="@+id/buttonRefresh"
+                    android:indeterminate="true"
+                    android:padding="3dp"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textDeviceValue"
+                    style="@style/Theme.rpiCheck.Dark.TextMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="1dp"
+                    android:singleLine="true"
+                    />
+
+                <TextView
+                    android:id="@+id/textDeviceUserHost"
+                    style="@style/Theme.rpiCheck.Dark.TextSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    />
+
+                <TextView
+                    android:id="@+id/textStatusValue"
+                    style="@style/Theme.rpiCheck.Dark.TextSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linLayoutTemp"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="4dp"
+        >
+
+        <ProgressBar
+            android:id="@+id/progressBarTempValue"
+            style="@style/Widget.ProgressBar.Vertical"
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/widget_temp_header"
+                />
+
+            <TextView
+                android:id="@+id/textTempValue"
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="2dp"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linLayoutArm"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="4dp">
+
+        <ProgressBar
+            android:id="@+id/progressBarArmValue"
+            style="@style/Widget.ProgressBar.Vertical"
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/widget_arm_header"
+                />
+
+            <TextView
+                android:id="@+id/textArmValue"
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="2dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linLayoutLoad"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="4dp">
+
+        <ProgressBar
+            android:id="@+id/progressBarLoad"
+            style="@style/Widget.ProgressBar.Vertical"
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/widget_load_header"
+                />
+
+            <TextView
+                android:id="@+id/textLoadValue"
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="2dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linLayoutMem"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="4dp">
+
+        <ProgressBar
+            android:id="@+id/progressBarMemory"
+            style="@style/Widget.ProgressBar.Vertical"
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/widget_memory_header"
+                />
+
+            <TextView
+                android:id="@+id/textMemoryValue"
+                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="2dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

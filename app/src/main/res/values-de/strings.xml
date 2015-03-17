@@ -173,5 +173,27 @@
 
     <string name="pref_load_avg_summary">Zeitspanne für die Berechnung der Auslastung.</string>
     <string name="pref_load_avg_title">Zeitspanne für durchschn. Auslastung</string>
+    <string name="widget_pi">Raspberry Pi auswählen</string>
+    <string name="widget_configure_title">Widget konfigurieren</string>
+    <string name="widget_update_interval">Automatisch aktualisieren</string>
+    <string name="widget_update_interval_error">Kein gültiges Update-Intervall.</string>
+    <string name="widget_key_pass_error">You need to save your keyfile passphrase because widgets cannot prompt for it.</string>
+    <string name="widget_cb_updates">Automatische Updates aktivieren</string>
+    <string name="widget_update_interval_zero">Muss größer als 0 sein.</string>
+    <string name="widget_update_interval_none">Nur manuell aktualisieren</string>
+    <string name="widget_update_interval_five_min">5 Minuten</string>
+    <string name="widget_update_interval_ten_min">10 Minuten</string>
+    <string name="widget_update_interval_thirty_min">30 Minuten</string>
+    <string name="widget_update_interval_one_hour">1 Stunde</string>
+    <string name="widget_update_interval_two_hours">2 Stunden</string>
+    <string name="widget_update_interval_eight_hours">8 Stunden</string>
+    <string name="widget_update_interval_one_day">1 Tag</string>
+    <string name="widget_update_interval_custom">Eigenes Intervall</string>
+    <string name="widget_update_interval_custom_text">Update interval (in minutes)</string>
+    <string name="widget_device_removed">The Raspberry Pi for this widget has been removed.</string>
+    <string name="used_memory">Speicherauslastung</string>
+    <string name="widget_memory_header">RAM</string>
+    <string name="widget_load_header">LOAD</string>
+    <string name="widget_temp_header">TEMP</string>
 
 </resources>
