@@ -56,10 +56,10 @@ import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog.PlaceholdersD
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
-import de.larsgrefer.android.library.injection.annotation.XmlLayout;
-import de.larsgrefer.android.library.injection.annotation.XmlMenu;
-import de.larsgrefer.android.library.injection.annotation.XmlView;
-import de.larsgrefer.android.library.ui.InjectionActionBarActivity;
+import de.fhconfig.android.library.injection.annotation.XmlLayout;
+import de.fhconfig.android.library.injection.annotation.XmlMenu;
+import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 @XmlLayout(R.layout.activity_commands)
 @XmlMenu(R.menu.activity_commands)
