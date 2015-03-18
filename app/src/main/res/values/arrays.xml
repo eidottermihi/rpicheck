@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="en" >
 
     <string-array name="temp_scales">
         <item>Celsius</item>

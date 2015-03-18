@@ -50,9 +50,6 @@
     <string name="activity_title_edit_raspi">Pi bearbeiten</string>
     <string name="disk_header_mounted_on">Mounted on</string>
     <string name="process_header">Prozesse</string>
-    <string name="header_pid">PID</string>
-    <string name="header_tty">TTY</string>
-    <string name="header_cpu_time">CPU</string>
     <string name="header_command">Kommando</string>
     <string name="pref_group_query_settings_title">Abfragen</string>
     <string name="pref_query_hide_root_title">Verstecke root Prozesse</string>
@@ -72,14 +69,11 @@
     <string name="network_status">Status</string>
     <string name="network_status_up">Up</string>
     <string name="network_status_down">Down</string>
-    <string name="network_ip">IP</string>
     <string name="network_signal">Signal</string>
     <string name="network_link">Qualität</string>
     <string name="pref_group_about">Über RasPi Check</string>
     <string name="pref_github">Source Code / Fehler</string>
-    <string name="pref_github_summary">github.com/eidottermihi/rpicheck</string>
     <string name="pref_dev_email">Entwickler kontaktieren</string>
-    <string name="pref_dev_email_summary">eidottermihi@gmail.com</string>
     <string name="pref_rate_app">App bewerten</string>
     <string name="pref_rate_app_summary">Wenn dir RasPi Check gefällt, nimm dir einen Moment Zeit es zu bewerten.</string>
     <string name="pref_version">Version</string>
@@ -96,7 +90,7 @@
     <string name="exception_dialog_title">Uups!</string>
     <string name="authentication_failed">SSH Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.</string>
     <string name="connection_failed">Die Verbindung konnte nicht hergestellt werden. Bitte überprüfe den Hostnamen und dein Netzwerk.</string>
-    <string name="errormessages_dialog_title">Sorry...</string>
+    <string name="errormessages_dialog_title">Sorry…</string>
     <string name="transport_exception">Die Verbindung wurde unerwartet geschlossen. Probier es noch einmal.</string>
     <string name="unexpected_exception">Ein unerwarteter Fehler ist aufgetreten. Probier es noch einmal.</string>
     <string name="exception_vcgencmd">Das Programm \'vcgencmd\' konnte auf deinem Pi nicht gefunden werden. Stelle sicher, dass es im Verzeichnis \'/usr/bin\' oder \'/opt/vc/bin\' ist.</string>
@@ -104,7 +98,7 @@
     <string name="changelog_full_title">Changelog</string>
     <string name="changelog_title">Was ist neu</string>
     <string name="changelog_ok_button">OK</string>
-    <string name="changelog_show_full">mehr...</string>
+    <string name="changelog_show_full">mehr…</string>
     <string name="pref_group_log">Log</string>
     <string name="pref_log_title">Log anzeigen</string>
     <string name="pref_log_title_summary">Öffnet den Log dieser App</string>
@@ -192,8 +186,5 @@
     <string name="widget_update_interval_custom_text">Update interval (in minutes)</string>
     <string name="widget_device_removed">The Raspberry Pi for this widget has been removed.</string>
     <string name="used_memory">Speicherauslastung</string>
-    <string name="widget_memory_header">RAM</string>
-    <string name="widget_load_header">LOAD</string>
-    <string name="widget_temp_header">TEMP</string>
 
 </resources>

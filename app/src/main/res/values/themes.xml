@@ -26,12 +26,12 @@
 
     </style>
     <style name="Theme.rpiCheck.Dark.TextSmall" parent="Theme.rpiCheck.Dark">
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
     </style>
     <style name="Theme.rpiCheck.Dark.TextMedium" parent="Theme.rpiCheck.Dark">
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
     </style>
