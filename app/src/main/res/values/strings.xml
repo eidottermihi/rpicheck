@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources
     xmlns:tools="http://schemas.android.com/tools"
-    tools:locale="en" >
+    tools:locale="en">
 
     <string name="app_name">RasPi Check</string>
     <string name="title_activity_main">RasPi Check</string>
@@ -187,13 +187,11 @@
     <string name="pref_load_avg_title">Load Average time period</string>
     <string name="widget_pi">Choose Raspberry Pi</string>
     <string name="widget_configure_title">Configure widget</string>
-    <string name="widget_update_interval">Automatic updates</string>
+    <string name="widget_update_interval">Update interval</string>
     <string name="default_update_interval" translatable="false">60</string>
     <string name="widget_update_interval_error">Not a valid update interval.</string>
     <string name="widget_key_pass_error">You need to save your keyfile passphrase because widgets cannot prompt for it.</string>
-    <string name="widget_cb_updates">Enable automatic updates</string>
     <string name="widget_update_interval_zero">Must be greater than zero.</string>
-    <string name="widget_update_interval_none">Manual updates only</string>
     <string name="widget_update_interval_five_min">5 Minutes</string>
     <string name="widget_update_interval_ten_min">10 Minutes</string>
     <string name="widget_update_interval_thirty_min">30 Minutes</string>
@@ -210,5 +208,9 @@
     <string name="widget_arm_header" translatable="false">ARM</string>
     <string name="widget_temp_header" translatable="false">TEMP</string>
 
+    <string name="widget_auto_update_yes">Yes</string>
+    <string name="widget_auto_update_wifi">Only on Wi-Fi</string>
+    <string name="widget_auto_update_no">No</string>
+    <string name="widget_auto_update">Automatic updates</string>
 
 </resources>

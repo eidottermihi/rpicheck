@@ -171,10 +171,7 @@
     <string name="widget_configure_title">Widget konfigurieren</string>
     <string name="widget_update_interval">Automatisch aktualisieren</string>
     <string name="widget_update_interval_error">Kein gültiges Update-Intervall.</string>
-    <string name="widget_key_pass_error">You need to save your keyfile passphrase because widgets cannot prompt for it.</string>
-    <string name="widget_cb_updates">Automatische Updates aktivieren</string>
     <string name="widget_update_interval_zero">Muss größer als 0 sein.</string>
-    <string name="widget_update_interval_none">Nur manuell aktualisieren</string>
     <string name="widget_update_interval_five_min">5 Minuten</string>
     <string name="widget_update_interval_ten_min">10 Minuten</string>
     <string name="widget_update_interval_thirty_min">30 Minuten</string>
@@ -183,8 +180,12 @@
     <string name="widget_update_interval_eight_hours">8 Stunden</string>
     <string name="widget_update_interval_one_day">1 Tag</string>
     <string name="widget_update_interval_custom">Eigenes Intervall</string>
-    <string name="widget_update_interval_custom_text">Update interval (in minutes)</string>
-    <string name="widget_device_removed">The Raspberry Pi for this widget has been removed.</string>
+    <string name="widget_update_interval_custom_text">Aktualisierungsintervall (in Minuten)</string>
+    <string name="widget_device_removed">Das Raspberry Pi zu diesem Widget wurde gelöscht.</string>
+    <string name="widget_auto_update_no">Nein</string>
+    <string name="widget_auto_update_wifi">Nur bei WLAN</string>
+    <string name="widget_auto_update_yes">Ja</string>
+    <string name="widget_auto_update">Automatisch aktualisieren</string>
     <string name="used_memory">Speicherauslastung</string>
 
 </resources>

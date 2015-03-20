@@ -70,10 +70,6 @@ public class OverclockingWidget extends AppWidgetProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidget.class);
     private static final String URI_SCHEME = "raspicheck";
     private static final String ACTION_WIDGET_UPDATE_ONE_MANUAL = "updateOneWidgetManual";
-    /**
-     * Place to store URIs which are used for update via AlarmManager
-     */
-    private static HashMap<Integer, Uri> uris = new HashMap<Integer, Uri>();
 
     private DeviceDbHelper deviceDb;
 
@@ -90,15 +86,16 @@ public class OverclockingWidget extends AppWidgetProvider {
     }
 
     static void updateAppWidget(Context context, final AppWidgetManager appWidgetManager,
-                                final int appWidgetId, DeviceDbHelper deviceDb) {
+                                final int appWidgetId, DeviceDbHelper deviceDb, boolean initByAlarm) {
+        LOGGER.debug("Updating Widget[ID={}]. initByAlarm = {}", appWidgetId, initByAlarm);
         Long deviceId = OverclockingWidgetConfigureActivity.loadDeviceId(context, appWidgetId);
         if (deviceId != null) {
             // get update interval
-            Integer updateInterval = OverclockingWidgetConfigureActivity.loadUpdateInterval(context, appWidgetId);
             final boolean showTemp = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_TEMP_SUFFIX, appWidgetId);
             final boolean showArm = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_ARM_SUFFIX, appWidgetId);
             final boolean showLoad = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_LOAD_SUFFIX, appWidgetId);
             final boolean showMemory = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_MEMORY_SUFFIX, appWidgetId);
+            final boolean onlyOnWlan = OverclockingWidgetConfigureActivity.loadOnlyOnWifi(context, appWidgetId);
             RaspberryDeviceBean deviceBean = deviceDb.read(deviceId);
             if (deviceBean == null) {
                 // device has been deleted
@@ -107,7 +104,6 @@ public class OverclockingWidget extends AppWidgetProvider {
                 appWidgetManager.updateAppWidget(appWidgetId, removedView);
                 return;
             }
-            LOGGER.debug("Updating Widget[ID={}] for device {} - update interval: {} mins", appWidgetId, deviceBean.getName(), updateInterval);
             // Construct the RemoteViews object
             final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.overclocking_widget);
             views.setOnClickPendingIntent(R.id.buttonRefresh, getSelfPendingIntent(context, appWidgetId, ACTION_WIDGET_UPDATE_ONE_MANUAL));
@@ -116,11 +112,10 @@ public class OverclockingWidget extends AppWidgetProvider {
             views.setViewVisibility(R.id.linLayoutTemp, showTemp ? View.VISIBLE : View.GONE);
             views.setViewVisibility(R.id.linLayoutArm, showArm ? View.VISIBLE : View.GONE);
             views.setViewVisibility(R.id.linLayoutLoad, showLoad ? View.VISIBLE : View.GONE);
-            views.setViewVisibility(R.id.linLayoutMem, showLoad ? View.VISIBLE : View.GONE);
-            final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.isConnected()) {
-                LOGGER.debug("Network available - querying device...");
+            views.setViewVisibility(R.id.linLayoutMem, showMemory ? View.VISIBLE : View.GONE);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+            if (doQuery(context, initByAlarm, onlyOnWlan)) {
+                LOGGER.debug("Querying for Widget[ID={}]...", appWidgetId);
                 views.setViewVisibility(R.id.textStatusValue, View.GONE);
                 views.setViewVisibility(R.id.buttonRefresh, View.GONE);
                 views.setViewVisibility(R.id.refreshProgressBar, View.VISIBLE);
@@ -222,12 +217,40 @@ public class OverclockingWidget extends AppWidgetProvider {
                 }.execute(deviceBean);
             } else {
                 LOGGER.debug("No network available - skipping widget update process.");
+                views.setViewVisibility(R.id.buttonRefresh, View.VISIBLE);
+                views.setViewVisibility(R.id.refreshProgressBar, View.GONE);
+                appWidgetManager.updateAppWidget(appWidgetId, views);
             }
         }
     }
 
+    private static boolean doQuery(Context context, boolean initByAlarm, boolean onlyOnWlan) {
+        final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        final NetworkInfo wlanInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        boolean doQuery = false;
+        if (networkInfo != null && networkInfo.isConnected()) {
+            LOGGER.debug("Network available");
+            if (initByAlarm) {
+                LOGGER.debug("Update was initiated by alarm.");
+                if (onlyOnWlan) {
+                    if (wlanInfo != null && wlanInfo.isConnected()) {
+                        doQuery = true;
+                    }
+                } else {
+                    LOGGER.debug("No Wi-Fi connected - skipping widget update.");
+                    doQuery = false;
+                }
+            } else {
+                LOGGER.debug("Manual triggered update.");
+                doQuery = true;
+            }
+        }
+        return doQuery;
+    }
+
     protected static PendingIntent getSelfPendingIntent(Context context, int appWidgetId, String action) {
-        Uri data = getPendingIntentUri(appWidgetId);
+        final Uri data = getPendingIntentUri(appWidgetId);
         return getSelfPendingIntent(context, appWidgetId, data, action);
     }
 
@@ -239,7 +262,7 @@ public class OverclockingWidget extends AppWidgetProvider {
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private static PendingIntent getConfigurationPendingIntent(Context context, int appWidgetId){
+    private static PendingIntent getConfigurationPendingIntent(Context context, int appWidgetId) {
         final Intent intent = new Intent(context, OverclockingWidgetConfigureActivity.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(getPendingIntentUri(appWidgetId));
@@ -250,17 +273,15 @@ public class OverclockingWidget extends AppWidgetProvider {
         return Uri.withAppendedPath(Uri.parse(URI_SCHEME + "://widget/id/"), String.valueOf(appWidgetId));
     }
 
-    public static void addUri(int appWidgetId, Uri uri) {
-        uris.put(appWidgetId, uri);
-    }
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        deviceDb = new DeviceDbHelper(context);
+        if (this.deviceDb == null) {
+            this.deviceDb = new DeviceDbHelper(context);
+        }
         // There may be multiple widgets active, so update all of them
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i], deviceDb);
+            updateAppWidget(context, appWidgetManager, appWidgetIds[i], deviceDb, false);
         }
     }
 
@@ -299,7 +320,10 @@ public class OverclockingWidget extends AppWidgetProvider {
             if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
                 super.onReceive(context, intent);
             } else {
-                this.onUpdate(context, AppWidgetManager.getInstance(context), new int[]{widgetId});
+                if (this.deviceDb == null) {
+                    this.deviceDb = new DeviceDbHelper(context);
+                }
+                updateAppWidget(context, AppWidgetManager.getInstance(context), widgetId, this.deviceDb, action.equals(ACTION_WIDGET_UPDATE_ONE) ? true : false);
             }
         } else {
             super.onReceive(context, intent);
@@ -307,15 +331,11 @@ public class OverclockingWidget extends AppWidgetProvider {
     }
 
     private void removeAlarm(Context c, int appWidgetId) {
-        Uri removedUri = uris.remove(appWidgetId);
-        if (removedUri != null) {
-            LOGGER.debug("Removing alarm for Widget[ID={}].", appWidgetId);
-            PendingIntent pendingIntent = getSelfPendingIntent(c, appWidgetId, removedUri, ACTION_WIDGET_UPDATE_ONE);
-            AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.cancel(pendingIntent);
-        } else {
-            LOGGER.debug("No alarm intent uri for Widget[ID={}] in Map.", appWidgetId);
-        }
+        LOGGER.debug("Removing alarm for Widget[ID={}].", appWidgetId);
+        final Uri intentUri = getPendingIntentUri(appWidgetId);
+        PendingIntent pendingIntent = getSelfPendingIntent(c, appWidgetId, intentUri, ACTION_WIDGET_UPDATE_ONE);
+        AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
     }
 }
 

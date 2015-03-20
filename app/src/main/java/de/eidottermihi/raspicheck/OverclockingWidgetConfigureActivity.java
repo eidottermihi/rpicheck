@@ -23,9 +23,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,7 +63,15 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidgetConfigureActivity.class);
     private static final String PREFS_NAME = "de.eidottermihi.raspicheck.OverclockingWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
+    private static final String PREF_UPDATE_ONLY_ON_WIFI = "_onlywifi";
+
     private static final String PREF_UPDATE_INTERVAL_SUFFIX = "_interval";
+    private static final String UPDATE_YES = "yes";
+    private static final String UPDATE_WIFI = "wifi";
+    private static final String UPDATE_NO = "no";
+    // corresponds to array/widget_auto_update
+    private static final String[] autoUpdate = {UPDATE_YES, UPDATE_WIFI, UPDATE_NO};
+
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     @XmlView(R.id.widgetPiSpinner)
     private Spinner widgetPiSpinner;
@@ -73,6 +79,8 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private EditText textEditUpdateInterval;
     @XmlView(R.id.widgetUpdateSpinner)
     private Spinner widgetUpdateSpinner;
+    @XmlView(R.id.widgetUpdateIntervalSpinner)
+    private Spinner widgetUpdateIntervalSpinner;
     @XmlView(R.id.linLayoutCustomUpdateInterval)
     private LinearLayout linLayoutCustomInterval;
     @XmlView(R.id.checkBoxArm)
@@ -83,6 +91,8 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private CheckBox checkBoxTemp;
     @XmlView(R.id.checkBoxRam)
     private CheckBox checkBoxRam;
+    @XmlView(R.id.linLayoutUpdateInterval)
+    private LinearLayout linLayoutUpdateInterval;
 
     private DeviceDbHelper deviceDbHelper;
 
@@ -97,7 +107,9 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
      * @param appWidgetId
      * @param deviceId    ID of the chosen device
      */
-    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId, int updateInterval, boolean showTemp, boolean showArm, boolean showLoad, boolean showMemory) {
+    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId, int updateInterval, boolean onlyOnWifi, boolean showTemp, boolean showArm, boolean showLoad, boolean showMemory) {
+        LOGGER.info("Saving new OverclockingWidget. Settings - Update interval: {} - Only on Wifi: {} - TEMP: {} - ARM: {} - LOAD: {} - RAM: {}",
+                new Object[]{updateInterval, onlyOnWifi, showTemp, showArm, showLoad, showMemory});
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putLong(PREF_PREFIX_KEY + appWidgetId, deviceId);
         prefs.putInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval);
@@ -105,7 +117,8 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         prefs.putBoolean(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm);
         prefs.putBoolean(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad);
         prefs.putBoolean(prefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory);
-        prefs.commit();
+        prefs.putBoolean(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), onlyOnWifi);
+        prefs.apply();
     }
 
     static String prefKey(String key, int appWidgetId) {
@@ -127,9 +140,9 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         }
     }
 
-    static Integer loadUpdateInterval(Context context, int appWidgetId) {
+    static boolean loadOnlyOnWifi(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), Integer.parseInt(context.getString(R.string.default_update_interval)));
+        return prefs.getBoolean(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), false);
     }
 
     static void deleteDevicePref(Context context, int appWidgetId) {
@@ -139,7 +152,8 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         prefs.remove(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId));
         prefs.remove(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId));
         prefs.remove(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId));
-        prefs.commit();
+        prefs.remove(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId));
+        prefs.apply();
     }
 
     @Override
@@ -171,13 +185,20 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     }
 
     private void initSpinners() {
+        // Device Spinner
         final DeviceSpinnerAdapter deviceSpinnerAdapter = new DeviceSpinnerAdapter(OverclockingWidgetConfigureActivity.this, deviceDbHelper.getFullDeviceCursor(), true);
         widgetPiSpinner.setAdapter(deviceSpinnerAdapter);
+        // Auto update
+        final ArrayAdapter<CharSequence> autoUpdateAdapter = ArrayAdapter.createFromResource(OverclockingWidgetConfigureActivity.this, R.array.widget_auto_updates, android.R.layout.simple_spinner_item);
+        autoUpdateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        widgetUpdateSpinner.setAdapter(autoUpdateAdapter);
+        widgetUpdateSpinner.setOnItemSelectedListener(this);
+        // Update interval
         this.updateIntervalsMinutes = this.getResources().getIntArray(R.array.widget_update_intervals_values);
         final ArrayAdapter<CharSequence> updateIntervalAdapter = ArrayAdapter.createFromResource(OverclockingWidgetConfigureActivity.this, R.array.widget_update_intervals, android.R.layout.simple_spinner_item);
         updateIntervalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        widgetUpdateSpinner.setAdapter(updateIntervalAdapter);
-        widgetUpdateSpinner.setOnItemSelectedListener(this);
+        widgetUpdateIntervalSpinner.setAdapter(updateIntervalAdapter);
+        widgetUpdateIntervalSpinner.setOnItemSelectedListener(this);
     }
 
 
@@ -195,36 +216,42 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                     return super.onOptionsItemSelected(item);
                 }
                 int updateIntervalInMinutes = 0;
-                if (updateIntervalsMinutes[widgetUpdateSpinner.getSelectedItemPosition()] == -1) {
-                    String s = textEditUpdateInterval.getText().toString().trim();
-                    if (Strings.isNullOrEmpty(s)) {
-                        textEditUpdateInterval.setError(getString(R.string.widget_update_interval_error));
-                        return super.onOptionsItemSelected(item);
+                boolean onlyOnWifi = false;
+                if (!autoUpdate[widgetUpdateSpinner.getSelectedItemPosition()].equals(UPDATE_NO)) {
+                    if (updateIntervalsMinutes[widgetUpdateIntervalSpinner.getSelectedItemPosition()] == -1) {
+                        String s = textEditUpdateInterval.getText().toString().trim();
+                        if (Strings.isNullOrEmpty(s)) {
+                            textEditUpdateInterval.setError(getString(R.string.widget_update_interval_error));
+                            return super.onOptionsItemSelected(item);
+                        }
+                        updateIntervalInMinutes = Integer.parseInt(s);
+                        if (updateIntervalInMinutes == 0) {
+                            textEditUpdateInterval.setError(getString(R.string.widget_update_interval_zero));
+                            return super.onOptionsItemSelected(item);
+                        }
+                    } else {
+                        updateIntervalInMinutes = updateIntervalsMinutes[widgetUpdateIntervalSpinner.getSelectedItemPosition()];
                     }
-                    updateIntervalInMinutes = Integer.parseInt(s);
-                    if (updateIntervalInMinutes == 0) {
-                        textEditUpdateInterval.setError(getString(R.string.widget_update_interval_zero));
-                        return super.onOptionsItemSelected(item);
-                    }
-                } else {
-                    updateIntervalInMinutes = updateIntervalsMinutes[widgetUpdateSpinner.getSelectedItemPosition()];
+                }
+                if (autoUpdate[widgetUpdateSpinner.getSelectedItemPosition()].equals(UPDATE_WIFI)) {
+                    onlyOnWifi = true;
                 }
                 // save Device ID in prefs
-                saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateIntervalInMinutes, checkBoxTemp.isChecked(), checkBoxArm.isChecked(), checkBoxLoad.isChecked(), checkBoxRam.isChecked());
+                saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateIntervalInMinutes, onlyOnWifi,
+                        checkBoxTemp.isChecked(), checkBoxArm.isChecked(), checkBoxLoad.isChecked(), checkBoxRam.isChecked());
                 if (updateIntervalInMinutes > 0) {
                     long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
                     // Setting alarm via AlarmManager
                     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                     PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, mAppWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
-                    OverclockingWidget.addUri(mAppWidgetId, OverclockingWidget.getPendingIntentUri(mAppWidgetId));
                     LOGGER.debug("Added alarm for periodic updates of Wigdet[ID={}], update interval: {} ms.", mAppWidgetId, updateIntervalMillis);
                 } else {
                     LOGGER.debug("No periodic updates for Widget[ID={}].", mAppWidgetId);
                 }
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                OverclockingWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId, deviceDbHelper);
+                OverclockingWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId, deviceDbHelper, true);
 
                 // Make sure we pass back the original appWidgetId
                 Intent resultValue = new Intent();
@@ -238,13 +265,24 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        LOGGER.debug("Item pos {}, id {} selected.", position, id);
-        int updateIntervalInMinutes = updateIntervalsMinutes[position];
-        if (updateIntervalInMinutes == -1) {
-            // custom time interval
-            linLayoutCustomInterval.setVisibility(View.VISIBLE);
-        } else {
-            linLayoutCustomInterval.setVisibility(View.GONE);
+        final int updateId = widgetUpdateSpinner.getId();
+        final int updateIntervalId = widgetUpdateIntervalSpinner.getId();
+        if (parent.getId() == updateId) {
+            LOGGER.debug("Update-Spinner: Item pos {}, id {} selected.", position, id);
+            if (autoUpdate[position].equals(UPDATE_NO)) {
+                linLayoutUpdateInterval.setVisibility(View.GONE);
+            } else {
+                linLayoutUpdateInterval.setVisibility(View.VISIBLE);
+            }
+        } else if (parent.getId() == updateIntervalId) {
+            LOGGER.debug("Interval-Spinner: Item pos {}, id {} selected.", position, id);
+            int updateIntervalInMinutes = updateIntervalsMinutes[position];
+            if (updateIntervalInMinutes == -1) {
+                // custom time interval
+                linLayoutCustomInterval.setVisibility(View.VISIBLE);
+            } else {
+                linLayoutCustomInterval.setVisibility(View.GONE);
+            }
         }
     }
 
