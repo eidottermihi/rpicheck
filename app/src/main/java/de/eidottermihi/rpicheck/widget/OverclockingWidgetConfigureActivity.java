@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package de.eidottermihi.raspicheck;
+package de.eidottermihi.rpicheck.widget;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -39,6 +39,7 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
@@ -50,7 +51,7 @@ import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 
 /**
- * The configuration screen for the {@link OverclockingWidget OverclockingWidget} AppWidget.
+ * The configuration screen for the {@link de.eidottermihi.rpicheck.widget.OverclockingWidget OverclockingWidget} AppWidget.
  */
 @XmlLayout(R.layout.overclocking_widget_configure)
 @XmlMenu(R.menu.activity_overclocking_widget_configure)
@@ -61,7 +62,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     public static final String PREF_SHOW_LOAD_SUFFIX = "_load";
     public static final String PREF_SHOW_MEMORY_SUFFIX = "_memory";
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidgetConfigureActivity.class);
-    private static final String PREFS_NAME = "de.eidottermihi.raspicheck.OverclockingWidget";
+    private static final String PREFS_NAME = "de.eidottermihi.rpicheck.widget.OverclockingWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     private static final String PREF_UPDATE_ONLY_ON_WIFI = "_onlywifi";
 

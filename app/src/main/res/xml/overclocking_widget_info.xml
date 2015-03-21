@@ -5,7 +5,7 @@
                     android:updatePeriodMillis="0"
                     android:previewImage="@drawable/appwidget_overclocking_preview"
                     android:initialLayout="@layout/overclocking_widget"
-                    android:configure="de.eidottermihi.raspicheck.OverclockingWidgetConfigureActivity"
+                    android:configure="de.eidottermihi.rpicheck.widget.OverclockingWidgetConfigureActivity"
                     android:resizeMode="horizontal"
                     android:widgetCategory="home_screen"
                     android:initialKeyguardLayout="@layout/overclocking_widget">

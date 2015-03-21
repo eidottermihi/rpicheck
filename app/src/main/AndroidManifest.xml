@@ -76,7 +76,7 @@
                 android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity" />
         </activity>
 
-        <receiver android:name=".OverclockingWidget" >
+        <receiver android:name="de.eidottermihi.rpicheck.widget.OverclockingWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -86,7 +86,7 @@
                 android:resource="@xml/overclocking_widget_info" />
         </receiver>
 
-        <activity android:name=".OverclockingWidgetConfigureActivity" >
+        <activity android:name="de.eidottermihi.rpicheck.widget.OverclockingWidgetConfigureActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
