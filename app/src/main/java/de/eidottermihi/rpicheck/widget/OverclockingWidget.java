@@ -263,13 +263,6 @@ public class OverclockingWidget extends AppWidgetProvider {
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private static PendingIntent getConfigurationPendingIntent(Context context, int appWidgetId) {
-        final Intent intent = new Intent(context, OverclockingWidgetConfigureActivity.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.setData(getPendingIntentUri(appWidgetId));
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
     protected static Uri getPendingIntentUri(int appWidgetId) {
         return Uri.withAppendedPath(Uri.parse(URI_SCHEME + "://widget/id/"), String.valueOf(appWidgetId));
     }
@@ -334,8 +327,8 @@ public class OverclockingWidget extends AppWidgetProvider {
     private void removeAlarm(Context c, int appWidgetId) {
         LOGGER.debug("Removing alarm for Widget[ID={}].", appWidgetId);
         final Uri intentUri = getPendingIntentUri(appWidgetId);
-        PendingIntent pendingIntent = getSelfPendingIntent(c, appWidgetId, intentUri, ACTION_WIDGET_UPDATE_ONE);
-        AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        final PendingIntent pendingIntent = getSelfPendingIntent(c, appWidgetId, intentUri, ACTION_WIDGET_UPDATE_ONE);
+        final AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
 }
