@@ -2,23 +2,12 @@ import nl.javadude.gradle.plugins.license.License
 
 plugins {
     id "com.github.hierynomus.license" version "0.11.0"
+    id "java"
 }
 
-// We have to mark this as 'android-library' so that file dependency is contributed to app
-apply plugin: 'com.android.library'
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
 
-android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-    lintOptions {
-        disable 'InvalidPackage'
-    }
-}
 
 dependencies {
     compile 'com.google.guava:guava:18.0'
@@ -36,9 +25,7 @@ license {
 
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ext.name = 'RasPi Check Contributors'
+
+    exclude "**/test/*.txt"
 }
 
-task licenseFormatApp(type: License) {
-    source = fileTree(dir: "src").include("**/*.java")
-}
-licenseFormat.dependsOn licenseFormatApp
