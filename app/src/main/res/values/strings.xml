@@ -180,7 +180,10 @@
     <string name="title_placeholders">Placeholders</string>
     <string name="placeholders_button_ok">OK</string>
     <string name="placeholder_hint_text">You can use placeholders like \'${my_secret}\'. They will be replaced by your input when you actually run the command.</string>
+    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Will be automatically replaced with the current date/time. format must be an valid date/time format (e.g. MM-dd-yyy).</string>
+    <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Will be automatically replaced with a property of your Pi. Available properties are: name, host, user, pass, port, sudopass.</string>
     <string name="placeholder_hint">Hint:</string>
+    <string name="placeholder_special_hint">Special placeholders:</string>
 
     <string name="pref_load_avg_default" translatable="false">FIVE_MINUTES</string>
     <string name="pref_load_avg_summary">Time period for load average calculation.</string>
