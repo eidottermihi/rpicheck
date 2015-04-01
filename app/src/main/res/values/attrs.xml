@@ -16,4 +16,5 @@
     <attr name="ic_dialog_run" format="reference" />
     <attr name="ic_dialog_shutdown" format="reference" />
     <attr name="ic_dialog_passphrase" format="reference" />
+    <attr name="ic_fb" format="reference" />
 </resources>

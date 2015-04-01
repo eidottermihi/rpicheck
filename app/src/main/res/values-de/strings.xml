@@ -187,5 +187,6 @@
     <string name="widget_auto_update_yes">Ja</string>
     <string name="widget_auto_update">Automatisch aktualisieren</string>
     <string name="used_memory">Speicherauslastung</string>
+    <string name="pref_facebook_summary">Neuigkeiten zu RasPi Check auf Facebook</string>
 
 </resources>

@@ -10,14 +10,14 @@
             android:entryValues="@array/temp_scales_values"
             android:key="pref_temperature_scala"
             android:summary="@string/temperature_scala_summary"
-            android:title="@string/pref_temp_scala_title" />
+            android:title="@string/pref_temp_scala_title"/>
         <ListPreference
             android:defaultValue="@string/pref_frequency_unit_default"
             android:entries="@array/pref_frequency_units"
             android:entryValues="@array/pref_frequency_unit_values"
             android:key="pref_frequency_unit"
             android:summary="@string/pref_frequency_unit_summary"
-            android:title="@string/pref_frequency_unit_title" />
+            android:title="@string/pref_frequency_unit_title"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="pref_query_settings"
@@ -28,7 +28,7 @@
             android:summary="@string/pref_query_hide_root_summary"
             android:summaryOff="@string/pref_query_hide_root_summaryOff"
             android:summaryOn="@string/pref_query_hide_root_summaryOn"
-            android:title="@string/pref_query_hide_root_title" />
+            android:title="@string/pref_query_hide_root_title"/>
 
         <ListPreference
             android:defaultValue="@string/pref_load_avg_default"
@@ -36,13 +36,13 @@
             android:entryValues="@array/pref_load_avg_values"
             android:key="pref_load_avg"
             android:summary="@string/pref_load_avg_summary"
-            android:title="@string/pref_load_avg_title" />
+            android:title="@string/pref_load_avg_title"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_log">
         <Preference
             android:key="pref_log"
             android:summary="@string/pref_log_title_summary"
-            android:title="@string/pref_log_title" />
+            android:title="@string/pref_log_title"/>
 
         <CheckBoxPreference
             android:defaultValue="false"
@@ -50,7 +50,7 @@
             android:summary="@string/pref_debug_log_summary"
             android:summaryOff="@string/pref_debug_log_summary_off"
             android:summaryOn="@string/pref_debug_log_summary_on"
-            android:title="@string/pref_debug_log_title" />
+            android:title="@string/pref_debug_log_title"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_about">
         <PreferenceScreen
@@ -62,17 +62,33 @@
                 <Preference
                     android:key="pref_app_version"
                     android:summary="@string/app_version"
-                    android:title="@string/pref_version" />
+                    android:title="@string/pref_version"/>
                 <Preference
                     android:key="pref_changelog"
-                    android:title="@string/pref_changelog_title" />
+                    android:title="@string/pref_changelog_title"/>
+                <Preference
+                    android:icon="?attr/ic_settings_rate"
+                    android:summary="@string/pref_rate_app_summary"
+                    android:title="@string/pref_rate_app">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="market://details?id=de.eidottermihi.raspicheck"/>
+                </Preference>
                 <Preference
                     android:icon="?attr/ic_settings_github"
                     android:summary="@string/pref_github_summary"
                     android:title="@string/pref_github">
                     <intent
                         android:action="android.intent.action.VIEW"
-                        android:data="https://github.com/eidottermihi/rpicheck" />
+                        android:data="https://github.com/eidottermihi/rpicheck"/>
+                </Preference>
+                <Preference
+                    android:icon="?attr/ic_fb"
+                    android:summary="@string/pref_facebook_summary"
+                    android:title="@string/pref_fb_title">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="@string/facebook_url"/>
                 </Preference>
                 <Preference
                     android:icon="?attr/ic_settings_email"
@@ -80,15 +96,7 @@
                     android:title="@string/pref_dev_email">
                     <intent
                         android:action="android.intent.action.VIEW"
-                        android:data="mailto:eidottermihi+raspicheck@gmail.com?subject=RasPi Check" />
-                </Preference>
-                <Preference
-                    android:icon="?attr/ic_settings_rate"
-                    android:summary="@string/pref_rate_app_summary"
-                    android:title="@string/pref_rate_app">
-                    <intent
-                        android:action="android.intent.action.VIEW"
-                        android:data="market://details?id=de.eidottermihi.raspicheck" />
+                        android:data="mailto:eidottermihi+raspicheck@gmail.com?subject=RasPi Check"/>
                 </Preference>
             </PreferenceCategory>
         </PreferenceScreen>
