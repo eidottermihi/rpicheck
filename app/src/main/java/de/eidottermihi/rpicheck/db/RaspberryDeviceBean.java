@@ -26,8 +26,16 @@ import java.util.Date;
 import de.eidottermihi.rpicheck.beans.QueryBean;
 
 public class RaspberryDeviceBean implements Serializable, Parcelable {
-    private static final long serialVersionUID = -7054070923663258253L;
+    public static final Parcelable.Creator<RaspberryDeviceBean> CREATOR = new Parcelable.Creator<RaspberryDeviceBean>() {
+        public RaspberryDeviceBean createFromParcel(Parcel in) {
+            return new RaspberryDeviceBean(in);
+        }
 
+        public RaspberryDeviceBean[] newArray(int size) {
+            return new RaspberryDeviceBean[size];
+        }
+    };
+    private static final long serialVersionUID = -7054070923663258253L;
     private int id;
     private String name;
     private String host;
@@ -42,39 +50,8 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
     private String authMethod;
     private String keyfilePath;
     private String keyfilePass;
-
     private int spinnerPosition;
     private QueryBean lastQueryData;
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeString(host);
-        dest.writeString(user);
-        dest.writeString(pass);
-        dest.writeInt(port);
-        dest.writeString(description);
-        dest.writeString(serial);
-        dest.writeSerializable(createdAt);
-        dest.writeSerializable(modifiedAt);
-        dest.writeString(sudoPass);
-        dest.writeString(authMethod);
-        dest.writeString(keyfilePath);
-        dest.writeString(keyfilePass);
-        dest.writeInt(spinnerPosition);
-        dest.writeSerializable(lastQueryData);
-    }
-
-    public static final Parcelable.Creator<RaspberryDeviceBean> CREATOR = new Parcelable.Creator<RaspberryDeviceBean>() {
-        public RaspberryDeviceBean createFromParcel(Parcel in) {
-            return new RaspberryDeviceBean(in);
-        }
-
-        public RaspberryDeviceBean[] newArray(int size) {
-            return new RaspberryDeviceBean[size];
-        }
-    };
 
     public RaspberryDeviceBean(Parcel source) {
         /*
@@ -101,6 +78,27 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
     public RaspberryDeviceBean() {
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(host);
+        dest.writeString(user);
+        dest.writeString(pass);
+        dest.writeInt(port);
+        dest.writeString(description);
+        dest.writeString(serial);
+        dest.writeSerializable(createdAt);
+        dest.writeSerializable(modifiedAt);
+        dest.writeString(sudoPass);
+        dest.writeString(authMethod);
+        dest.writeString(keyfilePath);
+        dest.writeString(keyfilePass);
+        dest.writeInt(spinnerPosition);
+        dest.writeSerializable(lastQueryData);
+    }
+
+    @Exported
     public String getHost() {
         return host;
     }
@@ -109,6 +107,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.host = host;
     }
 
+    @Exported
     public String getUser() {
         return user;
     }
@@ -117,6 +116,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.user = user;
     }
 
+    @Exported
     public String getPass() {
         return pass;
     }
@@ -125,6 +125,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.pass = pass;
     }
 
+    @Exported
     public int getPort() {
         return port;
     }
@@ -133,6 +134,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.port = port;
     }
 
+    @Exported
     public int getId() {
         return id;
     }
@@ -141,6 +143,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.id = id;
     }
 
+    @Exported
     public String getSerial() {
         return serial;
     }
@@ -149,6 +152,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.serial = serial;
     }
 
+    @Exported
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -157,6 +161,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.createdAt = createdAt;
     }
 
+    @Exported
     public Date getModifiedAt() {
         return modifiedAt;
     }
@@ -165,6 +170,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.modifiedAt = modifiedAt;
     }
 
+    @Exported
     public String getDescription() {
         return description;
     }
@@ -173,6 +179,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.description = description;
     }
 
+    @Exported
     public String getName() {
         return name;
     }
@@ -181,6 +188,7 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
         this.name = name;
     }
 
+    @Exported
     public String getSudoPass() {
         return sudoPass;
     }

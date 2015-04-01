@@ -59,11 +59,9 @@ public class CommandPlaceholdersDialog extends DialogFragment {
          * Gets called when the user entered the replacements for the
          * placeholders.
          *
-         * @param dialog  the Dialog
          * @param command the command with replaced values
          */
-        public void onPlaceholdersOKClick(DialogFragment dialog,
-                                          CommandBean command, String keyPassphrase);
+        public void onPlaceholdersOKClick(CommandBean command, String keyPassphrase);
 
         public void onPlaceholdersCancelClick();
     }
@@ -151,8 +149,7 @@ public class CommandPlaceholdersDialog extends DialogFragment {
                     }
                     command.setCommand(cmd);
                     dismiss();
-                    activityListener.onPlaceholdersOKClick(
-                            CommandPlaceholdersDialog.this, command, keyPass);
+                    activityListener.onPlaceholdersOKClick(command, keyPass);
                 }
             });
         }
