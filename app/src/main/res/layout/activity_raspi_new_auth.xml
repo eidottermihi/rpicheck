@@ -12,7 +12,6 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="4dp"
-        android:showDividers="beginning|middle|end"
         tools:context=".NewRaspiActivity">
 
         <RelativeLayout
@@ -37,30 +36,22 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rel_pw"
+        <de.fhconfig.android.library.ui.FloatLabelLayout
+            android:id="@+id/ssh_password_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp">
-
-            <TextView
-                android:id="@+id/text_ssh_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/raspi_device_password_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/editText_ssh_password"
+                android:id="@+id/ssh_password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_ssh_password"
                 android:ems="10"
+                android:hint="@string/raspi_device_password_hint"
                 android:inputType="textPassword">
 
                 <requestFocus />
             </EditText>
-        </RelativeLayout>
+        </de.fhconfig.android.library.ui.FloatLabelLayout>
 
         <RelativeLayout
             android:id="@+id/rel_key"
@@ -92,94 +83,64 @@
                 android:onClick="onCheckboxClick"
                 android:text="@string/raspi_key_checkbox_text" />
 
-            <RelativeLayout
-                android:id="@+id/rel_key_pw"
+            <de.fhconfig.android.library.ui.FloatLabelLayout
+                android:id="@+id/key_password_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/checkboxAsk"
                 android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/text_key_pw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
-                    android:text="@string/raspi_key_password_hint"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
                 <EditText
-                    android:id="@+id/editTextKeyPw"
+                    android:id="@+id/key_password_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/text_key_pw"
                     android:ems="10"
+                    android:hint="@string/raspi_key_password_hint"
                     android:inputType="textPassword" />
 
-            </RelativeLayout>
+            </de.fhconfig.android.library.ui.FloatLabelLayout>
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/relativeLayoutPortSudo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+            android:orientation="horizontal">
 
-            <RelativeLayout
-                android:id="@+id/relativeLayoutPort"
+            <de.fhconfig.android.library.ui.FloatLabelLayout
+                android:id="@+id/port_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="8dp">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/edit_raspi_ssh_port_editText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/labelSshPort"
                     android:inputType="number"
                     android:maxLines="1"
                     android:minEms="3"
-                    android:paddingLeft="8dp"
+                    android:hint="@string/ssh_port"
                     android:text="@string/default_ssh_port" />
 
-                <TextView
-                    android:id="@+id/labelSshPort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:paddingRight="8dp"
-                    android:text="@string/ssh_port"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-            </RelativeLayout>
+            </de.fhconfig.android.library.ui.FloatLabelLayout>
 
-            <RelativeLayout
-                android:id="@+id/relativeLayoutSudo"
-                android:layout_width="match_parent"
+            <de.fhconfig.android.library.ui.FloatLabelLayout
+                android:id="@+id/sudo_password_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/relativeLayoutPort"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:id="@+id/labelSudoPass"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/sudo_password"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:layout_weight="1">
 
                 <EditText
                     android:id="@+id/edit_raspi_sudoPass_editText"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/labelSudoPass"
                     android:ems="10"
                     android:hint="@string/raspi_device_sudo_password_hint"
                     android:inputType="text|textPassword"
-                    android:maxLines="1"
-                    android:paddingLeft="8dp" />
+                    android:maxLines="1" />
 
-            </RelativeLayout>
-        </RelativeLayout>
+            </de.fhconfig.android.library.ui.FloatLabelLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

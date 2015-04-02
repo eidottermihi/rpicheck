@@ -1,6 +1,7 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
     android:id="@+id/scrollView1"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -21,39 +22,26 @@
             android:layout_height="wrap_content"
             android:text="@string/new_raspi_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
-        <RelativeLayout
+        <de.fhconfig.android.library.ui.FloatLabelLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp">
-
-            <TextView
-                android:id="@+id/labelName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingRight="8dp"
-                android:text="@string/raspi_device_name_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/edit_raspi_name_editText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
                 android:layout_below="@id/labelName"
                 android:ems="10"
                 android:hint="@string/raspi_device_name_hint"
                 android:inputType="text|textNoSuggestions"
-                android:maxLines="1" />
-        </RelativeLayout>
+                android:maxLines="1"/>
+        </de.fhconfig.android.library.ui.FloatLabelLayout>
 
-        <RelativeLayout
+        <de.fhconfig.android.library.ui.FloatLabelLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/edit_raspi_host_editText"
@@ -63,23 +51,12 @@
                 android:ems="10"
                 android:hint="@string/raspi_device_host_hint"
                 android:inputType="text|textNoSuggestions"
-                android:maxLines="1" />
+                android:maxLines="1"/>
+        </de.fhconfig.android.library.ui.FloatLabelLayout>
 
-            <TextView
-                android:id="@+id/labelHost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:paddingRight="8dp"
-                android:text="@string/raspi_device_host_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+        <de.fhconfig.android.library.ui.FloatLabelLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/edit_raspi_user_editText"
@@ -90,17 +67,9 @@
                 android:hint="@string/raspi_device_user_hint"
                 android:inputType="text|textNoSuggestions"
                 android:maxLines="1"
-                android:paddingTop="8dp" />
+                android:paddingTop="8dp"/>
 
-            <TextView
-                android:id="@+id/labelUser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingRight="8dp"
-                android:text="@string/raspi_device_user_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </RelativeLayout>
+        </de.fhconfig.android.library.ui.FloatLabelLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -114,38 +83,35 @@
             android:paddingTop="8dp">
 
             <RelativeLayout
-                android:id="@+id/relativeLayoutPort"
+                android:id="@+id/port_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"></RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/relativeLayoutSudo"
+                android:id="@+id/sudo_password_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/relativeLayoutPort"
+                android:layout_toRightOf="@id/port_layout"
                 android:paddingTop="8dp">
 
             </RelativeLayout>
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:text="@string/new_raspi_description"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <EditText
-            android:id="@+id/edit_raspi_desc_editText"
+        <de.fhconfig.android.library.ui.FloatLabelLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/new_raspi_description_hint"
-            android:inputType="textMultiLine"
-            android:paddingTop="8dp"></EditText>
+            android:layout_height="wrap_content">
 
+            <EditText
+                android:id="@+id/edit_raspi_desc_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/new_raspi_description"
+                android:inputType="textMultiLine"
+                android:paddingTop="8dp"/>
+
+        </de.fhconfig.android.library.ui.FloatLabelLayout>
     </LinearLayout>
 
 </ScrollView>

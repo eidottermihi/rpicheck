@@ -47,6 +47,7 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
 import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.ui.FloatLabelLayout;
 import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 
@@ -83,7 +84,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     @XmlView(R.id.widgetUpdateIntervalSpinner)
     private Spinner widgetUpdateIntervalSpinner;
     @XmlView(R.id.linLayoutCustomUpdateInterval)
-    private LinearLayout linLayoutCustomInterval;
+    private FloatLabelLayout linLayoutCustomInterval;
     @XmlView(R.id.checkBoxArm)
     private CheckBox checkBoxArm;
     @XmlView(R.id.checkBoxLoad)

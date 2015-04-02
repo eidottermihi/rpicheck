@@ -29,7 +29,6 @@
             android:id="@+id/widgetPiSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
             />
 
         <CheckBox
@@ -99,29 +98,20 @@
                 android:padding="@dimen/padding_small"
                 />
 
-            <LinearLayout
+            <de.fhconfig.android.library.ui.FloatLabelLayout
                 android:id="@+id/linLayoutCustomUpdateInterval"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/customUpdateIntervalText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_small"
-                    android:text="@string/widget_update_interval_custom_text"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/textEditUpdateInterval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:padding="@dimen/padding_small"
                     android:text="@string/default_update_interval"
+                    android:hint="@string/widget_update_interval_custom_text"
                     />
-            </LinearLayout>
+            </de.fhconfig.android.library.ui.FloatLabelLayout>
         </LinearLayout>
 
 
