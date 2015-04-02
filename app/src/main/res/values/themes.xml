@@ -23,6 +23,7 @@
         <item name="ic_dialog_run">@drawable/ic_play_arrow_white_36dp</item>
         <item name="ic_dialog_shutdown">@drawable/ic_settings_power_white_36dp</item>
         <item name="ic_dialog_passphrase">@drawable/ic_vpn_key_white_36dp</item>
+        <item name="ic_fb">@drawable/ic_fb</item>
 
     </style>
     <style name="Theme.rpiCheck.Dark.TextSmall" parent="Theme.rpiCheck.Dark">

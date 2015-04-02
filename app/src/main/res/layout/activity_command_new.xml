@@ -96,6 +96,39 @@
                 android:text="@string/placeholder_hint_text"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
+            <TextView
+                android:id="@+id/hint3_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hint2_Text"
+                android:paddingTop="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="@string/placeholder_special_hint"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/hint4_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hint3_Text"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:text="@string/placeholder_non_prompting_date_hint_text"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/hint5_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hint4_Text"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:text="@string/placeholder_non_prompting_pi_hint_text"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
         </RelativeLayout>
 
     </LinearLayout>

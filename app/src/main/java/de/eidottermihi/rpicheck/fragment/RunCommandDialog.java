@@ -137,7 +137,7 @@ public class RunCommandDialog extends DialogFragment {
                     new SSHCommandTask().execute(host, user, null, port,
                             sudoPass, keyfilePath, null, command.getCommand());
                 } else {
-                    putLine("ERROR - No keyfile was specified." + keyfilePath);
+                    putLine("ERROR - No keyfile was found on path " + keyfilePath);
                 }
             } else {
                 putLine("ERROR - No keyfile was specified.");

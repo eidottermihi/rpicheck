@@ -37,19 +37,28 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.IllegalFormatException;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
+import de.eidottermihi.rpicheck.db.Exported;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog;
 import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog.PlaceholdersDialogListener;
@@ -75,7 +84,8 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
 
     private Cursor fullCommandCursor;
 
-    private Pattern placeHolderPattern = Pattern.compile("(\\$\\{[a-zA-z0-9]+\\})");
+    private Pattern dynamicPlaceHolderPattern = Pattern.compile("(\\$\\{[^*\\}]+\\})");
+    private Pattern nonPromptingPlaceHolders = Pattern.compile("(\\%\\{[^*\\}]+\\})");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,21 +283,31 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
      * @param keyPassphrase nullable: key passphrase
      */
     private void openCommandDialog(final long commandId, final String keyPassphrase) {
-        final DialogFragment runCommandDialog = new RunCommandDialog();
-        final Bundle args = new Bundle();
         final CommandBean command = deviceDb.readCommand(commandId);
-        final ArrayList<String> placeholders = parsePlaceholders(command.getCommand());
-        if (!placeholders.isEmpty()) {
-            // need to get replacements for placeholders first
+        final ArrayList<String> dynamicPlaceholders = parseDynamicPlaceholders(command.getCommand());
+        if (!dynamicPlaceholders.isEmpty()) {
+            // need to get replacements for dynamic placeholders first
             DialogFragment placeholderDialog = new CommandPlaceholdersDialog();
             Bundle args2 = new Bundle();
-            args2.putStringArrayList(CommandPlaceholdersDialog.ARG_PLACEHOLDERS, placeholders);
+            args2.putStringArrayList(CommandPlaceholdersDialog.ARG_PLACEHOLDERS, dynamicPlaceholders);
             args2.putSerializable(CommandPlaceholdersDialog.ARG_COMMAND, command);
             args2.putString(CommandPlaceholdersDialog.ARG_PASSPHRASE, keyPassphrase);
             placeholderDialog.setArguments(args2);
             placeholderDialog.show(getSupportFragmentManager(), "placeholders");
             return;
         }
+        parseNonPromptingAndShow(keyPassphrase, command);
+    }
+
+    private void parseNonPromptingAndShow(String keyPassphrase, CommandBean command) {
+        final DialogFragment runCommandDialog = new RunCommandDialog();
+        final Bundle args = new Bundle();
+        String cmdString = command.getCommand();
+        Map<String, String> nonPromptingPlaceholders = parseNonPromptingPlaceholders(command.getCommand(), currentDevice);
+        for (Map.Entry<String, String> entry : nonPromptingPlaceholders.entrySet()) {
+            cmdString = cmdString.replace(entry.getKey(), entry.getValue());
+        }
+        command.setCommand(cmdString);
         args.putSerializable("pi", currentDevice);
         args.putSerializable("cmd", command);
         if (keyPassphrase != null) {
@@ -297,9 +317,65 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
         runCommandDialog.show(getSupportFragmentManager(), "runCommand");
     }
 
-    private ArrayList<String> parsePlaceholders(String commandString) {
+    private Map<String, String> parseNonPromptingPlaceholders(String command, RaspberryDeviceBean currentDevice) {
+        Map<String, String> nonPromptingPlaceholders = new HashMap<>();
+        Matcher m = nonPromptingPlaceHolders.matcher(command);
+        while (m.find()) {
+            String placeholder = m.group();
+            String placeholderValue = placeholder.substring(2, placeholder.length() - 1);
+            LOGGER.debug("Found non-prompting placeholder for: {}", placeholderValue);
+            if (placeholderValue.startsWith("pi.")) {
+                // accessing properties of current pi device
+                List<String> splitToList = Splitter.on('.').splitToList(placeholderValue);
+                if (splitToList.size() == 2) {
+                    String accessor = splitToList.get(1);
+                    String value = getValueViaReflection(currentDevice, accessor);
+                    if (value != null) {
+                        LOGGER.debug("Value for '{}' is '{}'", placeholder, value);
+                        nonPromptingPlaceholders.put(placeholder, value);
+                    }
+                } else {
+                    LOGGER.debug("Skipping bad placeholder definition: {}", placeholder);
+                }
+            } else if (placeholderValue.startsWith("date(")) {
+                // parse format in braces
+                final String format = placeholderValue.substring(5, placeholderValue.length() - 1);
+                LOGGER.debug("Trying to get system time with format '{}'...", format);
+                try {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+                    String value = simpleDateFormat.format(new Date());
+                    LOGGER.debug("Value for '{}' is '{}'", placeholder, value);
+                    nonPromptingPlaceholders.put(placeholder, value);
+                } catch (IllegalArgumentException e){
+                    LOGGER.warn("Unparseable Date Format: {} - refer to Java's SimpleDateFormat for a valid format specification.", format);
+                }
+            }
+        }
+        return nonPromptingPlaceholders;
+    }
+
+    private String getValueViaReflection(RaspberryDeviceBean device, String accessor) {
+        for (Method method : device.getClass().getMethods()) {
+            if (method.isAnnotationPresent(Exported.class)) {
+                if (method.getName().replaceFirst("get", "").toLowerCase().equals(accessor.toLowerCase())) {
+                    try {
+                        Object result = method.invoke(device, new Object[]{});
+                        if (result != null) {
+                            return result.toString();
+                        }
+                    } catch (IllegalAccessException e) {
+                    } catch (InvocationTargetException e) {
+                    }
+                }
+            }
+        }
+        LOGGER.debug("No getter found on DeviceBean. Property is not present.");
+        return null;
+    }
+
+    private ArrayList<String> parseDynamicPlaceholders(String commandString) {
         ArrayList<String> placeholders = new ArrayList<>();
-        Matcher m = placeHolderPattern.matcher(commandString);
+        Matcher m = dynamicPlaceHolderPattern.matcher(commandString);
         while (m.find()) {
             String placeholder = m.group();
             placeholders.add(placeholder);
@@ -333,16 +409,8 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
     }
 
     @Override
-    public void onPlaceholdersOKClick(DialogFragment dialog, CommandBean command, String keyPassphrase) {
-        DialogFragment runCommandDialog = new RunCommandDialog();
-        Bundle args = new Bundle();
-        args.putSerializable("pi", currentDevice);
-        args.putSerializable("cmd", command);
-        if (keyPassphrase != null) {
-            args.putString("passphrase", keyPassphrase);
-        }
-        runCommandDialog.setArguments(args);
-        runCommandDialog.show(getSupportFragmentManager(), "runCommand");
+    public void onPlaceholdersOKClick(CommandBean command, String keyPassphrase) {
+        parseNonPromptingAndShow(keyPassphrase, command);
     }
 
     @Override

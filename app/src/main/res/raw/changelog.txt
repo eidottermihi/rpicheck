@@ -19,6 +19,11 @@
     </style>
   </head>
   <body>
+$ 1.7.1
+  % Version 1.7.1
+  _ 2015-04-01
+  * New special placeholders for custom commands
+  * Reworked About section in Settings
 $ 1.7.0
   % Version 1.7.0
   _ 2015-03-24
