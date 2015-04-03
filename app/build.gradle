@@ -2,12 +2,21 @@ import nl.javadude.gradle.plugins.license.License
 
 import java.util.regex.Pattern
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'net.researchgate:gradle-release:2.0.2'
+    }
+}
+
 plugins {
     id "com.github.hierynomus.license" version "0.11.0"
-    id "net.researchgate.release" version "2.0.2"
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'net.researchgate.release'
 
 if(project.hasProperty("rpicheck.keystore")
         && new File(project.property("rpicheck.keystore")).exists()) {
@@ -50,6 +59,8 @@ dependencies {
 }
 
 release {
+    tagPrefix = "v"
+    // tagTemplate = "v$version"
 }
 
 task increaseVersionCode << {
