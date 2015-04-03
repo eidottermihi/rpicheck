@@ -1,5 +1,7 @@
 import nl.javadude.gradle.plugins.license.License
 
+import java.util.regex.Pattern
+
 plugins {
     id "com.github.hierynomus.license" version "0.11.0"
     id "net.researchgate.release" version "2.0.2"
