@@ -9,6 +9,11 @@ plugins {
 
 apply plugin: 'com.android.application'
 
+if(project.hasProperty("rpicheck.keystore")
+        && new File(project.property("rpicheck.keystore")).exists()) {
+    apply from: "gradle/signing.gradle";
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -17,13 +22,13 @@ android {
         applicationId "de.eidottermihi.raspicheck"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 28
-        versionName "1.7.1"
     }
+
     buildTypes {
         release {
+            shrinkResources false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
     }
     compileOptions {
@@ -75,7 +80,7 @@ task('incrementVersionName') << {
 
 
 tasks.whenTaskAdded { task ->
-    if (task.name == 'generateReleaseBuildConfig') {
+    if (task.name == 'commitNewVersion') {
         task.dependsOn 'increaseVersionCode'
         task.dependsOn 'incrementVersionName'
     }
