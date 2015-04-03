@@ -63,25 +63,24 @@ task increaseVersionCode << {
     manifestFile.write(manifestContent)
 }
 
-task incrementVersionName << {
+task updateVersionName << {
+    Properties properties = new Properties()
+    properties.load(file('gradle.properties').newDataInputStream())
+    def newVersionName = properties.getProperty('version')
     def manifestFile = file("src/main/AndroidManifest.xml")
-    def patternVersionNumber = Pattern.compile("versionName=\"(\\d+)\\.(\\d+)\\.(\\d+)\\.(\\d+)\"")
+    def patternVersionNumber = Pattern.compile("versionName=\"([^\"]+)\"")
     def manifestText = manifestFile.getText()
     def matcherVersionNumber = patternVersionNumber.matcher(manifestText)
     matcherVersionNumber.find()
-    def majorVersion = Integer.parseInt(matcherVersionNumber.group(1))
-    def minorVersion = Integer.parseInt(matcherVersionNumber.group(2))
-    def pointVersion = Integer.parseInt(matcherVersionNumber.group(3))
-    def buildVersion = Integer.parseInt(matcherVersionNumber.group(4))
-    def mNextVersionName = majorVersion + "." + minorVersion + "." + pointVersion + "." + (buildVersion + 1)
+    def mNextVersionName = newVersionName
     def manifestContent = matcherVersionNumber.replaceAll("versionName=\"" + mNextVersionName + "\"")
     manifestFile.write(manifestContent)
 }
 
 
 
-tasks.updateVersion.dependsOn increaseVersionCode
-tasks.updateVersion.dependsOn incrementVersionName
+tasks.commitNewVersion.dependsOn increaseVersionCode
+tasks.commitNewVersion.dependsOn updateVersionName
 
 license {
     header file('src/etc/license_header')
