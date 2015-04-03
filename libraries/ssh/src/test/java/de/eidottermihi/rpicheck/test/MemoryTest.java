@@ -20,7 +20,7 @@ package de.eidottermihi.rpicheck.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 import de.eidottermihi.rpicheck.test.mocks.CommandMocker;
 

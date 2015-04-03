@@ -20,11 +20,11 @@ package de.eidottermihi.rpicheck.ssh;
 import java.io.IOException;
 import java.util.List;
 
-import de.eidottermihi.rpicheck.beans.DiskUsageBean;
-import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
-import de.eidottermihi.rpicheck.beans.ProcessBean;
-import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
-import de.eidottermihi.rpicheck.beans.VcgencmdBean;
+import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
+import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
+import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public interface IQueryService {

@@ -15,33 +15,38 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package de.eidottermihi.rpicheck.beans;
+/**
+ *
+ */
+package de.eidottermihi.rpicheck.ssh.beans;
 
-public enum Memory {
-    B("Byte", "B", 1), KB("KiloByte", "KB", 1000), MB("MegaByte", "MB",
-            1000 * 1000), GB("GigaByte", "GB", 1000 * 1000 * 1000), TB(
-            "TeraByte", "TB", 1000 * 1000 * 1000 * 1000);
+import java.io.Serializable;
 
-    private String longName;
-    private String shortName;
-    private long scale;
+/**
+ * Bean capsuling data of a wlan connection (link quality, ...).
+ *
+ * @author Michael
+ */
+public class WlanBean implements Serializable {
+    private static final long serialVersionUID = 4533512302697302122L;
 
-    private Memory(String name, String shortName, long scale) {
-        this.longName = name;
-        this.shortName = shortName;
-        this.scale = scale;
+    private Integer linkQuality;
+    private Integer signalLevel;
+
+    public Integer getLinkQuality() {
+        return linkQuality;
     }
 
-    public String getLongName() {
-        return longName;
+    public void setLinkQuality(Integer linkQuality) {
+        this.linkQuality = linkQuality;
     }
 
-    public String getShortName() {
-        return shortName;
+    public Integer getSignalLevel() {
+        return signalLevel;
     }
 
-    public long getScale() {
-        return scale;
+    public void setSignalLevel(Integer signalLevel) {
+        this.signalLevel = signalLevel;
     }
 
 }

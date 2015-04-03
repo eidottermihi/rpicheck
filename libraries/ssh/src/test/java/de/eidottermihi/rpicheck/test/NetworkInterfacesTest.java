@@ -21,8 +21,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
-import de.eidottermihi.rpicheck.beans.WlanBean;
+import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
+import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 import de.eidottermihi.rpicheck.test.mocks.CommandMocker;
 

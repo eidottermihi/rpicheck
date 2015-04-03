@@ -44,12 +44,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.eidottermihi.rpicheck.beans.DiskUsageBean;
-import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
-import de.eidottermihi.rpicheck.beans.ProcessBean;
-import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
-import de.eidottermihi.rpicheck.beans.VcgencmdBean;
-import de.eidottermihi.rpicheck.beans.WlanBean;
+import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
+import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
+import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
+import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 

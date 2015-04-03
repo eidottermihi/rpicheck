@@ -23,7 +23,7 @@ import net.schmizz.sshj.transport.TransportException;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-import de.eidottermihi.rpicheck.beans.VcgencmdBean;
+import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 import de.eidottermihi.rpicheck.test.mocks.CommandMocker;
 

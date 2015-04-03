@@ -21,6 +21,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
+import de.eidottermihi.rpicheck.ssh.beans.MemoryBean;
+import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
+import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
+import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class QueryBean implements Serializable {

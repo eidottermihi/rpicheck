@@ -18,4 +18,34 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontwarn javax.annotation.**,javax.naming.**,javax.mail.**,sun.misc.Unsafe
+#-dontwarn javax.annotation.**
+#-dontwarn javax.naming.**
+
+# Libraries
+# SSHJ
+-keep class net.schmizz.** { *; }
+-keep interface net.schmizz.** { *; }
+-keep class com.jcraft.** { *; }
+-keep interface com.jcraft.** { *; }
+-keep class org.spongycastle.** { *; }
+-keep interface org.spongycastle.** { *; }
+-dontwarn org.spongycastle.jce.provider.X509LDAPCertStoreSpi
+-dontwarn org.spongycastle.x509.util.LDAPStoreHelper
+# PrettyTime
+-keep class org.ocpsoft.prettytime.** { *; }
+-keep interface org.ocpsoft.prettytime.** { *; }
+# Logback
+-keep class ch.qos.logback.** { *; }
+-keep interface ch.qos.logback.** { *; }
+-dontwarn ch.qos.logback.core.net.*
+# slf4j
+-keep class org.slf4j.** { *; }
+-keep interface org.slf4j.** { *; }
+# guava
+-dontwarn sun.misc.Unsafe
+
+# Submodule Libraries
+-keep class de.eidottermihi.rpicheck.ssh.** { *; }
+-keep interface de.eidottermihi.rpicheck.ssh** { *; }
+-keep class com.lamerman.** { *; }
+-keep interface com.lamerman.ssh** { *; }

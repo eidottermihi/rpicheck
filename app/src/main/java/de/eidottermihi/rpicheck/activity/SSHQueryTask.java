@@ -29,12 +29,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import de.eidottermihi.rpicheck.beans.NetworkInterfaceInformation;
-import de.eidottermihi.rpicheck.beans.ProcessBean;
+import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
+import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
 import de.eidottermihi.rpicheck.beans.QueryBean;
-import de.eidottermihi.rpicheck.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.beans.UptimeBean;
-import de.eidottermihi.rpicheck.beans.VcgencmdBean;
+import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;

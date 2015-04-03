@@ -18,7 +18,7 @@
 /**
  *
  */
-package de.eidottermihi.rpicheck.beans;
+package de.eidottermihi.rpicheck.ssh.beans;
 
 import java.io.Serializable;
 
