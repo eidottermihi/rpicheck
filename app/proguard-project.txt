@@ -18,8 +18,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-#-dontwarn javax.annotation.**
-#-dontwarn javax.naming.**
 
 # Libraries
 # SSHJ
@@ -29,6 +27,7 @@
 -keep interface com.jcraft.** { *; }
 -keep class org.spongycastle.** { *; }
 -keep interface org.spongycastle.** { *; }
+# were not using ldap
 -dontwarn org.spongycastle.jce.provider.X509LDAPCertStoreSpi
 -dontwarn org.spongycastle.x509.util.LDAPStoreHelper
 # PrettyTime
@@ -37,6 +36,7 @@
 # Logback
 -keep class ch.qos.logback.** { *; }
 -keep interface ch.qos.logback.** { *; }
+# we're not using remote logging
 -dontwarn ch.qos.logback.core.net.*
 # slf4j
 -keep class org.slf4j.** { *; }
@@ -48,4 +48,4 @@
 -keep class de.eidottermihi.rpicheck.ssh.** { *; }
 -keep interface de.eidottermihi.rpicheck.ssh** { *; }
 -keep class com.lamerman.** { *; }
--keep interface com.lamerman.ssh** { *; }
+-keep interface com.lamerman.** { *; }
