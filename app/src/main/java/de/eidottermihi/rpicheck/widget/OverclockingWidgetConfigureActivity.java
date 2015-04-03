@@ -182,11 +182,20 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
 
         this.getSupportActionBar().setTitle(getString(R.string.widget_configure_title));
         deviceDbHelper = new DeviceDbHelper(this);
-        initSpinners();
+        final int deviceCount = initSpinners();
+        if (deviceCount == 0) {
+            // show Toast to add a device first
+            Toast.makeText(this, getString(R.string.widget_add_no_device), Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         linLayoutCustomInterval.setVisibility(View.GONE);
     }
 
-    private void initSpinners() {
+    /**
+     * @return the device count
+     */
+    private int initSpinners() {
         // Device Spinner
         final DeviceSpinnerAdapter deviceSpinnerAdapter = new DeviceSpinnerAdapter(OverclockingWidgetConfigureActivity.this, deviceDbHelper.getFullDeviceCursor(), true);
         widgetPiSpinner.setAdapter(deviceSpinnerAdapter);
@@ -201,6 +210,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         updateIntervalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         widgetUpdateIntervalSpinner.setAdapter(updateIntervalAdapter);
         widgetUpdateIntervalSpinner.setOnItemSelectedListener(this);
+        return deviceSpinnerAdapter.getCount();
     }
 
 

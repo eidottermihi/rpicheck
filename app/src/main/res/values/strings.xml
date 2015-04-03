@@ -218,5 +218,6 @@
     <string name="facebook_url" translatable="false">https://www.facebook.com/raspicheck</string>
     <string name="pref_facebook_summary">Keep yourself updated on RasPi Check</string>
     <string name="pref_fb_title" translatable="false">Facebook</string>
+    <string name="widget_add_no_device">You need to add a Pi in the app first.</string>
 
 </resources>

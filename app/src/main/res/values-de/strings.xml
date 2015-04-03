@@ -191,5 +191,6 @@
     <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Wird automatisch mit der aktuellen Zeit ersetzt. format muss ein gültiges Zeit-/Datumsformat sein (z.B. dd.MM.yyyy).</string>
     <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Wird automatisch mit einer Eigenschaft deines Pi\'s ersetzt. Verfügbare Eigenschaften: name, host, user, pass, port, sudopass.</string>
     <string name="placeholder_special_hint">Spezielle Platzhalter:</string>
+    <string name="widget_add_no_device">Du musst zuerst ein Pi in der App anlegen.</string>
 
 </resources>
