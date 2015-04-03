@@ -54,6 +54,7 @@ public class MemoryBean implements Serializable {
         return String.format("%.1f %sB", getBytes() / Math.pow(unit, exp), pre);
     }
 
+    @Exported
     public long getBytes() {
         return bytes;
     }

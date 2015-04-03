@@ -53,6 +53,7 @@ public class DiskUsageBean implements Serializable {
         this.mountedOn = mountedOn;
     }
 
+    @Exported("filesystem")
     public String getFileSystem() {
         return fileSystem;
     }
@@ -61,6 +62,7 @@ public class DiskUsageBean implements Serializable {
         this.fileSystem = fileSystem;
     }
 
+    @Exported
     public String getSize() {
         return size;
     }
@@ -69,6 +71,7 @@ public class DiskUsageBean implements Serializable {
         this.size = size;
     }
 
+    @Exported
     public String getUsed() {
         return used;
     }
@@ -77,6 +80,7 @@ public class DiskUsageBean implements Serializable {
         this.used = used;
     }
 
+    @Exported
     public String getAvailable() {
         return available;
     }
@@ -85,6 +89,7 @@ public class DiskUsageBean implements Serializable {
         this.available = available;
     }
 
+    @Exported
     public String getUsedPercent() {
         return usedPercent;
     }
@@ -93,6 +98,7 @@ public class DiskUsageBean implements Serializable {
         this.usedPercent = usedPercent;
     }
 
+    @Exported
     public String getMountedOn() {
         return mountedOn;
     }

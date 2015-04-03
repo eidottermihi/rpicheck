@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import de.eidottermihi.rpicheck.ssh.beans.Exported;
 import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.ssh.beans.MemoryBean;
 import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
@@ -45,6 +46,7 @@ public class QueryBean implements Serializable {
     private RaspiQueryException exception;
     private List<String> errorMessages;
 
+    @Exported("vcgencmd")
     public VcgencmdBean getVcgencmdInfo() {
         return vcgencmdInfo;
     }
@@ -53,6 +55,7 @@ public class QueryBean implements Serializable {
         this.vcgencmdInfo = vcgencmdInfo;
     }
 
+    @Exported("network")
     public List<NetworkInterfaceInformation> getNetworkInfo() {
         return networkInfo;
     }
@@ -80,6 +83,7 @@ public class QueryBean implements Serializable {
         this.lastUpdate = lastUpdate;
     }
 
+    @Exported("startup")
     public String getStartup() {
         return startup;
     }
@@ -88,6 +92,7 @@ public class QueryBean implements Serializable {
         this.startup = startup;
     }
 
+    @Exported("averageLoad")
     public String getAvgLoad() {
         return avgLoad;
     }
@@ -96,6 +101,7 @@ public class QueryBean implements Serializable {
         this.avgLoad = avgLoad;
     }
 
+    @Exported("totalMemory")
     public MemoryBean getTotalMem() {
         return totalMem;
     }
@@ -104,6 +110,7 @@ public class QueryBean implements Serializable {
         this.totalMem = totalMem;
     }
 
+    @Exported("freeMemory")
     public MemoryBean getFreeMem() {
         return freeMem;
     }
@@ -112,6 +119,7 @@ public class QueryBean implements Serializable {
         this.freeMem = freeMem;
     }
 
+    @Exported("serial")
     public String getSerialNo() {
         return serialNo;
     }
@@ -120,6 +128,7 @@ public class QueryBean implements Serializable {
         this.serialNo = serialNo;
     }
 
+    @Exported("disks")
     public List<DiskUsageBean> getDisks() {
         return disks;
     }
@@ -128,6 +137,7 @@ public class QueryBean implements Serializable {
         this.disks = disks;
     }
 
+    @Exported("distribution")
     public String getDistri() {
         return distri;
     }
@@ -136,6 +146,7 @@ public class QueryBean implements Serializable {
         this.distri = distri;
     }
 
+    @Exported("processes")
     public List<ProcessBean> getProcesses() {
         return processes;
     }

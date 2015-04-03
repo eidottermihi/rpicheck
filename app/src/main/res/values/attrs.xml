@@ -8,6 +8,7 @@
     <attr name="ic_action_next" format="reference" />
     <attr name="ic_action_save" format="reference" />
     <attr name="ic_action_refresh" format="reference" />
+    <attr name="ic_action_share" format="reference" />
 
     <attr name="ic_settings_github" format="reference" />
     <attr name="ic_settings_email" format="reference" />

@@ -38,6 +38,7 @@ public class ProcessBean implements Serializable {
         this.command = command;
     }
 
+    @Exported
     public int getpId() {
         return pId;
     }
@@ -62,6 +63,7 @@ public class ProcessBean implements Serializable {
         this.cpuTime = cpuTime;
     }
 
+    @Exported
     public String getCommand() {
         return command;
     }

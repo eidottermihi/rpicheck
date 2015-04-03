@@ -192,5 +192,7 @@
     <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Wird automatisch mit einer Eigenschaft deines Pi\'s ersetzt. Verfügbare Eigenschaften: name, host, user, pass, port, sudopass.</string>
     <string name="placeholder_special_hint">Spezielle Platzhalter:</string>
     <string name="widget_add_no_device">Du musst zuerst ein Pi in der App anlegen.</string>
+    <string name="action_share">Teilen</string>
+    <string name="share_body"># Informationen zu Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nDiese Informationen wurden mit RasPi Check (Version: %5$s) für Android abgefragt.</string>
 
 </resources>

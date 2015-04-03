@@ -33,6 +33,7 @@ public class WlanBean implements Serializable {
     private Integer linkQuality;
     private Integer signalLevel;
 
+    @Exported
     public Integer getLinkQuality() {
         return linkQuality;
     }
@@ -41,6 +42,7 @@ public class WlanBean implements Serializable {
         this.linkQuality = linkQuality;
     }
 
+    @Exported
     public Integer getSignalLevel() {
         return signalLevel;
     }

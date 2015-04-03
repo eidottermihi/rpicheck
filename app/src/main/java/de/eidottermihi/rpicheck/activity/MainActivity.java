@@ -49,22 +49,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
-import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
-import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
-import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
 import de.eidottermihi.rpicheck.beans.QueryBean;
 import de.eidottermihi.rpicheck.beans.ShutdownResult;
-import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
@@ -74,6 +75,11 @@ import de.eidottermihi.rpicheck.fragment.QueryExceptionDialog;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment;
 import de.eidottermihi.rpicheck.fragment.RebootDialogFragment.ShutdownDialogListener;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
+import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
+import de.eidottermihi.rpicheck.ssh.beans.Exported;
+import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
+import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
+import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlView;
@@ -91,15 +97,18 @@ public class MainActivity extends InjectionActionBarActivity implements
     private static final String ALL_DEVICES = "allDevices";
 
     private static final String KEY_PREF_REFRESH_BY_ACTION_COUNT = "refreshCountByAction";
+    private static boolean isOnBackground;
+
+    static {
+        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+    }
 
     private Intent settingsIntent;
     private Intent newRaspiIntent;
     private Intent editRaspiIntent;
     private Intent commandIntent;
-
     @XmlView(R.id.commandButton)
     private Button commandButton;
-
     // assigning textviews to fields
     @XmlView(R.id.armFreqText)
     private TextView armFreqText;
@@ -131,26 +140,14 @@ public class MainActivity extends InjectionActionBarActivity implements
     private TableLayout processTable;
     @XmlView(R.id.networkTable)
     private TableLayout networkTable;
-
     @XmlView(R.id.swipeRefreshLayout)
     private SwipeRefreshLayout swipeRefreshLayout;
-
     private SharedPreferences sharedPrefs;
-
     private DeviceDbHelper deviceDb;
-
     private RaspberryDeviceBean currentDevice;
     private SparseArray<RaspberryDeviceBean> allDevices;
-
     private Cursor deviceCursor;
-
     private SpinnerAdapter spinadapter;
-
-    private static boolean isOnBackground;
-
-    static {
-        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -246,6 +243,8 @@ public class MainActivity extends InjectionActionBarActivity implements
         updateDiskTable(null);
         updateNetworkTable(null);
         updateProcessTable(null);
+        // remove share action
+        this.supportInvalidateOptionsMenu();
     }
 
     private void updateQueryDataInView(QueryBean result) {
@@ -277,6 +276,7 @@ public class MainActivity extends InjectionActionBarActivity implements
         updateDiskTable(result);
         updateProcessTable(result);
         this.handleQueryError(result.getErrorMessages());
+        this.supportInvalidateOptionsMenu();
     }
 
     /**
@@ -476,6 +476,8 @@ public class MainActivity extends InjectionActionBarActivity implements
         menu.findItem(R.id.menu_delete).setVisible(currDevice);
         menu.findItem(R.id.menu_edit_raspi).setVisible(currDevice);
         menu.findItem(R.id.menu_reboot).setVisible(currDevice);
+        boolean showingQueryData = currDevice && currentDevice.getLastQueryData() != null;
+        menu.findItem(R.id.menu_share).setVisible(showingQueryData);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -504,8 +506,69 @@ public class MainActivity extends InjectionActionBarActivity implements
                 swipeRefreshLayout.setRefreshing(true);
                 this.doQuery(false);
                 break;
+            case R.id.menu_share:
+                this.shareQueryData();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shareQueryData() {
+        LOGGER.debug("Create sharing intent for current query data.");
+        final Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+                "RasPi Check Status '" + currentDevice.getName() + "'");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, buildShareText(currentDevice));
+        startActivity(Intent.createChooser(sharingIntent, "Share via"));
+    }
+
+    private String buildShareText(@NonNull RaspberryDeviceBean device) {
+        return getString(R.string.share_body, device.getName(), device.getHost(), new SimpleDateFormat().format(device.getLastQueryData().getLastUpdate()),
+                buildShareTextBody(device.getLastQueryData()), getString(R.string.app_version));
+    }
+
+    private String buildShareTextBody(@NonNull QueryBean lastQueryData) {
+        Map<String, String> informations = new LinkedHashMap<>();
+        visitExportedMethods(lastQueryData, "", informations);
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> infoEntry : informations.entrySet()) {
+            sb.append(infoEntry.getKey()).append("=").append(infoEntry.getValue()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private void visitExportedMethods(Object object, String keyPrefix, Map<String, String> informationMap) {
+        for (Method method : object.getClass().getMethods()) {
+            if (method.isAnnotationPresent(Exported.class) && method.getParameterTypes().length == 0) {
+                String key = method.getAnnotation(Exported.class).value();
+                if ("".equals(key)) {
+                    key = method.getName();
+                    if (key.startsWith("get")) {
+                        key = key.substring(3).toLowerCase();
+                    }
+                }
+                try {
+                    final Object value = method.invoke(object, new Object[]{});
+                    if (value != null) {
+                        if (value instanceof Boolean || value instanceof String || value instanceof Double || value instanceof Long || value instanceof Integer) {
+                            informationMap.put(keyPrefix + key, value.toString());
+                        } else if (value instanceof Collection) {
+                            Collection collection = (List) value;
+                            int counter = 0;
+                            for (Object val : collection) {
+                                visitExportedMethods(val, String.format("%s[%s].", key, counter++), informationMap);
+                            }
+
+                        } else {
+                            visitExportedMethods(value, key + ".", informationMap);
+                        }
+                    }
+                } catch (IllegalAccessException e) {
+                } catch (InvocationTargetException e) {
+                }
+            }
+        }
     }
 
     /**

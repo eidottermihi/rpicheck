@@ -32,6 +32,13 @@
         android:title="@string/action_delete_raspi"
         android:titleCondensed="@string/action_delete"
         android:visible="false" />
+    <item android:id="@+id/menu_share"
+        android:icon="?attr/ic_action_share"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_share"
+        android:visible="false"
+        />
+
     <item
         android:id="@+id/menu_settings"
         android:icon="?attr/ic_action_settings"

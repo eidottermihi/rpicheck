@@ -52,6 +52,7 @@ public class VcgencmdBean implements Serializable {
      */
     private String version;
 
+    @Exported
     public double getCpuTemperature() {
         return cpuTemperature;
     }
@@ -60,6 +61,7 @@ public class VcgencmdBean implements Serializable {
         this.cpuTemperature = cpuTemperature;
     }
 
+    @Exported
     public long getCoreFrequency() {
         return coreFrequency;
     }
@@ -68,6 +70,7 @@ public class VcgencmdBean implements Serializable {
         this.coreFrequency = coreFrequency;
     }
 
+    @Exported
     public long getArmFrequency() {
         return armFrequency;
     }
@@ -76,6 +79,7 @@ public class VcgencmdBean implements Serializable {
         this.armFrequency = armFrequency;
     }
 
+    @Exported
     public double getCoreVolts() {
         return coreVolts;
     }
@@ -84,6 +88,7 @@ public class VcgencmdBean implements Serializable {
         this.coreVolts = coreVolts;
     }
 
+    @Exported
     public String getVersion() {
         return version;
     }

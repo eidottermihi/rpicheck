@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import de.eidottermihi.rpicheck.beans.QueryBean;
+import de.eidottermihi.rpicheck.ssh.beans.Exported;
 
 public class RaspberryDeviceBean implements Serializable, Parcelable {
     public static final Parcelable.Creator<RaspberryDeviceBean> CREATOR = new Parcelable.Creator<RaspberryDeviceBean>() {

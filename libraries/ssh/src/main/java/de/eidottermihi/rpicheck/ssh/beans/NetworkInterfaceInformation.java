@@ -52,6 +52,7 @@ public class NetworkInterfaceInformation implements Serializable {
      */
     private WlanBean wlanInfo;
 
+    @Exported
     public String getName() {
         return name;
     }
@@ -68,6 +69,7 @@ public class NetworkInterfaceInformation implements Serializable {
         this.hasCarrier = hasCarrier;
     }
 
+    @Exported
     public String getIpAdress() {
         return ipAdress;
     }
@@ -76,6 +78,7 @@ public class NetworkInterfaceInformation implements Serializable {
         this.ipAdress = ipAdress;
     }
 
+    @Exported("wlan")
     public WlanBean getWlanInfo() {
         return wlanInfo;
     }
