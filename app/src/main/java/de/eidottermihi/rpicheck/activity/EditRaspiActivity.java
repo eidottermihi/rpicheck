@@ -32,7 +32,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
@@ -50,6 +49,7 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
 import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.ui.FloatLabelLayout;
 import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 @XmlLayout(R.layout.activity_raspi_edit)
@@ -66,7 +66,7 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements OnI
     private EditText editTextHost;
     @XmlView(R.id.edit_raspi_user_editText)
     private EditText editTextUser;
-    @XmlView(R.id.editText_ssh_password)
+    @XmlView(R.id.ssh_password_edit_text)
     private EditText editTextPass;
     @XmlView(R.id.edit_raspi_ssh_port_editText)
     private EditText editTextSshPortOpt;
@@ -77,18 +77,16 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements OnI
 
     @XmlView(R.id.spinnerAuthMethod)
     private Spinner spinnerAuth;
-    @XmlView(R.id.rel_pw)
-    private RelativeLayout relLaySshPass;
+    @XmlView(R.id.ssh_password_layout)
+    private FloatLabelLayout sshPasswordLayout;
     @XmlView(R.id.rel_key)
     private RelativeLayout relLayKeyfile;
-    @XmlView(R.id.rel_key_pw)
-    private RelativeLayout relLayKeyPassphrase;
-    @XmlView(R.id.editTextKeyPw)
-    private EditText editTextKeyfilePass;
+    @XmlView(R.id.key_password_layout)
+    private FloatLabelLayout keyPasswordLayout;
+    @XmlView(R.id.key_password_edit_text)
+    private EditText keyPasswordEditText;
     @XmlView(R.id.buttonKeyfile)
     private Button buttonKeyfile;
-    @XmlView(R.id.text_key_pw)
-    private TextView textKeyPass;
     @XmlView(R.id.checkboxAsk)
     private CheckBox checkboxAskPassphrase;
 
@@ -189,14 +187,13 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements OnI
         LOGGER.debug("Always ask for passphrase: {}", checked);
         if (checked) {
             // don't show textfield for passphrase
-            relLayKeyPassphrase.setVisibility(View.GONE);
+            keyPasswordLayout.setVisibility(View.GONE);
             // remove passphrase from textfield
-            editTextKeyfilePass.setText("");
+            keyPasswordEditText.setText("");
         } else {
             // show textfield for passphrase
-            relLayKeyPassphrase.setVisibility(View.VISIBLE);
-            textKeyPass.setVisibility(View.VISIBLE);
-            editTextKeyfilePass.setVisibility(View.VISIBLE);
+            keyPasswordLayout.setVisibility(View.VISIBLE);
+            keyPasswordEditText.setVisibility(View.VISIBLE);
         }
     }
 
@@ -204,7 +201,7 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements OnI
         final int authMethod = spinnerAuth.getSelectedItemPosition();
         boolean validationSuccessful = validator.validatePiEditData(this, authMethod, editTextName, editTextHost, editTextUser,
                 editTextPass, editTextSshPortOpt, editTextSudoPass,
-                editTextKeyfilePass, buttonKeyfile,
+                keyPasswordEditText, buttonKeyfile,
                 checkboxAskPassphrase.isChecked(), deviceBean.getKeyfilePath());
         if (validationSuccessful) {
             // getting credentials from textfields
@@ -231,7 +228,7 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements OnI
                             NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
                             keyfilePath, null);
                 } else {
-                    final String keyfilePass = editTextKeyfilePass.getText().toString().trim();
+                    final String keyfilePass = keyPasswordEditText.getText().toString().trim();
                     updateRaspiInDb(name, host, user, null, sshPort, description,
                             sudoPass, NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
                             keyfilePath, keyfilePass);
@@ -272,32 +269,32 @@ public class EditRaspiActivity extends InjectionActionBarActivity implements OnI
     private void switchAuthMethodsInView(String method) {
         if (method.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
             // show only ssh password
-            relLaySshPass.setVisibility(View.VISIBLE);
+            sshPasswordLayout.setVisibility(View.VISIBLE);
             editTextPass.setText(deviceBean.getPass());
             relLayKeyfile.setVisibility(View.GONE);
         } else if (method.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
             // show key file button (no passphrase)
-            relLaySshPass.setVisibility(View.GONE);
+            sshPasswordLayout.setVisibility(View.GONE);
             relLayKeyfile.setVisibility(View.VISIBLE);
             initButtonKeyfile();
             checkboxAskPassphrase.setVisibility(View.GONE);
-            relLayKeyPassphrase.setVisibility(View.GONE);
+            keyPasswordLayout.setVisibility(View.GONE);
         } else {
             // show key file button and passphrase field
-            relLaySshPass.setVisibility(View.GONE);
+            sshPasswordLayout.setVisibility(View.GONE);
             relLayKeyfile.setVisibility(View.VISIBLE);
             initButtonKeyfile();
             checkboxAskPassphrase.setVisibility(View.VISIBLE);
             if (deviceBean.getKeyfilePass() != null) {
-                relLayKeyPassphrase.setVisibility(View.VISIBLE);
+                keyPasswordLayout.setVisibility(View.VISIBLE);
                 checkboxAskPassphrase.setChecked(false);
-                editTextKeyfilePass.setText(deviceBean.getKeyfilePass());
-            } else if (!Strings.isNullOrEmpty(editTextKeyfilePass.getText()
+                keyPasswordEditText.setText(deviceBean.getKeyfilePass());
+            } else if (!Strings.isNullOrEmpty(keyPasswordEditText.getText()
                     .toString())) {
-                relLayKeyPassphrase.setVisibility(View.VISIBLE);
+                keyPasswordLayout.setVisibility(View.VISIBLE);
                 checkboxAskPassphrase.setChecked(false);
             } else {
-                relLayKeyPassphrase.setVisibility(View.GONE);
+                keyPasswordLayout.setVisibility(View.GONE);
                 checkboxAskPassphrase.setChecked(true);
             }
         }

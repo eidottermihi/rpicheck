@@ -32,7 +32,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
@@ -50,6 +49,7 @@ import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
 import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.ui.FloatLabelLayout;
 import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 @XmlLayout(R.layout.activity_raspi_new_auth)
@@ -71,20 +71,18 @@ public class NewRaspiAuthActivity extends InjectionActionBarActivity implements 
     // assigning view elements to fields
     @XmlView(R.id.spinnerAuthMethod)
     private Spinner spinnerAuth;
-    @XmlView(R.id.rel_pw)
-    private RelativeLayout relLaySshPass;
+    @XmlView(R.id.ssh_password_layout)
+    private FloatLabelLayout relLaySshPass;
     @XmlView(R.id.rel_key)
     private RelativeLayout relLayKeyfile;
-    @XmlView(R.id.rel_key_pw)
-    private RelativeLayout relLayKeyPassphrase;
-    @XmlView(R.id.editText_ssh_password)
+    @XmlView(R.id.key_password_layout)
+    private FloatLabelLayout keyPasswordLayout;
+    @XmlView(R.id.ssh_password_edit_text)
     private EditText editTextSshPass;
-    @XmlView(R.id.editTextKeyPw)
+    @XmlView(R.id.key_password_edit_text)
     private EditText editTextKeyfilePass;
     @XmlView(R.id.buttonKeyfile)
     private Button buttonKeyfile;
-    @XmlView(R.id.text_key_pw)
-    private TextView textKeyPass;
     @XmlView(R.id.edit_raspi_ssh_port_editText)
     private EditText editTextSshPort;
     @XmlView(R.id.edit_raspi_sudoPass_editText)
@@ -173,10 +171,10 @@ public class NewRaspiAuthActivity extends InjectionActionBarActivity implements 
         LOGGER.debug("Always ask for passphrase: {}", checked);
         if (checked) {
             // don't show textfield for passphrase
-            relLayKeyPassphrase.setVisibility(View.GONE);
+            keyPasswordLayout.setVisibility(View.GONE);
         } else {
             // show textfield for passphrase
-            relLayKeyPassphrase.setVisibility(View.VISIBLE);
+            keyPasswordLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -291,14 +289,12 @@ public class NewRaspiAuthActivity extends InjectionActionBarActivity implements 
             relLaySshPass.setVisibility(View.GONE);
             relLayKeyfile.setVisibility(View.VISIBLE);
             checkboxAskPassphrase.setVisibility(View.GONE);
-            textKeyPass.setVisibility(View.GONE);
             editTextKeyfilePass.setVisibility(View.GONE);
         } else {
             // show key file button and passphrase field
             relLaySshPass.setVisibility(View.GONE);
             relLayKeyfile.setVisibility(View.VISIBLE);
             checkboxAskPassphrase.setVisibility(View.VISIBLE);
-            textKeyPass.setVisibility(View.VISIBLE);
             editTextKeyfilePass.setVisibility(View.VISIBLE);
         }
     }
