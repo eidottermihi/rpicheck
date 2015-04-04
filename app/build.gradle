@@ -18,10 +18,11 @@ if (project.hasProperty("rpicheck.keystore")
     // sign apk
     apply from: "gradle/signing.gradle";
     // copy signed apk to local release apk folder
-    apply from: "gradle/release.gradle";
+    apply from: "gradle/release-local.gradle";
 }
 
 apply from: "$project.rootDir/gradle/license.gradle"
+apply from: "gradle/release.gradle"
 
 android {
     compileSdkVersion 22
@@ -72,39 +73,6 @@ android.applicationVariants.all { variant ->
         valuesFile.write(content, 'UTF-8')
     }
 }
-
-release {
-    tagPrefix = "v"
-    // tagTemplate = "v$version"
-}
-
-task increaseVersionCode << {
-    def manifestFile = file("src/main/AndroidManifest.xml")
-    def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
-    def manifestText = manifestFile.getText()
-    def matcher = pattern.matcher(manifestText)
-    matcher.find()
-    def versionCode = Integer.parseInt(matcher.group(1))
-    def manifestContent = matcher.replaceAll("versionCode=\"" + ++versionCode + "\"")
-    manifestFile.write(manifestContent)
-}
-
-task updateVersionName << {
-    Properties properties = new Properties()
-    properties.load(file('gradle.properties').newDataInputStream())
-    def newVersionName = properties.getProperty('version')
-    def manifestFile = file("src/main/AndroidManifest.xml")
-    def patternVersionNumber = Pattern.compile("versionName=\"([^\"]+)\"")
-    def manifestText = manifestFile.getText()
-    def matcherVersionNumber = patternVersionNumber.matcher(manifestText)
-    matcherVersionNumber.find()
-    def mNextVersionName = newVersionName
-    def manifestContent = matcherVersionNumber.replaceAll("versionName=\"" + mNextVersionName + "\"")
-    manifestFile.write(manifestContent)
-}
-
-tasks.commitNewVersion.dependsOn increaseVersionCode
-tasks.commitNewVersion.dependsOn updateVersionName
 
 license {
     exclude "**/sheetrock/**"
