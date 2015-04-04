@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
@@ -76,6 +77,9 @@ public class SettingsActivity extends PreferenceActivity implements
         prefLog.setOnPreferenceClickListener(this);
         Preference prefChangelog = findPreference(KEY_PREF_CHANGELOG);
         prefChangelog.setOnPreferenceClickListener(this);
+
+        findPreference("pref_app_version").setSummary(BuildConfig.VERSION_NAME);
+
         // init summary texts to reflect users choice
         this.initSummaries();
     }

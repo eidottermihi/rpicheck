@@ -25,13 +25,12 @@ apply from: "gradle/release.gradle"
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "de.eidottermihi.raspicheck"
         minSdkVersion 9
         targetSdkVersion 22
+        versionName version
     }
-
     buildTypes {
         release {
             shrinkResources true
@@ -46,6 +45,8 @@ android {
     lintOptions {
         warning 'InvalidPackage', 'MissingTranslation'
     }
+    productFlavors {
+    }
 }
 
 dependencies {
@@ -58,18 +59,6 @@ dependencies {
     }
     compile 'org.slf4j:slf4j-api:1.7.6'
     compile 'com.google.code.findbugs:jsr305:2.0.2'
-}
-
-// Update version string in version.xml
-android.applicationVariants.all { variant ->
-    variant.mergeResources.doLast {
-        def versionName = project.version
-        File valuesFile = file("${buildDir}/intermediates/res/${variant.dirName}/values/values.xml")
-        println("Setting version \'$versionName\' in $valuesFile")
-        String content = valuesFile.getText('UTF-8')
-        content = content.replaceAll(/appversion/, versionName)
-        valuesFile.write(content, 'UTF-8')
-    }
 }
 
 license {

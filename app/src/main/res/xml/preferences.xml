@@ -61,7 +61,6 @@
                 android:title="@string/pref_group_about">
                 <Preference
                     android:key="pref_app_version"
-                    android:summary="@string/app_version"
                     android:title="@string/pref_version"/>
                 <Preference
                     android:key="pref_changelog"
