@@ -56,7 +56,7 @@ import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
  */
 @XmlLayout(R.layout.overclocking_widget_configure)
 @XmlMenu(R.menu.activity_overclocking_widget_configure)
-public class OverclockingWidgetConfigureActivity extends InjectionActionBarActivity implements AdapterView.OnItemSelectedListener {
+public class OverclockingWidgetConfigureActivity extends AbstractWidgetConfigurationActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String PREF_SHOW_TEMP_SUFFIX = "_temp";
     public static final String PREF_SHOW_ARM_SUFFIX = "_arm";
@@ -75,8 +75,6 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private static final String[] autoUpdate = {UPDATE_YES, UPDATE_WIFI, UPDATE_NO};
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    @XmlView(R.id.widgetPiSpinner)
-    private Spinner widgetPiSpinner;
     @XmlView(R.id.textEditUpdateInterval)
     private EditText textEditUpdateInterval;
     @XmlView(R.id.widgetUpdateSpinner)
@@ -101,7 +99,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private int[] updateIntervalsMinutes;
 
     public OverclockingWidgetConfigureActivity() {
-        super();
+        super(R.id.widgetPiSpinner);
     }
 
     /**
@@ -161,44 +159,11 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
-        // Set the result to CANCELED.  This will cause the widget host to cancel
-        // out of the widget placement if the user presses the back button.
-        setResult(RESULT_CANCELED);
-
-        // Find the widget id from the intent.
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-        }
-
-        // If this activity was started with an intent without an app widget ID, finish with an error.
-        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            finish();
-            return;
-        }
-
-        this.getSupportActionBar().setTitle(getString(R.string.widget_configure_title));
-        deviceDbHelper = new DeviceDbHelper(this);
-        final int deviceCount = initSpinners();
-        if (deviceCount == 0) {
-            // show Toast to add a device first
-            Toast.makeText(this, getString(R.string.widget_add_no_device), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
+        initSpinners();
         linLayoutCustomInterval.setVisibility(View.GONE);
     }
 
-    /**
-     * @return the device count
-     */
-    private int initSpinners() {
-        // Device Spinner
-        final DeviceSpinnerAdapter deviceSpinnerAdapter = new DeviceSpinnerAdapter(OverclockingWidgetConfigureActivity.this, deviceDbHelper.getFullDeviceCursor(), true);
-        widgetPiSpinner.setAdapter(deviceSpinnerAdapter);
+    private void initSpinners() {
         // Auto update
         final ArrayAdapter<CharSequence> autoUpdateAdapter = ArrayAdapter.createFromResource(OverclockingWidgetConfigureActivity.this, R.array.widget_auto_updates, android.R.layout.simple_spinner_item);
         autoUpdateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -210,7 +175,6 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         updateIntervalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         widgetUpdateIntervalSpinner.setAdapter(updateIntervalAdapter);
         widgetUpdateIntervalSpinner.setOnItemSelectedListener(this);
-        return deviceSpinnerAdapter.getCount();
     }
 
 
@@ -220,7 +184,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
             case R.id.menu_save:
                 final Context context = OverclockingWidgetConfigureActivity.this;
 
-                long selectedItemId = widgetPiSpinner.getSelectedItemId();
+                long selectedItemId = piSpinner.getSelectedItemId();
                 LOGGER.info("Selected Device - Item ID = {}", selectedItemId);
                 RaspberryDeviceBean deviceBean = deviceDbHelper.read(selectedItemId);
                 if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null) {

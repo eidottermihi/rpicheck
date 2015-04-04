@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.eidottermihi.raspicheck"
     android:versionCode="32"
-    android:versionName="1.7.2-SNAPSHOT">
+    android:versionName="1.7.2-SNAPSHOT" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -89,6 +89,22 @@
         </receiver>
 
         <activity android:name="de.eidottermihi.rpicheck.widget.OverclockingWidgetConfigureActivity" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="de.eidottermihi.rpicheck.widget.CommandWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/command_widget_info" />
+        </receiver>
+
+        <activity android:name="de.eidottermihi.rpicheck.widget.CommandWidgetConfigureActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
