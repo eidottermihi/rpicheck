@@ -59,6 +59,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
@@ -525,7 +526,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 
     private String buildShareText(@NonNull RaspberryDeviceBean device) {
         return getString(R.string.share_body, device.getName(), device.getHost(), new SimpleDateFormat().format(device.getLastQueryData().getLastUpdate()),
-                buildShareTextBody(device.getLastQueryData()), getString(R.string.app_version));
+                buildShareTextBody(device.getLastQueryData()), BuildConfig.VERSION_NAME);
     }
 
     private String buildShareTextBody(@NonNull QueryBean lastQueryData) {

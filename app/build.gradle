@@ -30,6 +30,7 @@ android {
         applicationId "de.eidottermihi.raspicheck"
         minSdkVersion 9
         targetSdkVersion 22
+        versionName version
     }
 
     buildTypes {
@@ -39,10 +40,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
     lintOptions {
         warning 'InvalidPackage', 'MissingTranslation'
     }
@@ -60,18 +63,6 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:2.0.2'
 }
 
-// Update version string in version.xml
-android.applicationVariants.all { variant ->
-    variant.mergeResources.doLast {
-        def versionName = project.version
-        File valuesFile = file("${buildDir}/intermediates/res/${variant.dirName}/values/values.xml")
-        println("Setting version \'$versionName\' in $valuesFile")
-        String content = valuesFile.getText('UTF-8')
-        content = content.replaceAll(/appversion/, versionName)
-        valuesFile.write(content, 'UTF-8')
-    }
-}
-
 license {
     exclude "**/sheetrock/**"
 }
@@ -79,5 +70,6 @@ license {
 task licenseFormatAndroid (type:nl.javadude.gradle.plugins.license.License) {
     source = fileTree(dir:"src").include ("**/*.java")
 }
+
 licenseFormat.dependsOn licenseFormatAndroid
 
