@@ -25,12 +25,14 @@ apply from: "gradle/release.gradle"
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+
     defaultConfig {
         applicationId "de.eidottermihi.raspicheck"
         minSdkVersion 9
         targetSdkVersion 22
         versionName version
     }
+
     buildTypes {
         release {
             shrinkResources true
@@ -38,14 +40,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
     lintOptions {
         warning 'InvalidPackage', 'MissingTranslation'
-    }
-    productFlavors {
     }
 }
 
@@ -68,5 +70,6 @@ license {
 task licenseFormatAndroid (type:nl.javadude.gradle.plugins.license.License) {
     source = fileTree(dir:"src").include ("**/*.java")
 }
+
 licenseFormat.dependsOn licenseFormatAndroid
 
