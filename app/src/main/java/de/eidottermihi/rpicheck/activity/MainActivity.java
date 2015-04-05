@@ -325,11 +325,11 @@ public class MainActivity extends InjectionActionBarActivity implements
         }
         if (interfaceInformation.getWlanInfo() != null) {
             final WlanBean wlan = interfaceInformation.getWlanInfo();
-            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getSignalLevel()), 3));
-            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getLinkQuality()), 3));
+            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getSignalLevel())));
+            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getLinkQuality())));
         } else {
-            tempRow.addView(createTextView(" - ", 3));
-            tempRow.addView(createTextView(" - ", 3));
+            tempRow.addView(createTextView(" - "));
+            tempRow.addView(createTextView(" - "));
         }
         return tempRow;
     }
@@ -364,16 +364,10 @@ public class MainActivity extends InjectionActionBarActivity implements
     }
 
     private View createTextView(String text) {
-        return createTextView(text, null);
-    }
-
-    private View createTextView(String text, Integer paddingLeft) {
         final TextView tempText = new TextView(this);
         tempText.setText(text);
-        if (paddingLeft != null) {
-            float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingLeft, getResources().getDisplayMetrics());
-            tempText.setPadding((int) (pix), 0, 0, 0);
-        }
+        float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
+        tempText.setPadding((int) (pix), (int) (pix), 0, 0);
         return tempText;
     }
 
