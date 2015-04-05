@@ -27,12 +27,16 @@
         <item name="ic_fb">@drawable/ic_fb</item>
 
     </style>
-    <style name="Theme.rpiCheck.Dark.TextSmall" parent="Theme.rpiCheck.Dark">
+
+    <style name="Theme.rpiCheck.Dark.Text" parent="Theme.rpiCheck.Dark"></style>
+
+    <style name="Theme.rpiCheck.Dark.Text.Small" parent="Theme.rpiCheck.Dark.Text">
         <item name="android:textSize">12sp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
     </style>
-    <style name="Theme.rpiCheck.Dark.TextMedium" parent="Theme.rpiCheck.Dark">
+
+    <style name="Theme.rpiCheck.Dark.Text.Medium" parent="Theme.rpiCheck.Dark.Text">
         <item name="android:textSize">14sp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>

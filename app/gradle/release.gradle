@@ -16,19 +16,4 @@ task increaseVersionCode << {
     manifestFile.write(manifestContent)
 }
 
-task updateVersionName << {
-    Properties properties = new Properties()
-    properties.load(file('gradle.properties').newDataInputStream())
-    def newVersionName = properties.getProperty('version')
-    def manifestFile = file("src/main/AndroidManifest.xml")
-    def patternVersionNumber = Pattern.compile("versionName=\"([^\"]+)\"")
-    def manifestText = manifestFile.getText()
-    def matcherVersionNumber = patternVersionNumber.matcher(manifestText)
-    matcherVersionNumber.find()
-    def mNextVersionName = newVersionName
-    def manifestContent = matcherVersionNumber.replaceAll("versionName=\"" + mNextVersionName + "\"")
-    manifestFile.write(manifestContent)
-}
-
 tasks.commitNewVersion.dependsOn increaseVersionCode
-tasks.commitNewVersion.dependsOn updateVersionName

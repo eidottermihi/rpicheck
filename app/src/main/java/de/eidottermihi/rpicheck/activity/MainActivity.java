@@ -59,6 +59,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
@@ -324,11 +325,11 @@ public class MainActivity extends InjectionActionBarActivity implements
         }
         if (interfaceInformation.getWlanInfo() != null) {
             final WlanBean wlan = interfaceInformation.getWlanInfo();
-            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getSignalLevel()), 3));
-            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getLinkQuality()), 3));
+            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getSignalLevel())));
+            tempRow.addView(createTextView(FormatHelper.formatPercentage(wlan.getLinkQuality())));
         } else {
-            tempRow.addView(createTextView(" - ", 3));
-            tempRow.addView(createTextView(" - ", 3));
+            tempRow.addView(createTextView(" - "));
+            tempRow.addView(createTextView(" - "));
         }
         return tempRow;
     }
@@ -363,16 +364,10 @@ public class MainActivity extends InjectionActionBarActivity implements
     }
 
     private View createTextView(String text) {
-        return createTextView(text, null);
-    }
-
-    private View createTextView(String text, Integer paddingLeft) {
         final TextView tempText = new TextView(this);
         tempText.setText(text);
-        if (paddingLeft != null) {
-            float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingLeft, getResources().getDisplayMetrics());
-            tempText.setPadding((int) (pix), 0, 0, 0);
-        }
+        float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
+        tempText.setPadding((int) (pix), (int) (pix), 0, 0);
         return tempText;
     }
 
@@ -525,7 +520,7 @@ public class MainActivity extends InjectionActionBarActivity implements
 
     private String buildShareText(@NonNull RaspberryDeviceBean device) {
         return getString(R.string.share_body, device.getName(), device.getHost(), new SimpleDateFormat().format(device.getLastQueryData().getLastUpdate()),
-                buildShareTextBody(device.getLastQueryData()), getString(R.string.app_version));
+                buildShareTextBody(device.getLastQueryData()), BuildConfig.VERSION_NAME);
     }
 
     private String buildShareTextBody(@NonNull QueryBean lastQueryData) {

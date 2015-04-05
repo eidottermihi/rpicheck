@@ -61,7 +61,7 @@
 
             <TextView
                 android:id="@+id/textDeviceValue"
-                style="@style/Theme.rpiCheck.Dark.TextMedium"
+                style="@style/Theme.rpiCheck.Dark.Text.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="1dp"
@@ -70,7 +70,7 @@
 
             <TextView
                 android:id="@+id/textDeviceUserHost"
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
@@ -78,7 +78,7 @@
 
             <TextView
                 android:id="@+id/textStatusValue"
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
@@ -115,7 +115,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
                 android:text="@string/widget_temp_header"
@@ -123,7 +123,7 @@
 
             <TextView
                 android:id="@+id/textTempValue"
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -159,7 +159,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
                 android:text="@string/widget_arm_header"
@@ -167,7 +167,7 @@
 
             <TextView
                 android:id="@+id/textArmValue"
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -201,7 +201,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
                 android:text="@string/widget_load_header"
@@ -209,7 +209,7 @@
 
             <TextView
                 android:id="@+id/textLoadValue"
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -243,7 +243,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
                 android:text="@string/widget_memory_header"
@@ -251,7 +251,7 @@
 
             <TextView
                 android:id="@+id/textMemoryValue"
-                style="@style/Theme.rpiCheck.Dark.TextSmall"
+                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
