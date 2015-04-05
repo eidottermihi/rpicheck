@@ -55,6 +55,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.eidottermihi.raspicheck.R;
+import de.eidottermihi.rpicheck.adapter.CommandAdapter;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.ssh.beans.Exported;

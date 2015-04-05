@@ -42,12 +42,12 @@ import java.util.Map;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
-import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
-import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
@@ -89,7 +89,7 @@ public class OverclockingWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, final AppWidgetManager appWidgetManager,
                                 final int appWidgetId, DeviceDbHelper deviceDb, boolean initByAlarm) {
         LOGGER.debug("Updating Widget[ID={}]. initByAlarm = {}", appWidgetId, initByAlarm);
-        Long deviceId = OverclockingWidgetConfigureActivity.loadDeviceId(context, appWidgetId);
+        Long deviceId = OverclockingWidgetConfigureActivity.loadDeviceId(context, appWidgetId, OverclockingWidgetConfigureActivity.PREFS_NAME);
         if (deviceId != null) {
             // get update interval
             final boolean showTemp = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_TEMP_SUFFIX, appWidgetId);

@@ -224,5 +224,7 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
+    <string name="cmd_widget_cmd_to_run">Command to run</string>
+    <string name="cmd_widget_run_in_background">Run in background</string>
 
 </resources>

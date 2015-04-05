@@ -41,14 +41,12 @@ import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
-import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
 import de.fhconfig.android.library.injection.annotation.XmlView;
 import de.fhconfig.android.library.ui.FloatLabelLayout;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 
 
 /**
@@ -62,9 +60,8 @@ public class OverclockingWidgetConfigureActivity extends AbstractWidgetConfigura
     public static final String PREF_SHOW_ARM_SUFFIX = "_arm";
     public static final String PREF_SHOW_LOAD_SUFFIX = "_load";
     public static final String PREF_SHOW_MEMORY_SUFFIX = "_memory";
+    public static final String PREFS_NAME = "de.eidottermihi.rpicheck.widget.OverclockingWidget";
     private static final Logger LOGGER = LoggerFactory.getLogger(OverclockingWidgetConfigureActivity.class);
-    private static final String PREFS_NAME = "de.eidottermihi.rpicheck.widget.OverclockingWidget";
-    private static final String PREF_PREFIX_KEY = "appwidget_";
     private static final String PREF_UPDATE_ONLY_ON_WIFI = "_onlywifi";
 
     private static final String PREF_UPDATE_INTERVAL_SUFFIX = "_interval";
@@ -112,47 +109,33 @@ public class OverclockingWidgetConfigureActivity extends AbstractWidgetConfigura
                 new Object[]{updateInterval, onlyOnWifi, showTemp, showArm, showLoad, showMemory});
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putLong(PREF_PREFIX_KEY + appWidgetId, deviceId);
-        prefs.putInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval);
-        prefs.putBoolean(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId), showTemp);
-        prefs.putBoolean(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm);
-        prefs.putBoolean(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad);
-        prefs.putBoolean(prefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory);
-        prefs.putBoolean(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), onlyOnWifi);
+        prefs.putInt(buildFullPrefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval);
+        prefs.putBoolean(buildFullPrefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId), showTemp);
+        prefs.putBoolean(buildFullPrefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm);
+        prefs.putBoolean(buildFullPrefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad);
+        prefs.putBoolean(buildFullPrefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory);
+        prefs.putBoolean(buildFullPrefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), onlyOnWifi);
         prefs.apply();
-    }
-
-    static String prefKey(String key, int appWidgetId) {
-        return PREF_PREFIX_KEY + appWidgetId + key;
     }
 
     static boolean loadShowStatus(Context context, String key, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getBoolean(prefKey(key, appWidgetId), true);
-    }
-
-    static Long loadDeviceId(Context context, int appWidgetId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        Long deviceId = prefs.getLong(PREF_PREFIX_KEY + appWidgetId, 0);
-        if (deviceId != 0) {
-            return deviceId;
-        } else {
-            return null;
-        }
+        return prefs.getBoolean(buildFullPrefKey(key, appWidgetId), true);
     }
 
     static boolean loadOnlyOnWifi(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getBoolean(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), false);
+        return prefs.getBoolean(buildFullPrefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), false);
     }
 
     static void deleteDevicePref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
-        prefs.remove(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId));
-        prefs.remove(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId));
-        prefs.remove(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId));
-        prefs.remove(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId));
-        prefs.remove(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId));
+        prefs.remove(buildFullPrefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId));
+        prefs.remove(buildFullPrefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId));
+        prefs.remove(buildFullPrefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId));
+        prefs.remove(buildFullPrefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId));
+        prefs.remove(buildFullPrefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId));
         prefs.apply();
     }
 
@@ -161,6 +144,11 @@ public class OverclockingWidgetConfigureActivity extends AbstractWidgetConfigura
         super.onCreate(icicle);
         initSpinners();
         linLayoutCustomInterval.setVisibility(View.GONE);
+    }
+
+    @Override
+    public String getSharedPreferencesName() {
+        return PREFS_NAME;
     }
 
     private void initSpinners() {

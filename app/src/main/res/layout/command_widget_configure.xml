@@ -1,12 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="16dp">
+<ScrollView
+    android:id="@+id/cmd_widget_conf_scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_large">
 
-    <Spinner
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/piSpinner"/>
-</LinearLayout>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/cmd_widget_conf_pi_spinner_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="@dimen/padding_small"
+            android:text="@string/widget_pi"
+            android:textAppearance="?android:attr/textAppearanceMedium">
+
+            <requestFocus/>
+        </TextView>
+
+        <Spinner
+            android:id="@+id/cmd_widget_conf_piSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/cmd_widget_conf_cmdSpinner_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="@dimen/padding_small"
+            android:text="@string/cmd_widget_cmd_to_run"
+            android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+
+        <Spinner
+            android:id="@+id/cmd_widget_conf_cmdSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <CheckBox
+            android:id="@+id/cmd_widget_conf_cb_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cmd_widget_run_in_background"/>
+    </LinearLayout>
+</ScrollView>

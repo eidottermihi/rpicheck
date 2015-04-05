@@ -18,9 +18,10 @@
 package de.eidottermihi.rpicheck.widget;
 
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,15 +37,29 @@ import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
  */
 public abstract class AbstractWidgetConfigurationActivity extends InjectionActionBarActivity {
 
+    public static final String PREF_PREFIX_KEY = "appwidget_";
     protected int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     protected DeviceDbHelper deviceDbHelper;
     protected Spinner piSpinner;
-
     private int spinnerId;
 
-    public AbstractWidgetConfigurationActivity(int spinnerId){
+    public AbstractWidgetConfigurationActivity(int spinnerId) {
         super();
         this.spinnerId = spinnerId;
+    }
+
+    public static String buildFullPrefKey(String key, int appWidgetId) {
+        return PREF_PREFIX_KEY + appWidgetId + key;
+    }
+
+    static Long loadDeviceId(Context context, int appWidgetId, String sharedPrefName) {
+        SharedPreferences prefs = context.getSharedPreferences(sharedPrefName, 0);
+        Long deviceId = prefs.getLong(PREF_PREFIX_KEY + appWidgetId, 0);
+        if (deviceId != 0) {
+            return deviceId;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -76,8 +91,7 @@ public abstract class AbstractWidgetConfigurationActivity extends InjectionActio
         final int deviceCount = initDeviceSpinner();
         if (deviceCount == 0) {
             // show Toast to add a device first
-            Toast.makeText(this, getString(R.string.widget_add_no_device), Toast.LENGTH_LONG).show();
-            finish();
+            finishWithToast(getString(R.string.widget_add_no_device));
             return;
         }
     }
@@ -91,4 +105,17 @@ public abstract class AbstractWidgetConfigurationActivity extends InjectionActio
         piSpinner.setAdapter(deviceSpinnerAdapter);
         return deviceSpinnerAdapter.getCount();
     }
+
+    /**
+     * Exit the configuration screen without adding the widget.
+     *
+     * @param message message to display
+     */
+    protected void finishWithToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+    public abstract String getSharedPreferencesName();
+
 }

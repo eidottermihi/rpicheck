@@ -17,12 +17,22 @@
  */
 package de.eidottermihi.rpicheck.widget;
 
-import android.appwidget.AppWidgetManager;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.CursorAdapter;
+import android.view.MenuItem;
+import android.widget.CheckBox;
+import android.widget.Spinner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.raspicheck.R;
+import de.eidottermihi.rpicheck.adapter.CommandAdapter;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
+import de.fhconfig.android.library.injection.annotation.XmlView;
 
 
 /**
@@ -34,15 +44,65 @@ public class CommandWidgetConfigureActivity extends AbstractWidgetConfigurationA
 
     private static final String PREFS_NAME = "de.eidottermihi.rpicheck.widget.CommandWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
-    int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandWidgetConfigureActivity.class);
+
+    @XmlView(R.id.cmd_widget_conf_cmdSpinner)
+    private Spinner cmdSpinner;
+    @XmlView(R.id.cmd_widget_conf_cb_background)
+    private CheckBox runInBackgroundCheckBox;
+
+    private Cursor commandCursor;
 
     public CommandWidgetConfigureActivity() {
-        super(R.id.piSpinner);
+        super(R.id.cmd_widget_conf_piSpinner);
     }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        initCommandSpinner();
+    }
+
+    @Override
+    public String getSharedPreferencesName() {
+        return PREFS_NAME;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_save:
+                saveCommandWidget();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void saveCommandWidget() {
+        final long deviceId = piSpinner.getSelectedItemId();
+        final long commandId = cmdSpinner.getSelectedItemId();
+        LOGGER.debug("Saving new Command-Widget for Pi[ID={}] and Command[ID={}].", deviceId, commandId);
+    }
+
+    private void initCommandSpinner() {
+        new AsyncTask<Void, Void, Cursor>() {
+
+            @Override
+            protected Cursor doInBackground(Void... voids) {
+                return deviceDbHelper.getFullCommandCursor();
+            }
+
+            @Override
+            protected void onPostExecute(Cursor cursor) {
+                final CommandAdapter commandAdapter = new CommandAdapter(CommandWidgetConfigureActivity.this, cursor, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                cmdSpinner.setAdapter(commandAdapter);
+                if (commandAdapter.getCount() == 0) {
+                    finishWithToast("You need to add a custom command first.");
+                    return;
+                }
+                super.onPostExecute(cursor);
+            }
+        }.execute();
     }
 }
 
