@@ -45,6 +45,11 @@ import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class RunCommandDialog extends DialogFragment {
 
+    public static final String EXTRA_DEVICE_BEAN = "pi";
+    public static final String EXTRA_COMMAND_BEAN = "cmd";
+    public static final String EXTRA_PASSPHRASE = "passphrase";
+
+
     private boolean didRun = false;
 
     RaspberryDeviceBean device;
@@ -67,10 +72,10 @@ public class RunCommandDialog extends DialogFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity());
         this.device = (RaspberryDeviceBean) this.getArguments()
-                .getSerializable("pi");
-        this.command = (CommandBean) this.getArguments().getSerializable("cmd");
-        if (this.getArguments().getString("passphrase") != null) {
-            this.passphrase = this.getArguments().getString("passphrase");
+                .getSerializable(EXTRA_DEVICE_BEAN);
+        this.command = (CommandBean) this.getArguments().getSerializable(EXTRA_COMMAND_BEAN);
+        if (this.getArguments().getString(EXTRA_PASSPHRASE) != null) {
+            this.passphrase = this.getArguments().getString(EXTRA_PASSPHRASE);
         }
 
         builder.setTitle(getString(R.string.run_cmd_dialog_title,

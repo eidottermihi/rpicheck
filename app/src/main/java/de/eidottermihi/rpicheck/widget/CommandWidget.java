@@ -22,6 +22,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 public class CommandWidget extends AppWidgetProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandWidget.class);
+    private static final String URI_SCHEME = "raspicheck-cmd";
     private DeviceDbHelper deviceDbHelper;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -67,13 +69,23 @@ public class CommandWidget extends AppWidgetProvider {
             views = new RemoteViews(context.getPackageName(), R.layout.command_widget);
             views.setTextViewText(R.id.cmd_widget_title_text, deviceBean.getName());
             views.setCharSequence(R.id.cmd_widget_button_run_cmd, "setText", commandBean.getName());
-            Intent cmdIntent = new Intent(context, CustomCommandActivity.class);
-            PendingIntent p = PendingIntent.getActivity(context, 0, cmdIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            final Intent cmdIntent = new Intent();
+            cmdIntent.setClass(context, CustomCommandActivity.class);
+            cmdIntent.putExtra(CustomCommandActivity.EXTRA_COMMAND_ID, commandBean.getId());
+            cmdIntent.putExtra(CustomCommandActivity.EXTRA_DEVICE_BEAN, (java.io.Serializable) deviceBean);
+            cmdIntent.setAction(CustomCommandActivity.ACTION_RUN_COMMAND);
+            cmdIntent.setData(getPendingIntentUri(appWidgetId));
+            cmdIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            final PendingIntent p = PendingIntent.getActivity(context, 0, cmdIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.cmd_widget_button_run_cmd, p);
         } else {
             views = new RemoteViews(context.getPackageName(), R.layout.command_widget_no_device_command);
         }
         return views;
+    }
+
+    private static Uri getPendingIntentUri(int appWidgetId) {
+        return Uri.withAppendedPath(Uri.parse(URI_SCHEME + "://widget/id/"), String.valueOf(appWidgetId));
     }
 
     @Override

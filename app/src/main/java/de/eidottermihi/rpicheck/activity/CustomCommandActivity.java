@@ -58,13 +58,13 @@ import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.adapter.CommandAdapter;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
-import de.eidottermihi.rpicheck.ssh.beans.Exported;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog;
 import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog.PlaceholdersDialogListener;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
+import de.eidottermihi.rpicheck.ssh.beans.Exported;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
 import de.fhconfig.android.library.injection.annotation.XmlView;
@@ -73,6 +73,10 @@ import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
 @XmlLayout(R.layout.activity_commands)
 @XmlMenu(R.menu.activity_commands)
 public class CustomCommandActivity extends InjectionActionBarActivity implements OnItemClickListener, PassphraseDialogListener, PlaceholdersDialogListener {
+    public static final String ACTION_RUN_COMMAND = "runCommand";
+    public static final String EXTRA_COMMAND_ID = "commandId";
+    public static final String EXTRA_DEVICE_BEAN = "pi";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomCommandActivity.class);
 
     private RaspberryDeviceBean currentDevice;
@@ -87,6 +91,8 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
     private Pattern dynamicPlaceHolderPattern = Pattern.compile("(\\$\\{[^*\\}]+\\})");
     private Pattern nonPromptingPlaceHolders = Pattern.compile("(\\%\\{[^*\\}]+\\})");
 
+    private boolean runCommandAtStart = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,22 +101,45 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         Bundle extras = this.getIntent().getExtras();
-        if (extras != null && extras.get("pi") != null) {
+        if (extras != null && extras.get(EXTRA_DEVICE_BEAN) != null) {
             LOGGER.debug("onCreate: get currentDevice out of intent.");
-            currentDevice = (RaspberryDeviceBean) extras.get("pi");
-        } else if (savedInstanceState.getSerializable("pi") != null) {
+            currentDevice = (RaspberryDeviceBean) extras.get(EXTRA_DEVICE_BEAN);
+        } else if (savedInstanceState.getSerializable(EXTRA_DEVICE_BEAN) != null) {
             LOGGER.debug("onCreate: get currentDevice out of savedInstanceState.");
             currentDevice = (RaspberryDeviceBean) savedInstanceState.getSerializable("pi");
         }
         if (currentDevice != null) {
             LOGGER.debug("Setting activity title for device.");
             getSupportActionBar().setTitle(currentDevice.getName());
+            if (ACTION_RUN_COMMAND.equals(this.getIntent().getAction())) {
+                runCommandAtStart = true;
+            }
             LOGGER.debug("Initializing ListView");
             this.initListView(currentDevice);
         } else {
             LOGGER.debug("No current device! Setting no title");
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (runCommandAtStart) {
+            LOGGER.debug("onResume() - Action: runCommand");
+            final Bundle extras = this.getIntent().getExtras();
+            if (extras != null) {
+                currentDevice = (RaspberryDeviceBean) extras.getSerializable(EXTRA_DEVICE_BEAN);
+                this.setTitle(currentDevice.getName());
+                final long cmdId = extras.getLong(EXTRA_COMMAND_ID);
+                this.runCommand(cmdId);
+            }
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        super.onNewIntent(intent);
     }
 
     /**
@@ -119,22 +148,23 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
      * @param pi
      */
     private void initListView(RaspberryDeviceBean pi) {
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Context, Void, Void>() {
             @Override
-            protected Void doInBackground(Void... params) {
-                fullCommandCursor = deviceDb.getFullCommandCursor();
+            protected Void doInBackground(Context... params) {
+                fullCommandCursor = new DeviceDbHelper(params[0]).getFullCommandCursor();
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void r) {
+                LOGGER.debug("Populating list view with commands.");
                 CommandAdapter commandsAdapter = new CommandAdapter(CustomCommandActivity.this, fullCommandCursor, CursorAdapter.FLAG_AUTO_REQUERY);
                 commandListView.setAdapter(commandsAdapter);
                 commandListView.setOnItemClickListener(CustomCommandActivity.this);
                 // commandListView.setOnItemLongClickListener(CustomCommandActivity.this);
                 registerForContextMenu(commandListView);
             }
-        }.execute();
+        }.execute(CustomCommandActivity.this);
 
     }
 
@@ -234,7 +264,7 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
         super.onSaveInstanceState(outState);
         if (currentDevice != null) {
             LOGGER.debug("Writing currentDevice in outState.");
-            outState.putSerializable("pi", currentDevice);
+            outState.putSerializable(EXTRA_DEVICE_BEAN, currentDevice);
         }
     }
 
@@ -245,6 +275,7 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
     }
 
     private void runCommand(long commandId) {
+        LOGGER.debug("runCommand(ID={})", commandId);
         ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -308,10 +339,10 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
             cmdString = cmdString.replace(entry.getKey(), entry.getValue());
         }
         command.setCommand(cmdString);
-        args.putSerializable("pi", currentDevice);
-        args.putSerializable("cmd", command);
+        args.putSerializable(RunCommandDialog.EXTRA_DEVICE_BEAN, currentDevice);
+        args.putSerializable(RunCommandDialog.EXTRA_COMMAND_BEAN, command);
         if (keyPassphrase != null) {
-            args.putString("passphrase", keyPassphrase);
+            args.putString(RunCommandDialog.EXTRA_PASSPHRASE, keyPassphrase);
         }
         runCommandDialog.setArguments(args);
         runCommandDialog.show(getSupportFragmentManager(), "runCommand");
@@ -346,7 +377,7 @@ public class CustomCommandActivity extends InjectionActionBarActivity implements
                     String value = simpleDateFormat.format(new Date());
                     LOGGER.debug("Value for '{}' is '{}'", placeholder, value);
                     nonPromptingPlaceholders.put(placeholder, value);
-                } catch (IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     LOGGER.warn("Unparseable Date Format: {} - refer to Java's SimpleDateFormat for a valid format specification.", format);
                 }
             }
