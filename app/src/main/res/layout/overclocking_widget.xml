@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/appwidget_dark_bg"
@@ -66,6 +67,7 @@
                 android:layout_height="wrap_content"
                 android:padding="1dp"
                 android:singleLine="true"
+                tools:text="openELEC#2"
                 />
 
             <TextView
@@ -74,6 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                tools:text="root@192.168.0.33"
                 />
 
             <TextView
@@ -82,6 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                tools:text="online - 16:52"
                 />
 
         </LinearLayout>
@@ -128,6 +132,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:padding="2dp"
+                tools:text="37,5 °C"
                 />
         </LinearLayout>
 
@@ -172,6 +177,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:padding="2dp"
+                tools:text="800 MHz"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -214,6 +220,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:padding="2dp"
+                tools:text="2 %"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -256,6 +263,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:padding="2dp"
+                tools:text="67 %"
                 />
         </LinearLayout>
     </LinearLayout>

@@ -17,6 +17,10 @@
  */
 package de.eidottermihi.rpicheck.widget;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,8 +47,11 @@ import de.fhconfig.android.library.injection.annotation.XmlView;
 public class CommandWidgetConfigureActivity extends AbstractWidgetConfigurationActivity {
 
     private static final String PREFS_NAME = "de.eidottermihi.rpicheck.widget.CommandWidget";
-    private static final String PREF_PREFIX_KEY = "appwidget_";
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandWidgetConfigureActivity.class);
+    private static final String KEY_DEVICE_ID = "_pi_id";
+    private static final String KEY_COMMAND_ID = "_cmd_id";
+    private static final String KEY_RUN_IN_BACKGROUND = "_background";
+    private static final String KEY_INITIALIZED = "_initialized";
 
     @XmlView(R.id.cmd_widget_conf_cmdSpinner)
     private Spinner cmdSpinner;
@@ -55,6 +62,43 @@ public class CommandWidgetConfigureActivity extends AbstractWidgetConfigurationA
 
     public CommandWidgetConfigureActivity() {
         super(R.id.cmd_widget_conf_piSpinner);
+    }
+
+    protected static Long loadCommandId(Context context, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        final long id = prefs.getLong(buildFullPrefKey(KEY_COMMAND_ID, appWidgetId), 0L);
+        if (id == 0L) {
+            return null;
+        }
+        return id;
+    }
+
+    protected static Long loadDeviceId(Context context, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        final long id = prefs.getLong(buildFullPrefKey(KEY_DEVICE_ID, appWidgetId), 0L);
+        if (id == 0L) {
+            return null;
+        }
+        return id;
+    }
+
+    protected static Boolean loadRunInBackground(Context context, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getBoolean(buildFullPrefKey(KEY_RUN_IN_BACKGROUND, appWidgetId), false);
+    }
+
+    protected static void deleteWidget(Context context, int appWidgetId) {
+        LOGGER.debug("Deleting data for Command Widget[ID={}]", appWidgetId);
+        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+        prefs.remove(buildFullPrefKey(KEY_DEVICE_ID, appWidgetId))
+                .remove(buildFullPrefKey(KEY_COMMAND_ID, appWidgetId))
+                .remove(buildFullPrefKey(KEY_RUN_IN_BACKGROUND, appWidgetId))
+                .remove(buildFullPrefKey(KEY_INITIALIZED, appWidgetId))
+                .apply();
+    }
+
+    public static boolean isInitialized(Context context, int appWidgetId) {
+        return context.getSharedPreferences(PREFS_NAME, 0).getBoolean(buildFullPrefKey(KEY_INITIALIZED, appWidgetId), false);
     }
 
     @Override
@@ -82,9 +126,26 @@ public class CommandWidgetConfigureActivity extends AbstractWidgetConfigurationA
         final long deviceId = piSpinner.getSelectedItemId();
         final long commandId = cmdSpinner.getSelectedItemId();
         LOGGER.debug("Saving new Command-Widget for Pi[ID={}] and Command[ID={}].", deviceId, commandId);
+        final SharedPreferences.Editor prefs = getSharedPreferences(getSharedPreferencesName(), 0).edit();
+        prefs.putLong(buildFullPrefKey(KEY_DEVICE_ID, mAppWidgetId), deviceId);
+        prefs.putLong(buildFullPrefKey(KEY_COMMAND_ID, mAppWidgetId), commandId);
+        prefs.putBoolean(buildFullPrefKey(KEY_RUN_IN_BACKGROUND, mAppWidgetId), runInBackgroundCheckBox.isChecked());
+        prefs.putBoolean(buildFullPrefKey(KEY_INITIALIZED, mAppWidgetId), true);
+        prefs.apply();
+
+        // It is the responsibility of the configuration activity to update the app widget
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(CommandWidgetConfigureActivity.this);
+        CommandWidget.updateAppWidget(CommandWidgetConfigureActivity.this, appWidgetManager, mAppWidgetId, deviceDbHelper);
+
+        // Make sure we pass back the original appWidgetId
+        Intent resultValue = new Intent();
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        setResult(RESULT_OK, resultValue);
+        finish();
     }
 
     private void initCommandSpinner() {
+        // db operation in background thread
         new AsyncTask<Void, Void, Cursor>() {
 
             @Override

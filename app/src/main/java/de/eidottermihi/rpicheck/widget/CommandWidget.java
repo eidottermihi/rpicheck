@@ -17,12 +17,23 @@
  */
 package de.eidottermihi.rpicheck.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+
 import de.eidottermihi.raspicheck.R;
+import de.eidottermihi.rpicheck.activity.CustomCommandActivity;
+import de.eidottermihi.rpicheck.db.CommandBean;
+import de.eidottermihi.rpicheck.db.DeviceDbHelper;
+import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 
 
 /**
@@ -31,12 +42,49 @@ import de.eidottermihi.raspicheck.R;
  */
 public class CommandWidget extends AppWidgetProvider {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandWidget.class);
+    private DeviceDbHelper deviceDbHelper;
+
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                int appWidgetId, DeviceDbHelper deviceDbHelper) {
+        final boolean isInitialized = CommandWidgetConfigureActivity.isInitialized(context, appWidgetId);
+        if (isInitialized) {
+            final Long deviceId = CommandWidgetConfigureActivity.loadDeviceId(context, appWidgetId);
+            final Long commandId = CommandWidgetConfigureActivity.loadCommandId(context, appWidgetId);
+            final boolean runInBackground = CommandWidgetConfigureActivity.loadRunInBackground(context, appWidgetId);
+            LOGGER.debug("Updating CommandWidget[ID={}] for Pi[ID={}] and Command[ID={}].", appWidgetId, deviceId, commandId);
+            final RaspberryDeviceBean deviceBean = deviceDbHelper.read(deviceId);
+            final CommandBean commandBean = deviceDbHelper.readCommand(commandId);
+            final RemoteViews views = updateWidgetView(context, appWidgetId, deviceBean, commandBean, runInBackground);
+            // update widget view
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+    }
+
+    private static RemoteViews updateWidgetView(Context context, int appWidgetId, @Nullable RaspberryDeviceBean deviceBean, @Nullable CommandBean commandBean, boolean runInBackground) {
+        RemoteViews views;
+        if (deviceBean != null && commandBean != null) {
+            views = new RemoteViews(context.getPackageName(), R.layout.command_widget);
+            views.setTextViewText(R.id.cmd_widget_title_text, deviceBean.getName());
+            views.setCharSequence(R.id.cmd_widget_button_run_cmd, "setText", commandBean.getName());
+            Intent cmdIntent = new Intent(context, CustomCommandActivity.class);
+            PendingIntent p = PendingIntent.getActivity(context, 0, cmdIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.cmd_widget_button_run_cmd, p);
+        } else {
+            views = new RemoteViews(context.getPackageName(), R.layout.command_widget_no_device_command);
+        }
+        return views;
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        if (deviceDbHelper == null) {
+            this.deviceDbHelper = new DeviceDbHelper(context);
+        }
         // There may be multiple widgets active, so update all of them
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
+            updateAppWidget(context, appWidgetManager, appWidgetIds[i], this.deviceDbHelper);
         }
     }
 
@@ -45,7 +93,7 @@ public class CommandWidget extends AppWidgetProvider {
         // When the user deletes the widget, delete the preference associated with it.
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
-            //CommandWidgetConfigureActivity.deleteTitlePref(context, appWidgetIds[i]);
+            CommandWidgetConfigureActivity.deleteWidget(context, appWidgetIds[i]);
         }
     }
 
@@ -57,18 +105,6 @@ public class CommandWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-    }
-
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-
-//        CharSequence widgetText = CommandWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-//        // Construct the RemoteViews object
-//        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.command_widget);
-//        views.setTextViewText(R.id.appwidget_text, widgetText);
-
-        // Instruct the widget manager to update the widget
-//        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 }
 

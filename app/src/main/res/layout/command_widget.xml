@@ -1,21 +1,26 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/widget_margin"
-                android:background="#09C">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/appwidget_dark_bg"
+              android:orientation="vertical"
+              android:padding="@dimen/widget_margin">
 
     <TextView
-        android:id="@+id/appwidget_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/cmd_widget_title_text"
+        style="@style/Theme.rpiCheck.Dark.Text.Medium"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic"
-        android:layout_margin="8dp"
-        android:contentDescription="@string/appwidget_text"
-        android:background="#09C"/>
+        tools:text="pi2"
+        />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/cmd_widget_button_run_cmd"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:text="Hello World"
+        style="@style/Theme.rpiCheck.Dark.Text.Medium"
+        />
+
+
+</LinearLayout>

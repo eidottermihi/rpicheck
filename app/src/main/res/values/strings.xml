@@ -221,9 +221,6 @@
     <string name="widget_add_no_device">You need to add a Pi in the app first.</string>
     <string name="action_share">Share</string>
     <string name="share_body"># Information for Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nThis information has been queried with RasPi Check (version: %5$s) for Android.</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Configure</string>
-    <string name="add_widget">Add widget</string>
     <string name="cmd_widget_cmd_to_run">Command to run</string>
     <string name="cmd_widget_run_in_background">Run in background</string>
 
