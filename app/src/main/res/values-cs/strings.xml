@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="en">
+
+    <string name="app_name">RasPi Check</string>
+    <string name="title_activity_main">RasPi Check</string>
+    <string name="title_activity_new_raspi">Přidat Pi</string>
+    <string name="title_activity_settings">Možnosti</string>
+    <string name="core_temp">Teplota jádra</string>
+    <string name="core_freq">Frekvence jádra</string>
+    <string name="arm_freq">Frekvence ARM</string>
+    <string name="core_volt">Napětí jádra</string>
+    <string name="host">Hostname/IP</string>
+    <string name="user">Uživatelské jméno</string>
+    <string name="password">Uživatelské heslo</string>
+    <string name="ssh_credentials">SSH ověření</string>
+    <string name="no_connection">Prosím zapněte WiFi připojení.</string>
+    <string name="no_hostname_specified">Není definován hostname. Prosím zkontrolujte své nastavení.</string>
+    <string name="no_username_specified">Není definováno uživatelské jméno. Prosím zkontrolujte své nastavení.</string>
+    <string name="no_password_specified">Není definováno uživatelské heslo. Prosím zkontrolujte své nastavení.</string>
+    <string name="raspi_device_name_hint">Název</string>
+    <string name="raspi_device_host_hint">Hostname / IP</string>
+    <string name="raspi_device_user_hint">SSH uživ. jméno</string>
+    <string name="raspi_device_password_hint">SSH uživ. heslo</string>
+    <string name="raspi_device_description_hint">Popis (volitelné)</string>
+    <string name="default_ssh_port" translatable="false">22</string>
+    <string name="raspi_device_button_new">Uložit</string>
+    <string name="pref_temp_scala_title">Teplotní jednotky</string>
+    <string name="pref_temperature_scala_default" translatable="false">°C</string>
+    <string name="pref_group_display_settings_title">Nastavení zobrazení</string>
+    <string name="last_update">Poslední obnova</string>
+    <string name="no_device_available">Prosím přidejte nejprve Raspberry Pi.</string>
+    <string name="new_raspi_text">Zadejte informace o svém Raspberry Pi.</string>
+    <string name="ssh_port">SSH port</string>
+    <string name="new_raspi_description">Dodatečný popis</string>
+    <string name="new_raspi_description_hint">Přidejte dodatečný popis zde..</string>
+    <string name="overclocking_header">Přetaktování</string>
+    <string name="system_header">Systém</string>
+    <string name="uptime_started">Spuštěno před</string>
+    <string name="average_load">Průměrná zátěž</string>
+    <string name="total_memory">Celková paměť</string>
+    <string name="free_memory">Volná paměť</string>
+    <string name="cpu_serial">Sériové číslo</string>
+    <string name="ip_addr_label">IP adresa</string>
+    <string name="distribution">Distribuce</string>
+    <string name="disk_header_filesystem">Souborový systém</string>
+    <string name="disk_header_size">Velikost</string>
+    <string name="disk_header">Využití</string>
+    <string name="disk_header_avail">Dostupné</string>
+    <string name="disk_header_usedper">Použito%</string>
+    <string name="please_add_a_raspberry_pi">Prosím přidejte Raspberry Pi.</string>
+    <string name="activity_title_edit_raspi">Editovat Pi</string>
+    <string name="disk_header_mounted_on">Připojeno na</string>
+    <string name="temperature_scala_summary">Teplotní jednotky (Celsius, Fahrenheit)</string>
+    <string name="process_header">Procesy</string>
+    <string name="header_pid" translatable="false">PID</string>
+    <string name="header_tty" translatable="false">TTY</string>
+    <string name="header_cpu_time" translatable="false">CPU</string>
+    <string name="header_command">Název</string>
+    <string name="pref_group_query_settings_title">Dotaz</string>
+    <string name="pref_query_hide_root_title">Skrýt root procesy</string>
+    <string name="pref_query_hide_root_summary">Ujistěte se, že chcete skrýt root procesy.</string>
+    <string name="pref_query_hide_root_summaryOn">Root procesy nejsou zobrazeny.</string>
+    <string name="pref_query_hide_root_summaryOff">Všechny procesy jsou zobrazeny.</string>
+    <string name="new_raspi_minimum">Prosím specifikujte název, hostname, SSH uživ. jméno a heslo.</string>
+    <string name="raspi_device_sudo_password_hint">sudo heslo</string>
+    <string name="sudo_password">Sudo heslo</string>
+    <string name="reboot_success">Rebootovací příkaz odeslán.</string>
+    <string name="reboot_fail">Rebootování selhalo. Zkontrolujte vaše připojení a sudo heslo.</string>
+    <string name="pref_frequency_unit_default" translatable="false">MHz</string>
+    <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
+    <string name="pref_frequency_unit_title">Jednotky frekvence</string>
+    <string name="firmware_version">Firmware</string>
+    <string name="network_header">Síť</string>
+    <string name="network_interface">Rozhraní</string>
+    <string name="network_status">Stav</string>
+    <string name="network_status_up">Zap.</string>
+    <string name="network_status_down">Vyp.</string>
+    <string name="network_ip" translatable="false">IP</string>
+    <string name="network_signal">Signál</string>
+    <string name="network_link">Kvalita</string>
+    <string name="pref_group_about">O appce</string>
+    <string name="pref_github">Zroje / Hlášení chyb</string>
+    <string name="pref_github_summary" translatable="false">github.com/eidottermihi/rpicheck</string>
+    <string name="pref_dev_email">Kontaktovat vývojáře</string>
+    <string name="pref_dev_email_summary" translatable="false">eidottermihi@gmail.com</string>
+    <string name="pref_rate_app">Hodnotit appku</string>
+    <string name="pref_rate_app_summary">Pokud máte rádi RasPi Check, udělejte si chvilku a ohodnoťte ji.</string>
+    <string name="pref_version">Verze</string>
+    <string name="shutdown_type_title">Možnosti vypnutí</string>
+    <string name="halt_success">Příkaz pro vypnutí odeslán.</string>
+    <string name="halt_fail">Vypnutí selhalo. Zkontrolujte vaše připojení a sudo heslo.</string>
+    <string name="validation_msg_name">Jméno nesmí být prázdné.</string>
+    <string name="validation_msg_host">Hostname nesmí být prázdné.</string>
+    <string name="validation_msg_user">Uživatelské jméno nesmí být prázdné.</string>
+    <string name="validation_msg_password">Uživatelské heslo nesmí být prázdné.</string>
+    <string name="validation_msg_port">Špatný port.</string>
+    <string name="update_successful">Pi úspěšně upraveno.</string>
+    <string name="new_pi_created">Pi vytvořeno.</string>
+    <string name="exception_dialog_title">Oops!</string>
+    <string name="authentication_failed">SSH autentikace selhala. Prosím ověřte vaše údaje.</string>
+    <string name="connection_failed">Nelze navázat spojení. Prosím ověřte vaše uživatelské jméno a připojení.</string>
+    <string name="errormessages_dialog_title">Promiňte...</string>
+    <string name="transport_exception">Během přenosu došlo k chybě. Prosím zkuste znovu.</string>
+    <string name="unexpected_exception">Nastala neočekávaná chyba. Prosím zkuste znovu.</string>
+    <string name="exception_vcgencmd">Nástroj \'vcgencmd\' nebyl na vašem Pi nalezen. Ujistěte se, že se nachází v \'/usr/bin\' nebo \'/opt/vc/bin\'.</string>
+    <string name="weird_exception">Něco se zdá být špatně. Prosím zhlédněte log soubor.</string>
+    <string name="changelog_full_title">Změnit log soubor</string>
+    <string name="changelog_title">Co je nového</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">více...</string>
+    <string name="pref_group_log">Log soubor</string>
+    <string name="pref_log_title">Zobrazit log soubor</string>
+    <string name="pref_log_title_summary">Zobrazí log soubor aplikace</string>
+    <string name="pref_screen_about">O RasPi Check</string>
+    <string name="pref_screen_about_summary">Verze, změny, vývojář</string>
+    <string name="pref_changelog_title">Zobrazit změny</string>
+    <string name="pref_changelog_title_summary">Zobrazí změny aplikace</string>
+    <string name="pref_debug_log_summary">Vypsat debugovací zprávy do log souboru.</string>
+    <string name="pref_debug_log_summary_on">Logování debugu povoleno.</string>
+    <string name="pref_debug_log_summary_off">Logování debugu zakázáno.</string>
+    <string name="pref_debug_log_title">Logování debugu</string>
+    <string name="new_raspi_continue">Pokračovat</string>
+    <string name="new_raspi_auth_method">Metoda autentikace</string>
+    <string name="raspi_key_password_hint">Klíčové heslo</string>
+    <string name="raspi_key_password_empty">Klíčové heslo nesmí být prázdné.</string>
+    <string name="raspi_auth_keyfile_hint">Privátní klíč (formát PKCS8/OpenSSH)</string>
+    <string name="raspi_auth_button_keyfile">Vybrat soubor s klíčem</string>
+    <string name="title_filedialog">Vybrat soubor s klíčem</string>
+    <string name="no_keyfile_present">Prosím vyberte existující soubor s klíčem.</string>
+    <string name="raspi_key_checkbox_text">Vždy se zeptat na přístupové heslo</string>
+    <string name="validation_msg_keyfile">Prosím vyberte soubor s klíčem.</string>
+    <string name="validation_msg_key_passphrase">Klíčové heslo nemůže být prázdné.</string>
+    <string name="dialog_save_passphrase">Save přístupové heslo</string>
+    <string name="dialog_passphrase_hint">přístupové heslo</string>
+    <string name="dialog_passphrase_needed">Je vyžadováno přístupové heslo</string>
+    <string name="dialog_passphrase_text">Prosím zadejte přístupové heslo pro privátní klíč.</string>
+    <string name="button_commands">Příkazy</string>
+    <string name="activity_title_commands">Vlastní příkazy</string>
+    <string name="activity_title_new_command">Nový příkaz</string>
+    <string name="activity_title_edit_command">Editovat příkaz</string>
+    <string name="label_cmd_name">Název</string>
+    <string name="label_cmd_name_hint">e.g. \'reboot\'</string>
+    <string name="label_cmd_command">Příkaz</string>
+    <string name="label_cmd_command_hint">e.g. \'shutdown now -r\'</string>
+    <string name="label_cmd_show_output">Zobrazit výstup</string>
+    <string name="validation_command_blank">Příkaz nesmí být prázdný.</string>
+    <string name="toast_command_updated">Příkaz upraven!</string>
+    <string name="toast_command_saved">Příkaz uložen!</string>
+    <string name="command_context_edit">Editovat</string>
+    <string name="command_context_delete">Vymazat</string>
+    <string name="command_context_run">Spustit</string>
+    <string name="run_cmd_dialog_title">Spuštěno %1$s</string>
+
+    <string name="hint_pulltorefresh">Malá poznámka: Můžete také obnovit posunutím dolů.</string>
+
+    <!-- ActionButton Strings -->
+
+    <string name="action_new">Nový</string>
+    <string name="action_new_raspi">Nové Pi</string>
+    <string name="action_new_command">Nový příkaz</string>
+
+    <string name="action_save">Uložit</string>
+    <string name="action_save_raspi">Uložit Pi</string>
+    <string name="action_save_command">Uložit příkaz</string>
+
+    <string name="action_edit">Editovat</string>
+    <string name="action_edit_raspi">Editovat Pi</string>
+    <string name="action_edit_command">Editovat příkaz</string>
+
+    <string name="action_delete">Vymazat</string>
+    <string name="action_delete_raspi">Vymazat Pi</string>
+    <string name="action_delete_command">Vymazat příkaz</string>
+
+    <string name="action_settings">Nastavení</string>
+    <string name="action_shutdown">Vypnout</string>
+    <string name="action_refresh">Obnovit</string>
+
+    <string name="title_placeholders">Zástupné znaky</string>
+    <string name="placeholders_button_ok">OK</string>
+    <string name="placeholder_hint_text">Můžete použít zástupné znaky, např. \'${my_secret}\'. Budou nahrazeny vámi zadanými údaji, které zadáte během spouštění příkazu.</string>
+    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Bude automaticky nahrazeno současným datem/časem. Musí být použit správný formát času/data (např. MM-dd-yyy).</string>
+    <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Bude automaticky nahrazeno vlastností vašeho Pi. Dostupné vlastnosti jsou: name, host, user, pass, port, sudopass.</string>
+    <string name="placeholder_hint">Tip:</string>
+    <string name="placeholder_special_hint">Speciální zástupné znaky:</string>
+
+    <string name="pref_load_avg_default" translatable="false">FIVE_MINUTES</string>
+    <string name="pref_load_avg_summary">Časová prodleva pro průměrné vypočítání.</string>
+    <string name="pref_load_avg_title">Časová prodleva průměrného zatížení</string>
+    <string name="widget_pi">Vybrat Raspberry Pi</string>
+    <string name="widget_configure_title">Konfigurovat widget</string>
+    <string name="widget_update_interval">Interval obnovy</string>
+    <string name="default_update_interval" translatable="false">60</string>
+    <string name="widget_update_interval_error">Neplatný interval obnovy.</string>
+    <string name="widget_key_pass_error">Potřebujete uložit soubor s klíčem protože widgety jej nemůžou použít.</string>
+    <string name="widget_update_interval_zero">Musí být vyšší něž nula.</string>
+    <string name="widget_update_interval_five_min">5 minut</string>
+    <string name="widget_update_interval_ten_min">10 minut</string>
+    <string name="widget_update_interval_thirty_min">30 minut</string>
+    <string name="widget_update_interval_one_hour">1 hodina</string>
+    <string name="widget_update_interval_two_hours">2 hodiny</string>
+    <string name="widget_update_interval_eight_hours">8 hodin</string>
+    <string name="widget_update_interval_one_day">1 den</string>
+    <string name="widget_update_interval_custom">Vlastní interval</string>
+    <string name="widget_update_interval_custom_text">Interval obnovy (v minutách)</string>
+    <string name="widget_device_removed">Raspberry Pi bylo odebráno pro tento widget.</string>
+    <string name="used_memory">Využito paměti</string>
+    <string name="widget_memory_header" translatable="false">RAM</string>
+    <string name="widget_load_header" translatable="false">LOAD</string>
+    <string name="widget_arm_header" translatable="false">ARM</string>
+    <string name="widget_temp_header" translatable="false">TEMP</string>
+
+    <string name="widget_auto_update_yes">Ano</string>
+    <string name="widget_auto_update_wifi">Pouze na Wi-Fi</string>
+    <string name="widget_auto_update_no">Ne</string>
+    <string name="widget_auto_update">Automatická obnova</string>
+    <string name="facebook_url" translatable="false">https://www.facebook.com/raspicheck</string>
+    <string name="pref_facebook_summary">Buďte neustále informování o RasPi Check</string>
+    <string name="pref_fb_title" translatable="false">Facebook</string>
+    <string name="widget_add_no_device">Potřebujete nejprve přidat Pi do appky.</string>
+    <string name="action_share">Sdílet</string>
+    <string name="share_body"># Informace o Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nTyto informace byly získány pomocí RasPi Check (version: %5$s) pro Android.</string>
+
+</resources>
