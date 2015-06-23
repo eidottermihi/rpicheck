@@ -24,10 +24,8 @@
     <string name="raspi_device_user_hint">SSH uživ. jméno</string>
     <string name="raspi_device_password_hint">SSH uživ. heslo</string>
     <string name="raspi_device_description_hint">Popis (volitelné)</string>
-    <string name="default_ssh_port" translatable="false">22</string>
     <string name="raspi_device_button_new">Uložit</string>
     <string name="pref_temp_scala_title">Teplotní jednotky</string>
-    <string name="pref_temperature_scala_default" translatable="false">°C</string>
     <string name="pref_group_display_settings_title">Nastavení zobrazení</string>
     <string name="last_update">Poslední obnova</string>
     <string name="no_device_available">Prosím přidejte nejprve Raspberry Pi.</string>
@@ -54,9 +52,6 @@
     <string name="disk_header_mounted_on">Připojeno na</string>
     <string name="temperature_scala_summary">Teplotní jednotky (Celsius, Fahrenheit)</string>
     <string name="process_header">Procesy</string>
-    <string name="header_pid" translatable="false">PID</string>
-    <string name="header_tty" translatable="false">TTY</string>
-    <string name="header_cpu_time" translatable="false">CPU</string>
     <string name="header_command">Název</string>
     <string name="pref_group_query_settings_title">Dotaz</string>
     <string name="pref_query_hide_root_title">Skrýt root procesy</string>
@@ -68,7 +63,6 @@
     <string name="sudo_password">Sudo heslo</string>
     <string name="reboot_success">Rebootovací příkaz odeslán.</string>
     <string name="reboot_fail">Rebootování selhalo. Zkontrolujte vaše připojení a sudo heslo.</string>
-    <string name="pref_frequency_unit_default" translatable="false">MHz</string>
     <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
     <string name="pref_frequency_unit_title">Jednotky frekvence</string>
     <string name="firmware_version">Firmware</string>
@@ -77,14 +71,11 @@
     <string name="network_status">Stav</string>
     <string name="network_status_up">Zap.</string>
     <string name="network_status_down">Vyp.</string>
-    <string name="network_ip" translatable="false">IP</string>
     <string name="network_signal">Signál</string>
     <string name="network_link">Kvalita</string>
     <string name="pref_group_about">O appce</string>
     <string name="pref_github">Zroje / Hlášení chyb</string>
-    <string name="pref_github_summary" translatable="false">github.com/eidottermihi/rpicheck</string>
     <string name="pref_dev_email">Kontaktovat vývojáře</string>
-    <string name="pref_dev_email_summary" translatable="false">eidottermihi@gmail.com</string>
     <string name="pref_rate_app">Hodnotit appku</string>
     <string name="pref_rate_app_summary">Pokud máte rádi RasPi Check, udělejte si chvilku a ohodnoťte ji.</string>
     <string name="pref_version">Verze</string>
@@ -185,13 +176,11 @@
     <string name="placeholder_hint">Tip:</string>
     <string name="placeholder_special_hint">Speciální zástupné znaky:</string>
 
-    <string name="pref_load_avg_default" translatable="false">FIVE_MINUTES</string>
     <string name="pref_load_avg_summary">Časová prodleva pro průměrné vypočítání.</string>
     <string name="pref_load_avg_title">Časová prodleva průměrného zatížení</string>
     <string name="widget_pi">Vybrat Raspberry Pi</string>
     <string name="widget_configure_title">Konfigurovat widget</string>
     <string name="widget_update_interval">Interval obnovy</string>
-    <string name="default_update_interval" translatable="false">60</string>
     <string name="widget_update_interval_error">Neplatný interval obnovy.</string>
     <string name="widget_key_pass_error">Potřebujete uložit soubor s klíčem protože widgety jej nemůžou použít.</string>
     <string name="widget_update_interval_zero">Musí být vyšší něž nula.</string>
@@ -206,18 +195,12 @@
     <string name="widget_update_interval_custom_text">Interval obnovy (v minutách)</string>
     <string name="widget_device_removed">Raspberry Pi bylo odebráno pro tento widget.</string>
     <string name="used_memory">Využito paměti</string>
-    <string name="widget_memory_header" translatable="false">RAM</string>
-    <string name="widget_load_header" translatable="false">LOAD</string>
-    <string name="widget_arm_header" translatable="false">ARM</string>
-    <string name="widget_temp_header" translatable="false">TEMP</string>
 
     <string name="widget_auto_update_yes">Ano</string>
     <string name="widget_auto_update_wifi">Pouze na Wi-Fi</string>
     <string name="widget_auto_update_no">Ne</string>
     <string name="widget_auto_update">Automatická obnova</string>
-    <string name="facebook_url" translatable="false">https://www.facebook.com/raspicheck</string>
     <string name="pref_facebook_summary">Buďte neustále informování o RasPi Check</string>
-    <string name="pref_fb_title" translatable="false">Facebook</string>
     <string name="widget_add_no_device">Potřebujete nejprve přidat Pi do appky.</string>
     <string name="action_share">Sdílet</string>
     <string name="share_body"># Informace o Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nTyto informace byly získány pomocí RasPi Check (version: %5$s) pro Android.</string>
