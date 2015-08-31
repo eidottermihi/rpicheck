@@ -19,6 +19,13 @@
     </style>
   </head>
   <body>
+$ 1.7.2
+  % Version 1.7.2
+  _ 2015-08-31
+  * Added share functionality
+  * Minor cosmetic improvements
+  * Minor bugfixes
+  * Moved logfile location to follow Androids directory layout
 $ 1.7.1
   % Version 1.7.1
   _ 2015-04-01
