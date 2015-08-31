@@ -108,7 +108,6 @@ public class RaspiQuery implements IQueryService {
      *
      * @param host hostname or ip adress of a running raspberry pi
      * @param user username for ssh login
-     * @param pass password for ssh login
      * @param port ssh port to use (if null, default will be used)
      */
     public RaspiQuery(final String host, final String user, final Integer port) {
