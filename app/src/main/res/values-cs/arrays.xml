@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="en" >
+
+    <string-array name="temp_scales">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+    <string-array name="shutdown_options">
+        <item>Rebootovat</item>
+        <item>Vypnout</item>
+    </string-array>
+    <string-array name="auth_methods">
+        <item>heslo</item>
+        <item>soukromý klíč</item>
+        <item>soukromý klíč s heslem</item>
+    </string-array>
+    <string-array name="pref_load_avg">
+        <item>1 minuta</item>
+        <item>5 minut</item>
+        <item>15 minut</item>
+    </string-array>
+</resources>

@@ -1,8 +1,7 @@
 import java.util.regex.Pattern
 
 release {
-    tagPrefix = "v"
-    // tagTemplate = "v$version"
+    tagTemplate = 'v${version}'
 }
 
 task increaseVersionCode << {

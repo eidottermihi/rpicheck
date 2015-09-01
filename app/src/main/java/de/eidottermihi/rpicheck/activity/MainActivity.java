@@ -100,10 +100,6 @@ public class MainActivity extends InjectionActionBarActivity implements
     private static final String KEY_PREF_REFRESH_BY_ACTION_COUNT = "refreshCountByAction";
     private static boolean isOnBackground;
 
-    static {
-        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
-    }
-
     private Intent settingsIntent;
     private Intent newRaspiIntent;
     private Intent editRaspiIntent;

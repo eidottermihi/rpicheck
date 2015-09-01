@@ -1,5 +1,5 @@
 <configuration>
-    <property name="LOG_DIR" value="/sdcard/data/de.eidottermihi.rpicheck" />
+    <property name="LOG_DIR" value="/sdcard/Android/data/de.eidottermihi.rpicheck" />
 
     <!-- Create a logcat appender -->
     <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">

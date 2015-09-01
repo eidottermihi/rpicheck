@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -103,12 +104,15 @@ public class RaspiQuery implements IQueryService {
     private String username;
     private int port = DEFAULT_SSH_PORT;
 
+    static {
+        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+    }
+
     /**
      * Initialize a new RaspiQuery.
      *
      * @param host hostname or ip adress of a running raspberry pi
      * @param user username for ssh login
-     * @param pass password for ssh login
      * @param port ssh port to use (if null, default will be used)
      */
     public RaspiQuery(final String host, final String user, final Integer port) {
