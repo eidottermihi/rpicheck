@@ -21,6 +21,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -297,7 +298,13 @@ public class OverclockingWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+        ComponentName thisAppWidget = new ComponentName(context.getPackageName(), OverclockingWidget.class.getName());
+        int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(thisAppWidget);
+
+        for (int appWidgetId : appWidgetIds) {
+            // Restoring scheduled alarm after reboot for every widget
+            OverclockingWidgetConfigureActivity.settingScheduledAlarm(context, appWidgetId);
+        }
     }
 
     @Override

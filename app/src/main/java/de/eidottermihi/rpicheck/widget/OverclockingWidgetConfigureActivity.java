@@ -147,6 +147,11 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         return prefs.getBoolean(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), false);
     }
 
+    static int loadUpdateInterval(Context context, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), 5);
+    }
+
     static void deleteDevicePref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
@@ -156,6 +161,20 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
         prefs.remove(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId));
         prefs.remove(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId));
         prefs.apply();
+    }
+
+    static void settingScheduledAlarm(Context context, int appWidgetId) {
+        int updateIntervalInMinutes = OverclockingWidgetConfigureActivity.loadUpdateInterval(context, appWidgetId);
+        if (updateIntervalInMinutes > 0) {
+            long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
+            // Setting alarm via AlarmManager
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, appWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
+            LOGGER.debug("Added alarm for periodic updates of Widget[ID={}], update interval: {} ms.", appWidgetId, updateIntervalMillis);
+        } else {
+            LOGGER.debug("No periodic updates for Widget[ID={}].", appWidgetId);
+        }
     }
 
     @Override
@@ -251,16 +270,9 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
                 // save Device ID in prefs
                 saveChosenDevicePref(context, mAppWidgetId, selectedItemId, updateIntervalInMinutes, onlyOnWifi,
                         checkBoxTemp.isChecked(), checkBoxArm.isChecked(), checkBoxLoad.isChecked(), checkBoxRam.isChecked());
-                if (updateIntervalInMinutes > 0) {
-                    long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
-                    // Setting alarm via AlarmManager
-                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, mAppWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
-                    LOGGER.debug("Added alarm for periodic updates of Wigdet[ID={}], update interval: {} ms.", mAppWidgetId, updateIntervalMillis);
-                } else {
-                    LOGGER.debug("No periodic updates for Widget[ID={}].", mAppWidgetId);
-                }
+
+                settingScheduledAlarm(context, mAppWidgetId);
+
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 OverclockingWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId, deviceDbHelper, true);
