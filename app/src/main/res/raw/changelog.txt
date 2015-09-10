@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.7.3
+  % Version 1.7.3
+  _ 2015-09-12
+  * Fixed Widget not refreshing after reboot (thanks to zoszkar)
 $ 1.7.2
   % Version 1.7.2
   _ 2015-08-31
