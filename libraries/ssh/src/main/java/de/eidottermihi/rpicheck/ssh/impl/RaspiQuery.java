@@ -1,16 +1,16 @@
 /**
  * Copyright (C) 2015  RasPi Check Contributors
- *
+ * <p/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -45,14 +45,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.eidottermihi.rpicheck.ssh.IQueryService;
+import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
 import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
-import de.eidottermihi.rpicheck.ssh.IQueryService;
-import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 
 /**
  * Simple API for querying a Raspberry Pi computer.
@@ -105,6 +105,7 @@ public class RaspiQuery implements IQueryService {
     private int port = DEFAULT_SSH_PORT;
 
     static {
+        Security.removeProvider("BC");
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
 

@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.7.4
+  % Version 1.7.4-SNAPSHOT
+  _ 2015-09-31
+  * Fixed app sometimes not working on Android 2.3.3
 $ 1.7.3
   % Version 1.7.3
   _ 2015-09-12
