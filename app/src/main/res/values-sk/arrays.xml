@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="temp_scales">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+    <string-array name="shutdown_options">
+        <item>reštartovať systém</item>
+        <item>pozastaviť systém</item>
+    </string-array>
+    <string-array name="auth_methods">
+        <item>heslo</item>
+        <item>súkromný kľúč</item>
+        <item>súkromný kľúč s heslom</item>
+    </string-array>
+    <string-array name="pref_load_avg">
+        <item>1 minúta</item>
+        <item>5 minút</item>
+        <item>15 minút</item>
+    </string-array>
+
+</resources>
