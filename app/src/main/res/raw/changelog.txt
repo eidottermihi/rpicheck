@@ -23,6 +23,7 @@ $ 1.7.4
   % Version 1.7.4-SNAPSHOT
   _ 2015-09-31
   * Fixed app sometimes not working on Android 2.3.3
+  * Fixed memory information not available when Pi locale is not English
 $ 1.7.3
   % Version 1.7.3
   _ 2015-09-12

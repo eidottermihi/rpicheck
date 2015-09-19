@@ -45,6 +45,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.management.Query;
+
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
@@ -89,7 +91,6 @@ public class RaspiQuery implements IQueryService {
     private static final Pattern IPADDRESS_PATTERN = Pattern
             .compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     private static final Pattern CPU_PATTERN = Pattern.compile("[0-9.]{4,}");
-    private static final String MEMORY_INFO_CMD = "free | egrep 'Mem' | sed 's/[[:space:]]\\+/,/g'";
     private static final String DISK_USAGE_CMD = "df -h";
     private static final String DF_COMMAND_HEADER_START = "Filesystem";
     private static final String DISTRIBUTION_CMD = "cat /etc/*-release | grep PRETTY_NAME";
@@ -717,28 +718,7 @@ public class RaspiQuery implements IQueryService {
     @Override
     public final RaspiMemoryBean queryMemoryInformation()
             throws RaspiQueryException {
-        LOGGER.info("Querying memory information...");
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    final Command cmd = session.exec(MEMORY_INFO_CMD);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    return this.formatMemoryInfo(IOUtils.readFully(
-                            cmd.getInputStream()).toString());
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
+        return QueryFactory.makeMemoryQuery(client).run();
     }
 
     /*
@@ -1052,21 +1032,6 @@ public class RaspiQuery implements IQueryService {
             }
         }
         return disks;
-    }
-
-    private RaspiMemoryBean formatMemoryInfo(String output) {
-        final String[] split = output.split(",");
-        if (split.length >= 3) {
-            final long total = Long.parseLong(split[1]);
-            final long used = Long.parseLong(split[2]);
-            return new RaspiMemoryBean(total, used);
-        } else {
-            LOGGER.error("Expected a different output of command: {}",
-                    MEMORY_INFO_CMD);
-            LOGGER.error("Output was : {}", output);
-            return new RaspiMemoryBean(
-                    "Memory information could not be queried. See the log for details.");
-        }
     }
 
     private Double formatVolts(String output) {

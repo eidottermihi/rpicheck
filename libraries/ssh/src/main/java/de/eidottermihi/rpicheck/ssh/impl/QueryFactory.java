@@ -22,7 +22,9 @@ import net.schmizz.sshj.SSHClient;
 import de.eidottermihi.rpicheck.ssh.ConnectionCheckingQuery;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.Queries;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.ssh.impl.queries.LoadAverageQuery;
+import de.eidottermihi.rpicheck.ssh.impl.queries.MemoryQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.SerialNoQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.UptimeQuery;
 
@@ -40,5 +42,9 @@ public final class QueryFactory {
                                                          LoadAveragePeriod period) {
         return new ConnectionCheckingQuery<>(new LoadAverageQuery(client,
                 period));
+    }
+
+    public static final Queries<RaspiMemoryBean> makeMemoryQuery(SSHClient client) {
+        return new ConnectionCheckingQuery<>(new MemoryQuery(client));
     }
 }

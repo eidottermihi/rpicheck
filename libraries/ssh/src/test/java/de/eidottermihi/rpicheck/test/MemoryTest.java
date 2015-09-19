@@ -29,9 +29,26 @@ public class MemoryTest extends AbstractMockedQueryTest {
     @Test
     public void memory() throws RaspiQueryException {
         sessionMocker.withCommand(
-                "free | egrep 'Mem' | sed 's/[[:space:]]\\+/,/g'",
+                "free | sed -n 2p | sed 's/[[:space:]]\\+/,/g'",
                 new CommandMocker().withResponse(
                         "Mem:,762420,275136,487284,9864,89188,121464").mock());
+        RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
+        Assert.assertNotNull(memoryBean);
+        Assert.assertEquals(762420L * 1000, memoryBean.getTotalMemory()
+                .getBytes());
+        Assert.assertEquals(487284L * 1000, memoryBean.getTotalFree()
+                .getBytes());
+        Assert.assertEquals(275136L * 1000, memoryBean.getTotalUsed()
+                .getBytes());
+        Assert.assertEquals(275136.0/762420.0, memoryBean.getPercentageUsed(), 0.001);
+    }
+
+    @Test
+    public void memory_deutsch() throws RaspiQueryException {
+        sessionMocker.withCommand(
+                "free | sed -n 2p | sed 's/[[:space:]]\\+/,/g'",
+                new CommandMocker().withResponse(
+                        "Speicher:,762420,275136,487284,9864,89188,121464").mock());
         RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
         Assert.assertNotNull(memoryBean);
         Assert.assertEquals(762420L * 1000, memoryBean.getTotalMemory()
