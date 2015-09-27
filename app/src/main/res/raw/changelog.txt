@@ -20,8 +20,8 @@
   </head>
   <body>
 $ 1.7.4
-  % Version 1.7.4-SNAPSHOT
-  _ 2015-09-31
+  % Version 1.7.4
+  _ 2015-09-27
   * Fixed app sometimes not working on Android 2.3.3
   * Fixed memory information not available when Pi locale is not English
   * Added slovakian translation
