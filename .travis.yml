@@ -1,6 +1,10 @@
 language: android
+
+sudo: false
+
 jdk:
   - oraclejdk7
+
 android:
   components:
     - android-22            #needed by :app
