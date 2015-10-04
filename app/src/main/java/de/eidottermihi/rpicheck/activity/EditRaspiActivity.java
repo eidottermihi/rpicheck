@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,10 +47,9 @@ import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.fhconfig.android.library.injection.annotation.InjectView;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.InjectView;
-import de.fhconfig.android.library.ui.FloatLabelLayout;
 import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_raspi_edit)
@@ -78,11 +78,11 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
     @InjectView(R.id.spinnerAuthMethod)
     private Spinner spinnerAuth;
     @InjectView(R.id.ssh_password_layout)
-    private FloatLabelLayout sshPasswordLayout;
+    private TextInputLayout sshPasswordLayout;
     @InjectView(R.id.rel_key)
     private RelativeLayout relLayKeyfile;
     @InjectView(R.id.key_password_layout)
-    private FloatLabelLayout keyPasswordLayout;
+    private TextInputLayout keyPasswordLayout;
     @InjectView(R.id.key_password_edit_text)
     private EditText keyPasswordEditText;
     @InjectView(R.id.buttonKeyfile)

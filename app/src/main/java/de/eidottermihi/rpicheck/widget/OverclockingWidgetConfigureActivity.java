@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,7 +48,6 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
 import de.fhconfig.android.library.injection.annotation.InjectView;
-import de.fhconfig.android.library.ui.FloatLabelLayout;
 import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 
@@ -84,7 +84,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
     @InjectView(R.id.widgetUpdateIntervalSpinner)
     private Spinner widgetUpdateIntervalSpinner;
     @InjectView(R.id.linLayoutCustomUpdateInterval)
-    private FloatLabelLayout linLayoutCustomInterval;
+    private TextInputLayout linLayoutCustomInterval;
     @InjectView(R.id.checkBoxArm)
     private CheckBox checkBoxArm;
     @InjectView(R.id.checkBoxLoad)

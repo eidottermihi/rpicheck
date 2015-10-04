@@ -24,7 +24,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:visibility="gone"/>
 
-        <de.fhconfig.android.library.ui.FloatLabelLayout
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -37,9 +37,9 @@
                 android:hint="@string/raspi_device_name_hint"
                 android:inputType="text|textNoSuggestions"
                 android:maxLines="1"/>
-        </de.fhconfig.android.library.ui.FloatLabelLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <de.fhconfig.android.library.ui.FloatLabelLayout
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -52,9 +52,9 @@
                 android:hint="@string/raspi_device_host_hint"
                 android:inputType="text|textNoSuggestions"
                 android:maxLines="1"/>
-        </de.fhconfig.android.library.ui.FloatLabelLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <de.fhconfig.android.library.ui.FloatLabelLayout
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -69,7 +69,7 @@
                 android:maxLines="1"
                 android:paddingTop="8dp"/>
 
-        </de.fhconfig.android.library.ui.FloatLabelLayout>
+        </android.support.design.widget.TextInputLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <de.fhconfig.android.library.ui.FloatLabelLayout
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -111,7 +111,7 @@
                 android:inputType="textMultiLine"
                 android:paddingTop="8dp"/>
 
-        </de.fhconfig.android.library.ui.FloatLabelLayout>
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
 </ScrollView>
