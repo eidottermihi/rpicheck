@@ -48,13 +48,13 @@ import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.injection.annotation.InjectView;
 import de.fhconfig.android.library.ui.FloatLabelLayout;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
+import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_raspi_new_auth)
 @XmlMenu(R.menu.activity_raspi_new_auth)
-public class NewRaspiAuthActivity extends InjectionActionBarActivity implements OnItemSelectedListener {
+public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements OnItemSelectedListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewRaspiAuthActivity.class);
 
     public static final String AUTH_PASSWORD = "password";
@@ -69,25 +69,25 @@ public class NewRaspiAuthActivity extends InjectionActionBarActivity implements 
     private DeviceDbHelper deviceDb;
 
     // assigning view elements to fields
-    @XmlView(R.id.spinnerAuthMethod)
+    @InjectView(R.id.spinnerAuthMethod)
     private Spinner spinnerAuth;
-    @XmlView(R.id.ssh_password_layout)
+    @InjectView(R.id.ssh_password_layout)
     private FloatLabelLayout relLaySshPass;
-    @XmlView(R.id.rel_key)
+    @InjectView(R.id.rel_key)
     private RelativeLayout relLayKeyfile;
-    @XmlView(R.id.key_password_layout)
+    @InjectView(R.id.key_password_layout)
     private FloatLabelLayout keyPasswordLayout;
-    @XmlView(R.id.ssh_password_edit_text)
+    @InjectView(R.id.ssh_password_edit_text)
     private EditText editTextSshPass;
-    @XmlView(R.id.key_password_edit_text)
+    @InjectView(R.id.key_password_edit_text)
     private EditText editTextKeyfilePass;
-    @XmlView(R.id.buttonKeyfile)
+    @InjectView(R.id.buttonKeyfile)
     private Button buttonKeyfile;
-    @XmlView(R.id.edit_raspi_ssh_port_editText)
+    @InjectView(R.id.edit_raspi_ssh_port_editText)
     private EditText editTextSshPort;
-    @XmlView(R.id.edit_raspi_sudoPass_editText)
+    @InjectView(R.id.edit_raspi_sudoPass_editText)
     private EditText editTextSudoPw;
-    @XmlView(R.id.checkboxAsk)
+    @InjectView(R.id.checkboxAsk)
     private CheckBox checkboxAskPassphrase;
 
 

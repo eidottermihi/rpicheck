@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.XmlView;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
+import de.fhconfig.android.library.injection.annotation.InjectView;
+import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 @XmlMenu(R.menu.activity_raspi_new)
-public class NewRaspiActivity extends InjectionActionBarActivity {
+public class NewRaspiActivity extends InjectionAppCompatActivity {
     public static final String PI_HOST = "PI_HOST";
     public static final String PI_NAME = "PI_NAME";
     public static final String PI_USER = "PI_USER";
@@ -44,13 +44,13 @@ public class NewRaspiActivity extends InjectionActionBarActivity {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewRaspiActivity.class);
 
     // assigning view elements to fields
-    @XmlView(R.id.edit_raspi_name_editText)
+    @InjectView(R.id.edit_raspi_name_editText)
     private EditText editTextName;
-    @XmlView(R.id.edit_raspi_host_editText)
+    @InjectView(R.id.edit_raspi_host_editText)
     private EditText editTextHost;
-    @XmlView(R.id.edit_raspi_user_editText)
+    @InjectView(R.id.edit_raspi_user_editText)
     private EditText editTextUser;
-    @XmlView(R.id.edit_raspi_desc_editText)
+    @InjectView(R.id.edit_raspi_desc_editText)
     private EditText editTextDescription;
 
 

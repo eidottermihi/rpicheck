@@ -46,9 +46,9 @@ import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.XmlView;
+import de.fhconfig.android.library.injection.annotation.InjectView;
 import de.fhconfig.android.library.ui.FloatLabelLayout;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
+import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 
 /**
@@ -56,7 +56,7 @@ import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
  */
 @XmlLayout(R.layout.overclocking_widget_configure)
 @XmlMenu(R.menu.activity_overclocking_widget_configure)
-public class OverclockingWidgetConfigureActivity extends InjectionActionBarActivity implements AdapterView.OnItemSelectedListener {
+public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String PREF_SHOW_TEMP_SUFFIX = "_temp";
     public static final String PREF_SHOW_ARM_SUFFIX = "_arm";
@@ -75,25 +75,25 @@ public class OverclockingWidgetConfigureActivity extends InjectionActionBarActiv
     private static final String[] autoUpdate = {UPDATE_YES, UPDATE_WIFI, UPDATE_NO};
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    @XmlView(R.id.widgetPiSpinner)
+    @InjectView(R.id.widgetPiSpinner)
     private Spinner widgetPiSpinner;
-    @XmlView(R.id.textEditUpdateInterval)
+    @InjectView(R.id.textEditUpdateInterval)
     private EditText textEditUpdateInterval;
-    @XmlView(R.id.widgetUpdateSpinner)
+    @InjectView(R.id.widgetUpdateSpinner)
     private Spinner widgetUpdateSpinner;
-    @XmlView(R.id.widgetUpdateIntervalSpinner)
+    @InjectView(R.id.widgetUpdateIntervalSpinner)
     private Spinner widgetUpdateIntervalSpinner;
-    @XmlView(R.id.linLayoutCustomUpdateInterval)
+    @InjectView(R.id.linLayoutCustomUpdateInterval)
     private FloatLabelLayout linLayoutCustomInterval;
-    @XmlView(R.id.checkBoxArm)
+    @InjectView(R.id.checkBoxArm)
     private CheckBox checkBoxArm;
-    @XmlView(R.id.checkBoxLoad)
+    @InjectView(R.id.checkBoxLoad)
     private CheckBox checkBoxLoad;
-    @XmlView(R.id.checkBoxTemp)
+    @InjectView(R.id.checkBoxTemp)
     private CheckBox checkBoxTemp;
-    @XmlView(R.id.checkBoxRam)
+    @InjectView(R.id.checkBoxRam)
     private CheckBox checkBoxRam;
-    @XmlView(R.id.linLayoutUpdateInterval)
+    @InjectView(R.id.linLayoutUpdateInterval)
     private LinearLayout linLayoutUpdateInterval;
 
     private DeviceDbHelper deviceDbHelper;
