@@ -38,6 +38,7 @@ import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
+import de.fhconfig.android.library.ui.AppCompatPreferenceActivity;
 import sheetrock.panda.changelog.ChangeLog;
 
 /**
@@ -45,7 +46,7 @@ import sheetrock.panda.changelog.ChangeLog;
  *
  * @author Michael
  */
-public class SettingsActivity extends PreferenceActivity implements
+public class SettingsActivity extends AppCompatPreferenceActivity implements
         OnSharedPreferenceChangeListener, OnPreferenceClickListener {
 
     private static final String LOG_LOCATION = Environment
