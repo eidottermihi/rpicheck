@@ -33,12 +33,12 @@ import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.XmlView;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
+import de.fhconfig.android.library.injection.annotation.InjectView;
+import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_command_new)
 @XmlMenu(R.menu.activity_command_new)
-public class NewCommandActivity extends InjectionActionBarActivity {
+public class NewCommandActivity extends InjectionAppCompatActivity {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewCommandActivity.class);
 
     // Requestcode for new command
@@ -48,9 +48,9 @@ public class NewCommandActivity extends InjectionActionBarActivity {
     // Key for CommandBean when edit is requested
     public static final String CMD_KEY_EDIT = "cmdId";
 
-    @XmlView(R.id.new_cmd_name_editText)
+    @InjectView(R.id.new_cmd_name_editText)
     private EditText nameEditText;
-    @XmlView(R.id.new_cmd_command_editText)
+    @InjectView(R.id.new_cmd_command_editText)
     private EditText commandEditText;
 
     DeviceDbHelper db;

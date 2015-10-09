@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,48 +47,47 @@ import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import de.fhconfig.android.library.injection.annotation.InjectView;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.XmlView;
-import de.fhconfig.android.library.ui.FloatLabelLayout;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
+import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_raspi_edit)
 @XmlMenu(R.menu.activity_raspi_edit)
-public class EditRaspiActivity extends InjectionActionBarActivity implements OnItemSelectedListener {
+public class EditRaspiActivity extends InjectionAppCompatActivity implements OnItemSelectedListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditRaspiActivity.class);
 
     public static final int REQUEST_EDIT = 10;
 
     // assigning view elements to fields
-    @XmlView(R.id.edit_raspi_name_editText)
+    @InjectView(R.id.edit_raspi_name_editText)
     private EditText editTextName;
-    @XmlView(R.id.edit_raspi_host_editText)
+    @InjectView(R.id.edit_raspi_host_editText)
     private EditText editTextHost;
-    @XmlView(R.id.edit_raspi_user_editText)
+    @InjectView(R.id.edit_raspi_user_editText)
     private EditText editTextUser;
-    @XmlView(R.id.ssh_password_edit_text)
+    @InjectView(R.id.ssh_password_edit_text)
     private EditText editTextPass;
-    @XmlView(R.id.edit_raspi_ssh_port_editText)
+    @InjectView(R.id.edit_raspi_ssh_port_editText)
     private EditText editTextSshPortOpt;
-    @XmlView(R.id.edit_raspi_desc_editText)
+    @InjectView(R.id.edit_raspi_desc_editText)
     private EditText editTextDescription;
-    @XmlView(R.id.edit_raspi_sudoPass_editText)
+    @InjectView(R.id.edit_raspi_sudoPass_editText)
     private EditText editTextSudoPass;
 
-    @XmlView(R.id.spinnerAuthMethod)
+    @InjectView(R.id.spinnerAuthMethod)
     private Spinner spinnerAuth;
-    @XmlView(R.id.ssh_password_layout)
-    private FloatLabelLayout sshPasswordLayout;
-    @XmlView(R.id.rel_key)
+    @InjectView(R.id.ssh_password_layout)
+    private TextInputLayout sshPasswordLayout;
+    @InjectView(R.id.rel_key)
     private RelativeLayout relLayKeyfile;
-    @XmlView(R.id.key_password_layout)
-    private FloatLabelLayout keyPasswordLayout;
-    @XmlView(R.id.key_password_edit_text)
+    @InjectView(R.id.key_password_layout)
+    private TextInputLayout keyPasswordLayout;
+    @InjectView(R.id.key_password_edit_text)
     private EditText keyPasswordEditText;
-    @XmlView(R.id.buttonKeyfile)
+    @InjectView(R.id.buttonKeyfile)
     private Button buttonKeyfile;
-    @XmlView(R.id.checkboxAsk)
+    @InjectView(R.id.checkboxAsk)
     private CheckBox checkboxAskPassphrase;
 
 

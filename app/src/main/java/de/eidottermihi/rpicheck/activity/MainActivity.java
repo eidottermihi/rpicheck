@@ -83,12 +83,12 @@ import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
 import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
-import de.fhconfig.android.library.injection.annotation.XmlView;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
+import de.fhconfig.android.library.injection.annotation.InjectView;
+import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 import sheetrock.panda.changelog.ChangeLog;
 
 @XmlLayout(R.layout.activity_main)
-public class MainActivity extends InjectionActionBarActivity implements
+public class MainActivity extends InjectionAppCompatActivity implements
         ActionBar.OnNavigationListener,
         ShutdownDialogListener, PassphraseDialogListener, AsyncQueryDataUpdate,
         AsyncShutdownUpdate {
@@ -104,40 +104,40 @@ public class MainActivity extends InjectionActionBarActivity implements
     private Intent newRaspiIntent;
     private Intent editRaspiIntent;
     private Intent commandIntent;
-    @XmlView(R.id.commandButton)
+    @InjectView(R.id.commandButton)
     private Button commandButton;
     // assigning textviews to fields
-    @XmlView(R.id.armFreqText)
+    @InjectView(R.id.armFreqText)
     private TextView armFreqText;
-    @XmlView(R.id.coreFreqText)
+    @InjectView(R.id.coreFreqText)
     private TextView coreFreqText;
-    @XmlView(R.id.coreVoltText)
+    @InjectView(R.id.coreVoltText)
     private TextView coreVoltText;
-    @XmlView(R.id.coreTempText)
+    @InjectView(R.id.coreTempText)
     private TextView coreTempText;
-    @XmlView(R.id.firmwareText)
+    @InjectView(R.id.firmwareText)
     private TextView firmwareText;
-    @XmlView(R.id.lastUpdateText)
+    @InjectView(R.id.lastUpdateText)
     private TextView lastUpdateText;
-    @XmlView(R.id.uptimeText)
+    @InjectView(R.id.uptimeText)
     private TextView uptimeText;
-    @XmlView(R.id.averageLoadText)
+    @InjectView(R.id.averageLoadText)
     private TextView averageLoadText;
-    @XmlView(R.id.totalMemoryText)
+    @InjectView(R.id.totalMemoryText)
     private TextView totalMemoryText;
-    @XmlView(R.id.freeMemoryText)
+    @InjectView(R.id.freeMemoryText)
     private TextView freeMemoryText;
-    @XmlView(R.id.cpuSerialText)
+    @InjectView(R.id.cpuSerialText)
     private TextView serialNoText;
-    @XmlView(R.id.distriText)
+    @InjectView(R.id.distriText)
     private TextView distriText;
-    @XmlView(R.id.diskTable)
+    @InjectView(R.id.diskTable)
     private TableLayout diskTable;
-    @XmlView(R.id.processTable)
+    @InjectView(R.id.processTable)
     private TableLayout processTable;
-    @XmlView(R.id.networkTable)
+    @InjectView(R.id.networkTable)
     private TableLayout networkTable;
-    @XmlView(R.id.swipeRefreshLayout)
+    @InjectView(R.id.swipeRefreshLayout)
     private SwipeRefreshLayout swipeRefreshLayout;
     private SharedPreferences sharedPrefs;
     private DeviceDbHelper deviceDb;

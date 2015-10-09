@@ -66,17 +66,17 @@ import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListen
 import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
 import de.fhconfig.android.library.injection.annotation.XmlLayout;
 import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.XmlView;
-import de.fhconfig.android.library.ui.injection.InjectionActionBarActivity;
+import de.fhconfig.android.library.injection.annotation.InjectView;
+import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_commands)
 @XmlMenu(R.menu.activity_commands)
-public class CustomCommandActivity extends InjectionActionBarActivity implements OnItemClickListener, PassphraseDialogListener, PlaceholdersDialogListener {
+public class CustomCommandActivity extends InjectionAppCompatActivity implements OnItemClickListener, PassphraseDialogListener, PlaceholdersDialogListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomCommandActivity.class);
 
     private RaspberryDeviceBean currentDevice;
 
-    @XmlView(R.id.commandListView)
+    @InjectView(R.id.commandListView)
     private ListView commandListView;
 
     private DeviceDbHelper deviceDb = new DeviceDbHelper(this);
