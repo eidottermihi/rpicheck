@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,9 +81,9 @@ import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
 import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
-import de.fhconfig.android.library.injection.annotation.XmlLayout;
-import de.fhconfig.android.library.injection.annotation.InjectView;
-import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
+import io.freefair.android.injection.annotation.InjectView;
+import io.freefair.android.injection.annotation.XmlLayout;
+import io.freefair.android.injection.ui.InjectionAppCompatActivity;
 import sheetrock.panda.changelog.ChangeLog;
 
 @XmlLayout(R.layout.activity_main)

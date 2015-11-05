@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
-import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.injection.annotation.InjectView;
-import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
+import io.freefair.android.injection.annotation.InjectView;
+import io.freefair.android.injection.annotation.XmlMenu;
+import io.freefair.android.injection.ui.InjectionAppCompatActivity;
 
 @XmlMenu(R.menu.activity_raspi_new)
 public class NewRaspiActivity extends InjectionAppCompatActivity {
