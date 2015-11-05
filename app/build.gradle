@@ -54,7 +54,8 @@ android {
 dependencies {
     compile project(':libraries:ssh')
     compile project(':libraries:file-explorer')
-    compile 'de.larsgrefer:android-library-base:0.8.4'
+    compile 'com.github.freefair.android-colors:material:1.0.0'
+    compile 'com.github.freefair.android-library:injection:1.0.0-rc2'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile('com.github.tony19:logback-android-classic:1.1.1-3') {
         exclude group: 'com.google.android', module: 'android'
