@@ -49,3 +49,8 @@
 -keep interface de.eidottermihi.rpicheck.ssh** { *; }
 -keep class com.lamerman.** { *; }
 -keep interface com.lamerman.** { *; }
+
+-keepattributes Signature,*Annotation*
+-keepclassmembers class * {
+    @io.freefair.android.injection.annotation.Inject* *;
+}
