@@ -1,16 +1,16 @@
 /**
  * Copyright (C) 2015  RasPi Check Contributors
- *
+ * <p/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -29,35 +29,37 @@ public class MemoryTest extends AbstractMockedQueryTest {
     @Test
     public void memory() throws RaspiQueryException {
         sessionMocker.withCommand(
-                "free | sed -n 2p | sed 's/[[:space:]]\\+/,/g'",
+                "free | sed -n 2,3p | tr -d '\\n' | sed 's/[[:space:]]\\+/,/g'",
                 new CommandMocker().withResponse(
-                        "Mem:,762420,275136,487284,9864,89188,121464").mock());
+                        "Mem:,949328,586708,362620,0,302444,238064\n" +
+                                "-/+,buffers/cache:,46200,903128").mock());
         RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
         Assert.assertNotNull(memoryBean);
-        Assert.assertEquals(762420L * 1000, memoryBean.getTotalMemory()
+        Assert.assertEquals(949328L * 1000, memoryBean.getTotalMemory()
                 .getBytes());
-        Assert.assertEquals(487284L * 1000, memoryBean.getTotalFree()
+        Assert.assertEquals(903128L * 1000, memoryBean.getTotalFree()
                 .getBytes());
-        Assert.assertEquals(275136L * 1000, memoryBean.getTotalUsed()
+        Assert.assertEquals(46200L * 1000, memoryBean.getTotalUsed()
                 .getBytes());
-        Assert.assertEquals(275136.0/762420.0, memoryBean.getPercentageUsed(), 0.001);
+        Assert.assertEquals(46200.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
     }
 
     @Test
     public void memory_deutsch() throws RaspiQueryException {
         sessionMocker.withCommand(
-                "free | sed -n 2p | sed 's/[[:space:]]\\+/,/g'",
+                "free | sed -n 2,3p | tr -d '\\n' | sed 's/[[:space:]]\\+/,/g'",
                 new CommandMocker().withResponse(
-                        "Speicher:,762420,275136,487284,9864,89188,121464").mock());
+                        "Speicher:,949328,586708,362620,0,302444,238064\n" +
+                                "-/+,Buffer/Cache:,46200,903128").mock());
         RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
         Assert.assertNotNull(memoryBean);
-        Assert.assertEquals(762420L * 1000, memoryBean.getTotalMemory()
+        Assert.assertEquals(949328L * 1000, memoryBean.getTotalMemory()
                 .getBytes());
-        Assert.assertEquals(487284L * 1000, memoryBean.getTotalFree()
+        Assert.assertEquals(903128L * 1000, memoryBean.getTotalFree()
                 .getBytes());
-        Assert.assertEquals(275136L * 1000, memoryBean.getTotalUsed()
+        Assert.assertEquals(46200L * 1000, memoryBean.getTotalUsed()
                 .getBytes());
-        Assert.assertEquals(275136.0/762420.0, memoryBean.getPercentageUsed(), 0.001);
+        Assert.assertEquals(46200.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
     }
 
 }
