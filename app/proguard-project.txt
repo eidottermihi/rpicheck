@@ -47,8 +47,6 @@
 # Submodule Libraries
 -keep class de.eidottermihi.rpicheck.ssh.** { *; }
 -keep interface de.eidottermihi.rpicheck.ssh** { *; }
--keep class com.lamerman.** { *; }
--keep interface com.lamerman.** { *; }
 
 -keepattributes Signature,*Annotation*
 -keepclassmembers class * {
