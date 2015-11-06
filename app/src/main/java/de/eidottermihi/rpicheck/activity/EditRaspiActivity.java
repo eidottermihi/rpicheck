@@ -47,10 +47,10 @@ import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
-import de.fhconfig.android.library.injection.annotation.InjectView;
-import de.fhconfig.android.library.injection.annotation.XmlLayout;
-import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
+import io.freefair.android.injection.annotation.InjectView;
+import io.freefair.android.injection.annotation.XmlLayout;
+import io.freefair.android.injection.annotation.XmlMenu;
+import io.freefair.android.injection.ui.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_raspi_edit)
 @XmlMenu(R.menu.activity_raspi_edit)

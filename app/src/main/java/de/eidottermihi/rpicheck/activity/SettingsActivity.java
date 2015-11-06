@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -38,7 +37,7 @@ import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
-import de.fhconfig.android.library.ui.AppCompatPreferenceActivity;
+import io.freefair.android.appcompatPreference.AppCompatPreferenceActivity;
 import sheetrock.panda.changelog.ChangeLog;
 
 /**
