@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+$ 1.7.6
+  % Version 1.7.6
+  _ 2015-11-07
+  * Fixed widget not working on Android versions < 5.X
 $ 1.7.5
   % Version 1.7.5
   _ 2015-11-05
