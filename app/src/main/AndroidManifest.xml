@@ -107,6 +107,7 @@
         </activity>
 
         <service android:name="de.eidottermihi.rpicheck.widget.WidgetUpdateService"/>
+
     </application>
 
 </manifest>
