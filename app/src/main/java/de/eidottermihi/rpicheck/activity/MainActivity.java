@@ -539,7 +539,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
                     }
                 }
                 try {
-                    final Object value = method.invoke(object, new Object[]{});
+                    final Object value = method.invoke(object);
                     if (value != null) {
                         if (value instanceof Boolean || value instanceof String || value instanceof Double || value instanceof Long || value instanceof Integer) {
                             informationMap.put(keyPrefix + key, value.toString());
@@ -554,8 +554,8 @@ public class MainActivity extends InjectionAppCompatActivity implements
                             visitExportedMethods(value, key + ".", informationMap);
                         }
                     }
-                } catch (IllegalAccessException e) {
-                } catch (InvocationTargetException e) {
+                } catch (Exception e) {
+                    LOGGER.warn("Couldn't invoke exported method.", e);
                 }
             }
         }

@@ -345,7 +345,7 @@ public class CustomCommandActivity extends InjectionAppCompatActivity implements
                     String value = simpleDateFormat.format(new Date());
                     LOGGER.debug("Value for '{}' is '{}'", placeholder, value);
                     nonPromptingPlaceholders.put(placeholder, value);
-                } catch (IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     LOGGER.warn("Unparseable Date Format: {} - refer to Java's SimpleDateFormat for a valid format specification.", format);
                 }
             }
@@ -354,16 +354,18 @@ public class CustomCommandActivity extends InjectionAppCompatActivity implements
     }
 
     private String getValueViaReflection(RaspberryDeviceBean device, String accessor) {
+        LOGGER.debug("Searching annotated Getter for accessor: {}", accessor);
         for (Method method : device.getClass().getMethods()) {
+            LOGGER.debug("Checking method: {}", method.getName());
             if (method.isAnnotationPresent(Exported.class)) {
                 if (method.getName().replaceFirst("get", "").toLowerCase().equals(accessor.toLowerCase())) {
                     try {
-                        Object result = method.invoke(device, new Object[]{});
+                        Object result = method.invoke(device);
                         if (result != null) {
                             return result.toString();
                         }
-                    } catch (IllegalAccessException e) {
-                    } catch (InvocationTargetException e) {
+                    } catch (Exception e) {
+                        LOGGER.error("Couldn't invoke method {} on DeviceBean: {}", method.getName(), e);
                     }
                 }
             }
