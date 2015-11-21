@@ -19,6 +19,9 @@
 #   public *;
 #}
 
+# Dont obfuscate
+-dontobfuscate
+
 # Libraries
 # SSHJ
 -keep class net.schmizz.** { *; }
