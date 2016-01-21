@@ -18,9 +18,9 @@
 package de.eidottermihi.rpicheck.ssh.beans;
 
 public enum Memory {
-    B("Byte", "B", 1), KB("KiloByte", "KB", 1000), MB("MegaByte", "MB",
-            1000 * 1000), GB("GigaByte", "GB", 1000 * 1000 * 1000), TB(
-            "TeraByte", "TB", 1000 * 1000 * 1000 * 1000);
+    B("Byte", "B", 1), KB("KiloByte", "KB", 1024), MB("MegaByte", "MB",
+    1024 * 1024), GB("GigaByte", "GB", 1024 * 1024 * 1024), TB(
+    "TeraByte", "TB", 1024 * 1024 * 1024 * 1024);
 
     private String longName;
     private String shortName;
