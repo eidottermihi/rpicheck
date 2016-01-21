@@ -33,7 +33,7 @@ import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
 public class MemoryQuery extends GenericQuery<RaspiMemoryBean> {
 
-    private static final String MEMORY_INFO_CMD = "free | sed -n 2,3p | tr -d '\\n' | sed 's/[[:space:]]\\+/,/g'";
+    private static final String MEMORY_INFO_CMD = "vmstat -s | sed -n 1,2p | sed 's/[^0-9]*//g' | tr '\\n' ','";
     private static final Logger LOGGER = LoggerFactory.getLogger(MemoryQuery.class);
 
     public MemoryQuery(SSHClient sshClient) {
@@ -56,9 +56,9 @@ public class MemoryQuery extends GenericQuery<RaspiMemoryBean> {
 
     private RaspiMemoryBean formatMemoryInfo(String output) {
         final String[] split = output.split(",");
-        if (split.length >= 3) {
-            final long total = Long.parseLong(split[1]);
-            final long used = Long.parseLong(split[8]);
+        if (split.length == 2) {
+            final long total = Long.parseLong(split[0]);
+            final long used = Long.parseLong(split[1]);
             return new RaspiMemoryBean(total, used);
         } else {
             LOGGER.error("Expected a different output of command: {}",
