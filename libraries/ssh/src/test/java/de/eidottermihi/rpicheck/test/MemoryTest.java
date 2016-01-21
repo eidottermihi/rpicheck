@@ -10,7 +10,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -39,11 +39,11 @@ public class MemoryTest extends AbstractMockedQueryTest {
                 new CommandMocker().withResponse(output).mock());
         RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
         Assert.assertNotNull(memoryBean);
-        Assert.assertEquals(949328L * 1000, memoryBean.getTotalMemory()
+        Assert.assertEquals(949328L * 1024, memoryBean.getTotalMemory()
                 .getBytes());
-        Assert.assertEquals(884628L * 1000, memoryBean.getTotalFree()
+        Assert.assertEquals(884628L * 1024, memoryBean.getTotalFree()
                 .getBytes());
-        Assert.assertEquals(64700L * 1000, memoryBean.getTotalUsed()
+        Assert.assertEquals(64700L * 1024, memoryBean.getTotalUsed()
                 .getBytes());
         Assert.assertEquals(64700.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
     }
@@ -57,11 +57,11 @@ public class MemoryTest extends AbstractMockedQueryTest {
                 new CommandMocker().withResponse(output).mock());
         RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
         Assert.assertNotNull(memoryBean);
-        Assert.assertEquals(949328L * 1000, memoryBean.getTotalMemory()
+        Assert.assertEquals(949328L * 1024, memoryBean.getTotalMemory()
                 .getBytes());
-        Assert.assertEquals(898024L * 1000, memoryBean.getTotalFree()
+        Assert.assertEquals(898024L * 1024, memoryBean.getTotalFree()
                 .getBytes());
-        Assert.assertEquals(51304L * 1000, memoryBean.getTotalUsed()
+        Assert.assertEquals(51304L * 1024, memoryBean.getTotalUsed()
                 .getBytes());
         Assert.assertEquals(51304.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
     }
