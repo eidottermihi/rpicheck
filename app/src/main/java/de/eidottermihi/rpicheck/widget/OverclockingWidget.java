@@ -24,24 +24,29 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
+import de.eidottermihi.rpicheck.activity.SettingsActivity;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
 import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
@@ -91,6 +96,10 @@ public class OverclockingWidget extends AppWidgetProvider {
                                 final int appWidgetId, DeviceDbHelper deviceDb, boolean initByAlarm) {
         LOGGER.debug("Updating Widget[ID={}]. initByAlarm = {}", appWidgetId, initByAlarm);
         Long deviceId = OverclockingWidgetConfigureActivity.loadDeviceId(context, appWidgetId);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        final String preferredTempScale = sharedPreferences.getString(SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, FormatHelper.SCALE_CELSIUS);
+        final boolean useFahrenheit = preferredTempScale.equals(FormatHelper.SCALE_FAHRENHEIT) ? true : false;
+        LOGGER.debug("Using temperature scale: {}", preferredTempScale);
         if (deviceId != null) {
             // get update interval
             final boolean showTemp = OverclockingWidgetConfigureActivity.loadShowStatus(context, OverclockingWidgetConfigureActivity.PREF_SHOW_TEMP_SUFFIX, appWidgetId);
@@ -169,9 +178,13 @@ public class OverclockingWidget extends AppWidgetProvider {
                         if (STATUS_ONLINE.equals(status)) {
                             String temp = stringStringMap.get(KEY_TEMP);
                             if (temp != null) {
-                                double tempValue = Double.parseDouble(temp);
-                                views.setTextViewText(R.id.textTempValue, FormatHelper.formatTemperature(tempValue, FormatHelper.SCALE_CELSIUS));
-                                updateProgressbar(views, R.id.progressBarTempValue, 0, 90, tempValue);
+                                double tempValueInCelsius = Double.parseDouble(temp);
+                                String tempString = FormatHelper.formatTemperature(tempValueInCelsius, (useFahrenheit ? FormatHelper.SCALE_FAHRENHEIT : FormatHelper.SCALE_CELSIUS));
+                                double tempValue = (useFahrenheit) ? FormatHelper.celsiusToFahrenheit(tempValueInCelsius) : tempValueInCelsius;
+                                views.setTextViewText(R.id.textTempValue, tempString);
+                                double minVal = (useFahrenheit) ? FormatHelper.celsiusToFahrenheit(0.0) : 0.0;
+                                double maxVal = (useFahrenheit) ? FormatHelper.celsiusToFahrenheit(90.0) : 90.0;
+                                updateProgressbar(views, R.id.progressBarTempValue, minVal, maxVal, tempValue);
                             }
                             String armFreq = stringStringMap.get(KEY_ARM_FREQ);
                             if (armFreq != null) {

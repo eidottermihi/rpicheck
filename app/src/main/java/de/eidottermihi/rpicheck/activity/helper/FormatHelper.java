@@ -56,7 +56,7 @@ public class FormatHelper {
         }
     }
 
-    private static double celsiusToFahrenheit(double celsius) {
+    public static double celsiusToFahrenheit(double celsius) {
         return celsius * 1.8 + 32;
     }
 
