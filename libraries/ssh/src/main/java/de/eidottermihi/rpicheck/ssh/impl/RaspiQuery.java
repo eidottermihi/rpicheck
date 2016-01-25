@@ -92,7 +92,7 @@ public class RaspiQuery implements IQueryService {
     private static final Pattern IPADDRESS_PATTERN = Pattern
             .compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     private static final Pattern CPU_PATTERN = Pattern.compile("[0-9.]{4,}");
-    private static final String DISK_USAGE_CMD = "df -h";
+    private static final String DISK_USAGE_CMD = "LC_ALL=C df -h";
     private static final String DF_COMMAND_HEADER_START = "Filesystem";
     private static final String DISTRIBUTION_CMD = "cat /etc/*-release | grep PRETTY_NAME";
     private static final String PROCESS_NO_ROOT_CMD = "ps -U root -u root -N";
