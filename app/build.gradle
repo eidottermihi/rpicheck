@@ -32,6 +32,8 @@ android {
         targetSdkVersion 24
         multiDexEnabled true
         versionName version
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -71,9 +73,25 @@ dependencies {
     }
     compile 'org.slf4j:slf4j-api:1.7.6'
     compile 'com.google.code.findbugs:jsr305:2.0.2'
-}
+
+    androidTestCompile 'com.android.support:support-annotations:23.1.0'
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
+    androidTestCompile 'com.android.support.test:rules:0.4.1'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.1') {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2.1') {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
 
 license {
     exclude "**/sheetrock/**"
 }
+
+task licenseFormatAndroid (type:nl.javadude.gradle.plugins.license.License) {
+    source = fileTree(dir:"src").include ("**/*.java")
+}
+
+licenseFormat.dependsOn licenseFormatAndroid
 
