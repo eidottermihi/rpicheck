@@ -1,7 +1,9 @@
 language: android
-sudo: false
 jdk:
   - oraclejdk7
+env:
+  global:
+    - MALLOC_ARENA_MAX=2
 android:
   components:
     - android-23            #needed by :app
