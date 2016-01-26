@@ -54,7 +54,7 @@ android {
 dependencies {
     compile project(':libraries:ssh')
     compile project(':libraries:file-explorer')
-    compile 'com.github.freefair.android-colors:material:1.0.0'
+    compile 'com.github.freefair.android-colors:material:1.1.0'
     compile 'com.github.freefair.android-library:injection:1.0.0-rc2'
     compile 'com.github.freefair.android-library:appcompat-preference:1.0.0-rc2'
     compile 'com.android.support:design:23.1.0'
