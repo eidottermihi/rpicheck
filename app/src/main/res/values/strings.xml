@@ -104,7 +104,7 @@
     <string name="errormessages_dialog_title">Sorry...</string>
     <string name="transport_exception">A transport exception occurred. Please try again.</string>
     <string name="unexpected_exception">A unexcepted exception occurred. Please try again.</string>
-    <string name="exception_vcgencmd">The tool \'vcgencmd\' was not found on your Pi. Make sure it is located under \'/usr/bin\' or \'/opt/vc/bin\'.</string>
+    <string name="exception_vcgencmd">The tool \'vcgencmd\' was not found on your Pi. Make sure it is located under \'/usr/bin\' or \'/opt/vc/bin\' and your SSH user is in group \'video\'.</string>
     <string name="weird_exception">Something weird went wrong. Please take a look at the log file.</string>
     <string name="changelog_full_title">Change Log</string>
     <string name="changelog_title">What\'s New</string>
