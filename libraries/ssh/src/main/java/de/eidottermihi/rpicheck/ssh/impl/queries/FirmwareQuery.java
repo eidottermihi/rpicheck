@@ -40,6 +40,9 @@ public class FirmwareQuery extends GenericQuery<String> implements Queries<Strin
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FirmwareQuery.class);
 
+    private static final int SHORTENED_HASH_LENGTH = 8;
+    private static final String BLANK = " ";
+
     private String vcgencmdPath;
 
     /**
@@ -79,7 +82,8 @@ public class FirmwareQuery extends GenericQuery<String> implements Queries<Strin
         final String[] splitted = output.split("\n");
         if (splitted.length >= 3) {
             if (splitted[2].startsWith("version ")) {
-                return splitted[2].replace("version ", "");
+                return checkAndFormatVersionHash(splitted[2].replace("version ", ""));
+                //return splitted[2].replace("version ", "");
             } else {
                 return splitted[2];
             }
@@ -88,5 +92,20 @@ public class FirmwareQuery extends GenericQuery<String> implements Queries<Strin
             LOGGER.debug("Output of 'vcgencmd version': \n{}", output);
             return "n/a";
         }
+    }
+
+    private String checkAndFormatVersionHash(String versionString) {
+        StringBuilder sb = new StringBuilder();
+        String[] splitted = versionString.split(BLANK);
+        if (splitted.length == 3) {
+            String hash = splitted[0];
+            if (hash.length() > SHORTENED_HASH_LENGTH) {
+                sb.append(hash.substring(0, SHORTENED_HASH_LENGTH));
+            } else {
+                sb.append(hash);
+            }
+            return sb.append(BLANK).append(splitted[1]).append(BLANK).append(splitted[2]).toString();
+        }
+        return versionString;
     }
 }

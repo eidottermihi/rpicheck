@@ -32,7 +32,7 @@ import static org.junit.Assert.assertEquals;
  * @author Michael
  */
 public class FirmwareTest extends AbstractMockedQueryTest {
-    
+
     @Test
     public void firmware_hash() throws IOException, RaspiQueryException {
         String output = FileUtils.readFileToString(FileUtils
@@ -40,6 +40,25 @@ public class FirmwareTest extends AbstractMockedQueryTest {
         sessionMocker.withCommand("vcgencmd version",
                 new CommandMocker().withResponse(output).mock());
         String firmwareVersion = raspiQuery.queryFirmwareVersion("vcgencmd");
-        assertEquals("7789db485409720b0e523a3d6b86b12ed56fd152 (clean) (release)", firmwareVersion);
+        assertEquals("7789db48 (clean) (release)", firmwareVersion);
+    }
+
+    @Test
+    public void firmware_old_format() throws IOException, RaspiQueryException {
+        String output = FileUtils.readFileToString(FileUtils
+                .getFile("src/test/java/de/eidottermihi/rpicheck/test/vcgencmd_version_old.txt"));
+        sessionMocker.withCommand("vcgencmd version",
+                new CommandMocker().withResponse(output).mock());
+        String firmwareVersion = raspiQuery.queryFirmwareVersion("vcgencmd");
+        assertEquals("362371 (release)", firmwareVersion);
+    }
+
+    @Test
+    public void firmware_unkown_format() throws IOException, RaspiQueryException {
+        String output = "2.0.1.RELEASE";
+        sessionMocker.withCommand("vcgencmd version",
+                new CommandMocker().withResponse(output).mock());
+        String firmwareVersion = raspiQuery.queryFirmwareVersion("vcgencmd");
+        assertEquals("n/a", firmwareVersion);
     }
 }
