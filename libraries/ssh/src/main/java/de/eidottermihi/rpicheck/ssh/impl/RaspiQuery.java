@@ -237,55 +237,9 @@ public class RaspiQuery implements IQueryService {
      * @return the firmware Version
      * @throws RaspiQueryException if something goes wrong
      */
-    private String queryFirmwareVersion(String vcgencmdPath)
+    public String queryFirmwareVersion(String vcgencmdPath)
             throws RaspiQueryException {
-        LOGGER.debug("Querying firmware version...");
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    String cmdString = vcgencmdPath + " version";
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    String output = IOUtils.readFully(cmd.getInputStream())
-                            .toString();
-                    final String result = this.parseFirmwareVersion(output);
-                    LOGGER.debug("Firmware version: {}", result);
-                    return result;
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
-
-    /**
-     * Parses the output of "vcgendcmd version".
-     *
-     * @param output the output
-     * @return the version string
-     */
-    private String parseFirmwareVersion(final String output) {
-        final String[] splitted = output.split("\n");
-        if (splitted.length >= 3) {
-            if (splitted[2].startsWith("version ")) {
-                return splitted[2].replace("version ", "");
-            } else {
-                return splitted[2];
-            }
-        } else {
-            LOGGER.error("Could not parse firmware. Maybe the output of 'vcgencmd version' changed.");
-            LOGGER.debug("Output of 'vcgencmd version': \n{}", output);
-            return N_A;
-        }
+        return QueryFactory.makeFirmwareQuery(client, vcgencmdPath).run();
     }
 
     /**

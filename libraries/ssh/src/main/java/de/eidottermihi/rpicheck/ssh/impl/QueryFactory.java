@@ -23,6 +23,7 @@ import de.eidottermihi.rpicheck.ssh.ConnectionCheckingQuery;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.Queries;
 import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.ssh.impl.queries.FirmwareQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.LoadAverageQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.MemoryQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.SerialNoQuery;
@@ -46,5 +47,9 @@ public final class QueryFactory {
 
     public static final Queries<RaspiMemoryBean> makeMemoryQuery(SSHClient client) {
         return new ConnectionCheckingQuery<>(new MemoryQuery(client));
+    }
+
+    public static final Queries<String> makeFirmwareQuery(SSHClient client, String vcgencmdPath) {
+        return new ConnectionCheckingQuery<>(new FirmwareQuery(client, vcgencmdPath));
     }
 }
