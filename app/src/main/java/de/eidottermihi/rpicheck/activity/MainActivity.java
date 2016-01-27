@@ -49,7 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -157,12 +156,11 @@ public class MainActivity extends InjectionAppCompatActivity implements
         editRaspiIntent = new Intent(MainActivity.this, EditRaspiActivity.class);
         commandIntent = new Intent(MainActivity.this, CustomCommandActivity.class);
 
+        boolean isDebugLogging = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
+        LoggingHelper.initLogging(this, isDebugLogging);
 
         // assigning refreshable root scrollview
         initSwipeRefreshLayout();
-
-        boolean isDebugLogging = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
-        LoggingHelper.changeLogger(isDebugLogging);
 
         // Changelog
         final ChangeLog changeLog = new ChangeLog(this);
