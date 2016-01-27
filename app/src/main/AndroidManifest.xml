@@ -1,95 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.eidottermihi.raspicheck"
-    android:versionCode="39">
+<manifest package="de.eidottermihi.raspicheck"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:versionCode="39" >
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+    <!-- for SSH connection -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- reading specified private key files for ssh connection -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- writing the application log to storage
+         only for api < 19, see http://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE)
+    -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18"/>
 
-    <!-- android:uiOptions="splitActionBarWhenNarrow" -->
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backupscheme"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.rpiCheck.Dark" >
+        android:theme="@style/Theme.rpiCheck.Dark"
+        >
         <activity
             android:name="de.eidottermihi.rpicheck.activity.MainActivity"
             android:label="@string/title_activity_main"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name="de.eidottermihi.rpicheck.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
+                android:value="de.eidottermihi.rpicheck.activity.MainActivity"/>
         </activity>
         <activity
             android:name="de.eidottermihi.rpicheck.activity.NewRaspiActivity"
             android:label="@string/title_activity_new_raspi"
             android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity"
-            android:uiOptions="splitActionBarWhenNarrow" >
+            android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
+                android:value="de.eidottermihi.rpicheck.activity.MainActivity"/>
         </activity>
         <activity
             android:name="de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity"
             android:label="@string/title_activity_new_raspi"
             android:parentActivityName="de.eidottermihi.rpicheck.activity.NewRaspiActivity"
-            android:uiOptions="splitActionBarWhenNarrow" >
+            android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.eidottermihi.rpicheck.activity.NewRaspiActivity" />
+                android:value="de.eidottermihi.rpicheck.activity.NewRaspiActivity"/>
         </activity>
         <activity
             android:name="de.eidottermihi.rpicheck.activity.EditRaspiActivity"
             android:label="@string/activity_title_edit_raspi"
             android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity"
-            android:uiOptions="splitActionBarWhenNarrow" >
+            android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
+                android:value="de.eidottermihi.rpicheck.activity.MainActivity"/>
         </activity>
         <activity
             android:name="de.eidottermihi.rpicheck.activity.CustomCommandActivity"
             android:label="@string/activity_title_commands"
             android:launchMode="singleTop"
-            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity" >
+            android:parentActivityName="de.eidottermihi.rpicheck.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.eidottermihi.rpicheck.activity.MainActivity" />
+                android:value="de.eidottermihi.rpicheck.activity.MainActivity"/>
         </activity>
         <activity
             android:name="de.eidottermihi.rpicheck.activity.NewCommandActivity"
             android:label="@string/activity_title_new_command"
             android:parentActivityName="de.eidottermihi.rpicheck.activity.CustomCommandActivity"
-            android:uiOptions="splitActionBarWhenNarrow" >
+            android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity" />
+                android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity"/>
         </activity>
 
-        <receiver android:name="de.eidottermihi.rpicheck.widget.OverclockingWidget" >
+        <receiver android:name="de.eidottermihi.rpicheck.widget.OverclockingWidget">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/overclocking_widget_info" />
+                android:resource="@xml/overclocking_widget_info"/>
         </receiver>
 
-        <activity android:name="de.eidottermihi.rpicheck.widget.OverclockingWidgetConfigureActivity" >
+        <activity android:name="de.eidottermihi.rpicheck.widget.OverclockingWidgetConfigureActivity">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
     </application>
