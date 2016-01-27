@@ -24,7 +24,7 @@ apply from: "gradle/release.gradle"
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "de.eidottermihi.raspicheck"
@@ -54,9 +54,9 @@ android {
 dependencies {
     compile project(':libraries:ssh')
     compile project(':libraries:file-explorer')
-    compile 'com.github.freefair.android-colors:material:1.1.0'
-    compile 'com.github.freefair.android-library:injection:1.0.0-rc2'
-    compile 'com.github.freefair.android-library:appcompat-preference:1.0.0-rc2'
+    compile 'com.github.freefair.android-colors:material:1.2.0'
+    compile 'com.github.freefair.android-library:injection:1.0.0-rc3'
+    compile 'com.github.freefair.android-library:appcompat-preference:1.0.0-rc3'
     compile 'com.android.support:design:23.1.0'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile('com.github.tony19:logback-android-classic:1.1.1-3') {
