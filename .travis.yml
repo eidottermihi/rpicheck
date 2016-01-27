@@ -7,6 +7,7 @@ jdk:
 
 android:
   components:
+    - tools     # see https://github.com/travis-ci/travis-ci/issues/5036
     - android-23
     - build-tools-23.0.2
     - extra-google-m2repository
