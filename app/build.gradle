@@ -54,9 +54,9 @@ android {
 dependencies {
     compile project(':libraries:ssh')
     compile 'com.nononsenseapps:filepicker:2.5.1'
-    compile 'com.github.freefair.android-colors:material:1.2.0'
+    compile 'io.freefair.android-colors:material:1.2.0'
     compile 'io.freefair.android-injection:injection:1.0.0-rc2'
-    compile 'com.github.freefair.android-library:appcompat-preference:1.0.0-rc3'
+    compile 'io.freefair.android-util:preference:1.1.1'
     compile 'com.android.support:design:23.1.0'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile('com.github.tony19:logback-android-classic:1.1.1-3') {
