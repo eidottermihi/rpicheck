@@ -41,14 +41,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.raspicheck.R;
-import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
 
 
 /**

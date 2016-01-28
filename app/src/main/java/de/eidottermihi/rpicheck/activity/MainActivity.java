@@ -86,7 +86,7 @@ import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
 import sheetrock.panda.changelog.ChangeLog;
 
 @XmlLayout(R.layout.activity_main)

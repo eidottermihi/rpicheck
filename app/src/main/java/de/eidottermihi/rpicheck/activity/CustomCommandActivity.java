@@ -70,7 +70,7 @@ import de.eidottermihi.rpicheck.ssh.beans.Exported;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_commands)
 @XmlMenu(R.menu.activity_commands)

@@ -1,10 +1,7 @@
 package de.eidottermihi.rpicheck.activity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
@@ -13,7 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
+
 
 /**
  * Superclass for activites that start a FilePicker activity.
