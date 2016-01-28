@@ -20,7 +20,6 @@ package de.eidottermihi.rpicheck.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -36,7 +35,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
-import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,17 +112,15 @@ public class EditRaspiActivity extends AbstractFileChoosingActivity implements O
         // Apply the adapter to the spinner
         spinnerAuth.setAdapter(adapter);
         spinnerAuth.setOnItemSelectedListener(this);
-        if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+        if (deviceBean.getAuthMethod().equals(RaspberryDeviceBean.AUTH_PASSWORD)) {
             spinnerAuth.setSelection(0);
-        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+        } else if (deviceBean.getAuthMethod().equals(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             spinnerAuth.setSelection(1);
         } else {
             spinnerAuth.setSelection(2);
         }
-
         // fill fields according to data from device bean
         fillFromBean();
-
     }
 
     private void fillFromBean() {
@@ -212,23 +208,23 @@ public class EditRaspiActivity extends AbstractFileChoosingActivity implements O
             if (authMethod == 0) {
                 final String pass = editTextPass.getText().toString().trim();
                 updateRaspiInDb(name, host, user, pass, sshPort, description, sudoPass,
-                        NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                        RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                         null, null);
             } else if (authMethod == 1) {
                 final String keyfilePath = deviceBean.getKeyfilePath();
                 updateRaspiInDb(name, host, user, null, sshPort, description, sudoPass,
-                        NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                        RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                         keyfilePath, null);
             } else if (authMethod == 2) {
                 final String keyfilePath = deviceBean.getKeyfilePath();
                 if (checkboxAskPassphrase.isChecked()) {
                     updateRaspiInDb(name, host, user, null, sshPort, description, sudoPass,
-                            NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                            RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                             keyfilePath, null);
                 } else {
                     final String keyfilePass = keyPasswordEditText.getText().toString().trim();
                     updateRaspiInDb(name, host, user, null, sshPort, description,
-                            sudoPass, NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                            sudoPass, RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                             keyfilePath, keyfilePass);
                 }
             }
@@ -265,12 +261,12 @@ public class EditRaspiActivity extends AbstractFileChoosingActivity implements O
     }
 
     private void switchAuthMethodsInView(String method) {
-        if (method.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+        if (method.equals(RaspberryDeviceBean.AUTH_PASSWORD)) {
             // show only ssh password
             sshPasswordLayout.setVisibility(View.VISIBLE);
             editTextPass.setText(deviceBean.getPass());
             relLayKeyfile.setVisibility(View.GONE);
-        } else if (method.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+        } else if (method.equals(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             // show key file button (no passphrase)
             sshPasswordLayout.setVisibility(View.GONE);
             relLayKeyfile.setVisibility(View.VISIBLE);
@@ -308,7 +304,7 @@ public class EditRaspiActivity extends AbstractFileChoosingActivity implements O
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
                                long arg3) {
-        final String selectedAuthMethod = NewRaspiAuthActivity.SPINNER_AUTH_METHODS[pos];
+        final String selectedAuthMethod = RaspberryDeviceBean.SPINNER_AUTH_METHODS[pos];
         LOGGER.debug("Auth method selected: {}", selectedAuthMethod);
         this.switchAuthMethodsInView(selectedAuthMethod);
     }

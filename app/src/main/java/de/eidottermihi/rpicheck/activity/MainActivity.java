@@ -17,10 +17,12 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -28,7 +30,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.util.SparseArray;
@@ -96,12 +100,12 @@ public class MainActivity extends InjectionAppCompatActivity implements
     private static final String ALL_DEVICES = "allDevices";
 
     private static final String KEY_PREF_REFRESH_BY_ACTION_COUNT = "refreshCountByAction";
+    private static final int REQUEST_PERMISSION_READ_FOR_QUERY_PULL = 1;
+    private static final int REQUEST_PERMISSION_READ_FOR_QUERY_NO_PULL = 2;
+    private static final int REQUEST_PERMISSION_READ_FOR_HALT = 3;
+    private static final int REQUEST_PERMISSION_READ_FOR_REBOOT = 4;
     private static boolean isOnBackground;
 
-    private Intent settingsIntent;
-    private Intent newRaspiIntent;
-    private Intent editRaspiIntent;
-    private Intent commandIntent;
     @InjectView(R.id.commandButton)
     private Button commandButton;
     // assigning textviews to fields
@@ -150,11 +154,6 @@ public class MainActivity extends InjectionAppCompatActivity implements
         // assigning Shared Preferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        // init intents
-        settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-        newRaspiIntent = new Intent(MainActivity.this, NewRaspiActivity.class);
-        editRaspiIntent = new Intent(MainActivity.this, EditRaspiActivity.class);
-        commandIntent = new Intent(MainActivity.this, CustomCommandActivity.class);
 
         boolean isDebugLogging = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
         LoggingHelper.initLogging(this, isDebugLogging);
@@ -180,7 +179,8 @@ public class MainActivity extends InjectionAppCompatActivity implements
             @Override
             protected void onPostExecute(Void r) {
                 if (deviceCursor.getCount() == 0) {
-                    MainActivity.this.startActivityForResult(newRaspiIntent, NewRaspiActivity.REQUEST_SAVE);
+                    Intent newRaspiIntent = new Intent(MainActivity.this, NewRaspiActivity.class);
+                    startActivityForResult(newRaspiIntent, NewRaspiActivity.REQUEST_SAVE);
                 } else {
                     // init spinner
                     initSpinner();
@@ -473,9 +473,11 @@ public class MainActivity extends InjectionAppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_settings:
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 this.startActivity(settingsIntent);
                 break;
             case R.id.menu_new_raspi:
+                Intent newRaspiIntent = new Intent(MainActivity.this, NewRaspiActivity.class);
                 this.startActivityForResult(newRaspiIntent, NewRaspiActivity.REQUEST_SAVE);
                 break;
             case R.id.menu_delete:
@@ -484,6 +486,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
             case R.id.menu_edit_raspi:
                 final Bundle extras = new Bundle();
                 extras.putInt(Constants.EXTRA_DEVICE_ID, currentDevice.getId());
+                Intent editRaspiIntent = new Intent(MainActivity.this, EditRaspiActivity.class);
                 editRaspiIntent.putExtras(extras);
                 this.startActivityForResult(editRaspiIntent, EditRaspiActivity.REQUEST_EDIT);
                 break;
@@ -576,59 +579,68 @@ public class MainActivity extends InjectionAppCompatActivity implements
         rebootDialog.show(getSupportFragmentManager(), "reboot");
     }
 
-    private void doRebootOrHalt(String type) {
-        LOGGER.info("Doing {} on {}...", type, currentDevice.getName());
+    /**
+     * @return true if network is available
+     */
+    private boolean isNetworkAvailable() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+
+    private void doRebootOrHalt(String type) {
+        LOGGER.info("Doing {} on {}...", type, currentDevice.getName());
+        if (isNetworkAvailable()) {
             // get connection settings from shared preferences
             final String host = currentDevice.getHost();
             final String user = currentDevice.getUser();
             final String port = currentDevice.getPort() + "";
             final String sudoPass = currentDevice.getSudoPass();
-            if (currentDevice.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
-                // ssh password
+            if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PASSWORD)) {
                 final String pass = currentDevice.getPass();
-                new SSHShutdownTask(this).execute(host, user, pass, port, sudoPass, type, null, null);
-            } else if (currentDevice.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
-                // keyfile
+                if (pass != null) {
+                    new SSHShutdownTask(this).execute(host, user, pass, port, sudoPass, type, null, null);
+                } else {
+                    Toast.makeText(this, R.string.no_password_specified, Toast.LENGTH_LONG).show();
+                }
+            } else if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY) || currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+                // keyfile must be present and readable
                 final String keyfilePath = currentDevice.getKeyfilePath();
                 if (keyfilePath != null) {
-                    final File privateKey = new File(keyfilePath);
-                    if (privateKey.exists()) {
-                        new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, null);
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        LOGGER.debug("Requesting permission to read private key file from storage...");
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                type.equals(Constants.TYPE_HALT) ? REQUEST_PERMISSION_READ_FOR_HALT : REQUEST_PERMISSION_READ_FOR_REBOOT);
+                        return;
                     } else {
-                        Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG);
+                        final File privateKey = new File(keyfilePath);
+                        if (privateKey.exists()) {
+                            new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, null);
+                        } else {
+                            Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG);
+                        }
                     }
                 } else {
                     Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG);
                 }
-            } else if (currentDevice.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
-                // keyfile and passphrase
-                final String keyfilePath = currentDevice.getKeyfilePath();
-                if (keyfilePath != null) {
-                    final File privateKey = new File(keyfilePath);
-                    if (privateKey.exists()) {
-                        if (!Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
-                            final String passphrase = currentDevice.getKeyfilePass();
-                            new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, passphrase);
-                        } else {
-                            final String dialogType = type.equals(Constants.TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN : PassphraseDialog.SSH_HALT;
-                            final DialogFragment passphraseDialog = new PassphraseDialog();
-                            final Bundle args = new Bundle();
-                            args.putString(PassphraseDialog.KEY_TYPE, dialogType);
-                            passphraseDialog.setArguments(args);
-                            passphraseDialog.setCancelable(false);
-                            passphraseDialog.show(getSupportFragmentManager(), "passphrase");
-                        }
+                if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+                    if (!Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
+                        final String passphrase = currentDevice.getKeyfilePass();
+                        new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, passphrase);
                     } else {
-                        Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG);
+                        final String dialogType = type.equals(Constants.TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN : PassphraseDialog.SSH_HALT;
+                        final DialogFragment passphraseDialog = new PassphraseDialog();
+                        final Bundle args = new Bundle();
+                        args.putString(PassphraseDialog.KEY_TYPE, dialogType);
+                        passphraseDialog.setArguments(args);
+                        passphraseDialog.setCancelable(false);
+                        passphraseDialog.show(getSupportFragmentManager(), "passphrase");
                     }
-                } else {
-                    Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG);
                 }
             }
         } else {
+            // no network available
             Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT).show();
         }
     }
@@ -642,6 +654,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
         initSpinner();
     }
 
+
     private void doQuery(boolean initByPullToRefresh) {
         if (currentDevice == null) {
             // no device available, show hint for user
@@ -650,9 +663,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
             swipeRefreshLayout.setRefreshing(false);
             return;
         }
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (isNetworkAvailable()) {
             // get connection settings from shared preferences
             String host = currentDevice.getHost();
             String user = currentDevice.getUser();
@@ -664,77 +675,105 @@ public class MainActivity extends InjectionAppCompatActivity implements
             String keyPass = null;
             boolean canConnect = false;
             // check authentification method
-            final String authMethod = currentDevice.getAuthMethod();
-            if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
-                // only ssh password
+            if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PASSWORD)) {
                 pass = currentDevice.getPass();
                 if (pass != null) {
                     canConnect = true;
                 } else {
                     Toast.makeText(this, R.string.no_password_specified, Toast.LENGTH_LONG).show();
                 }
-            } else if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
-                // keyfile must be present
+            } else if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY) ||
+                    currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+                // keyfile must be present and readable
                 final String keyfilePath = currentDevice.getKeyfilePath();
                 if (keyfilePath != null) {
-                    final File privateKey = new File(keyfilePath);
-                    if (privateKey.exists()) {
-                        keyPath = keyfilePath;
-                        canConnect = true;
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        LOGGER.debug("Requesting permission to read private key file from storage...");
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                initByPullToRefresh ? REQUEST_PERMISSION_READ_FOR_QUERY_PULL : REQUEST_PERMISSION_READ_FOR_QUERY_NO_PULL);
+                        return;
                     } else {
-                        Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG).show();
-                }
-            } else if (authMethod.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
-                // keyfile and keypass must be present
-                final String keyfilePath = currentDevice.getKeyfilePath();
-                if (keyfilePath != null) {
-                    final File privateKey = new File(keyfilePath);
-                    if (privateKey.exists()) {
-                        keyPath = keyfilePath;
-                        final String keyfilePass = currentDevice.getKeyfilePass();
-                        if (keyfilePass != null) {
+                        final File privateKey = new File(keyfilePath);
+                        if (privateKey.exists()) {
+                            keyPath = keyfilePath;
                             canConnect = true;
-                            keyPass = keyfilePass;
                         } else {
-                            final DialogFragment newFragment = new PassphraseDialog();
-                            final Bundle args = new Bundle();
-                            args.putString(PassphraseDialog.KEY_TYPE, PassphraseDialog.SSH_QUERY);
-                            newFragment.setArguments(args);
-                            newFragment.setCancelable(false);
-                            newFragment.show(getSupportFragmentManager(), "passphrase");
-                            canConnect = false;
+                            Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG).show();
                 }
-            }
-            if (host == null) {
-                Toast.makeText(this, R.string.no_hostname_specified, Toast.LENGTH_LONG).show();
-                canConnect = false;
-            } else if (user == null) {
-                Toast.makeText(this, R.string.no_username_specified, Toast.LENGTH_LONG).show();
-                canConnect = false;
+                if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+                    // keypass must be present
+                    final String keyfilePass = currentDevice.getKeyfilePass();
+                    if (keyfilePass != null) {
+                        canConnect = true;
+                        keyPass = keyfilePass;
+                    } else {
+                        final DialogFragment newFragment = new PassphraseDialog();
+                        final Bundle args = new Bundle();
+                        args.putString(PassphraseDialog.KEY_TYPE, PassphraseDialog.SSH_QUERY);
+                        newFragment.setArguments(args);
+                        newFragment.setCancelable(false);
+                        newFragment.show(getSupportFragmentManager(), "passphrase");
+                        canConnect = false;
+                    }
+                }
             }
             if (canConnect) {
-                // disable pullToRefresh (if refresh initiated by action bar)
                 if (!initByPullToRefresh) {
-                    // show hint for pull-to-refresh
-                    this.showPullToRefreshHint();
+                    // show hint that user can use pull-to-refresh
+                    showPullToRefreshHint();
                 }
-                // execute query
+                // execute query in background
                 new SSHQueryTask(this, getLoadAveragePreference()).execute(host, user, pass, port, hideRoot.toString(), keyPath, keyPass);
             }
         } else {
+            // no network available
             Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT).show();
             // stop refresh animation from pull-to-refresh
             swipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_READ_FOR_QUERY_PULL:
+                if (isPermissionGranted(grantResults)) {
+                    doQuery(true);
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
+                }
+                break;
+            case REQUEST_PERMISSION_READ_FOR_QUERY_NO_PULL:
+                if (isPermissionGranted(grantResults)) {
+                    doQuery(false);
+                } else {
+                    Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
+                }
+                break;
+            case REQUEST_PERMISSION_READ_FOR_HALT:
+                if (isPermissionGranted(grantResults)) {
+                    doRebootOrHalt(Constants.TYPE_HALT);
+                } else {
+                    Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
+                }
+                break;
+            case REQUEST_PERMISSION_READ_FOR_REBOOT:
+                if (isPermissionGranted(grantResults)) {
+                    doRebootOrHalt(Constants.TYPE_REBOOT);
+                } else {
+                    Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
+    private boolean isPermissionGranted(int[] grantResults) {
+        return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
     }
 
     private LoadAveragePeriod getLoadAveragePreference() {
@@ -812,11 +851,10 @@ public class MainActivity extends InjectionAppCompatActivity implements
                 }
                 // refresh options menu
                 supportInvalidateOptionsMenu();
-                // if current device == null (if only device was deleted), start
-                // new
-                // raspi activity
+                // if current device == null (if only device was deleted), start new raspi activity
                 if (currentDevice == null) {
                     Toast.makeText(MainActivity.this, R.string.please_add_a_raspberry_pi, Toast.LENGTH_LONG).show();
+                    Intent newRaspiIntent = new Intent(MainActivity.this, NewRaspiActivity.class);
                     startActivity(newRaspiIntent);
                 }
             }
@@ -951,6 +989,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
             case R.id.commandButton:
                 Bundle currPi = new Bundle();
                 currPi.putSerializable("pi", currentDevice);
+                Intent commandIntent = new Intent(MainActivity.this, CustomCommandActivity.class);
                 commandIntent.putExtras(currPi);
                 this.startActivity(commandIntent);
                 break;

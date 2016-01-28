@@ -1053,17 +1053,15 @@ public class RaspiQuery implements IQueryService {
         client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
         try {
             client.connect(hostname, port);
-        } catch (IOException e) {
-            throw RaspiQueryException
-                    .createConnectionFailure(hostname, port, e);
-        }
-        try {
             client.authPassword(username, password);
         } catch (UserAuthException e) {
             throw RaspiQueryException.createAuthenticationFailure(hostname,
                     username, e);
         } catch (TransportException e) {
             throw RaspiQueryException.createTransportFailure(hostname, e);
+        } catch (IOException e) {
+            throw RaspiQueryException
+                    .createConnectionFailure(hostname, port, e);
         }
     }
 
@@ -1078,29 +1076,26 @@ public class RaspiQuery implements IQueryService {
     public final void connectWithPubKeyAuth(final String keyfilePath)
             throws RaspiQueryException {
         LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
-        client = new SSHClient(new AndroidConfig());
+        client = newAndroidSSHClient();
         LOGGER.info("Using no host key verification.");
         client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
-        LOGGER.info("Using private/public key authentification.");
+        LOGGER.info("Using private/public key authentication.");
         try {
             client.connect(hostname, port);
-        } catch (IOException e) {
-            throw RaspiQueryException
-                    .createConnectionFailure(hostname, port, e);
-        }
-        try {
-            final KeyProvider keyProvider = client.loadKeys(keyfilePath);
+            KeyProvider keyProvider = client.loadKeys(keyfilePath);
             client.authPublickey(username, keyProvider);
         } catch (UserAuthException e) {
-            LOGGER.info("Authentification failed.", e);
+            LOGGER.info("Authentication failed.", e);
             throw RaspiQueryException.createAuthenticationFailure(hostname,
                     username, e);
         } catch (TransportException e) {
             throw RaspiQueryException.createTransportFailure(hostname, e);
         } catch (IOException e) {
-            throw RaspiQueryException.createIOException(e);
+            throw RaspiQueryException
+                    .createConnectionFailure(hostname, port, e);
         }
     }
+
 
     /*
      * (non-Javadoc)
@@ -1113,7 +1108,7 @@ public class RaspiQuery implements IQueryService {
     public void connectWithPubKeyAuthAndPassphrase(String path,
                                                    String privateKeyPass) throws RaspiQueryException {
         LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
-        client = new SSHClient(new AndroidConfig());
+        client = newAndroidSSHClient();
         LOGGER.info("Using no host key verification.");
         client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
         LOGGER.info("Using private/public key authentification with passphrase.");
@@ -1246,6 +1241,7 @@ public class RaspiQuery implements IQueryService {
     /**
      * @return SSHClient with Android Configuration
      */
+
     public SSHClient newAndroidSSHClient() {
         return new SSHClient(new AndroidConfig());
     }

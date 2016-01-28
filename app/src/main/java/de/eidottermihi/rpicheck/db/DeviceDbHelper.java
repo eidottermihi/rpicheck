@@ -167,7 +167,7 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
         LOGGER.info("Upgrading database from version 7 to version 8: adding auth method, key file path and key file passphrase to device table.");
         db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
                 + COLUMN_AUTH_METHOD + " TEXT NOT NULL DEFAULT '"
-                + NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0] + "'");
+                + RaspberryDeviceBean.AUTH_PASSWORD + "'");
         db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
                 + COLUMN_KEYFILE_PATH + " TEXT");
         db.execSQL("ALTER TABLE " + DEVICES_TABLE_NAME + " ADD COLUMN "
@@ -221,15 +221,15 @@ public class DeviceDbHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SSHPORT, sshPort);
         values.put(COLUMN_SUDOPW, sudoPass);
         values.put(COLUMN_AUTH_METHOD, authMethod);
-        if (authMethod.equals(NewRaspiAuthActivity.AUTH_PASSWORD)) {
+        if (authMethod.equals(RaspberryDeviceBean.AUTH_PASSWORD)) {
             // insert only ssh password
             values.put(COLUMN_PASSWD, pass);
         } else if (authMethod
-                .equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY)) {
+                .equals(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             // insert only location of keyfile
             values.put(COLUMN_KEYFILE_PATH, keyFilePath);
         } else if (authMethod
-                .equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+                .equals(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
             // insert keyfile path and password
             values.put(COLUMN_KEYFILE_PATH, keyFilePath);
             values.put(COLUMN_KEYFILE_PASS, keyFilePass);

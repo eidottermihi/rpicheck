@@ -194,5 +194,7 @@
     <string name="widget_add_no_device">Du musst zuerst ein Pi in der App anlegen.</string>
     <string name="action_share">Teilen</string>
     <string name="share_body"># Informationen zu Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nDiese Informationen wurden mit RasPi Check (Version: %5$s) für Android abgefragt.</string>
+    <string name="permission_private_key_error">Berechtigung zum Lesen des Private Key verweigert. Kann Query nicht ausführen.</string>
+    <string name="widget_no_read_permission">RasPi Check hat keine Berechtigung zum Lesen des Private Key. Widget kann nicht aktualisiert werden.</string>
 
 </resources>
