@@ -19,6 +19,13 @@
     </style>
   </head>
   <body>
+$ 1.7.8-SNAPSHOT
+  % Version 1.7.8-SNAPSHOT
+  _ 2016-02-14
+  * Added Support for Marshmallow Runtime Permissions
+  * Firmware version hash gets cut to 8 characters (thanks indywidualny)
+  * Overclocking information should now work on Arch Linux (thanks indywidualny)
+  * Log location changed to /sdcard/Android/data/de.eidottermihi.raspicheck/files
 $ 1.7.7
   % Version 1.7.7
   _ 2016-01-21
