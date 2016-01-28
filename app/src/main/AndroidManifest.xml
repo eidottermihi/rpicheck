@@ -7,14 +7,9 @@
     <!-- for SSH connection -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!-- reading specified private key files for ssh connection -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <!-- writing the application log to storage
-         only for api < 19, see http://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE)
-    -->
+    <!-- reading specified private key files for ssh connection, see NoNonsense-FilePicker docs -->
     <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18"/>
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- explicitly exclude this because it's coming from library and it is definitely not needed -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
@@ -88,6 +83,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.eidottermihi.rpicheck.activity.CustomCommandActivity"/>
+        </activity>
+
+        <!-- FilePicker Library (without Intent Filter)-->
+        <activity
+            android:name="com.nononsenseapps.filepicker.FilePickerActivity"
+            android:label="@string/app_name"
+            android:theme="@style/FilePickerTheme">
         </activity>
 
         <receiver android:name="de.eidottermihi.rpicheck.widget.OverclockingWidget">

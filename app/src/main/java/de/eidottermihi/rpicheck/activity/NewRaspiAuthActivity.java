@@ -19,10 +19,13 @@ package de.eidottermihi.rpicheck.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,13 +39,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
-import com.lamerman.FileDialog;
-import com.lamerman.SelectionMode;
+import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.jar.Manifest;
 
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
@@ -54,15 +57,13 @@ import io.freefair.android.injection.ui.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_raspi_new_auth)
 @XmlMenu(R.menu.activity_raspi_new_auth)
-public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements OnItemSelectedListener {
+public class NewRaspiAuthActivity extends AbstractFileChoosingActivity implements OnItemSelectedListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewRaspiAuthActivity.class);
 
     public static final String AUTH_PASSWORD = "password";
     public static final String AUTH_PUBLIC_KEY = "keys";
     public static final String AUTH_PUBLIC_KEY_WITH_PASSWORD = "keysWithPassword";
     public static final String[] SPINNER_AUTH_METHODS = {AUTH_PASSWORD, AUTH_PUBLIC_KEY, AUTH_PUBLIC_KEY_WITH_PASSWORD};
-
-    public static final int REQUEST_LOAD = 0;
 
     private Validation validator = new Validation();
 
@@ -149,7 +150,7 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
     public void onButtonClick(View view) {
         switch (view.getId()) {
             case R.id.buttonKeyfile:
-                openKeyfile();
+                startFileChooser();
                 break;
             default:
                 break;
@@ -178,19 +179,6 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
         }
     }
 
-    private void openKeyfile() {
-        final Intent intent = new Intent(getBaseContext(), FileDialog.class);
-        intent.putExtra(FileDialog.START_PATH, Environment.getExternalStorageDirectory().getPath());
-
-        // can user select directories or not
-        intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
-        // user can only open existing files
-        intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
-
-        // alternatively you can set file filter
-        // intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { "png" });
-        this.startActivityForResult(intent, REQUEST_LOAD);
-    }
 
     private void saveRaspi() {
         // get auth method
@@ -301,25 +289,15 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_LOAD) {
-                final String filePath = data
-                        .getStringExtra(FileDialog.RESULT_PATH);
-                LOGGER.debug("Path of selected keyfile: {}", filePath);
-                this.keyfilePath = filePath;
-                // set text to filename, not full path
-                String fileName = getFilenameFromPath(filePath);
-                buttonKeyfile.setText(fileName);
-                buttonKeyfile.setError(null);
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            LOGGER.warn("No keyfile selected...");
+        if (resultCode == REQUEST_CODE_LOAD_FILE && resultCode == Activity.RESULT_OK) {
+            final String filePath = data.getData().getPath();
+            LOGGER.debug("Path of selected keyfile: {}", filePath);
+            this.keyfilePath = filePath;
+            // set text to filename, not full path
+            String fileName = getFilenameFromPath(filePath);
+            buttonKeyfile.setText(fileName);
+            buttonKeyfile.setError(null);
         }
-    }
-
-    public static String getFilenameFromPath(String filePath) {
-        final File f = new File(filePath);
-        return f.getName();
     }
 
 }

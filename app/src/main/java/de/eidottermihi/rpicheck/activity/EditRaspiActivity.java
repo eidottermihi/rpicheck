@@ -36,8 +36,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
-import com.lamerman.FileDialog;
-import com.lamerman.SelectionMode;
+import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +49,10 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_raspi_edit)
 @XmlMenu(R.menu.activity_raspi_edit)
-public class EditRaspiActivity extends InjectionAppCompatActivity implements OnItemSelectedListener {
+public class EditRaspiActivity extends AbstractFileChoosingActivity implements OnItemSelectedListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditRaspiActivity.class);
 
     public static final int REQUEST_EDIT = 10;
@@ -167,7 +165,7 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
     public void onButtonClick(View view) {
         switch (view.getId()) {
             case R.id.buttonKeyfile:
-                openKeyfile();
+                startFileChooser();
                 break;
         }
     }
@@ -302,25 +300,10 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
 
     private void initButtonKeyfile() {
         if (deviceBean.getKeyfilePath() != null) {
-            buttonKeyfile.setText(NewRaspiAuthActivity
-                    .getFilenameFromPath(deviceBean.getKeyfilePath()));
+            buttonKeyfile.setText(getFilenameFromPath(deviceBean.getKeyfilePath()));
         }
     }
 
-    private void openKeyfile() {
-        final Intent intent = new Intent(getBaseContext(), FileDialog.class);
-        intent.putExtra(FileDialog.START_PATH, Environment
-                .getExternalStorageDirectory().getPath());
-
-        // can user select directories or not
-        intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
-        // user can only open existing files
-        intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
-
-        // alternatively you can set file filter
-        // intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { "png" });
-        this.startActivityForResult(intent, NewRaspiAuthActivity.REQUEST_LOAD);
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
@@ -337,20 +320,13 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == NewRaspiAuthActivity.REQUEST_LOAD) {
-                final String filePath = data
-                        .getStringExtra(FileDialog.RESULT_PATH);
-                LOGGER.debug("Path of selected keyfile: {}", filePath);
-                deviceBean.setKeyfilePath(filePath);
-                // set text to filename, not full path
-                String fileName = NewRaspiAuthActivity
-                        .getFilenameFromPath(filePath);
-                buttonKeyfile.setText(fileName);
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            LOGGER.warn("No file selected...");
+        if (requestCode == REQUEST_CODE_LOAD_FILE && resultCode == Activity.RESULT_OK) {
+            final String filePath = data.getData().getPath();
+            LOGGER.debug("Path of selected keyfile: {}", filePath);
+            deviceBean.setKeyfilePath(filePath);
+            // set text to filename, not full path
+            final String fileName = getFilenameFromPath(filePath);
+            buttonKeyfile.setText(fileName);
         }
     }
-
 }
