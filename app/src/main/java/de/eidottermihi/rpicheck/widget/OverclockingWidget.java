@@ -17,6 +17,7 @@
  */
 package de.eidottermihi.rpicheck.widget;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -25,35 +26,35 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import de.eidottermihi.raspicheck.R;
-import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.activity.SettingsActivity;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
-import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
-import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
+import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
@@ -81,11 +82,11 @@ public class OverclockingWidget extends AppWidgetProvider {
     private DeviceDbHelper deviceDb;
 
     private static void connect(IQueryService raspiQuery, RaspberryDeviceBean deviceBean) throws RaspiQueryException {
-        if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PASSWORD)) {
+        if (deviceBean.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PASSWORD)) {
             raspiQuery.connect(deviceBean.getPass());
-        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY)) {
+        } else if (deviceBean.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             raspiQuery.connectWithPubKeyAuth(deviceBean.getKeyfilePath());
-        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+        } else if (deviceBean.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
             raspiQuery.connectWithPubKeyAuthAndPassphrase(deviceBean.getKeyfilePath(), deviceBean.getKeyfilePass());
         } else {
             LOGGER.error("Unknown authentification combination!");
@@ -115,6 +116,15 @@ public class OverclockingWidget extends AppWidgetProvider {
                 appWidgetManager.updateAppWidget(appWidgetId, removedView);
                 return;
             }
+            if (deviceBean.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY) || deviceBean.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+                // need permission to read private key file
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    LOGGER.error("Skipping widget update process because permission to read private key file is not granted. Showing alternate view.");
+                    final RemoteViews removedView = new RemoteViews(context.getPackageName(), R.layout.overclocking_widget_no_read_permission);
+                    appWidgetManager.updateAppWidget(appWidgetId, removedView);
+                    return;
+                }
+            }
             // Construct the RemoteViews object
             final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.overclocking_widget);
             views.setOnClickPendingIntent(R.id.buttonRefresh, getSelfPendingIntent(context, appWidgetId, ACTION_WIDGET_UPDATE_ONE_MANUAL));
@@ -125,7 +135,7 @@ public class OverclockingWidget extends AppWidgetProvider {
             views.setViewVisibility(R.id.linLayoutLoad, showLoad ? View.VISIBLE : View.GONE);
             views.setViewVisibility(R.id.linLayoutMem, showMemory ? View.VISIBLE : View.GONE);
             appWidgetManager.updateAppWidget(appWidgetId, views);
-            if (doQuery(context, initByAlarm, onlyOnWlan)) {
+            if (shouldDoQuery(context, initByAlarm, onlyOnWlan)) {
                 LOGGER.debug("Querying for Widget[ID={}]...", appWidgetId);
                 views.setViewVisibility(R.id.textStatusValue, View.GONE);
                 views.setViewVisibility(R.id.buttonRefresh, View.GONE);
@@ -160,9 +170,15 @@ public class OverclockingWidget extends AppWidgetProvider {
                                 double loadAverage = query.queryLoadAverage(LoadAveragePeriod.FIVE_MINUTES);
                                 result.put(KEY_LOAD_AVG, String.valueOf(loadAverage));
                             }
-                            query.disconnect();
                         } catch (RaspiQueryException e) {
+                            LOGGER.info("Widget update failed, setting device status offline.", e);
                             result.put(STATUS, STATUS_OFFLINE);
+                        } finally {
+                            try {
+                                query.disconnect();
+                            } catch (RaspiQueryException e) {
+                                LOGGER.debug("Error occ closing the ssh client.", e);
+                            }
                         }
                         return result;
                     }
@@ -239,7 +255,7 @@ public class OverclockingWidget extends AppWidgetProvider {
         }
     }
 
-    private static boolean doQuery(Context context, boolean initByAlarm, boolean onlyOnWlan) {
+    private static boolean shouldDoQuery(Context context, boolean initByAlarm, boolean onlyOnWlan) {
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         final NetworkInfo wlanInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

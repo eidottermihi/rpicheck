@@ -242,7 +242,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
                 long selectedItemId = widgetPiSpinner.getSelectedItemId();
                 LOGGER.info("Selected Device - Item ID = {}", selectedItemId);
                 RaspberryDeviceBean deviceBean = deviceDbHelper.read(selectedItemId);
-                if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null) {
+                if (deviceBean.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null) {
                     Toast.makeText(context, getString(R.string.widget_key_pass_error), Toast.LENGTH_LONG).show();
                     return super.onOptionsItemSelected(item);
                 }

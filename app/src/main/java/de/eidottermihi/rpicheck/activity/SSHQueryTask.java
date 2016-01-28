@@ -40,6 +40,9 @@ import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
+/**
+ * @author Michael
+ */
 public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 
     private static final Logger LOGGER = LoggerFactory
@@ -134,6 +137,12 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
         } catch (RaspiQueryException e) {
             LOGGER.error(e.getMessage(), e);
             bean.setException(e);
+        } finally {
+            try {
+                queryService.disconnect();
+            } catch (RaspiQueryException e) {
+                LOGGER.debug("Error closing the ssh client", e);
+            }
         }
         final long msFinish = new Date().getTime();
         final long durationInMs = msFinish - msStart;
