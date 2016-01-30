@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.eidottermihi.raspicheck.R;
+import de.eidottermihi.rpicheck.activity.MainActivity;
 import de.eidottermihi.rpicheck.activity.SettingsActivity;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
@@ -127,6 +128,12 @@ public class OverclockingWidget extends AppWidgetProvider {
             // Construct the RemoteViews object
             final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.overclocking_widget);
             views.setOnClickPendingIntent(R.id.buttonRefresh, getSelfPendingIntent(context, appWidgetId, ACTION_WIDGET_UPDATE_ONE_MANUAL));
+            PendingIntent activityIntent = getActivityIntent(context);
+            views.setOnClickPendingIntent(R.id.linLayoutName, activityIntent);
+            views.setOnClickPendingIntent(R.id.linLayoutTemp, activityIntent);
+            views.setOnClickPendingIntent(R.id.linLayoutArm, activityIntent);
+            views.setOnClickPendingIntent(R.id.linLayoutLoad, activityIntent);
+            views.setOnClickPendingIntent(R.id.linLayoutMem, activityIntent);
             views.setTextViewText(R.id.textDeviceValue, deviceBean.getName());
             views.setTextViewText(R.id.textDeviceUserHost, String.format("%s@%s", deviceBean.getUser(), deviceBean.getHost()));
             views.setViewVisibility(R.id.linLayoutTemp, showTemp ? View.VISIBLE : View.GONE);
@@ -252,6 +259,12 @@ public class OverclockingWidget extends AppWidgetProvider {
                 appWidgetManager.updateAppWidget(appWidgetId, views);
             }
         }
+    }
+
+    private static PendingIntent getActivityIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        return pendingIntent;
     }
 
     private static boolean shouldDoQuery(Context context, boolean initByAlarm, boolean onlyOnWlan) {
