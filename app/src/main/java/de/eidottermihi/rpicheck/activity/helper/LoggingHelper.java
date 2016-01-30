@@ -86,7 +86,6 @@ public class LoggingHelper {
             fileAppender.setFile(logPath);
             fileAppender.setEncoder(encoder1);
             fileAppender.start();
-            root.addAppender(fileAppender);
             rpicheckLogger.addAppender(fileAppender);
             sshjLogger.addAppender(fileAppender);
         }
