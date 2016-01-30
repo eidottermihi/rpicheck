@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/appwidget_dark_bg"
+              android:orientation="vertical"
+              android:padding="@dimen/widget_margin"
+    >
+
+    <TextView
+        android:id="@+id/textNoStorageReadPermission"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/widget_no_read_permission"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+</LinearLayout>

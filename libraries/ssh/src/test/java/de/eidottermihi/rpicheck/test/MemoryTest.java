@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015  RasPi Check Contributors
+ * Copyright (C) 2016  RasPi Check Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,49 +17,65 @@
  */
 package de.eidottermihi.rpicheck.test;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
+import de.eidottermihi.rpicheck.ssh.impl.queries.MemoryQuery;
 import de.eidottermihi.rpicheck.test.mocks.CommandMocker;
 
 public class MemoryTest extends AbstractMockedQueryTest {
 
     @Test
-    public void memory() throws RaspiQueryException {
+    public void memory() throws RaspiQueryException, IOException {
+        String output = FileUtils.readFileToString(FileUtils
+                .getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_meminfo.txt"));
         sessionMocker.withCommand(
-                "free | sed -n 2,3p | tr -d '\\n' | sed 's/[[:space:]]\\+/,/g'",
-                new CommandMocker().withResponse(
-                        "Mem:,949328,586708,362620,0,302444,238064\n" +
-                                "-/+,buffers/cache:,46200,903128").mock());
+                MemoryQuery.MEMORY_INFO_CMD,
+                new CommandMocker().withResponse(output).mock());
         RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
         Assert.assertNotNull(memoryBean);
-        Assert.assertEquals(949328L * 1000, memoryBean.getTotalMemory()
+        Assert.assertEquals(949328L * 1024, memoryBean.getTotalMemory()
                 .getBytes());
-        Assert.assertEquals(903128L * 1000, memoryBean.getTotalFree()
+        Assert.assertEquals(884628L * 1024, memoryBean.getTotalFree()
                 .getBytes());
-        Assert.assertEquals(46200L * 1000, memoryBean.getTotalUsed()
+        Assert.assertEquals(64700L * 1024, memoryBean.getTotalUsed()
                 .getBytes());
-        Assert.assertEquals(46200.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
+        Assert.assertEquals(64700.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
     }
 
     @Test
-    public void memory_deutsch() throws RaspiQueryException {
+    public void memory_old_linux_kernel() throws RaspiQueryException, IOException {
+        String output = FileUtils.readFileToString(FileUtils
+                .getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_meminfo_old.txt"));
         sessionMocker.withCommand(
-                "free | sed -n 2,3p | tr -d '\\n' | sed 's/[[:space:]]\\+/,/g'",
-                new CommandMocker().withResponse(
-                        "Speicher:,949328,586708,362620,0,302444,238064\n" +
-                                "-/+,Buffer/Cache:,46200,903128").mock());
+                MemoryQuery.MEMORY_INFO_CMD,
+                new CommandMocker().withResponse(output).mock());
         RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
         Assert.assertNotNull(memoryBean);
-        Assert.assertEquals(949328L * 1000, memoryBean.getTotalMemory()
+        Assert.assertEquals(949328L * 1024, memoryBean.getTotalMemory()
                 .getBytes());
-        Assert.assertEquals(903128L * 1000, memoryBean.getTotalFree()
+        Assert.assertEquals(898024L * 1024, memoryBean.getTotalFree()
                 .getBytes());
-        Assert.assertEquals(46200L * 1000, memoryBean.getTotalUsed()
+        Assert.assertEquals(51304L * 1024, memoryBean.getTotalUsed()
                 .getBytes());
-        Assert.assertEquals(46200.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
+        Assert.assertEquals(51304.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
+    }
+
+    @Test
+    public void memory_unknown_ouput() throws RaspiQueryException, IOException {
+        String output = FileUtils.readFileToString(FileUtils
+                .getFile("src/test/java/de/eidottermihi/rpicheck/test/proc_meminfo_error.txt"));
+        sessionMocker.withCommand(
+                MemoryQuery.MEMORY_INFO_CMD,
+                new CommandMocker().withResponse(output).mock());
+        RaspiMemoryBean memoryBean = raspiQuery.queryMemoryInformation();
+        Assert.assertNotNull(memoryBean);
+        Assert.assertEquals(memoryBean.getErrorMessage(), MemoryQuery.MEMORY_UNKNOWN_OUPUT);
     }
 
 }

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015  RasPi Check Contributors
- * 
+ * Copyright (C) 2016  RasPi Check Contributors
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -18,6 +18,7 @@
 package de.eidottermihi.rpicheck.ssh.impl;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
@@ -37,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.security.Provider;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -45,8 +45,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.management.Query;
 
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.LoadAveragePeriod;
@@ -92,7 +90,7 @@ public class RaspiQuery implements IQueryService {
     private static final Pattern IPADDRESS_PATTERN = Pattern
             .compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     private static final Pattern CPU_PATTERN = Pattern.compile("[0-9.]{4,}");
-    private static final String DISK_USAGE_CMD = "df -h";
+    private static final String DISK_USAGE_CMD = "LC_ALL=C df -h";
     private static final String DF_COMMAND_HEADER_START = "Filesystem";
     private static final String DISTRIBUTION_CMD = "cat /etc/*-release | grep PRETTY_NAME";
     private static final String PROCESS_NO_ROOT_CMD = "ps -U root -u root -N";
@@ -218,7 +216,7 @@ public class RaspiQuery implements IQueryService {
     public final VcgencmdBean queryVcgencmd() throws RaspiQueryException {
         LOGGER.debug("Querying vcgencmd...");
         // first, find the location of vcgencmd
-        final String vcgencmdPath = findVcgencmd();
+        final String vcgencmdPath = findVcgencmd().orNull();
         if (vcgencmdPath == null) {
             throw RaspiQueryException.createVcgencmdNotFound();
         }
@@ -239,55 +237,9 @@ public class RaspiQuery implements IQueryService {
      * @return the firmware Version
      * @throws RaspiQueryException if something goes wrong
      */
-    private String queryFirmwareVersion(String vcgencmdPath)
+    public String queryFirmwareVersion(String vcgencmdPath)
             throws RaspiQueryException {
-        LOGGER.debug("Querying firmware version...");
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    String cmdString = vcgencmdPath + " version";
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    String output = IOUtils.readFully(cmd.getInputStream())
-                            .toString();
-                    final String result = this.parseFirmwareVersion(output);
-                    LOGGER.debug("Firmware version: {}", result);
-                    return result;
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
-
-    /**
-     * Parses the output of "vcgendcmd version".
-     *
-     * @param output the output
-     * @return the version string
-     */
-    private String parseFirmwareVersion(final String output) {
-        final String[] splitted = output.split("\n");
-        if (splitted.length >= 3) {
-            if (splitted[2].startsWith("version ")) {
-                return splitted[2].replace("version ", "");
-            } else {
-                return splitted[2];
-            }
-        } else {
-            LOGGER.error("Could not parse firmware. Maybe the output of 'vcgencmd version' changed.");
-            LOGGER.debug("Output of 'vcgencmd version': \n{}", output);
-            return N_A;
-        }
+        return QueryFactory.makeFirmwareQuery(client, vcgencmdPath).run();
     }
 
     /**
@@ -297,32 +249,25 @@ public class RaspiQuery implements IQueryService {
      * @return the path or <code>null</code>, when vcgencmd was not found
      * @throws RaspiQueryException if something goes wrong
      */
-    private String findVcgencmd() throws RaspiQueryException {
+    private Optional<String> findVcgencmd() throws RaspiQueryException {
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
                 try {
+                    final String[] pathsToCheck = new String[]{"vcgencmd", "/usr/bin/vcgencmd", "/opt/vc/bin/vcgencmd"};
                     String foundPath = null;
-                    // 1. check if vcgencmd is in PATH
-                    String pathGuess = "vcgencmd";
-                    if (checkPath(pathGuess, client)) {
-                        foundPath = pathGuess;
-                    }
-                    // 2. check if vcgencmd is in /usr/bin
-                    pathGuess = "/usr/bin/vcgencmd";
-                    if (foundPath == null && checkPath(pathGuess, client)) {
-                        foundPath = pathGuess;
-                    }
-                    // 3. check if vcgencmd is in /opt/vc/bin
-                    pathGuess = "/opt/vc/bin/vcgencmd";
-                    if (foundPath == null && checkPath(pathGuess, client)) {
-                        foundPath = pathGuess;
+                    for (int i = 0; i < pathsToCheck.length; i++) {
+                        String guessedPath = pathsToCheck[i];
+                        if (isValidVcgencmdPath(guessedPath, client)) {
+                            foundPath = guessedPath;
+                            break;
+                        }
                     }
                     if (foundPath != null) {
                         LOGGER.info("Found vcgencmd in path: {}.", foundPath);
-                        return foundPath;
+                        return Optional.of(foundPath);
                     } else {
-                        LOGGER.error("vcgencmd was not found. Verify that vcgencmd is available in /usr/bin or /opt/vc/bin.");
-                        return null;
+                        LOGGER.error("vcgencmd was not found. Verify that vcgencmd is available in /usr/bin or /opt/vc/bin and make sure your user is in group 'video'.");
+                        return Optional.absent();
                     }
                 } catch (IOException e) {
                     throw RaspiQueryException.createTransportFailure(hostname,
@@ -346,22 +291,22 @@ public class RaspiQuery implements IQueryService {
      * @return true, if correct, false if not
      * @throws IOException if something ssh related goes wrong
      */
-    private boolean checkPath(String path, SSHClient client) throws IOException {
+    private boolean isValidVcgencmdPath(String path, SSHClient client) throws IOException {
         final Session session = client.startSession();
         session.allocateDefaultPTY();
         LOGGER.debug("Checking vcgencmd location: {}", path);
-        String cmdString = path;
-        final Command cmd = session.exec(cmdString);
+        final Command cmd = session.exec(path);
         cmd.join(30, TimeUnit.SECONDS);
         session.close();
-        String output = IOUtils.readFully(cmd.getInputStream()).toString();
+        final Integer exitStatus = cmd.getExitStatus();
+        final String output = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase();
         LOGGER.debug("Path check output: {}", output);
-        if (output.contains("not found")
-                || output.contains("No such file or directory")) {
-            return false;
-        } else {
+        if (exitStatus != null && exitStatus.equals(0)
+                && !output.contains("not found") && !output.contains("no such file or directory")) {
             // vcgencmd was found
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -1108,17 +1053,15 @@ public class RaspiQuery implements IQueryService {
         client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
         try {
             client.connect(hostname, port);
-        } catch (IOException e) {
-            throw RaspiQueryException
-                    .createConnectionFailure(hostname, port, e);
-        }
-        try {
             client.authPassword(username, password);
         } catch (UserAuthException e) {
             throw RaspiQueryException.createAuthenticationFailure(hostname,
                     username, e);
         } catch (TransportException e) {
             throw RaspiQueryException.createTransportFailure(hostname, e);
+        } catch (IOException e) {
+            throw RaspiQueryException
+                    .createConnectionFailure(hostname, port, e);
         }
     }
 
@@ -1133,29 +1076,26 @@ public class RaspiQuery implements IQueryService {
     public final void connectWithPubKeyAuth(final String keyfilePath)
             throws RaspiQueryException {
         LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
-        client = new SSHClient(new AndroidConfig());
+        client = newAndroidSSHClient();
         LOGGER.info("Using no host key verification.");
         client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
-        LOGGER.info("Using private/public key authentification.");
+        LOGGER.info("Using private/public key authentication.");
         try {
             client.connect(hostname, port);
-        } catch (IOException e) {
-            throw RaspiQueryException
-                    .createConnectionFailure(hostname, port, e);
-        }
-        try {
-            final KeyProvider keyProvider = client.loadKeys(keyfilePath);
+            KeyProvider keyProvider = client.loadKeys(keyfilePath);
             client.authPublickey(username, keyProvider);
         } catch (UserAuthException e) {
-            LOGGER.info("Authentification failed.", e);
+            LOGGER.info("Authentication failed.", e);
             throw RaspiQueryException.createAuthenticationFailure(hostname,
                     username, e);
         } catch (TransportException e) {
             throw RaspiQueryException.createTransportFailure(hostname, e);
         } catch (IOException e) {
-            throw RaspiQueryException.createIOException(e);
+            throw RaspiQueryException
+                    .createConnectionFailure(hostname, port, e);
         }
     }
+
 
     /*
      * (non-Javadoc)
@@ -1168,7 +1108,7 @@ public class RaspiQuery implements IQueryService {
     public void connectWithPubKeyAuthAndPassphrase(String path,
                                                    String privateKeyPass) throws RaspiQueryException {
         LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
-        client = new SSHClient(new AndroidConfig());
+        client = newAndroidSSHClient();
         LOGGER.info("Using no host key verification.");
         client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
         LOGGER.info("Using private/public key authentification with passphrase.");
@@ -1301,6 +1241,7 @@ public class RaspiQuery implements IQueryService {
     /**
      * @return SSHClient with Android Configuration
      */
+
     public SSHClient newAndroidSSHClient() {
         return new SSHClient(new AndroidConfig());
     }

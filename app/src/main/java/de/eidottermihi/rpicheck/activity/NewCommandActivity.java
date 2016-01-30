@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015  RasPi Check Contributors
+ * Copyright (C) 2016  RasPi Check Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_command_new)
 @XmlMenu(R.menu.activity_command_new)

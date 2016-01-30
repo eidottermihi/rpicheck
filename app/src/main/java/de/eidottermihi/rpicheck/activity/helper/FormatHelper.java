@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015  RasPi Check Contributors
+ * Copyright (C) 2016  RasPi Check Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public class FormatHelper {
         }
     }
 
-    private static double celsiusToFahrenheit(double celsius) {
+    public static double celsiusToFahrenheit(double celsius) {
         return celsius * 1.8 + 32;
     }
 

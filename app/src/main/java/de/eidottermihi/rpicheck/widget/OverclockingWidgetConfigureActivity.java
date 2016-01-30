@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015  RasPi Check Contributors
+ * Copyright (C) 2016  RasPi Check Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,14 +41,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.raspicheck.R;
-import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
+import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.adapter.DeviceSpinnerAdapter;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
 
 
 /**
@@ -104,6 +104,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
         super();
     }
 
+
     /**
      * @param context
      * @param appWidgetId
@@ -152,6 +153,16 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
         return prefs.getInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), 5);
     }
 
+    /**
+     * @param appWidgetId the app widget id
+     * @param context     the context
+     * @return if this widget has associated preferences (it it fully configured then)
+     */
+    static boolean isInitiated(int appWidgetId, Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.contains(PREF_PREFIX_KEY + appWidgetId);
+    }
+
     static void deleteDevicePref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
@@ -164,22 +175,30 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
     }
 
     static void settingScheduledAlarm(Context context, int appWidgetId) {
-        int updateIntervalInMinutes = OverclockingWidgetConfigureActivity.loadUpdateInterval(context, appWidgetId);
-        if (updateIntervalInMinutes > 0) {
-            long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
-            // Setting alarm via AlarmManager
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, appWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
-            LOGGER.debug("Added alarm for periodic updates of Widget[ID={}], update interval: {} ms.", appWidgetId, updateIntervalMillis);
+        LOGGER.debug("Check if Widget[ID={}] needs a new Alarm.", appWidgetId);
+        if (isInitiated(appWidgetId, context)) {
+            int updateIntervalInMinutes = OverclockingWidgetConfigureActivity.loadUpdateInterval(context, appWidgetId);
+            if (updateIntervalInMinutes > 0) {
+                long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
+                // Setting alarm via AlarmManager
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, appWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
+                LOGGER.debug("Added alarm for periodic updates of Widget[ID={}], update interval: {} ms.", appWidgetId, updateIntervalMillis);
+            } else {
+                LOGGER.debug("No periodic updates for Widget[ID={}].", appWidgetId);
+            }
         } else {
-            LOGGER.debug("No periodic updates for Widget[ID={}].", appWidgetId);
+            LOGGER.debug("Widget[ID={}] not fully initiated, no alarm needed.", appWidgetId);
         }
     }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        // init logging
+        LoggingHelper.initLogging(OverclockingWidgetConfigureActivity.this);
 
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
@@ -242,7 +261,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
                 long selectedItemId = widgetPiSpinner.getSelectedItemId();
                 LOGGER.info("Selected Device - Item ID = {}", selectedItemId);
                 RaspberryDeviceBean deviceBean = deviceDbHelper.read(selectedItemId);
-                if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null) {
+                if (deviceBean.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD) && deviceBean.getKeyfilePass() == null) {
                     Toast.makeText(context, getString(R.string.widget_key_pass_error), Toast.LENGTH_LONG).show();
                     return super.onOptionsItemSelected(item);
                 }

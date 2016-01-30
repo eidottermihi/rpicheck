@@ -1,2 +1,0 @@
--keep class com.lamerman.** { *; }
--keep interface com.lamerman.** { *; }

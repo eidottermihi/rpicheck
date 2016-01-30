@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015  RasPi Check Contributors
+ * Copyright (C) 2016  RasPi Check Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,12 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
             return new RaspberryDeviceBean[size];
         }
     };
+
+    public static final String AUTH_PASSWORD = "password";
+    public static final String AUTH_PUBLIC_KEY = "keys";
+    public static final String AUTH_PUBLIC_KEY_WITH_PASSWORD = "keysWithPassword";
+    public static final String[] SPINNER_AUTH_METHODS = {AUTH_PASSWORD, AUTH_PUBLIC_KEY, AUTH_PUBLIC_KEY_WITH_PASSWORD};
+
     private static final long serialVersionUID = -7054070923663258253L;
     private int id;
     private String name;
@@ -253,6 +259,14 @@ public class RaspberryDeviceBean implements Serializable, Parcelable {
                 + ", keyfilePath=" + keyfilePath + ", keyfilePass="
                 + keyfilePass + ", spinnerPosition=" + spinnerPosition
                 + ", lastQueryData=" + lastQueryData + "]";
+    }
+
+    /**
+     * @param authMethod AUTH_PASSWORD, AUTH_PUBLIC_KEY or AUTH_PUBLIC_KEY_WITH_PASSWORD
+     * @return if this devices uses this method
+     */
+    public boolean usesAuthentificationMethod(String authMethod) {
+        return getAuthMethod().equals(authMethod);
     }
 
 }
