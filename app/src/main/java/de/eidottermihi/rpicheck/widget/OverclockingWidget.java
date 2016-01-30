@@ -354,7 +354,7 @@ public class OverclockingWidget extends AppWidgetProvider {
                 if (this.deviceDb == null) {
                     this.deviceDb = new DeviceDbHelper(context);
                 }
-                updateAppWidget(context, AppWidgetManager.getInstance(context), widgetId, this.deviceDb, action.equals(ACTION_WIDGET_UPDATE_ONE) ? true : false);
+                updateAppWidget(context, AppWidgetManager.getInstance(context), widgetId, this.deviceDb, action.equals(ACTION_WIDGET_UPDATE_ONE));
             }
         } else {
             super.onReceive(context, intent);

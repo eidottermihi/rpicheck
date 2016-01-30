@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
             } else {
                 LOGGER.info("Disabled debug logging.");
             }
-            LoggingHelper.initLogging(this, debugEnabled);
+            LoggingHelper.initLogging(this);
         }
     }
 

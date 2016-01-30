@@ -108,7 +108,6 @@ public class MainActivity extends InjectionAppCompatActivity implements
 
     @InjectView(R.id.commandButton)
     private Button commandButton;
-    // assigning textviews to fields
     @InjectView(R.id.armFreqText)
     private TextView armFreqText;
     @InjectView(R.id.coreFreqText)
@@ -141,6 +140,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
     private TableLayout networkTable;
     @InjectView(R.id.swipeRefreshLayout)
     private SwipeRefreshLayout swipeRefreshLayout;
+
     private SharedPreferences sharedPrefs;
     private DeviceDbHelper deviceDb;
     private RaspberryDeviceBean currentDevice;
@@ -155,8 +155,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        boolean isDebugLogging = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
-        LoggingHelper.initLogging(this, isDebugLogging);
+        LoggingHelper.initLogging(this);
 
         // assigning refreshable root scrollview
         initSwipeRefreshLayout();

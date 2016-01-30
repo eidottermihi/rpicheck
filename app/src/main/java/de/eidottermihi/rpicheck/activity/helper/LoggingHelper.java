@@ -18,6 +18,8 @@
 package de.eidottermihi.rpicheck.activity.helper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import org.slf4j.LoggerFactory;
 
@@ -30,20 +32,25 @@ import ch.qos.logback.classic.android.LogcatAppender;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
+import de.eidottermihi.rpicheck.activity.SettingsActivity;
 
 /**
  * @author Michael
  */
 public class LoggingHelper {
 
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LoggingHelper.class);
+
     /**
-     * Initialize the logback logging.
+     * Initialize and configure the logback logging.
      * Java configuration is used to rely on {@link Context#getExternalFilesDir(String)} to provide a storage directory.
+     * This must be called on every "entry-point" to this app, e.g. Widget Configuration screen or MainActivity.
      *
-     * @param context      application context
-     * @param debugEnabled if debug is enabled
+     * @param context application context
      */
-    public static void initLogging(Context context, boolean debugEnabled) {
+    public static void initLogging(Context context) {
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isDebugLogging = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         lc.reset();
         // qualify Logger to disambiguate from org.slf4j.Logger
@@ -69,11 +76,7 @@ public class LoggingHelper {
         // Log-Level for RaspiCheck
         ch.qos.logback.classic.Logger rpicheckLogger = (ch.qos.logback.classic.Logger) LoggerFactory
                 .getLogger("de.eidottermihi.rpicheck");
-        if (debugEnabled) {
-            rpicheckLogger.setLevel(Level.DEBUG);
-        } else {
-            rpicheckLogger.setLevel(Level.INFO);
-        }
+        rpicheckLogger.setLevel(isDebugLogging ? Level.DEBUG : Level.INFO);
         ch.qos.logback.classic.Logger sshjLogger = (ch.qos.logback.classic.Logger) LoggerFactory
                 .getLogger("net.schmizz");
         sshjLogger.setLevel(Level.WARN);
@@ -90,7 +93,7 @@ public class LoggingHelper {
             sshjLogger.addAppender(fileAppender);
         }
         root.addAppender(logcatAppender);
-
+        LOGGER.debug("Logging was configured, debug logging enabled: {}", isDebugLogging);
     }
 
     /**
