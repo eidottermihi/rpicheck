@@ -33,7 +33,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -99,7 +98,7 @@ public class OverclockingWidget extends AppWidgetProvider {
         Long deviceId = OverclockingWidgetConfigureActivity.loadDeviceId(context, appWidgetId);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         final String preferredTempScale = sharedPreferences.getString(SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, FormatHelper.SCALE_CELSIUS);
-        final boolean useFahrenheit = preferredTempScale.equals(FormatHelper.SCALE_FAHRENHEIT) ? true : false;
+        final boolean useFahrenheit = preferredTempScale.equals(FormatHelper.SCALE_FAHRENHEIT);
         LOGGER.debug("Using temperature scale: {}", preferredTempScale);
         if (deviceId != null) {
             // get update interval
@@ -247,7 +246,7 @@ public class OverclockingWidget extends AppWidgetProvider {
                     }
                 }.execute(deviceBean);
             } else {
-                LOGGER.debug("No network available - skipping widget update process.");
+                LOGGER.debug("Can't update widget[id={}] - resetting widget view.", appWidgetId);
                 views.setViewVisibility(R.id.buttonRefresh, View.VISIBLE);
                 views.setViewVisibility(R.id.refreshProgressBar, View.GONE);
                 appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -256,27 +255,29 @@ public class OverclockingWidget extends AppWidgetProvider {
     }
 
     private static boolean shouldDoQuery(Context context, boolean initByAlarm, boolean onlyOnWlan) {
+        LOGGER.debug("Checking if update should be performed: initByAlarm={} onlyOnWlan={}", initByAlarm, onlyOnWlan);
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         final NetworkInfo wlanInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         boolean doQuery = false;
         if (networkInfo != null && networkInfo.isConnected()) {
-            LOGGER.debug("Network available");
+            LOGGER.debug("Network is available and connected.");
             if (initByAlarm) {
-                LOGGER.debug("Update was initiated by alarm.");
                 if (onlyOnWlan) {
                     if (wlanInfo != null && wlanInfo.isConnected()) {
+                        LOGGER.debug("WiFi is connected");
                         doQuery = true;
                     }
                 } else {
-                    LOGGER.debug("No Wi-Fi connected - skipping widget update.");
-                    doQuery = false;
+                    doQuery = true;
                 }
             } else {
-                LOGGER.debug("Manual triggered update.");
                 doQuery = true;
             }
+        } else {
+            LOGGER.debug("No network available - skipping widget update process.");
         }
+        LOGGER.debug("Initiate update? {}", doQuery);
         return doQuery;
     }
 
