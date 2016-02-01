@@ -23,6 +23,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ import io.freefair.android.injection.app.InjectionAppCompatActivity;
 @XmlMenu(R.menu.activity_overclocking_widget_configure)
 public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    public static final String ACTION_WIDGET_UPDATE_ONE = "updateOneWidget";
     public static final String PREF_SHOW_TEMP_SUFFIX = "_temp";
     public static final String PREF_SHOW_ARM_SUFFIX = "_arm";
     public static final String PREF_SHOW_LOAD_SUFFIX = "_load";
@@ -66,6 +68,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
     private static final String PREFS_NAME = "de.eidottermihi.rpicheck.widget.OverclockingWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     private static final String PREF_UPDATE_ONLY_ON_WIFI = "_onlywifi";
+    private static final String URI_SCHEME = "raspicheck";
 
     private static final String PREF_UPDATE_INTERVAL_SUFFIX = "_interval";
     private static final String UPDATE_YES = "yes";
@@ -110,17 +113,42 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
      * @param appWidgetId
      * @param deviceId    ID of the chosen device
      */
-    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId, int updateInterval, boolean onlyOnWifi, boolean showTemp, boolean showArm, boolean showLoad, boolean showMemory) {
-        LOGGER.info("Saving new OverclockingWidget. Settings - Update interval: {} - Only on Wifi: {} - TEMP: {} - ARM: {} - LOAD: {} - RAM: {}",
-                new Object[]{updateInterval, onlyOnWifi, showTemp, showArm, showLoad, showMemory});
+    static void saveChosenDevicePref(Context context, int appWidgetId, Long deviceId, int updateInterval, boolean onlyOnWifi,
+                                     boolean showTemp, boolean showArm, boolean showLoad, boolean showMemory) {
+        LOGGER.info("Saving new OverclockingWidget. Settings - Update interval: {} - Only on Wifi: {}" +
+                " - TEMP: {} - ARM: {} - LOAD: {} - RAM: {}", updateInterval, onlyOnWifi, showTemp, showArm, showLoad, showMemory);
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putLong(PREF_PREFIX_KEY + appWidgetId, deviceId);
-        prefs.putInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval);
-        prefs.putBoolean(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId), showTemp);
-        prefs.putBoolean(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm);
-        prefs.putBoolean(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad);
-        prefs.putBoolean(prefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory);
-        prefs.putBoolean(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), onlyOnWifi);
+        prefs.putInt(
+
+                prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval
+
+        );
+        prefs.putBoolean(
+
+                prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId), showTemp
+
+        );
+        prefs.putBoolean(
+
+                prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm
+
+        );
+        prefs.putBoolean(
+
+                prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad
+
+        );
+        prefs.putBoolean(
+
+                prefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory
+
+        );
+        prefs.putBoolean(
+
+                prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), onlyOnWifi
+
+        );
         prefs.apply();
     }
 
@@ -182,8 +210,8 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
                 long updateIntervalMillis = updateIntervalInMinutes * 60 * 1000;
                 // Setting alarm via AlarmManager
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                PendingIntent selfPendingIntent = OverclockingWidget.getSelfPendingIntent(context, appWidgetId, OverclockingWidget.ACTION_WIDGET_UPDATE_ONE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, selfPendingIntent);
+                PendingIntent pintent = getServicePendingIntent(context, appWidgetId, getPendingIntentUri(appWidgetId), ACTION_WIDGET_UPDATE_ONE);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + updateIntervalMillis, updateIntervalMillis, pintent);
                 LOGGER.debug("Added alarm for periodic updates of Widget[ID={}], update interval: {} ms.", appWidgetId, updateIntervalMillis);
             } else {
                 LOGGER.debug("No periodic updates for Widget[ID={}].", appWidgetId);
@@ -191,6 +219,27 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
         } else {
             LOGGER.debug("Widget[ID={}] not fully initiated, no alarm needed.", appWidgetId);
         }
+    }
+
+
+    public static void removeAlarm(Context c, int appWidgetId) {
+        LOGGER.debug("Removing alarm for Widget[ID={}].", appWidgetId);
+        final Uri intentUri = getPendingIntentUri(appWidgetId);
+        final PendingIntent pendingIntent = getServicePendingIntent(c, appWidgetId, intentUri, ACTION_WIDGET_UPDATE_ONE);
+        final AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+
+    protected static PendingIntent getServicePendingIntent(Context context, int appWidgetId, Uri uri, String action) {
+        final Intent intent = new Intent(context, WidgetUpdateService.class);
+        intent.setAction(action);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.setData(uri);
+        return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    protected static Uri getPendingIntentUri(int appWidgetId) {
+        return Uri.withAppendedPath(Uri.parse(URI_SCHEME + "://widget/id/"), String.valueOf(appWidgetId));
     }
 
     @Override
@@ -293,8 +342,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
                 settingScheduledAlarm(context, mAppWidgetId);
 
                 // It is the responsibility of the configuration activity to update the app widget
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                OverclockingWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId, deviceDbHelper, true);
+                OverclockingWidget.updateAppWidget(context, mAppWidgetId, deviceDbHelper);
 
                 // Make sure we pass back the original appWidgetId
                 Intent resultValue = new Intent();
