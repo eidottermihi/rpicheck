@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-    compile project(':libraries:ssh')
+    compile project(':ssh')
     compile 'com.nononsenseapps:filepicker:2.5.1'
     compile 'io.freefair.android-colors:material:1.2.0'
     compile 'io.freefair.android-injection:injection:1.0.0-rc3'

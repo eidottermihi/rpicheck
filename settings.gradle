@@ -1,1 +1,1 @@
-include ':libraries:ssh', ':app'
+include ':ssh', ':app'
