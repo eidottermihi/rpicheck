@@ -133,7 +133,6 @@ public class WidgetUpdateTask extends AsyncTask<RaspberryDeviceBean, Void, Map<S
 
     @Override
     protected void onPostExecute(Map<String, String> stringStringMap) {
-        super.onPostExecute(stringStringMap);
         String status = stringStringMap.get(STATUS);
         widgetView.setTextViewText(R.id.textStatusValue, status + " - " + SimpleDateFormat.getTimeInstance(DateFormat.SHORT).format(new Date()));
         widgetView.setViewVisibility(R.id.textStatusValue, View.VISIBLE);
@@ -172,8 +171,8 @@ public class WidgetUpdateTask extends AsyncTask<RaspberryDeviceBean, Void, Map<S
             LOGGER.debug("Query failed, showing device as offline.");
         }
         // Instruct the widget manager to update the widget
-        LOGGER.debug("Updating widget[ID={}] view.", appWidgetId);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        LOGGER.debug("Updating widget[ID={}] view after AsyncTask finished.", appWidgetId);
         appWidgetManager.updateAppWidget(appWidgetId, widgetView);
     }
 
@@ -184,14 +183,13 @@ public class WidgetUpdateTask extends AsyncTask<RaspberryDeviceBean, Void, Map<S
     }
 
     private void updateProgressbar(RemoteViews views, int progressBarId, double min, double max, double value) {
-        LOGGER.debug("min: {}  max: {} value: {}", min, max, value);
         if (value > max) {
             value = max;
         } else if (value < min) {
             value = min;
         }
         double scaledValue = ((value - min) / (max - min)) * 100;
-        LOGGER.debug("Updating progressbar: scaledValue = {}", scaledValue);
+        LOGGER.debug("Updating progressbar[id={}]: scaledValue = {}", progressBarId, scaledValue);
         views.setProgressBar(progressBarId, 100, (int) scaledValue, false);
     }
 }

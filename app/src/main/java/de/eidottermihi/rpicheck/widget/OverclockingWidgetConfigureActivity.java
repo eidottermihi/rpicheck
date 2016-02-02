@@ -342,7 +342,7 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
                 settingScheduledAlarm(context, mAppWidgetId);
 
                 // It is the responsibility of the configuration activity to update the app widget
-                OverclockingWidget.updateAppWidget(context, mAppWidgetId, deviceDbHelper);
+                OverclockingWidget.updateAppWidget(context, mAppWidgetId, deviceDbHelper, false);
 
                 // Make sure we pass back the original appWidgetId
                 Intent resultValue = new Intent();

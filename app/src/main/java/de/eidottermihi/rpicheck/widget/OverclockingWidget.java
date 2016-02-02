@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import de.eidottermihi.rpicheck.activity.SettingsActivity;
 import de.eidottermihi.rpicheck.activity.helper.FormatHelper;
+import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 
@@ -53,10 +54,10 @@ public class OverclockingWidget extends AppWidgetProvider {
     private DeviceDbHelper deviceDb;
 
 
-    static void updateAppWidget(Context context, final int appWidgetId, DeviceDbHelper deviceDb) {
-        // TODO redo difference between manual and timed update (shouldDoQuery)...
-        LOGGER.debug("Updating Widget[ID={}].", appWidgetId);
+    static void updateAppWidget(Context context, final int appWidgetId, DeviceDbHelper deviceDb, boolean triggeredByAlarm) {
+        LOGGER.debug("Starting refresh of Widget[ID={}].", appWidgetId);
         Long deviceId = OverclockingWidgetConfigureActivity.loadDeviceId(context, appWidgetId);
+        LOGGER.debug("Refreshing widget for device[ID={}]", deviceId);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         final String preferredTempScale = sharedPreferences.getString(SettingsActivity.KEY_PREF_TEMPERATURE_SCALE, FormatHelper.SCALE_CELSIUS);
         final boolean useFahrenheit = preferredTempScale.equals(FormatHelper.SCALE_FAHRENHEIT);
@@ -86,15 +87,20 @@ public class OverclockingWidget extends AppWidgetProvider {
             // Construct the RemoteViews object
             final RemoteViews views = OverclockingWidgetView.initDefaultView(context, appWidgetId, deviceBean, showTemp, showArm, showLoad, showMemory);
             if (isNetworkAvailable(context)) {
-                LOGGER.debug("Querying for Widget[ID={}]...", appWidgetId);
-                OverclockingWidgetView.startRefreshing(views, context, appWidgetId);
-                // query in AsyncTask
-                WidgetUpdateTask task = new WidgetUpdateTask(context, views, showArm, showTemp, showMemory, showLoad, useFahrenheit, appWidgetId);
-                task.execute(deviceBean);
+                if (!triggeredByAlarm || !(onlyOnWlan && !isWiFiAvailable(context))) {
+                    LOGGER.debug("Starting async update task for Widget[ID={}]...", appWidgetId);
+                    OverclockingWidgetView.startRefreshing(views, context, appWidgetId);
+                    // query in AsyncTask
+                    new WidgetUpdateTask(context, views, showArm, showTemp, showMemory, showLoad, useFahrenheit, appWidgetId).execute(deviceBean);
+                } else {
+                    LOGGER.debug("Skipping update - no WiFi connected.");
+                }
             } else {
                 LOGGER.debug("No network for update of Widget[ID={}] - resetting widget view.", appWidgetId);
                 OverclockingWidgetView.stopRefreshing(views, context, appWidgetId);
             }
+        } else {
+            LOGGER.warn("No device with id={} present in database!", deviceId);
         }
     }
 
@@ -109,6 +115,12 @@ public class OverclockingWidget extends AppWidgetProvider {
         return false;
     }
 
+    private static boolean isWiFiAvailable(Context context) {
+        final ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiInfo != null && wifiInfo.isConnected();
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         if (this.deviceDb == null) {
@@ -117,7 +129,7 @@ public class OverclockingWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetIds[i], deviceDb);
+            updateAppWidget(context, appWidgetIds[i], deviceDb, false);
         }
     }
 
@@ -155,6 +167,7 @@ public class OverclockingWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        LoggingHelper.initLogging(context);
         String action = intent.getAction();
         LOGGER.debug("Receiving Intent: action={}", action);
         if (action.equals(ACTION_WIDGET_UPDATE_ONE_MANUAL)) {
@@ -165,7 +178,7 @@ public class OverclockingWidget extends AppWidgetProvider {
                 if (this.deviceDb == null) {
                     this.deviceDb = new DeviceDbHelper(context);
                 }
-                updateAppWidget(context, widgetId, this.deviceDb);
+                updateAppWidget(context, widgetId, this.deviceDb, false);
             }
         } else {
             super.onReceive(context, intent);

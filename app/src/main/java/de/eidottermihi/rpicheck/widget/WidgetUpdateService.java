@@ -18,12 +18,12 @@
 package de.eidottermihi.rpicheck.widget;
 
 import android.app.IntentService;
-import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
@@ -43,12 +43,12 @@ public class WidgetUpdateService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        LOGGER.debug("Received intent.");
+        LoggingHelper.initLogging(getApplicationContext());
         int appWidgetId = intent.getIntExtra(EXTRA_APPWIDGET_ID,
                 INVALID_APPWIDGET_ID);
         if (appWidgetId != INVALID_APPWIDGET_ID) {
-            LOGGER.debug("Received intent for update of Widget[ID={}].", appWidgetId);
-            OverclockingWidget.updateAppWidget(getApplicationContext(), appWidgetId, new DeviceDbHelper(getApplicationContext()));
+            LOGGER.debug("Received alarm intent for update of Widget[ID={}].", appWidgetId);
+            OverclockingWidget.updateAppWidget(getApplicationContext(), appWidgetId, new DeviceDbHelper(getApplicationContext()), true);
         }
     }
 }

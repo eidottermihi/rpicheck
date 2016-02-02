@@ -59,6 +59,10 @@ public class OverclockingWidgetView {
         views.setViewVisibility(R.id.linLayoutArm, showArm ? View.VISIBLE : View.GONE);
         views.setViewVisibility(R.id.linLayoutLoad, showLoad ? View.VISIBLE : View.GONE);
         views.setViewVisibility(R.id.linLayoutMem, showMemory ? View.VISIBLE : View.GONE);
+        views.setProgressBar(R.id.progressBarArmValue, 100, 0, false);
+        views.setProgressBar(R.id.progressBarLoad, 100, 0, false);
+        views.setProgressBar(R.id.progressBarMemory, 100, 0, false);
+        views.setProgressBar(R.id.progressBarTempValue, 100, 0, false);
         appWidgetManager.updateAppWidget(appWidgetId, views);
         return views;
     }
