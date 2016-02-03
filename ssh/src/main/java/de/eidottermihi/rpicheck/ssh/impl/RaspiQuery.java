@@ -450,7 +450,7 @@ public class RaspiQuery implements IQueryService {
      * @throws RaspiQueryException
      */
     private String queryIpAddress(String name) throws RaspiQueryException {
-        LOGGER.info("Querying ip address of interface {}...", name);
+        LOGGER.info("Querying ip address of interface: '{}'", name);
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
                 Session session;
@@ -463,7 +463,7 @@ public class RaspiQuery implements IQueryService {
                     cmd.join(30, TimeUnit.SECONDS);
                     final String output = IOUtils.readFully(
                             cmd.getInputStream()).toString();
-                    LOGGER.debug("Output of ip query: {}.", output);
+                    LOGGER.debug("Output of ip query: {}", output);
                     final Matcher m = IPADDRESS_PATTERN.matcher(output);
                     if (m.find()) {
                         final String ipAddress = m.group().trim();
