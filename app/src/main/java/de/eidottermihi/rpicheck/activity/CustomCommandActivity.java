@@ -20,12 +20,15 @@ package de.eidottermihi.rpicheck.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
@@ -251,6 +254,7 @@ public class CustomCommandActivity extends InjectionAppCompatActivity implements
     }
 
     private void runCommand(long commandId) {
+        this.commandId = commandId;
         ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -291,11 +295,36 @@ public class CustomCommandActivity extends InjectionAppCompatActivity implements
         switch (requestCode) {
             case REQUEST_READ_PERMISSION_FOR_COMMAND:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    this.runCommand(this.commandId);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            runCommand(commandId);
+                        }
+                    }, 200);
                 } else {
                     Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_SHORT).show();
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LOGGER.debug("onPause() - saving lastCommandId={}", commandId);
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putLong("lastCommandId", commandId).apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LOGGER.debug("onResume() - retrieving lastCommandId.");
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final long lastCommandId = sharedPreferences.getLong("lastCommandId", -1L);
+        if (lastCommandId != -1L) {
+            LOGGER.debug("lastCommandId={}", lastCommandId);
+            this.commandId = lastCommandId;
         }
     }
 
