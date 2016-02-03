@@ -28,6 +28,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -741,7 +742,12 @@ public class MainActivity extends InjectionAppCompatActivity implements
         switch (requestCode) {
             case REQUEST_PERMISSION_READ_FOR_QUERY_PULL:
                 if (isPermissionGranted(grantResults)) {
-                    doQuery(true);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doQuery(true);
+                        }
+                    }, 200);
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
@@ -749,21 +755,36 @@ public class MainActivity extends InjectionAppCompatActivity implements
                 break;
             case REQUEST_PERMISSION_READ_FOR_QUERY_NO_PULL:
                 if (isPermissionGranted(grantResults)) {
-                    doQuery(false);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doQuery(false);
+                        }
+                    }, 200);
                 } else {
                     Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
                 }
                 break;
             case REQUEST_PERMISSION_READ_FOR_HALT:
                 if (isPermissionGranted(grantResults)) {
-                    doRebootOrHalt(Constants.TYPE_HALT);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doRebootOrHalt(Constants.TYPE_HALT);
+                        }
+                    }, 200);
                 } else {
                     Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
                 }
                 break;
             case REQUEST_PERMISSION_READ_FOR_REBOOT:
                 if (isPermissionGranted(grantResults)) {
-                    doRebootOrHalt(Constants.TYPE_REBOOT);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doRebootOrHalt(Constants.TYPE_REBOOT);
+                        }
+                    }, 200);
                 } else {
                     Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_LONG).show();
                 }
