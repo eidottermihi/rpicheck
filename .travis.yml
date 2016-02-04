@@ -7,7 +7,9 @@ jdk:
 env:
   global:
     - MALLOC_ARENA_MAX=2
-
+cache:
+  directories:
+  - $HOME/.m2   # gradle dependencies
 android:
   components:
     - tools # to get the new `repository-11.xml`
