@@ -59,7 +59,7 @@ dependencies {
     compile 'io.freefair.android-colors:material:1.2.0'
     compile 'io.freefair.android-injection:injection:1.0.0-rc3'
     compile 'io.freefair.android-util:preference:1.1.1'
-    compile 'com.android.support:design:23.1.0'
+    compile 'com.android.support:design:23.1.1'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile('com.github.tony19:logback-android-classic:1.1.1-3') {
         exclude group: 'com.google.android', module: 'android'
@@ -67,7 +67,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.6'
     compile 'com.google.code.findbugs:jsr305:2.0.2'
 
-    androidTestCompile 'com.android.support:support-annotations:23.1.0'
+    androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
