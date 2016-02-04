@@ -62,7 +62,7 @@ android {
 
 dependencies {
     compile project(':ssh')
-    compile 'com.nononsenseapps:filepicker:3.1.0'
+    compile 'com.nononsenseapps:filepicker:2.5.1'
     compile 'io.freefair.android-colors:material:1.2.0'
     compile 'io.freefair.android-injection:injection:1.0.0-rc3'
     compile 'io.freefair.android-util:preference:1.1.1'
@@ -85,13 +85,14 @@ dependencies {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     }
 
-license {
-    exclude "**/sheetrock/**"
+    license {
+        exclude "**/sheetrock/**"
+    }
+
+    task licenseFormatAndroid(type: nl.javadude.gradle.plugins.license.License) {
+        source = fileTree(dir: "src").include("**/*.java")
+    }
+
+    licenseFormat.dependsOn licenseFormatAndroid
+
 }
-
-task licenseFormatAndroid (type:nl.javadude.gradle.plugins.license.License) {
-    source = fileTree(dir:"src").include ("**/*.java")
-}
-
-licenseFormat.dependsOn licenseFormatAndroid
-
