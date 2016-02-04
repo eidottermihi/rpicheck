@@ -33,17 +33,24 @@ import android.widget.TextView;
 
 import com.google.common.base.Strings;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 
 import de.eidottermihi.raspicheck.R;
-import de.eidottermihi.rpicheck.activity.NewRaspiAuthActivity;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
+/**
+ * @author Michael
+ */
 public class RunCommandDialog extends DialogFragment {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RunCommandDialog.class);
 
     private boolean didRun = false;
 
@@ -119,15 +126,13 @@ public class RunCommandDialog extends DialogFragment {
         final String user = device.getUser();
         final String port = device.getPort() + "";
         final String sudoPass = device.getSudoPass();
-        if (device.getAuthMethod().equals(
-                NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+        if (device.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PASSWORD)) {
             // ssh password
             putLine("Authenticating with password ...");
             final String pass = device.getPass();
             new SSHCommandTask().execute(host, user, pass, port, sudoPass,
                     null, null, command.getCommand());
-        } else if (device.getAuthMethod().equals(
-                NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+        } else if (device.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             putLine("Authenticating with private key ...");
             // keyfile
             final String keyfilePath = device.getKeyfilePath();
@@ -142,8 +147,7 @@ public class RunCommandDialog extends DialogFragment {
             } else {
                 putLine("ERROR - No keyfile was specified.");
             }
-        } else if (device.getAuthMethod().equals(
-                NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])) {
+        } else if (device.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
             putLine("Authenticating with private key and passphrase ...");
             // keyfile and passphrase
             final String keyfilePath = device.getKeyfilePath();
@@ -219,7 +223,6 @@ public class RunCommandDialog extends DialogFragment {
                 publishProgress("Connection established.");
                 String output = raspiQuery.run(command);
                 publishProgress(output);
-                raspiQuery.disconnect();
                 publishProgress("Connection closed.");
             } catch (RaspiQueryException e) {
                 publishProgress("ERROR - " + e.getMessage());
@@ -227,6 +230,12 @@ public class RunCommandDialog extends DialogFragment {
                     publishProgress("Reason: " + e.getCause().getMessage());
                 }
                 return false;
+            } finally {
+                try {
+                    raspiQuery.disconnect();
+                } catch (RaspiQueryException e) {
+                    LOGGER.debug("Error closing the ssh client.", e);
+                }
             }
             return true;
         }

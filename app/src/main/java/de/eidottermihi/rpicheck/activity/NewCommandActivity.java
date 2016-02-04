@@ -34,7 +34,7 @@ import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_command_new)
 @XmlMenu(R.menu.activity_command_new)

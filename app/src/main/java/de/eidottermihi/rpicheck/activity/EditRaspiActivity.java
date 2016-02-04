@@ -20,7 +20,6 @@ package de.eidottermihi.rpicheck.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -36,8 +35,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
-import com.lamerman.FileDialog;
-import com.lamerman.SelectionMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +47,10 @@ import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_raspi_edit)
 @XmlMenu(R.menu.activity_raspi_edit)
-public class EditRaspiActivity extends InjectionAppCompatActivity implements OnItemSelectedListener {
+public class EditRaspiActivity extends AbstractFileChoosingActivity implements OnItemSelectedListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditRaspiActivity.class);
 
     public static final int REQUEST_EDIT = 10;
@@ -116,17 +112,15 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
         // Apply the adapter to the spinner
         spinnerAuth.setAdapter(adapter);
         spinnerAuth.setOnItemSelectedListener(this);
-        if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+        if (deviceBean.getAuthMethod().equals(RaspberryDeviceBean.AUTH_PASSWORD)) {
             spinnerAuth.setSelection(0);
-        } else if (deviceBean.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+        } else if (deviceBean.getAuthMethod().equals(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             spinnerAuth.setSelection(1);
         } else {
             spinnerAuth.setSelection(2);
         }
-
         // fill fields according to data from device bean
         fillFromBean();
-
     }
 
     private void fillFromBean() {
@@ -167,7 +161,7 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
     public void onButtonClick(View view) {
         switch (view.getId()) {
             case R.id.buttonKeyfile:
-                openKeyfile();
+                startFileChooser();
                 break;
         }
     }
@@ -214,23 +208,23 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
             if (authMethod == 0) {
                 final String pass = editTextPass.getText().toString().trim();
                 updateRaspiInDb(name, host, user, pass, sshPort, description, sudoPass,
-                        NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                        RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                         null, null);
             } else if (authMethod == 1) {
                 final String keyfilePath = deviceBean.getKeyfilePath();
                 updateRaspiInDb(name, host, user, null, sshPort, description, sudoPass,
-                        NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                        RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                         keyfilePath, null);
             } else if (authMethod == 2) {
                 final String keyfilePath = deviceBean.getKeyfilePath();
                 if (checkboxAskPassphrase.isChecked()) {
                     updateRaspiInDb(name, host, user, null, sshPort, description, sudoPass,
-                            NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                            RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                             keyfilePath, null);
                 } else {
                     final String keyfilePass = keyPasswordEditText.getText().toString().trim();
                     updateRaspiInDb(name, host, user, null, sshPort, description,
-                            sudoPass, NewRaspiAuthActivity.SPINNER_AUTH_METHODS[authMethod],
+                            sudoPass, RaspberryDeviceBean.SPINNER_AUTH_METHODS[authMethod],
                             keyfilePath, keyfilePass);
                 }
             }
@@ -267,12 +261,12 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
     }
 
     private void switchAuthMethodsInView(String method) {
-        if (method.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[0])) {
+        if (method.equals(RaspberryDeviceBean.AUTH_PASSWORD)) {
             // show only ssh password
             sshPasswordLayout.setVisibility(View.VISIBLE);
             editTextPass.setText(deviceBean.getPass());
             relLayKeyfile.setVisibility(View.GONE);
-        } else if (method.equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[1])) {
+        } else if (method.equals(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             // show key file button (no passphrase)
             sshPasswordLayout.setVisibility(View.GONE);
             relLayKeyfile.setVisibility(View.VISIBLE);
@@ -302,30 +296,15 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
 
     private void initButtonKeyfile() {
         if (deviceBean.getKeyfilePath() != null) {
-            buttonKeyfile.setText(NewRaspiAuthActivity
-                    .getFilenameFromPath(deviceBean.getKeyfilePath()));
+            buttonKeyfile.setText(getFilenameFromPath(deviceBean.getKeyfilePath()));
         }
     }
 
-    private void openKeyfile() {
-        final Intent intent = new Intent(getBaseContext(), FileDialog.class);
-        intent.putExtra(FileDialog.START_PATH, Environment
-                .getExternalStorageDirectory().getPath());
-
-        // can user select directories or not
-        intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
-        // user can only open existing files
-        intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
-
-        // alternatively you can set file filter
-        // intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { "png" });
-        this.startActivityForResult(intent, NewRaspiAuthActivity.REQUEST_LOAD);
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
                                long arg3) {
-        final String selectedAuthMethod = NewRaspiAuthActivity.SPINNER_AUTH_METHODS[pos];
+        final String selectedAuthMethod = RaspberryDeviceBean.SPINNER_AUTH_METHODS[pos];
         LOGGER.debug("Auth method selected: {}", selectedAuthMethod);
         this.switchAuthMethodsInView(selectedAuthMethod);
     }
@@ -337,20 +316,13 @@ public class EditRaspiActivity extends InjectionAppCompatActivity implements OnI
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == NewRaspiAuthActivity.REQUEST_LOAD) {
-                final String filePath = data
-                        .getStringExtra(FileDialog.RESULT_PATH);
-                LOGGER.debug("Path of selected keyfile: {}", filePath);
-                deviceBean.setKeyfilePath(filePath);
-                // set text to filename, not full path
-                String fileName = NewRaspiAuthActivity
-                        .getFilenameFromPath(filePath);
-                buttonKeyfile.setText(fileName);
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            LOGGER.warn("No file selected...");
+        if (requestCode == REQUEST_CODE_LOAD_FILE && resultCode == Activity.RESULT_OK) {
+            final String filePath = data.getData().getPath();
+            LOGGER.debug("Path of selected keyfile: {}", filePath);
+            deviceBean.setKeyfilePath(filePath);
+            // set text to filename, not full path
+            final String fileName = getFilenameFromPath(filePath);
+            buttonKeyfile.setText(fileName);
         }
     }
-
 }

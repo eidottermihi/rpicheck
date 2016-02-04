@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
@@ -35,9 +34,8 @@ import java.io.File;
 
 import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
-import de.eidottermihi.rpicheck.activity.helper.Constants;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
-import io.freefair.android.appcompatPreference.AppCompatPreferenceActivity;
+import io.freefair.android.preference.AppCompatPreferenceActivity;
 import sheetrock.panda.changelog.ChangeLog;
 
 /**
@@ -48,10 +46,6 @@ import sheetrock.panda.changelog.ChangeLog;
 public class SettingsActivity extends AppCompatPreferenceActivity implements
         OnSharedPreferenceChangeListener, OnPreferenceClickListener {
 
-    private static final String LOG_LOCATION = Environment
-            .getExternalStorageDirectory().getPath()
-            + Constants.SD_LOCATION
-            + "rpicheck.log";
     /**
      * Preference keys.
      */
@@ -116,7 +110,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
             } else {
                 LOGGER.info("Disabled debug logging.");
             }
-            LoggingHelper.changeLogger(debugEnabled);
+            LoggingHelper.initLogging(this);
         }
     }
 
@@ -142,12 +136,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
         if (preference.getKey().equals(KEY_PREF_LOG)) {
             LOGGER.trace("View log was clicked.");
             clickHandled = true;
-            File log = new File(LOG_LOCATION);
-            if (log.exists()) {
-                final Intent intent = new Intent();
-                intent.setDataAndType(Uri.fromFile(log), "text/plain");
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                startActivity(intent);
+            String logfilePath = LoggingHelper.getLogfilePath(this);
+            if (logfilePath != null) {
+                File log = new File(logfilePath);
+                if (log.exists()) {
+                    final Intent intent = new Intent();
+                    intent.setDataAndType(Uri.fromFile(log), "text/plain");
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Log file does not exist.",
+                            Toast.LENGTH_LONG).show();
+                }
             } else {
                 Toast.makeText(this, "Log file does not exist.",
                         Toast.LENGTH_LONG).show();

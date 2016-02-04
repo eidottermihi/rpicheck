@@ -18,10 +18,8 @@
 package de.eidottermihi.rpicheck.activity.helper;
 
 public final class Constants {
-    /**
-     * Directory in which app data will be stored.
-     */
-    public static final String SD_LOCATION = "/Android/data/de.eidottermihi.rpicheck/";
+
+    public static final String LOG_NAME = "raspicheck.log";
 
     /**
      * ID for DeviceBean in Action Extras Bundle.
@@ -32,7 +30,6 @@ public final class Constants {
      * Constant indicating ShutdownTask should do a reboot.
      */
     public static final String TYPE_REBOOT = "reboot";
-
     /**
      * Constant indicating ShutdownTask should do a halt.
      */

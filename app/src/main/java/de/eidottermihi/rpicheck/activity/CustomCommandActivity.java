@@ -17,15 +17,22 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -43,7 +50,6 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,22 +63,23 @@ import java.util.regex.Pattern;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.db.CommandBean;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
-import de.eidottermihi.rpicheck.ssh.beans.Exported;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
 import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog;
 import de.eidottermihi.rpicheck.fragment.CommandPlaceholdersDialog.PlaceholdersDialogListener;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog;
 import de.eidottermihi.rpicheck.fragment.PassphraseDialog.PassphraseDialogListener;
 import de.eidottermihi.rpicheck.fragment.RunCommandDialog;
+import de.eidottermihi.rpicheck.ssh.beans.Exported;
 import io.freefair.android.injection.annotation.InjectView;
 import io.freefair.android.injection.annotation.XmlLayout;
 import io.freefair.android.injection.annotation.XmlMenu;
-import io.freefair.android.injection.ui.InjectionAppCompatActivity;
+import io.freefair.android.injection.app.InjectionAppCompatActivity;
 
 @XmlLayout(R.layout.activity_commands)
 @XmlMenu(R.menu.activity_commands)
 public class CustomCommandActivity extends InjectionAppCompatActivity implements OnItemClickListener, PassphraseDialogListener, PlaceholdersDialogListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomCommandActivity.class);
+    private static final int REQUEST_READ_PERMISSION_FOR_COMMAND = 1;
 
     private RaspberryDeviceBean currentDevice;
 
@@ -85,6 +92,8 @@ public class CustomCommandActivity extends InjectionAppCompatActivity implements
 
     private Pattern dynamicPlaceHolderPattern = Pattern.compile("(\\$\\{[^*\\}]+\\})");
     private Pattern nonPromptingPlaceHolders = Pattern.compile("(\\%\\{[^*\\}]+\\})");
+
+    private long commandId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,6 +201,7 @@ public class CustomCommandActivity extends InjectionAppCompatActivity implements
                 this.deleteCommand(info.id);
                 break;
             case 3:
+                this.commandId = info.id;
                 this.runCommand(info.id);
                 break;
             default:
@@ -244,27 +254,77 @@ public class CustomCommandActivity extends InjectionAppCompatActivity implements
     }
 
     private void runCommand(long commandId) {
+        this.commandId = commandId;
         ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            if (currentDevice.getAuthMethod().equals(NewRaspiAuthActivity.SPINNER_AUTH_METHODS[2])
-                    && Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
-                // must ask for key passphrase first
-                LOGGER.debug("Asking for key passphrase.");
-                // dirty hack, saving commandId as "dialog type"
-                final String dialogType = commandId + "";
-                final DialogFragment passphraseDialog = new PassphraseDialog();
-                final Bundle args = new Bundle();
-                args.putString(PassphraseDialog.KEY_TYPE, dialogType);
-                passphraseDialog.setArguments(args);
-                passphraseDialog.setCancelable(false);
-                passphraseDialog.show(getSupportFragmentManager(), "passphrase");
-            } else {
-                LOGGER.debug("Opening command dialog.");
-                openCommandDialog(commandId, currentDevice.getKeyfilePass());
+            if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY)
+                    || currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
+                // need permission to read keyfile
+                final String keyfilePath = currentDevice.getKeyfilePath();
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    LOGGER.debug("Requesting permission to read private key file from storage...");
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            REQUEST_READ_PERMISSION_FOR_COMMAND);
+                    return;
+                }
+                if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)
+                        && Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
+                    // must ask for key passphrase first
+                    LOGGER.debug("Asking for key passphrase.");
+                    // dirty hack, saving commandId as "dialog type"
+                    final String dialogType = commandId + "";
+                    final DialogFragment passphraseDialog = new PassphraseDialog();
+                    final Bundle args = new Bundle();
+                    args.putString(PassphraseDialog.KEY_TYPE, dialogType);
+                    passphraseDialog.setArguments(args);
+                    passphraseDialog.setCancelable(false);
+                    passphraseDialog.show(getSupportFragmentManager(), "passphrase");
+                    return;
+                }
             }
+            LOGGER.debug("Opening command dialog.");
+            openCommandDialog(commandId, currentDevice.getKeyfilePass());
         } else {
             Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_READ_PERMISSION_FOR_COMMAND:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            runCommand(commandId);
+                        }
+                    }, 200);
+                } else {
+                    Toast.makeText(this, R.string.permission_private_key_error, Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LOGGER.debug("onPause() - saving lastCommandId={}", commandId);
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putLong("lastCommandId", commandId).apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LOGGER.debug("onResume() - retrieving lastCommandId.");
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final long lastCommandId = sharedPreferences.getLong("lastCommandId", -1L);
+        if (lastCommandId != -1L) {
+            LOGGER.debug("lastCommandId={}", lastCommandId);
+            this.commandId = lastCommandId;
         }
     }
 

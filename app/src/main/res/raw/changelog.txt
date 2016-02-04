@@ -19,6 +19,16 @@
     </style>
   </head>
   <body>
+$ 1.8.0
+  % Version 1.8.0
+  _ 2016-02-03
+  * Added Support for Marshmallow Runtime Permissions and removed unused Phone permission
+  * Tapping widget now opens the app
+  * Fixed widget not updating after deep sleep (thanks zoskar)
+  * Firmware version hash gets cut to 8 characters (thanks indywidualny)
+  * Overclocking information should now work on Arch Linux (thanks indywidualny)
+  * Log location changed to /sdcard/Android/data/de.eidottermihi.raspicheck/files
+  * Switched to a new file chooser (for private key file)
 $ 1.7.7
   % Version 1.7.7
   _ 2016-01-21

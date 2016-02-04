@@ -30,6 +30,9 @@ import de.eidottermihi.rpicheck.ssh.IQueryService;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQuery;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
+/**
+ * @author Michael
+ */
 public class SSHShutdownTask extends AsyncTask<String, Integer, ShutdownResult> {
 
     private static final Logger LOGGER = LoggerFactory
@@ -77,12 +80,17 @@ public class SSHShutdownTask extends AsyncTask<String, Integer, ShutdownResult> 
             } else if (type.equals(Constants.TYPE_HALT)) {
                 queryService.sendHaltSignal(sudoPass);
             }
-            queryService.disconnect();
             return result;
         } catch (RaspiQueryException e) {
             LOGGER.error(e.getMessage(), e);
             result.setExcpetion(e);
             return result;
+        } finally {
+            try {
+                queryService.disconnect();
+            } catch (RaspiQueryException e) {
+                LOGGER.debug("Error closing the ssh client.", e);
+            }
         }
     }
 
