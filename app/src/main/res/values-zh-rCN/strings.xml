@@ -22,10 +22,8 @@
 	<string name="raspi_device_user_hint">SSH 用户名</string>
 	<string name="raspi_device_password_hint">SSH 密码</string>
 	<string name="raspi_device_description_hint">描述 (可选)</string>
-	<string name="default_ssh_port" translatable="false">22</string>
 	<string name="raspi_device_button_new">保存</string>
 	<string name="pref_temp_scala_title">温度单位</string>
-	<string name="pref_temperature_scala_default" translatable="false">°C</string>
 	<string name="pref_group_display_settings_title">显示设置</string>
 	<string name="last_update">上次刷新</string>
 	<string name="no_device_available">请先添加一个树莓派。</string>
@@ -52,22 +50,17 @@
 	<string name="disk_header_mounted_on">挂载点</string>
 	<string name="temperature_scala_summary">温度单位使用 (摄氏度, 华氏度)</string>
 	<string name="process_header">进程</string>
-	<string name="header_pid" translatable="false">PID</string>
-	<string name="header_tty" translatable="false">TTY</string>
-	<string name="header_cpu_time" translatable="false">CPU</string>
 	<string name="header_command">命令</string>
 	<string name="pref_group_query_settings_title">询问</string>
 	<string name="pref_query_hide_root_title">隐藏 root 进程</string>
 	<string name="pref_query_hide_root_summary">检查是否要隐藏 root 进程。</string>
 	<string name="pref_query_hide_root_summaryOn">不显示 root 进程。</string>
 	<string name="pref_query_hide_root_summaryOff">显示所有进程。</string>
-	<!--<string name="new_raspi_minimum">Please specify at minimum a name, host, ssh username and password.</string>-->
 	<string name="new_raspi_minimum">请指定一个最小的 name、host、ssh username 和 password。</string>
 	<string name="raspi_device_sudo_password_hint">sudo 密码</string>
 	<string name="sudo_password">Sudo 密码</string>
 	<string name="reboot_success">发送重启命令。</string>
 	<string name="reboot_fail">重启失败，请检查连接设置。</string>
-	<string name="pref_frequency_unit_default" translatable="false">MHz</string>
 	<string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
 	<string name="pref_frequency_unit_title">频率单位</string>
 	<string name="firmware_version">固件版本</string>
@@ -76,14 +69,11 @@
 	<string name="network_status">状态</string>
 	<string name="network_status_up">Up</string>
 	<string name="network_status_down">Down</string>
-	<string name="network_ip" translatable="false">IP</string>
 	<string name="network_signal">信号</string>
 	<string name="network_link">强度</string>
 	<string name="pref_group_about">关于</string>
 	<string name="pref_github">源码 / 问题跟踪</string>
-	<string name="pref_github_summary" translatable="false">github.com/eidottermihi/rpicheck</string>
 	<string name="pref_dev_email">联系我们</string>
-	<string name="pref_dev_email_summary" translatable="false">eidottermihi@gmail.com</string>
 	<string name="pref_rate_app">给我们评价</string>
 	<string name="pref_rate_app_summary">如果你喜爱这个应用，就给我们好评哦！</string>
 	<string name="pref_version">版本</string>
@@ -184,13 +174,11 @@
 	<string name="placeholder_hint">提示:</string>
 	<string name="placeholder_special_hint">特殊的占位符:</string>
 	
-	<string name="pref_load_avg_default" translatable="false">5分钟</string>
 	<string name="pref_load_avg_summary">平均负载计算的时间段。</string>
 	<string name="pref_load_avg_title">平均负载时间段</string>
 	<string name="widget_pi">选择树莓派</string>
 	<string name="widget_configure_title">配置窗口小部件</string>
 	<string name="widget_update_interval">更新间隔</string>
-	<string name="default_update_interval" translatable="false">60</string>
 	<string name="widget_update_interval_error">无效的更新间隔。</string>
 	<string name="widget_key_pass_error">您需要保存您密钥文件的密码，因为小部件无法进行提示。</string>
 	<string name="widget_update_interval_zero">必须大于零。</string>
@@ -205,18 +193,12 @@
 	<string name="widget_update_interval_custom_text">更新间隔（分钟）</string>
 	<string name="widget_device_removed">这个树莓派的小部件已被删除。</string>
 	<string name="used_memory">使用内存</string>
-	<string name="widget_memory_header" translatable="false">内存</string>
-	<string name="widget_load_header" translatable="false">负载</string>
-	<string name="widget_arm_header" translatable="false">ARM</string>
-	<string name="widget_temp_header" translatable="false">温度</string>
 	
 	<string name="widget_auto_update_yes">自动更新</string>
 	<string name="widget_auto_update_wifi">仅限WiFi</string>
 	<string name="widget_auto_update_no">不自动更新</string>
 	<string name="widget_auto_update">自动更新</string>
-	<string name="facebook_url" translatable="false">https://www.facebook.com/raspicheck</string>
 	<string name="pref_facebook_summary">欢迎关注我们并获得 RasPi Check 的最新动态。</string>
-	<string name="pref_fb_title" translatable="false">Facebook</string>
 	<string name="widget_add_no_device">您需要在应用程序中先添加树莓派。</string>
 	<string name="action_share">分享</string>
 	<string name="share_body"># Information for Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nThis information has been queried with RasPi Check (version: %5$s) for Android.</string>
