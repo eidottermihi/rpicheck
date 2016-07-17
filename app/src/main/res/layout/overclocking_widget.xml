@@ -55,33 +55,40 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/linLayoutName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textDeviceValue"
-                style="@style/Theme.rpiCheck.Dark.Text.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:padding="1dp"
                 android:singleLine="true"
+                android:textSize="14sp"
                 />
 
             <TextView
                 android:id="@+id/textDeviceUserHost"
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:singleLine="true"
+                android:textSize="12sp"
                 />
 
             <TextView
                 android:id="@+id/textStatusValue"
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:singleLine="true"
+                android:textSize="12sp"
                 />
 
         </LinearLayout>
@@ -115,19 +122,23 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="@string/widget_temp_header"
+                android:textSize="12sp"
                 />
 
             <TextView
                 android:id="@+id/textTempValue"
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:padding="2dp"
+                android:textSize="12sp"
                 />
         </LinearLayout>
 
@@ -159,19 +170,23 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="@string/widget_arm_header"
+                android:textSize="12sp"
                 />
 
             <TextView
                 android:id="@+id/textArmValue"
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:padding="2dp"
+                android:textSize="12sp"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -201,19 +216,23 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="@string/widget_load_header"
+                android:textSize="12sp"
                 />
 
             <TextView
                 android:id="@+id/textLoadValue"
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:padding="2dp"
+                android:textSize="12sp"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -243,19 +262,23 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="@string/widget_memory_header"
+                android:textSize="12sp"
                 />
 
             <TextView
                 android:id="@+id/textMemoryValue"
-                style="@style/Theme.rpiCheck.Dark.Text.Small"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:padding="2dp"
+                android:textSize="12sp"
                 />
         </LinearLayout>
     </LinearLayout>

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015  RasPi Check Contributors
+ * Copyright (C) 2016  RasPi Check Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package de.eidottermihi.rpicheck.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -36,8 +35,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
-import com.lamerman.FileDialog;
-import com.lamerman.SelectionMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,22 +44,15 @@ import java.io.File;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.Validation;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
-import de.fhconfig.android.library.injection.annotation.InjectView;
-import de.fhconfig.android.library.injection.annotation.XmlLayout;
-import de.fhconfig.android.library.injection.annotation.XmlMenu;
-import de.fhconfig.android.library.ui.injection.InjectionAppCompatActivity;
+import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
+import io.freefair.android.injection.annotation.InjectView;
+import io.freefair.android.injection.annotation.XmlLayout;
+import io.freefair.android.injection.annotation.XmlMenu;
 
 @XmlLayout(R.layout.activity_raspi_new_auth)
 @XmlMenu(R.menu.activity_raspi_new_auth)
-public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements OnItemSelectedListener {
+public class NewRaspiAuthActivity extends AbstractFileChoosingActivity implements OnItemSelectedListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewRaspiAuthActivity.class);
-
-    public static final String AUTH_PASSWORD = "password";
-    public static final String AUTH_PUBLIC_KEY = "keys";
-    public static final String AUTH_PUBLIC_KEY_WITH_PASSWORD = "keysWithPassword";
-    public static final String[] SPINNER_AUTH_METHODS = {AUTH_PASSWORD, AUTH_PUBLIC_KEY, AUTH_PUBLIC_KEY_WITH_PASSWORD};
-
-    public static final int REQUEST_LOAD = 0;
 
     private Validation validator = new Validation();
 
@@ -106,7 +96,7 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // show default option for auth method = ssh password
-        this.switchAuthMethodsInView(SPINNER_AUTH_METHODS[0]);
+        this.switchAuthMethodsInView(RaspberryDeviceBean.AUTH_PASSWORD);
         // init auth spinner
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.auth_methods, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -149,7 +139,7 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
     public void onButtonClick(View view) {
         switch (view.getId()) {
             case R.id.buttonKeyfile:
-                openKeyfile();
+                startFileChooser();
                 break;
             default:
                 break;
@@ -178,23 +168,10 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
         }
     }
 
-    private void openKeyfile() {
-        final Intent intent = new Intent(getBaseContext(), FileDialog.class);
-        intent.putExtra(FileDialog.START_PATH, Environment.getExternalStorageDirectory().getPath());
-
-        // can user select directories or not
-        intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
-        // user can only open existing files
-        intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
-
-        // alternatively you can set file filter
-        // intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { "png" });
-        this.startActivityForResult(intent, REQUEST_LOAD);
-    }
 
     private void saveRaspi() {
         // get auth method
-        final String selectedAuthMethod = SPINNER_AUTH_METHODS[spinnerAuth.getSelectedItemPosition()];
+        final String selectedAuthMethod = RaspberryDeviceBean.SPINNER_AUTH_METHODS[spinnerAuth.getSelectedItemPosition()];
         final String sudoPass = editTextSudoPw.getText().toString().trim();
         final String sshPort = editTextSshPort.getText().toString().trim();
         boolean portOk = true;
@@ -204,14 +181,14 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
         }
         if (portOk) {
             boolean saveSuccessful = false;
-            if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[0])) {
+            if (selectedAuthMethod.equals(RaspberryDeviceBean.SPINNER_AUTH_METHODS[0])) {
                 // ssh password (cannot be empty)
                 if (validator.checkNonOptionalTextField(editTextSshPass, getString(R.string.validation_msg_password))) {
                     final String sshPass = editTextSshPass.getText().toString().trim();
                     addRaspiToDb(name, host, user, selectedAuthMethod, sshPort, desc, sudoPass, sshPass, null, null);
                     saveSuccessful = true;
                 }
-            } else if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[1])) {
+            } else if (selectedAuthMethod.equals(RaspberryDeviceBean.SPINNER_AUTH_METHODS[1])) {
                 // keyfile must be selected
                 if (keyfilePath != null && new File(keyfilePath).exists()) {
                     addRaspiToDb(name, host, user, selectedAuthMethod, sshPort, desc, sudoPass, null, null, keyfilePath);
@@ -219,7 +196,7 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
                 } else {
                     buttonKeyfile.setError(getString(R.string.validation_msg_keyfile));
                 }
-            } else if (selectedAuthMethod.equals(SPINNER_AUTH_METHODS[2])) {
+            } else if (selectedAuthMethod.equals(RaspberryDeviceBean.SPINNER_AUTH_METHODS[2])) {
                 // keyfile must be selected
                 if (keyfilePath != null && new File(keyfilePath).exists()) {
                     if (checkboxAskPassphrase.isChecked()) {
@@ -269,7 +246,7 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos,
                                long id) {
-        final String selectedAuthMethod = SPINNER_AUTH_METHODS[pos];
+        final String selectedAuthMethod = RaspberryDeviceBean.SPINNER_AUTH_METHODS[pos];
         LOGGER.debug("Auth method selected: {}", selectedAuthMethod);
         this.switchAuthMethodsInView(selectedAuthMethod);
     }
@@ -280,11 +257,11 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
     }
 
     private void switchAuthMethodsInView(String method) {
-        if (method.equals(SPINNER_AUTH_METHODS[0])) {
+        if (method.equals(RaspberryDeviceBean.AUTH_PASSWORD)) {
             // show only ssh password
             relLaySshPass.setVisibility(View.VISIBLE);
             relLayKeyfile.setVisibility(View.GONE);
-        } else if (method.equals(SPINNER_AUTH_METHODS[1])) {
+        } else if (method.equals(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             // show key file button (no passphrase)
             relLaySshPass.setVisibility(View.GONE);
             relLayKeyfile.setVisibility(View.VISIBLE);
@@ -301,25 +278,15 @@ public class NewRaspiAuthActivity extends InjectionAppCompatActivity implements 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_LOAD) {
-                final String filePath = data
-                        .getStringExtra(FileDialog.RESULT_PATH);
-                LOGGER.debug("Path of selected keyfile: {}", filePath);
-                this.keyfilePath = filePath;
-                // set text to filename, not full path
-                String fileName = getFilenameFromPath(filePath);
-                buttonKeyfile.setText(fileName);
-                buttonKeyfile.setError(null);
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            LOGGER.warn("No keyfile selected...");
+        if (requestCode == REQUEST_CODE_LOAD_FILE && resultCode == Activity.RESULT_OK) {
+            final String filePath = data.getData().getPath();
+            LOGGER.debug("Path of selected keyfile: {}", filePath);
+            this.keyfilePath = filePath;
+            // set text to filename, not full path
+            String fileName = getFilenameFromPath(filePath);
+            buttonKeyfile.setText(fileName);
+            buttonKeyfile.setError(null);
         }
-    }
-
-    public static String getFilenameFromPath(String filePath) {
-        final File f = new File(filePath);
-        return f.getName();
     }
 
 }
