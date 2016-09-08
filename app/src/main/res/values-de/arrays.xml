@@ -10,8 +10,8 @@
     </string-array>
     <string-array name="auth_methods">
         <item>Passwort</item>
-        <item>Private key</item>
-        <item>Private key m. Passwort</item>
+        <item>Privater Schlüssel</item>
+        <item>Privater Schlüssel mit Passwort</item>
     </string-array>
     <string-array name="pref_load_avg">
         <item>1 Minute</item>
