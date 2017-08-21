@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2017  RasPi Check Contributors
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+-->
 <resources>
 
     <string name="app_name">RasPi Check</string>
@@ -30,15 +49,15 @@
     <string name="no_device_available">Pridajte prosím najskôr Pi.</string>
     <string name="new_raspi_text">Zadajte prosím Vaše údaje Raspberry Pi na vybudovanie spojenia.</string>
     <string name="ssh_port">SSH: port</string>
-    <string name="new_raspi_description">Dodatočný popis:</string>
-    <string name="new_raspi_description_hint">Zadajte prosím Váš dodatočný popis sem ...</string>
+    <string name="new_raspi_description">Dodato�?ný popis:</string>
+    <string name="new_raspi_description_hint">Zadajte prosím Váš dodato�?ný popis sem ...</string>
     <string name="overclocking_header">pretaktovanie</string>
     <string name="system_header">systém</string>
-    <string name="uptime_started">začiatok</string>
+    <string name="uptime_started">za�?iatok</string>
     <string name="average_load">vyťaženie</string>
     <string name="total_memory">RAM celkom</string>
     <string name="free_memory">voľná RAM</string>
-    <string name="cpu_serial">sériové číslo</string>
+    <string name="cpu_serial">sériové �?íslo</string>
     <string name="ip_addr_label">IP adresa</string>
     <string name="distribution">distribúcia</string>
     <string name="disk_header_filesystem">súbory</string>
@@ -59,8 +78,8 @@
     <string name="new_raspi_minimum">Zadajte prosím aspoň tieto údaje: meno, hostiteľ, SSH prihlasovacie meno a heslo.</string>
     <string name="raspi_device_sudo_password_hint">heslo pre sudo</string>
     <string name="sudo_password">heslo pre sudo</string>
-    <string name="reboot_success">Začína reštart.</string>
-    <string name="reboot_fail">Reštart zlyhal. Prosím preverte, či ste zadali správne heslo pre sudo a či nemáte problémy so sieťou.</string>
+    <string name="reboot_success">Za�?ína reštart.</string>
+    <string name="reboot_fail">Reštart zlyhal. Prosím preverte, �?i ste zadali správne heslo pre sudo a �?i nemáte problémy so sieťou.</string>
     <string name="pref_frequency_unit_summary">Hz, MHz alebo GHz</string>
     <string name="pref_frequency_unit_title">jednotka frekvencie</string>
     <string name="firmware_version">Firmware</string>
@@ -75,7 +94,7 @@
     <string name="pref_github">zdrojový kód / chyby</string>
     <string name="pref_dev_email">kontaktujte programátora tejto aplikácie</string>
     <string name="pref_rate_app">ohodnoťte túto aplikáciu</string>
-    <string name="pref_rate_app_summary">Ak sa Vám RasPi Check páči, ohodnoťte ho prosím.</string>
+    <string name="pref_rate_app_summary">Ak sa Vám RasPi Check pá�?i, ohodnoťte ho prosím.</string>
     <string name="pref_version">verzia</string>
     <string name="shutdown_type_title">vypnúť</string>
     <string name="halt_success">Príkaz na vypnutie bol odoslaný.</string>
@@ -90,13 +109,13 @@
     <string name="exception_dialog_title">Ojojoj!</string>
     <string name="authentication_failed">Prihlásenie cez SSH nebolo úspešné. Prosím skontrolujte Vaše zadanie.</string>
     <string name="connection_failed">Nepodarilo sa vybudovať spojenie. Skontrolujte prosím hostiteľa a sieť.</string>
-    <string name="errormessages_dialog_title">prepáčte…</string>
+    <string name="errormessages_dialog_title">prepá�?te…</string>
     <string name="transport_exception">Spojenie sa prerušilo. Prosím skúste to znova.</string>
-    <string name="unexpected_exception">Vyskytla sa neočakávaná chyba. Prosím skúste to znova.</string>
-    <string name="exception_vcgencmd">Program \'vcgencmd\' sa na Vašom Pi nenašiel. Presvedčte sa, či sa nachádza v priečinku  \'/usr/bin\' alebo \'/opt/vc/bin\'.</string>
-    <string name="weird_exception">Stalo sa niečo úplne neočakávané... Pozrite si prosím logfiles.</string>
+    <string name="unexpected_exception">Vyskytla sa neo�?akávaná chyba. Prosím skúste to znova.</string>
+    <string name="exception_vcgencmd">Program \'vcgencmd\' sa na Vašom Pi nenašiel. Presved�?te sa, �?i sa nachádza v prie�?inku  \'/usr/bin\' alebo \'/opt/vc/bin\'.</string>
+    <string name="weird_exception">Stalo sa nie�?o úplne neo�?akávané... Pozrite si prosím logfiles.</string>
     <string name="changelog_full_title">zmeny</string>
-    <string name="changelog_title">čo je nové...</string>
+    <string name="changelog_title">�?o je nové...</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">viac…</string>
     <string name="pref_group_log">Log</string>
@@ -110,21 +129,21 @@
     <string name="pref_debug_log_summary_on">Protokolovanie debug je aktivované.</string>
     <string name="pref_debug_log_summary_off">Protokolovanie debug je deaktivované.</string>
     <string name="pref_debug_log_title">protokolovanie debug</string>
-    <string name="new_raspi_continue">ďalej</string>
-    <string name="new_raspi_auth_method">autentifikačná metóda</string>
-    <string name="raspi_key_password_hint">prístupové heslo kľúča</string>
-    <string name="raspi_key_password_empty">Prosím zadajte prístupové heslo kľúča.</string>
-    <string name="raspi_auth_keyfile_hint">súkromný kľúč (PKCS8/OpenSSH Format)</string>
-    <string name="raspi_auth_button_keyfile">zvoľte kľúč</string>
-    <string name="title_filedialog">zvoľte kľúč</string>
-    <string name="no_keyfile_present">Prosím vyberte si jeden z existujúcich súkromných kľúčov.</string>
-    <string name="raspi_key_checkbox_text">vždy vyžadovať prístupové heslo kľúča</string>
-    <string name="validation_msg_keyfile">Prosím vyberte si priečinok kľúča.</string>
-    <string name="validation_msg_key_passphrase">Prosím zadajte prístupové heslo kľúča.</string>
-    <string name="dialog_save_passphrase">zapamätať si prístupové heslo kľúča</string>
-    <string name="dialog_passphrase_hint">prístupové heslo kľúča</string>
-    <string name="dialog_passphrase_needed">Prosím zadajte prístupové heslo kľúča.</string>
-    <string name="dialog_passphrase_text">Prosím zadajte prístupové heslo súkromného kľúča.</string>
+    <string name="new_raspi_continue">�?alej</string>
+    <string name="new_raspi_auth_method">autentifika�?ná metóda</string>
+    <string name="raspi_key_password_hint">prístupové heslo kľú�?a</string>
+    <string name="raspi_key_password_empty">Prosím zadajte prístupové heslo kľú�?a.</string>
+    <string name="raspi_auth_keyfile_hint">súkromný kľú�? (PKCS8/OpenSSH Format)</string>
+    <string name="raspi_auth_button_keyfile">zvoľte kľú�?</string>
+    <string name="title_filedialog">zvoľte kľú�?</string>
+    <string name="no_keyfile_present">Prosím vyberte si jeden z existujúcich súkromných kľú�?ov.</string>
+    <string name="raspi_key_checkbox_text">vždy vyžadovať prístupové heslo kľú�?a</string>
+    <string name="validation_msg_keyfile">Prosím vyberte si prie�?inok kľú�?a.</string>
+    <string name="validation_msg_key_passphrase">Prosím zadajte prístupové heslo kľú�?a.</string>
+    <string name="dialog_save_passphrase">zapamätať si prístupové heslo kľú�?a</string>
+    <string name="dialog_passphrase_hint">prístupové heslo kľú�?a</string>
+    <string name="dialog_passphrase_needed">Prosím zadajte prístupové heslo kľú�?a.</string>
+    <string name="dialog_passphrase_text">Prosím zadajte prístupové heslo súkromného kľú�?a.</string>
     <string name="button_commands">príkazy</string>
     <string name="activity_title_commands">vlastné príkazy</string>
     <string name="activity_title_new_command">nové príkazy</string>
@@ -165,13 +184,13 @@
     <string name="placeholder_hint_text">Môžete používať zástupné symboly ako napr. \'${my_secret}\'. Tieto zástupné symboly budú nahradené vstupom až pri zadaní príkazu.</string>
     <string name="placeholder_hint">Tip:</string>
 
-    <string name="pref_load_avg_summary">Časový interval pre výpočet vyťaženia.</string>
+    <string name="pref_load_avg_summary">Časový interval pre výpo�?et vyťaženia.</string>
     <string name="pref_load_avg_title"> Časový interval pre priemerné vyťaženie.</string>
     <string name="widget_pi">Vyberte si Raspberry Pi.</string>
     <string name="widget_configure_title">Konfigurácia widgetu.</string>
     <string name="widget_update_interval">Automaticky aktualizovať.</string>
     <string name="widget_update_interval_error">Neplatný interval pre update.</string>
-    <string name="widget_update_interval_zero">Musí byť väčší ako 0.</string>
+    <string name="widget_update_interval_zero">Musí byť vä�?ší ako 0.</string>
     <string name="widget_update_interval_five_min">5 minút</string>
     <string name="widget_update_interval_ten_min">10 minút</string>
     <string name="widget_update_interval_thirty_min">30 minút</string>
@@ -188,7 +207,7 @@
     <string name="widget_auto_update">automazicky aktualizovať</string>
     <string name="used_memory">vyťaženie pamäte</string>
     <string name="pref_facebook_summary">Novinky o RasPi Check nájdete na facebooku</string>
-    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Bude automaticky nahradené aktuálnym časom. Formát musí byť v tvare platného formátu pre dátum a čas (napr. dd.MM.yyyy).</string>
+    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Bude automaticky nahradené aktuálnym �?asom. Formát musí byť v tvare platného formátu pre dátum a �?as (napr. dd.MM.yyyy).</string>
     <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Bude automaticky nahradené jednou z vlastností Vášho Pi. Dostupné vlastnosti: názov, adresa, užívateľ, heslo, port, heslo pre sudo.</string>
     <string name="placeholder_special_hint">Špeciálne zástupné symboly:</string>
     <string name="widget_add_no_device">Najskôr musíte vytvoriť Pi v tejto aplikácii.</string>

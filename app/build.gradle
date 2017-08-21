@@ -9,7 +9,7 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'net.researchgate.release'
-apply plugin: 'license'
+apply plugin: 'com.github.hierynomus.license-base'
 
 if (project.hasProperty("rpicheck.keystore")
         && new File(project.property("rpicheck.keystore")).exists()) {
@@ -24,7 +24,7 @@ apply from: "gradle/release.gradle"
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "de.eidottermihi.raspicheck"
@@ -69,10 +69,4 @@ dependencies {
 license {
     exclude "**/sheetrock/**"
 }
-
-task licenseFormatAndroid (type:nl.javadude.gradle.plugins.license.License) {
-    source = fileTree(dir:"src").include ("**/*.java")
-}
-
-licenseFormat.dependsOn licenseFormatAndroid
 

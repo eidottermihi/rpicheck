@@ -2,7 +2,7 @@ plugins {
     id "java"
 }
 
-apply plugin: 'license'
+apply plugin: 'com.github.hierynomus.license-base'
 apply from: "$project.rootDir/gradle/license.gradle"
 
 sourceCompatibility = JavaVersion.VERSION_1_7

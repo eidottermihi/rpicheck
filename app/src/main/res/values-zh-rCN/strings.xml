@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2017  RasPi Check Contributors
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+-->
 <resources>
 	
 	<string name="app_name">RasPi Check</string>
@@ -9,91 +28,91 @@
 	<string name="core_freq">核心频率</string>
 	<string name="arm_freq">ARM频率</string>
 	<string name="core_volt">核心电压</string>
-	<string name="host">主机名/IP</string>
-	<string name="user">用户名</string>
-	<string name="password">密码</string>
-	<string name="ssh_credentials">SSH 证书</string>
+	<string name="host">主机�??/IP</string>
+	<string name="user">用户�??</string>
+	<string name="password">密�?</string>
+	<string name="ssh_credentials">SSH �?书</string>
 	<string name="no_connection">请打开WiFi。</string>
-	<string name="no_hostname_specified">没有指定主机名，请检查您的设置。</string>
-	<string name="no_username_specified">没有指定用户名，请检查您的设置。</string>
-	<string name="no_password_specified">没有指定密码，请检查您的设置。</string>
-	<string name="raspi_device_name_hint">名称</string>
-	<string name="raspi_device_host_hint">主机名 / IP</string>
-	<string name="raspi_device_user_hint">SSH 用户名</string>
-	<string name="raspi_device_password_hint">SSH 密码</string>
-	<string name="raspi_device_description_hint">描述 (可选)</string>
-	<string name="raspi_device_button_new">保存</string>
-	<string name="pref_temp_scala_title">温度单位</string>
+	<string name="no_hostname_specified">没有指定主机�??，请检查您的设置。</string>
+	<string name="no_username_specified">没有指定用户�??，请检查您的设置。</string>
+	<string name="no_password_specified">没有指定密�?，请检查您的设置。</string>
+	<string name="raspi_device_name_hint">�??称</string>
+	<string name="raspi_device_host_hint">主机�?? / IP</string>
+	<string name="raspi_device_user_hint">SSH 用户�??</string>
+	<string name="raspi_device_password_hint">SSH 密�?</string>
+	<string name="raspi_device_description_hint">�??述 (�?�选)</string>
+	<string name="raspi_device_button_new">�?存</string>
+	<string name="pref_temp_scala_title">温度�?��?</string>
 	<string name="pref_group_display_settings_title">显示设置</string>
 	<string name="last_update">上次刷新</string>
 	<string name="no_device_available">请先添加一个树莓派。</string>
-	<string name="new_raspi_text">请输入树莓派的信息。</string>
-	<string name="ssh_port">SSH 端口</string>
+	<string name="new_raspi_text">请输入树莓派的信�?�。</string>
+	<string name="ssh_port">SSH 端�?�</string>
 	<string name="new_raspi_description">附加说明</string>
-	<string name="new_raspi_description_hint">在这里添加其他描述..</string>
+	<string name="new_raspi_description_hint">在这里添加其他�??述..</string>
 	<string name="overclocking_header">频率</string>
 	<string name="system_header">系统</string>
-	<string name="uptime_started">启动时间</string>
-	<string name="average_load">平均负载</string>
+	<string name="uptime_started">�?�动时间</string>
+	<string name="average_load">平�?�负载</string>
 	<string name="total_memory">总内存</string>
-	<string name="free_memory">可用内存</string>
-	<string name="cpu_serial">序列号</string>
-	<string name="ip_addr_label">IP 地址</string>
-	<string name="distribution">发行版本</string>
+	<string name="free_memory">�?�用内存</string>
+	<string name="cpu_serial">�?列�?�</string>
+	<string name="ip_addr_label">IP 地�?�</string>
+	<string name="distribution">�?�行版本</string>
 	<string name="disk_header_filesystem">文件系统</string>
-	<string name="disk_header_size">大小</string>
-	<string name="disk_header">磁盘使用情况</string>
-	<string name="disk_header_avail">可用</string>
+	<string name="disk_header_size">大�?</string>
+	<string name="disk_header">�?盘使用情况</string>
+	<string name="disk_header_avail">�?�用</string>
 	<string name="disk_header_usedper">已用</string>
 	<string name="please_add_a_raspberry_pi">请添加一个树莓派</string>
 	<string name="activity_title_edit_raspi">编辑树莓派</string>
 	<string name="disk_header_mounted_on">挂载点</string>
-	<string name="temperature_scala_summary">温度单位使用 (摄氏度, 华氏度)</string>
+	<string name="temperature_scala_summary">温度�?��?使用 (摄�?度, �?��?度)</string>
 	<string name="process_header">进程</string>
 	<string name="header_command">命令</string>
 	<string name="pref_group_query_settings_title">询问</string>
-	<string name="pref_query_hide_root_title">隐藏 root 进程</string>
-	<string name="pref_query_hide_root_summary">检查是否要隐藏 root 进程。</string>
-	<string name="pref_query_hide_root_summaryOn">不显示 root 进程。</string>
+	<string name="pref_query_hide_root_title">�?�? root 进程</string>
+	<string name="pref_query_hide_root_summary">检查是�?��?�?�? root 进程。</string>
+	<string name="pref_query_hide_root_summaryOn">�?显示 root 进程。</string>
 	<string name="pref_query_hide_root_summaryOff">显示所有进程。</string>
-	<string name="new_raspi_minimum">请指定一个最小的 name、host、ssh username 和 password。</string>
-	<string name="raspi_device_sudo_password_hint">sudo 密码</string>
-	<string name="sudo_password">Sudo 密码</string>
-	<string name="reboot_success">发送重启命令。</string>
-	<string name="reboot_fail">重启失败，请检查连接设置。</string>
+	<string name="new_raspi_minimum">请指定一个最�?的 name�?host�?ssh username 和 password。</string>
+	<string name="raspi_device_sudo_password_hint">sudo 密�?</string>
+	<string name="sudo_password">Sudo 密�?</string>
+	<string name="reboot_success">�?��?�?�?�命令。</string>
+	<string name="reboot_fail">�?�?�失败，请检查连接设置。</string>
 	<string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
-	<string name="pref_frequency_unit_title">频率单位</string>
+	<string name="pref_frequency_unit_title">频率�?��?</string>
 	<string name="firmware_version">固件版本</string>
 	<string name="network_header">网络</string>
-	<string name="network_interface">接口</string>
-	<string name="network_status">状态</string>
+	<string name="network_interface">接�?�</string>
+	<string name="network_status">状�?</string>
 	<string name="network_status_up">Up</string>
 	<string name="network_status_down">Down</string>
-	<string name="network_signal">信号</string>
+	<string name="network_signal">信�?�</string>
 	<string name="network_link">强度</string>
 	<string name="pref_group_about">关于</string>
-	<string name="pref_github">源码 / 问题跟踪</string>
-	<string name="pref_dev_email">联系我们</string>
+	<string name="pref_github">�?�? / 问题跟踪</string>
+	<string name="pref_dev_email">�?�系我们</string>
 	<string name="pref_rate_app">给我们评价</string>
-	<string name="pref_rate_app_summary">如果你喜爱这个应用，就给我们好评哦！</string>
+	<string name="pref_rate_app_summary">如果你喜爱这个应用，就给我们好评哦�?</string>
 	<string name="pref_version">版本</string>
 	<string name="shutdown_type_title">关机选项</string>
 	<string name="halt_success">Halt command sent.</string>
 	<string name="halt_fail">挂起失败，请检查连接设置。</string>
-	<string name="validation_msg_name">名称不能为空。</string>
-	<string name="validation_msg_host">主机名/IP不能为空。</string>
-	<string name="validation_msg_user">用户名不能为空。</string>
-	<string name="validation_msg_password">密码不能为空。</string>
-	<string name="validation_msg_port">不是有效的端口。</string>
-	<string name="update_successful">树莓派更新成功。</string>
+	<string name="validation_msg_name">�??称�?能为空。</string>
+	<string name="validation_msg_host">主机�??/IP�?能为空。</string>
+	<string name="validation_msg_user">用户�??�?能为空。</string>
+	<string name="validation_msg_password">密�?�?能为空。</string>
+	<string name="validation_msg_port">�?是有效的端�?�。</string>
+	<string name="update_successful">树莓派更新�?功。</string>
 	<string name="new_pi_created">树莓派已添加</string>
 	<string name="exception_dialog_title">Oops!</string>
-	<string name="authentication_failed">SSH 认证失，请检查你的凭据。</string>
-	<string name="connection_failed">无法建立连接，请检查主机名和网络。</string>
+	<string name="authentication_failed">SSH 认�?失，请检查你的凭�?�。</string>
+	<string name="connection_failed">无法建立连接，请检查主机�??和网络。</string>
 	<string name="errormessages_dialog_title">抱歉...</string>
-	<string name="transport_exception">发生传输异常，请重试。</string>
-	<string name="unexpected_exception">发生意外的异常，请重试。</string>
-	<string name="exception_vcgencmd">树莓派中没有\'vcgencmd\'工具，请确保它位于\'/usr/bin\'或\'/opt/vc/bin\'，并且你的用户组在\'video\'。</string>
+	<string name="transport_exception">�?�生传输异常，请�?试。</string>
+	<string name="unexpected_exception">�?�生�?外的异常，请�?试。</string>
+	<string name="exception_vcgencmd">树莓派中没有\'vcgencmd\'工具，请确�?它�?于\'/usr/bin\'或\'/opt/vc/bin\'，并且你的用户组在\'video\'。</string>
 	<string name="weird_exception">出现了奇怪的问题，请查看日志文件。</string>
 	<string name="changelog_full_title">更新日志</string>
 	<string name="changelog_title">更新了什么？</string>
@@ -103,56 +122,56 @@
 	<string name="pref_log_title">查看日志</string>
 	<string name="pref_log_title_summary">查看这个软件的所有日志。</string>
 	<string name="pref_screen_about">关于 RasPi Check</string>
-	<string name="pref_screen_about_summary">版本，更新日志，开发者</string>
+	<string name="pref_screen_about_summary">版本，更新日志，开�?�者</string>
 	<string name="pref_changelog_title">查看更新日志</string>
 	<string name="pref_changelog_title_summary">查看这个软件的更新日志。</string>
-	<string name="pref_debug_log_summary">打印调试信息到日志中。</string>
-	<string name="pref_debug_log_summary_on">启用调试日志。</string>
-	<string name="pref_debug_log_summary_off">禁用调试日志。</string>
+	<string name="pref_debug_log_summary">打�?�调试信�?�到日志中。</string>
+	<string name="pref_debug_log_summary_on">�?�用调试日志。</string>
+	<string name="pref_debug_log_summary_off">�?用调试日志。</string>
 	<string name="pref_debug_log_title">调试日志</string>
 	<string name="new_raspi_continue">继续</string>
 	<string name="new_raspi_auth_method">登录方法</string>
-	<string name="raspi_key_password_hint">密钥密码</string>
-	<string name="raspi_key_password_empty">密钥密码不能为空。</string>
-	<string name="raspi_auth_keyfile_hint">私钥 (PKCS8/OpenSSH格式)</string>
+	<string name="raspi_key_password_hint">密钥密�?</string>
+	<string name="raspi_key_password_empty">密钥密�?�?能为空。</string>
+	<string name="raspi_auth_keyfile_hint">�?钥 (PKCS8/OpenSSH格�?)</string>
 	<string name="raspi_auth_button_keyfile">选择密钥文件</string>
 	<string name="title_filedialog">选择密钥文件</string>
-	<string name="no_keyfile_present">请选择一个现有的私钥文件。</string>
-	<string name="raspi_key_checkbox_text">总是询问密码</string>
+	<string name="no_keyfile_present">请选择一个现有的�?钥文件。</string>
+	<string name="raspi_key_checkbox_text">总是询问密�?</string>
 	<string name="validation_msg_keyfile">请选择一个密钥文件。</string>
-	<string name="validation_msg_key_passphrase">密钥密码不能为空。</string>
-	<string name="dialog_save_passphrase">保存密码</string>
-	<string name="dialog_passphrase_hint">密码</string>
-	<string name="dialog_passphrase_needed">需要密码</string>
-	<string name="dialog_passphrase_text">请输入密钥的密码。</string>
+	<string name="validation_msg_key_passphrase">密钥密�?�?能为空。</string>
+	<string name="dialog_save_passphrase">�?存密�?</string>
+	<string name="dialog_passphrase_hint">密�?</string>
+	<string name="dialog_passphrase_needed">需�?密�?</string>
+	<string name="dialog_passphrase_text">请输入密钥的密�?。</string>
 	<string name="button_commands">命令</string>
 	<string name="activity_title_commands">自定义命令</string>
 	<string name="activity_title_new_command">新增命令</string>
 	<string name="activity_title_edit_command">编辑命令</string>
-	<string name="label_cmd_name">名称</string>
+	<string name="label_cmd_name">�??称</string>
 	<string name="label_cmd_name_hint">例如：\'reboot\'</string>
 	<string name="label_cmd_command">命令</string>
 	<string name="label_cmd_command_hint">例如：\'shutdown now -r\'</string>
 	<string name="label_cmd_show_output">显示输出</string>
-	<string name="validation_command_blank">命令不能为空。</string>
-	<string name="toast_command_updated">命令已更新！</string>
-	<string name="toast_command_saved">命令已保存！</string>
+	<string name="validation_command_blank">命令�?能为空。</string>
+	<string name="toast_command_updated">命令已更新�?</string>
+	<string name="toast_command_saved">命令已�?存�?</string>
 	<string name="command_context_edit">编辑</string>
 	<string name="command_context_delete">删除</string>
-	<string name="command_context_run">运行</string>
-	<string name="run_cmd_dialog_title">运行 %1$s</string>
+	<string name="command_context_run">�?行</string>
+	<string name="run_cmd_dialog_title">�?行 %1$s</string>
 	
-	<string name="hint_pulltorefresh">小技巧：你可以通过下拉来刷新。</string>
+	<string name="hint_pulltorefresh">�?技巧：你�?�以通过下拉�?�刷新。</string>
 	
-	<!-- 操作按钮字符串 -->
+	<!-- �?作按钮字符串 -->
 	
 	<string name="action_new">新增</string>
 	<string name="action_new_raspi">新增树莓派</string>
 	<string name="action_new_command">新增命令</string>
 	
-	<string name="action_save">保存</string>
-	<string name="action_save_raspi">保存树莓派</string>
-	<string name="action_save_command">保存命令</string>
+	<string name="action_save">�?存</string>
+	<string name="action_save_raspi">�?存树莓派</string>
+	<string name="action_save_command">�?存命令</string>
 	
 	<string name="action_edit">编辑</string>
 	<string name="action_edit_raspi">编辑树莓派</string>
@@ -166,43 +185,43 @@
 	<string name="action_shutdown">关机</string>
 	<string name="action_refresh">刷新</string>
 	
-	<string name="title_placeholders">占位符</string>
+	<string name="title_placeholders">�?��?符</string>
 	<string name="placeholders_button_ok">确定</string>
-	<string name="placeholder_hint_text">你还可以使用占位符，如：“${my_secret}”。当运行时将替换成你输入的命令。</string>
-	<string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - 将替换成当前的时间/日期。必须是一个有效的时间/日期 (比如：MM-dd-yyy)。</string>
-	<string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - 将替换成树莓派的属性。可用的属性包括：name、host、user、pass、port、sudopass。</string>
-	<string name="placeholder_hint">提示:</string>
-	<string name="placeholder_special_hint">特殊的占位符:</string>
+	<string name="placeholder_hint_text">你还�?�以使用�?��?符，如：“${my_secret}�?。当�?行时将替�?��?你输入的命令。</string>
+	<string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - 将替�?��?当�?的时间/日期。必须是一个有效的时间/日期 (比如：MM-dd-yyy)。</string>
+	<string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - 将替�?��?树莓派的属性。�?�用的属性包括：name�?host�?user�?pass�?port�?sudopass。</string>
+	<string name="placeholder_hint">�??示:</string>
+	<string name="placeholder_special_hint">特殊的�?��?符:</string>
 	
-	<string name="pref_load_avg_summary">平均负载计算的时间段。</string>
-	<string name="pref_load_avg_title">平均负载时间段</string>
+	<string name="pref_load_avg_summary">平�?�负载计算的时间段。</string>
+	<string name="pref_load_avg_title">平�?�负载时间段</string>
 	<string name="widget_pi">选择树莓派</string>
-	<string name="widget_configure_title">配置窗口小部件</string>
+	<string name="widget_configure_title">�?置窗�?��?部件</string>
 	<string name="widget_update_interval">更新间隔</string>
 	<string name="widget_update_interval_error">无效的更新间隔。</string>
-	<string name="widget_key_pass_error">您需要保存您密钥文件的密码，因为小部件无法进行提示。</string>
+	<string name="widget_key_pass_error">您需�?�?存您密钥文件的密�?，因为�?部件无法进行�??示。</string>
 	<string name="widget_update_interval_zero">必须大于零。</string>
 	<string name="widget_update_interval_five_min">5 分钟</string>
 	<string name="widget_update_interval_ten_min">10 分钟</string>
 	<string name="widget_update_interval_thirty_min">30 分钟</string>
-	<string name="widget_update_interval_one_hour">1 小时</string>
-	<string name="widget_update_interval_two_hours">2 小时</string>
-	<string name="widget_update_interval_eight_hours">8 小时</string>
+	<string name="widget_update_interval_one_hour">1 �?时</string>
+	<string name="widget_update_interval_two_hours">2 �?时</string>
+	<string name="widget_update_interval_eight_hours">8 �?时</string>
 	<string name="widget_update_interval_one_day">1 天</string>
 	<string name="widget_update_interval_custom">自定义间隔</string>
 	<string name="widget_update_interval_custom_text">更新间隔（分钟）</string>
-	<string name="widget_device_removed">这个树莓派的小部件已被删除。</string>
+	<string name="widget_device_removed">这个树莓派的�?部件已被删除。</string>
 	<string name="used_memory">使用内存</string>
 	
 	<string name="widget_auto_update_yes">自动更新</string>
-	<string name="widget_auto_update_wifi">仅限WiFi</string>
-	<string name="widget_auto_update_no">不自动更新</string>
+	<string name="widget_auto_update_wifi">仅�?WiFi</string>
+	<string name="widget_auto_update_no">�?自动更新</string>
 	<string name="widget_auto_update">自动更新</string>
-	<string name="pref_facebook_summary">欢迎关注我们并获得 RasPi Check 的最新动态。</string>
-	<string name="widget_add_no_device">您需要在应用程序中先添加树莓派。</string>
+	<string name="pref_facebook_summary">欢迎关注我们并获得 RasPi Check 的最新动�?。</string>
+	<string name="widget_add_no_device">您需�?在应用程�?中先添加树莓派。</string>
 	<string name="action_share">分享</string>
 	<string name="share_body"># Information for Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nThis information has been queried with RasPi Check (version: %5$s) for Android.</string>
-	<string name="permission_private_key_error">读取私钥文件权限被拒绝，无法搜索。</string>
-	<string name="widget_no_read_permission">RasPi Check 没有权限访问外部存储，无法更新小部件。</string>
+	<string name="permission_private_key_error">读�?��?钥文件�?��?被拒�?，无法�?�索。</string>
+	<string name="widget_no_read_permission">RasPi Check 没有�?��?访问外部存储，无法更新�?部件。</string>
 
 </resources>
