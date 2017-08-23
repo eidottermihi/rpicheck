@@ -1202,7 +1202,7 @@ public class RaspiQuery implements IQueryService {
      * @see de.eidottermihi.rpicheck.ssh.IQueryService#run(java.lang.String)
      */
     @Override
-    public String run(String command) throws RaspiQueryException {
+    public String run(String command, int timeout) throws RaspiQueryException {
         LOGGER.info("Running custom command: {}", command);
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
@@ -1211,7 +1211,7 @@ public class RaspiQuery implements IQueryService {
                     session = client.startSession();
                     session.allocateDefaultPTY();
                     final Command cmd = session.exec(command);
-                    cmd.join(20, TimeUnit.SECONDS);
+                    cmd.join(timeout, TimeUnit.SECONDS);
                     cmd.close();
                     final String output = IOUtils.readFully(
                             cmd.getInputStream()).toString();

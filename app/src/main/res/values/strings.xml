@@ -243,4 +243,9 @@
     <string name="permission_private_key_error">Permission to read the private key file denied. Can\'t execute query.</string>
     <string name="widget_no_read_permission">RasPi Check has no permission to access the external storage. Can\'t update widget.</string>
 
+    <string name="label_cmd_timeout">Timeout in seconds</string>
+    <string name="timeout_hint_title">Timeout:</string>
+    <string name="timeout_hint_text">Customize the default timeout of 60 seconds if your command takes longer to complete.</string>
+    <string name="validation_msg_timeout">must be at least 1 second</string>
+
 </resources>

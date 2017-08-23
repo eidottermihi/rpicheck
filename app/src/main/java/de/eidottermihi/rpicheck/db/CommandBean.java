@@ -30,6 +30,7 @@ public class CommandBean implements Serializable {
     private String name;
     private String command;
     private boolean showOutput;
+    private int timeout;
 
     public String getName() {
         return name;
@@ -63,4 +64,11 @@ public class CommandBean implements Serializable {
         this.id = id;
     }
 
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 }

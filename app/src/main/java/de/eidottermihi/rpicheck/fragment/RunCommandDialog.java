@@ -131,7 +131,7 @@ public class RunCommandDialog extends DialogFragment {
             putLine("Authenticating with password ...");
             final String pass = device.getPass();
             new SSHCommandTask().execute(host, user, pass, port, sudoPass,
-                    null, null, command.getCommand());
+                    null, null, command.getCommand(), String.valueOf(command.getTimeout()));
         } else if (device.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             putLine("Authenticating with private key ...");
             // keyfile
@@ -140,7 +140,7 @@ public class RunCommandDialog extends DialogFragment {
                 final File privateKey = new File(keyfilePath);
                 if (privateKey.exists()) {
                     new SSHCommandTask().execute(host, user, null, port,
-                            sudoPass, keyfilePath, null, command.getCommand());
+                            sudoPass, keyfilePath, null, command.getCommand(), String.valueOf(command.getTimeout()));
                 } else {
                     putLine("ERROR - No keyfile was found on path " + keyfilePath);
                 }
@@ -157,7 +157,7 @@ public class RunCommandDialog extends DialogFragment {
                     if (!Strings.isNullOrEmpty(this.passphrase)) {
                         new SSHCommandTask().execute(host, user, null, port,
                                 sudoPass, keyfilePath, this.passphrase,
-                                command.getCommand());
+                                command.getCommand(), String.valueOf(command.getTimeout()));
                     } else {
                         putLine("ERROR - No passphrase specified.");
                     }
@@ -206,6 +206,7 @@ public class RunCommandDialog extends DialogFragment {
             final String privateKeyPath = params[5];
             final String privateKeyPass = params[6];
             final String command = params[7];
+            final int timeout = Integer.parseInt(params[8]);
             try {
                 if (privateKeyPath != null) {
                     File f = new File(privateKeyPath);
@@ -221,10 +222,11 @@ public class RunCommandDialog extends DialogFragment {
                     raspiQuery.connect(pass);
                 }
                 publishProgress("Connection established.");
-                String output = raspiQuery.run(command);
+                String output = raspiQuery.run(command, timeout);
                 publishProgress(output);
                 publishProgress("Connection closed.");
             } catch (RaspiQueryException e) {
+                LOGGER.error("Exception occured during command execution.", e);
                 publishProgress("ERROR - " + e.getMessage());
                 if (e.getCause() != null) {
                     publishProgress("Reason: " + e.getCause().getMessage());

@@ -90,41 +90,60 @@
                 android:ems="10"
                 android:hint="@string/label_cmd_command_hint"
                 android:inputType="text|textMultiLine|textNoSuggestions" />
+
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp">
 
             <TextView
-                android:id="@+id/hint1_Text"
+                android:id="@+id/labelCustomTimeout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="@string/placeholder_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:text="@string/label_cmd_timeout"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            <EditText
+                android:id="@+id/command_timeout_editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/labelCustomTimeout"
+                android:ems="10"
+                android:inputType="number"
+                android:text="60"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp">
 
             <TextView
                 android:id="@+id/hint2_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/hint1_Text"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="@string/placeholder_hint_text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
             <TextView
                 android:id="@+id/hint3_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/hint2_Text"
-                android:paddingTop="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingTop="8dp"
                 android:text="@string/placeholder_special_hint"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
             <TextView
                 android:id="@+id/hint4_Text"
@@ -135,7 +154,7 @@
                 android:paddingRight="8dp"
                 android:paddingTop="2dp"
                 android:text="@string/placeholder_non_prompting_date_hint_text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
             <TextView
                 android:id="@+id/hint5_Text"
@@ -146,7 +165,29 @@
                 android:paddingRight="8dp"
                 android:paddingTop="2dp"
                 android:text="@string/placeholder_non_prompting_pi_hint_text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            <TextView
+                android:id="@+id/hint6_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hint5_Text"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
+                android:text="@string/timeout_hint_title"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            <TextView
+                android:id="@+id/hint7_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hint6_Text"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:text="@string/timeout_hint_text"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
         </RelativeLayout>
 

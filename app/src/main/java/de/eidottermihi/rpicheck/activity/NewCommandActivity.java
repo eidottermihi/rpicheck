@@ -52,6 +52,8 @@ public class NewCommandActivity extends InjectionAppCompatActivity {
     private EditText nameEditText;
     @InjectView(R.id.new_cmd_command_editText)
     private EditText commandEditText;
+    @InjectView(R.id.command_timeout_editText)
+    private EditText timeoutEditText;
 
     DeviceDbHelper db;
 
@@ -82,6 +84,7 @@ public class NewCommandActivity extends InjectionAppCompatActivity {
                 protected void onPostExecute(CommandBean commandBean) {
                     nameEditText.setText(commandBean.getName());
                     commandEditText.setText(commandBean.getCommand());
+                    timeoutEditText.setText(commandBean.getTimeout());
                 }
             }.execute();
         }
@@ -104,9 +107,10 @@ public class NewCommandActivity extends InjectionAppCompatActivity {
     }
 
     private void saveCommand() {
-        if (validation.validateNewCmdData(this, commandEditText)) {
+        if (validation.validateNewCmdData(this, commandEditText, timeoutEditText)) {
             String name = nameEditText.getText().toString();
             String cmd = commandEditText.getText().toString().trim();
+            Integer timeout = Integer.parseInt(timeoutEditText.getText().toString().trim());
             if (Strings.isNullOrEmpty(name)) {
                 name = cmd;
             }
@@ -114,6 +118,7 @@ public class NewCommandActivity extends InjectionAppCompatActivity {
             bean.setName(name);
             bean.setCommand(cmd);
             bean.setShowOutput(true);
+            bean.setTimeout(timeout);
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {

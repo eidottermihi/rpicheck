@@ -36,13 +36,17 @@ public class Validation {
      * Validates if user input is valid.
      *
      * @param context
-     * @param cmd
+     * @param commandEditText
+     * @param timeoutEditText
      * @return true if valid
      */
-    public boolean validateNewCmdData(Context context, EditText cmd) {
+    public boolean validateNewCmdData(Context context, EditText commandEditText, EditText timeoutEditText) {
         boolean dataValid = true;
-        if (!checkNonOptionalTextField(cmd,
+        if (!checkNonOptionalTextField(commandEditText,
                 context.getString(R.string.validation_command_blank))) {
+            dataValid = false;
+        }
+        if (!validateTimeout(timeoutEditText)) {
             dataValid = false;
         }
         return dataValid;
@@ -176,6 +180,25 @@ public class Validation {
                     R.string.validation_msg_port));
         }
         return portValid;
+    }
+
+    public boolean validateTimeout(EditText timeoutEditText) {
+        boolean timeoutValid = true;
+        // minimum 1
+        try {
+            final Integer timeout = Integer.parseInt(timeoutEditText.getText()
+                    .toString());
+            if (timeout < 1) {
+                timeoutValid = false;
+            }
+        } catch (NumberFormatException e) {
+            timeoutValid = false;
+        }
+        if (!timeoutValid) {
+            timeoutEditText.setError(timeoutEditText.getContext().getText(
+                    R.string.validation_msg_timeout));
+        }
+        return timeoutValid;
     }
 
 }

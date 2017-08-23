@@ -184,8 +184,9 @@ public interface IQueryService {
      * Runs the specified command.
      *
      * @param command the command to run
+     * @param timeout timeout in seconds
      * @throws RaspiQueryException when something goes wrong
      */
-    public abstract String run(String command) throws RaspiQueryException;
+    public abstract String run(String command, int timeout) throws RaspiQueryException;
 
 }
