@@ -953,6 +953,12 @@ public class RaspiQuery implements IQueryService {
             // split string at whitespaces
             final String[] linesSplitted = line.split("\\s+");
             if (linesSplitted.length >= 6) {
+                String filesystem = linesSplitted[0];
+                String size = linesSplitted[1];
+                String used = linesSplitted[2];
+                String free = linesSplitted[3];
+                String usedPercentage = linesSplitted[4];
+                String mountpoint = linesSplitted[5];
                 if (linesSplitted.length > 6) {
                     // whitespace in mountpoint path
                     StringBuilder sb = new StringBuilder();
@@ -962,21 +968,21 @@ public class RaspiQuery implements IQueryService {
                             sb.append(" ");
                         }
                     }
-                    disks.add(new DiskUsageBean(linesSplitted[0],
-                            linesSplitted[1], linesSplitted[2],
-                            linesSplitted[3], linesSplitted[4], sb.toString()));
-                } else {
-                    disks.add(new DiskUsageBean(linesSplitted[0],
-                            linesSplitted[1], linesSplitted[2],
-                            linesSplitted[3], linesSplitted[4],
-                            linesSplitted[5]));
+                    mountpoint = sb.toString();
                 }
+                if (filesystem.length() > 20) {
+                    // shorten filesystem
+                    LOGGER.debug("Shorten filesystem: {}", filesystem);
+                    filesystem = ".." + filesystem.substring(filesystem.length() - 21, filesystem.length());
+                }
+                disks.add(new DiskUsageBean(filesystem, size, used, free, usedPercentage, mountpoint));
             } else {
                 LOGGER.warn(
                         "Expected another output of df -h. Skipping line: {}",
                         line);
             }
         }
+        LOGGER.debug("Disks: {}", disks);
         return disks;
     }
 
