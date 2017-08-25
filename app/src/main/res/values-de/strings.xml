@@ -219,6 +219,6 @@
     <string name="label_cmd_timeout">Timeout in Sekunden</string>
     <string name="timeout_hint_title">Timeout:</string>
     <string name="timeout_hint_text">Passe den Standard Timeout Wert von 60 Sekunden an, wenn dein Kommando länger zur Durchführung benötigt.</string>
-    <string name="validation_msg_timeout">must be at least 1 second</string>
+    <string name="validation_msg_timeout">Muss größer als 0 sein.</string>
 
 </resources>

@@ -84,7 +84,7 @@ public class NewCommandActivity extends InjectionAppCompatActivity {
                 protected void onPostExecute(CommandBean commandBean) {
                     nameEditText.setText(commandBean.getName());
                     commandEditText.setText(commandBean.getCommand());
-                    timeoutEditText.setText(commandBean.getTimeout());
+                    timeoutEditText.setText(commandBean.getTimeout() + "");
                 }
             }.execute();
         }
