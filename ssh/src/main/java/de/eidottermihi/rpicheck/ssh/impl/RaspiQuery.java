@@ -792,20 +792,25 @@ public class RaspiQuery implements IQueryService {
                     final String rebootCmdLogger = "echo \"??SUDO_PW??\" | sudo -S /sbin/shutdown -r now";
                     LOGGER.info("Sending reboot command: {}", rebootCmdLogger);
                     Command cmd = session.exec(command);
-                    cmd.join();
-                    session.close();
+                    try {
+                        cmd.join();
+                        session.join();
+                    } catch (ConnectionException e) {
+                        LOGGER.debug("ConnectException while sending reboot command. Probably system is going down...", e);
+                        return;
+                    }
                     if (cmd.getExitStatus() != null && cmd.getExitStatus() != 0) {
                         LOGGER.warn("Sudo unknown: Trying \"reboot\"...");
                         // openelec running
                         session = client.startSession();
                         session.allocateDefaultPTY();
-                        session.exec("reboot");
+                        cmd = session.exec("reboot");
                         try {
-                            session.join(250, TimeUnit.MILLISECONDS);
+                            cmd.join();
                             LOGGER.debug("join successful after 'reboot'.");
                         } catch (ConnectionException e) {
                             // system went down
-                            LOGGER.debug("'reboot' successful!");
+                            LOGGER.debug("ConnectException while sending reboot command. Probably system is going down...", e);
                         }
                     }
                 } catch (IOException e) {
@@ -850,20 +855,25 @@ public class RaspiQuery implements IQueryService {
                     final String haltCmdLogger = "echo \"??SUDO_PW??\" | sudo -S /sbin/shutdown -h now";
                     LOGGER.info("Sending halt command: {}", haltCmdLogger);
                     Command cmd = session.exec(command);
-                    cmd.join();
-                    session.close();
+                    try {
+                        cmd.join();
+                        session.join();
+                    } catch (ConnectionException e) {
+                        LOGGER.debug("ConnectException while sending halt command. Probably system is going down...", e);
+                        return;
+                    }
                     if (cmd.getExitStatus() != null && cmd.getExitStatus() != 0) {
                         // openelec running
                         session = client.startSession();
                         session.allocateDefaultPTY();
                         LOGGER.warn("Sudo unknown: Trying \"halt\"...");
-                        session.exec("halt");
+                        cmd = session.exec("halt");
                         try {
-                            session.join(250, TimeUnit.MILLISECONDS);
-                            LOGGER.debug("'halt' probably didnt work.");
+                            cmd.join();
+                            LOGGER.debug("join successful after 'halt'.");
                         } catch (ConnectionException e) {
                             // system went down
-                            LOGGER.debug("'halt' successful!");
+                            LOGGER.debug("ConnectException while sending halt command. Probably system is going down...", e);
                         }
                     }
                 } catch (IOException e) {
