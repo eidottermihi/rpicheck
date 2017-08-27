@@ -43,6 +43,7 @@ public class QueryBean implements Serializable {
     private List<DiskUsageBean> disks;
     private String distri;
     private List<ProcessBean> processes;
+    private String systemtime;
     private RaspiQueryException exception;
     private List<String> errorMessages;
 
@@ -66,17 +67,6 @@ public class QueryBean implements Serializable {
 
     public Date getLastUpdate() {
         return lastUpdate;
-    }
-
-    @Override
-    public String toString() {
-        return "QueryBean [vcgencmdInfo=" + vcgencmdInfo + ", networkInfo="
-                + networkInfo + ", lastUpdate=" + lastUpdate + ", startup="
-                + startup + ", avgLoad=" + avgLoad + ", totalMem=" + totalMem
-                + ", freeMem=" + freeMem + ", serialNo=" + serialNo
-                + ", disks=" + disks + ", distri=" + distri + ", processes="
-                + processes + ", exception=" + exception + ", errorMessages="
-                + errorMessages + "]";
     }
 
     public void setLastUpdate(Date lastUpdate) {
@@ -171,4 +161,32 @@ public class QueryBean implements Serializable {
         this.errorMessages = errorMessages;
     }
 
+    @Exported("systemtime")
+    public String getSystemtime() {
+        return systemtime;
+    }
+
+    public void setSystemtime(String systemtime) {
+        this.systemtime = systemtime;
+    }
+
+    @Override
+    public String toString() {
+        return "QueryBean{" +
+                "vcgencmdInfo=" + vcgencmdInfo +
+                ", networkInfo=" + networkInfo +
+                ", lastUpdate=" + lastUpdate +
+                ", startup='" + startup + '\'' +
+                ", avgLoad='" + avgLoad + '\'' +
+                ", totalMem=" + totalMem +
+                ", freeMem=" + freeMem +
+                ", serialNo='" + serialNo + '\'' +
+                ", disks=" + disks +
+                ", distri='" + distri + '\'' +
+                ", processes=" + processes +
+                ", systemtime='" + systemtime + '\'' +
+                ", exception=" + exception +
+                ", errorMessages=" + errorMessages +
+                '}';
+    }
 }

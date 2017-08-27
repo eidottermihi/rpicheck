@@ -220,5 +220,10 @@
     <string name="timeout_hint_title">Timeout:</string>
     <string name="timeout_hint_text">Passe den Standard Timeout Wert von 60 Sekunden an, wenn dein Kommando länger zur Durchführung benötigt.</string>
     <string name="validation_msg_timeout">Muss größer als 0 sein.</string>
+    <string name="pref_query_show_system_time_summary">Anzeige Systemzeit</string>
+    <string name="pref_query_show_system_time_summaryOff">Systemzeit wird nicht angezeigt.</string>
+    <string name="pref_query_show_system_time_summaryOn">Systemzeit wird angezeigt.</string>
+    <string name="pref_query_show_system_time_title">Zeige Systemzeit an</string>
+    <string name="systemtime">Systemzeit</string>
 
 </resources>
