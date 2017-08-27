@@ -64,7 +64,7 @@
     <string name="disk_header_size">Größe</string>
     <string name="disk_header">Speichernutzung</string>
     <string name="disk_header_avail">Frei</string>
-    <string name="disk_header_usedper">Belegt</string>
+    <string name="disk_header_usedper">Belegt%</string>
     <string name="please_add_a_raspberry_pi">Bitte füge einen Pi hinzu.</string>
     <string name="activity_title_edit_raspi">Pi bearbeiten</string>
     <string name="disk_header_mounted_on">Mount</string>
