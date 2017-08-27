@@ -19,6 +19,12 @@
     </style>
   </head>
   <body>
+$ 1.8.2
+  % Version 1.8.2
+  _ 2017-08-28
+  * Show system time under SYSTEM (must be enabled in settings)
+  * Fixed translations with UTF-8 characters (thanks LJason77 for the PR)
+  * Attempt to make reboot/halt more robust
 $ 1.8.1
   % Version 1.8.1
   _ 2017-08-26
