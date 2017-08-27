@@ -1,23 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-
-    Copyright (C) 2017  RasPi Check Contributors
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
--->
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:locale="en">
@@ -50,15 +31,15 @@
     <string name="no_device_available">Prosím přidejte nejprve Raspberry Pi.</string>
     <string name="new_raspi_text">Zadejte informace o svém Raspberry Pi.</string>
     <string name="ssh_port">SSH port</string>
-    <string name="new_raspi_description">Dodate�?ný popis</string>
-    <string name="new_raspi_description_hint">Přidejte dodate�?ný popis zde..</string>
+    <string name="new_raspi_description">Dodatečný popis</string>
+    <string name="new_raspi_description_hint">Přidejte dodatečný popis zde..</string>
     <string name="overclocking_header">Přetaktování</string>
     <string name="system_header">Systém</string>
     <string name="uptime_started">Spuštěno před</string>
     <string name="average_load">Průměrná zátěž</string>
     <string name="total_memory">Celková paměť</string>
     <string name="free_memory">Volná paměť</string>
-    <string name="cpu_serial">Sériové �?íslo</string>
+    <string name="cpu_serial">Sériové číslo</string>
     <string name="ip_addr_label">IP adresa</string>
     <string name="distribution">Distribuce</string>
     <string name="disk_header_filesystem">Souborový systém</string>
@@ -113,7 +94,7 @@
     <string name="connection_failed">Nelze navázat spojení. Prosím ověřte vaše uživatelské jméno a připojení.</string>
     <string name="errormessages_dialog_title">Promiňte...</string>
     <string name="transport_exception">Během přenosu došlo k chybě. Prosím zkuste znovu.</string>
-    <string name="unexpected_exception">Nastala neo�?ekávaná chyba. Prosím zkuste znovu.</string>
+    <string name="unexpected_exception">Nastala neočekávaná chyba. Prosím zkuste znovu.</string>
     <string name="exception_vcgencmd">Nástroj \'vcgencmd\' nebyl na vašem Pi nalezen. Ujistěte se, že se nachází v \'/usr/bin\' nebo \'/opt/vc/bin\'.</string>
     <string name="weird_exception">Něco se zdá být špatně. Prosím zhlédněte log soubor.</string>
     <string name="changelog_full_title">Změnit log soubor</string>
@@ -131,21 +112,21 @@
     <string name="pref_debug_log_summary_on">Logování debugu povoleno.</string>
     <string name="pref_debug_log_summary_off">Logování debugu zakázáno.</string>
     <string name="pref_debug_log_title">Logování debugu</string>
-    <string name="new_raspi_continue">Pokra�?ovat</string>
+    <string name="new_raspi_continue">Pokračovat</string>
     <string name="new_raspi_auth_method">Metoda autentikace</string>
-    <string name="raspi_key_password_hint">Klí�?ové heslo</string>
-    <string name="raspi_key_password_empty">Klí�?ové heslo nesmí být prázdné.</string>
-    <string name="raspi_auth_keyfile_hint">Privátní klí�? (formát PKCS8/OpenSSH)</string>
-    <string name="raspi_auth_button_keyfile">Vybrat soubor s klí�?em</string>
-    <string name="title_filedialog">Vybrat soubor s klí�?em</string>
-    <string name="no_keyfile_present">Prosím vyberte existující soubor s klí�?em.</string>
+    <string name="raspi_key_password_hint">Klíčové heslo</string>
+    <string name="raspi_key_password_empty">Klíčové heslo nesmí být prázdné.</string>
+    <string name="raspi_auth_keyfile_hint">Privátní klíč (formát PKCS8/OpenSSH)</string>
+    <string name="raspi_auth_button_keyfile">Vybrat soubor s klíčem</string>
+    <string name="title_filedialog">Vybrat soubor s klíčem</string>
+    <string name="no_keyfile_present">Prosím vyberte existující soubor s klíčem.</string>
     <string name="raspi_key_checkbox_text">Vždy se zeptat na přístupové heslo</string>
-    <string name="validation_msg_keyfile">Prosím vyberte soubor s klí�?em.</string>
-    <string name="validation_msg_key_passphrase">Klí�?ové heslo nemůže být prázdné.</string>
+    <string name="validation_msg_keyfile">Prosím vyberte soubor s klíčem.</string>
+    <string name="validation_msg_key_passphrase">Klíčové heslo nemůže být prázdné.</string>
     <string name="dialog_save_passphrase">Save přístupové heslo</string>
     <string name="dialog_passphrase_hint">přístupové heslo</string>
     <string name="dialog_passphrase_needed">Je vyžadováno přístupové heslo</string>
-    <string name="dialog_passphrase_text">Prosím zadejte přístupové heslo pro privátní klí�?.</string>
+    <string name="dialog_passphrase_text">Prosím zadejte přístupové heslo pro privátní klíč.</string>
     <string name="button_commands">Příkazy</string>
     <string name="activity_title_commands">Vlastní příkazy</string>
     <string name="activity_title_new_command">Nový příkaz</string>
@@ -190,18 +171,18 @@
     <string name="title_placeholders">Zástupné znaky</string>
     <string name="placeholders_button_ok">OK</string>
     <string name="placeholder_hint_text">Můžete použít zástupné znaky, např. \'${my_secret}\'. Budou nahrazeny vámi zadanými údaji, které zadáte během spouštění příkazu.</string>
-    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Bude automaticky nahrazeno sou�?asným datem/�?asem. Musí být použit správný formát �?asu/data (např. MM-dd-yyy).</string>
+    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Bude automaticky nahrazeno současným datem/časem. Musí být použit správný formát času/data (např. MM-dd-yyy).</string>
     <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Bude automaticky nahrazeno vlastností vašeho Pi. Dostupné vlastnosti jsou: name, host, user, pass, port, sudopass.</string>
     <string name="placeholder_hint">Tip:</string>
     <string name="placeholder_special_hint">Speciální zástupné znaky:</string>
 
-    <string name="pref_load_avg_summary">Časová prodleva pro průměrné vypo�?ítání.</string>
+    <string name="pref_load_avg_summary">Časová prodleva pro průměrné vypočítání.</string>
     <string name="pref_load_avg_title">Časová prodleva průměrného zatížení</string>
     <string name="widget_pi">Vybrat Raspberry Pi</string>
     <string name="widget_configure_title">Konfigurovat widget</string>
     <string name="widget_update_interval">Interval obnovy</string>
     <string name="widget_update_interval_error">Neplatný interval obnovy.</string>
-    <string name="widget_key_pass_error">Potřebujete uložit soubor s klí�?em protože widgety jej nemůžou použít.</string>
+    <string name="widget_key_pass_error">Potřebujete uložit soubor s klíčem protože widgety jej nemůžou použít.</string>
     <string name="widget_update_interval_zero">Musí být vyšší něž nula.</string>
     <string name="widget_update_interval_five_min">5 minut</string>
     <string name="widget_update_interval_ten_min">10 minut</string>
@@ -219,10 +200,9 @@
     <string name="widget_auto_update_wifi">Pouze na Wi-Fi</string>
     <string name="widget_auto_update_no">Ne</string>
     <string name="widget_auto_update">Automatická obnova</string>
-    <string name="pref_facebook_summary">Bu�?te neustále informování o RasPi Check</string>
+    <string name="pref_facebook_summary">Buďte neustále informování o RasPi Check</string>
     <string name="widget_add_no_device">Potřebujete nejprve přidat Pi do appky.</string>
     <string name="action_share">Sdílet</string>
     <string name="share_body"># Informace o Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nTyto informace byly získány pomocí RasPi Check (version: %5$s) pro Android.</string>
-    <string name="timeout_hint_title"></string>
 
 </resources>
