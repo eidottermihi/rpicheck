@@ -53,6 +53,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
     public static final String KEY_PREF_QUERY_HIDE_ROOT_PROCESSES = "pref_query_hide_root";
     public static final String KEY_PREF_FREQUENCY_UNIT = "pref_frequency_unit";
     public static final String KEY_PREF_DEBUG_LOGGING = "pref_debug_log";
+    public static final String KEY_PREF_QUERY_SHOW_SYSTEM_TIME = "pref_query_show_system_time";
 
     private static final String KEY_PREF_LOG = "pref_log";
     private static final String KEY_PREF_CHANGELOG = "pref_changelog";

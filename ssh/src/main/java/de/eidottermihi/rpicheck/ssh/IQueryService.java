@@ -111,6 +111,14 @@ public interface IQueryService {
     public abstract String queryDistributionName() throws RaspiQueryException;
 
     /**
+     * Queries the current system time.
+     *
+     * @return the system time in RFC-2822 format
+     * @throws RaspiQueryException if something goes wrong
+     */
+    public abstract String querySystemtime() throws RaspiQueryException;
+
+    /**
      * Queries the running processes.
      *
      * @param showRootProcesses if processes of root should be shown

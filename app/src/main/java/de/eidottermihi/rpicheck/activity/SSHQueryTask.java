@@ -112,10 +112,12 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
             publishProgress(80);
             final List<NetworkInterfaceInformation> networkInformation = queryService
                     .queryNetworkInformation();
-            publishProgress(90);
+            publishProgress(85);
             bean.setDisks(queryService.queryDiskUsage());
-            publishProgress(95);
+            publishProgress(90);
             bean.setDistri(queryService.queryDistributionName());
+            publishProgress(95);
+            bean.setSystemtime(queryService.querySystemtime());
             queryService.disconnect();
             publishProgress(100);
             bean.setVcgencmdInfo(vcgencmdBean);

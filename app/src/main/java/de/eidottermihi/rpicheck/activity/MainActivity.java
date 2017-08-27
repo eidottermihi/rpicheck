@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.audiofx.BassBoost;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -36,12 +37,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.transition.Visibility;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.SpinnerAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -133,6 +136,10 @@ public class MainActivity extends InjectionAppCompatActivity implements
     private TextView serialNoText;
     @InjectView(R.id.distriText)
     private TextView distriText;
+    @InjectView(R.id.systemtimeText)
+    private TextView systemtimeText;
+    @InjectView(R.id.systemtimeLayout)
+    private RelativeLayout systemtimeLayout;
     @InjectView(R.id.diskTable)
     private TableLayout diskTable;
     @InjectView(R.id.processTable)
@@ -233,6 +240,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
         distriText.setText("");
         serialNoText.setText("");
         lastUpdateText.setText("");
+        systemtimeText.setText("");
         // tables
         updateDiskTable(null);
         updateNetworkTable(null);
@@ -250,6 +258,14 @@ public class MainActivity extends InjectionAppCompatActivity implements
         coreVoltText.setText(FormatHelper.formatDecimal(currentDevice.getLastQueryData().getVcgencmdInfo().getCoreVolts()));
         firmwareText.setText(result.getVcgencmdInfo().getVersion());
         lastUpdateText.setText(SimpleDateFormat.getDateTimeInstance().format(result.getLastUpdate()));
+        final boolean showSystemtime = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_QUERY_SHOW_SYSTEM_TIME, false);
+        if (showSystemtime) {
+            systemtimeLayout.setVisibility(View.VISIBLE);
+            systemtimeText.setText(result.getSystemtime());
+        } else {
+            systemtimeText.setText("");
+            systemtimeLayout.setVisibility(View.GONE);
+        }
         // uptime and average load may contain errors
         if (result.getAvgLoad() != null) {
             averageLoadText.setText(result.getAvgLoad());

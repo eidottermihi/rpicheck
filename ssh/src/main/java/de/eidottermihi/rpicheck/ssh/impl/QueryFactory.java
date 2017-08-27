@@ -27,6 +27,7 @@ import de.eidottermihi.rpicheck.ssh.impl.queries.FirmwareQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.LoadAverageQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.MemoryQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.SerialNoQuery;
+import de.eidottermihi.rpicheck.ssh.impl.queries.SystemtimeQuery;
 import de.eidottermihi.rpicheck.ssh.impl.queries.UptimeQuery;
 
 public final class QueryFactory {
@@ -51,5 +52,9 @@ public final class QueryFactory {
 
     public static final Queries<String> makeFirmwareQuery(SSHClient client, String vcgencmdPath) {
         return new ConnectionCheckingQuery<>(new FirmwareQuery(client, vcgencmdPath));
+    }
+
+    public static final Queries<String> makeSystemTimeQuery(SSHClient client) {
+        return new ConnectionCheckingQuery<>(new SystemtimeQuery(client));
     }
 }

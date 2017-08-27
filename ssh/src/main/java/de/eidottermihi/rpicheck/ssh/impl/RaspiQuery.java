@@ -730,6 +730,11 @@ public class RaspiQuery implements IQueryService {
         }
     }
 
+    @Override
+    public String querySystemtime() throws RaspiQueryException {
+        return QueryFactory.makeSystemTimeQuery(client).run();
+    }
+
     /*
      * (non-Javadoc)
      *

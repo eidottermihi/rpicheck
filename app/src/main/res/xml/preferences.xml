@@ -56,6 +56,14 @@
             android:key="pref_load_avg"
             android:summary="@string/pref_load_avg_summary"
             android:title="@string/pref_load_avg_title"/>
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_query_show_system_time"
+            android:summary="@string/pref_query_show_system_time_summary"
+            android:summaryOff="@string/pref_query_show_system_time_summaryOff"
+            android:summaryOn="@string/pref_query_show_system_time_summaryOn"
+            android:title="@string/pref_query_show_system_time_title"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_log">
         <Preference
