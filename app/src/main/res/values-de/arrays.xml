@@ -25,7 +25,7 @@
     </string-array>
     <string-array name="shutdown_options">
         <item>Neustarten</item>
-        <item>System anhalten</item>
+        <item>Herunterfahren</item>
     </string-array>
     <string-array name="auth_methods">
         <item>Passwort</item>
