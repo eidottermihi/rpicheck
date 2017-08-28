@@ -22,7 +22,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
-import net.schmizz.sshj.AndroidConfig;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.ConnectionException;
@@ -31,14 +30,11 @@ import net.schmizz.sshj.connection.channel.direct.Session.Command;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
-import net.schmizz.sshj.xfer.FileSystemFile;
-import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,11 +102,6 @@ public class RaspiQuery implements IQueryService {
     private String hostname;
     private String username;
     private int port = DEFAULT_SSH_PORT;
-
-    static {
-        //Security.removeProvider("BC");
-        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
-    }
 
     /**
      * Initialize a new RaspiQuery.
@@ -1187,28 +1178,6 @@ public class RaspiQuery implements IQueryService {
     /*
      * (non-Javadoc)
      *
-     * @see de.eidottermihi.rpicheck.ssh.IQueryService#getFile(java.lang.String)
-     */
-    @Override
-    public final String getFile(String path) {
-        if (client != null) {
-            if (client.isConnected()) {
-                SCPFileTransfer scpClient = new SCPFileTransfer(client);
-                try {
-                    scpClient.download("/boot/config.txt", new FileSystemFile(
-                            "/"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see de.eidottermihi.rpicheck.ssh.IQueryService#getHostname()
      */
     @Override
@@ -1274,7 +1243,7 @@ public class RaspiQuery implements IQueryService {
      */
 
     public SSHClient newAndroidSSHClient() {
-        return new SSHClient(new AndroidConfig());
+        return new SSHClient(new SpongyCastleAndroidConfig());
     }
 
     @Override

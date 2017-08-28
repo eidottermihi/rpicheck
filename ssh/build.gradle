@@ -10,10 +10,15 @@ targetCompatibility = JavaVersion.VERSION_1_7
 
 
 dependencies {
-    compile 'com.google.guava:guava:18.0'
+    compile 'com.google.guava:guava:20.0'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile 'org.slf4j:slf4j-api:1.7.7'
-    compile 'de.eidottermihi:sshj4android:0.11.0'
+    compile 'com.hierynomus:sshj:0.22.0'
+    compile 'com.madgag.spongycastle:core:1.56.0.0'
+    compile 'com.madgag.spongycastle:prov:1.56.0.0'
+    compile 'com.madgag.spongycastle:bcpkix-jdk15on:1.56.0.0'
+    compile 'com.madgag.spongycastle:bcpg-jdk15on:1.56.0.0'
+
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:1.9.5'
