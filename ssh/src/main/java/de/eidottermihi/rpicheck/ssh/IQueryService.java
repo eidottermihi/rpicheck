@@ -182,8 +182,6 @@ public interface IQueryService {
      */
     public abstract void disconnect() throws RaspiQueryException;
 
-    public abstract String getFile(String path);
-
     public abstract String getHostname();
 
     public abstract void setHostname(String hostname);
