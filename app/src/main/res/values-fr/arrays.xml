@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="temp_scales">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+    <string-array name="shutdown_options">
+        <item>redémarrer le système</item>
+        <item>mettre en veille le système</item>
+    </string-array>
+    <string-array name="auth_methods">
+        <item>mot de passe</item>
+        <item>clé privée</item>
+        <item>clé privée avec mot de passe</item>
+    </string-array>
+    <string-array name="pref_load_avg">
+        <item>1 minute</item>
+        <item>5 minutes</item>
+        <item>15 minutes</item>
+    </string-array>
+</resources>

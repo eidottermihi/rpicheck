@@ -102,10 +102,6 @@
     <string name="connection_failed">Impossible d\'établir une connection</string>
     <string name="cpu_serial">Numéro de série</string>
     <string name="pref_temp_scala_title">Unité de température</string>
-    <string name="core_temp">Température du coeur</string>
-    <string name="core_volt">Voltage du coeur</string>
-    <string name="validation_msg_password">Le mot de passe ne peut être vide.</string>
-    <string name="default_ssh_port" translatable="false"></string>
     <string name="dialog_passphrase_needed">Mot de passe requis</string>
     <string name="dialog_passphrase_text">Veuillez entrer le mot de passe pour la clé secrète.</string>
     <string name="dialog_save_passphrase">Enregistrer mot de passe</string>
