@@ -90,6 +90,9 @@ public class RaspiQuery implements IQueryService {
     private static final Pattern IPADDRESS_PATTERN = Pattern
             .compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     private static final Pattern CPU_PATTERN = Pattern.compile("[0-9.]{4,}");
+    private static final Pattern IWCONFIG_LINK_PATTERN = Pattern.compile("Link Quality=([0-9]{1,3})\\/([0-9]{1,3})");
+    private static final Pattern IWCONFIG_LEVEL_DBM_PATTERN = Pattern.compile("Signal level=(.*)\\s(dBm)");
+    private static final Pattern IWCONFIG_LEVEL_PERCENTAGE_PATTERN = Pattern.compile("Signal level=([0-9]{1,3})\\/([0-9]{1,3})");
     private static final String DISK_USAGE_CMD = "LC_ALL=C df -h";
     private static final String DF_COMMAND_HEADER_START = "Filesystem";
     private static final String DISTRIBUTION_CMD = "cat /etc/*-release | grep PRETTY_NAME";
@@ -352,8 +355,7 @@ public class RaspiQuery implements IQueryService {
     }
 
     /**
-     * Queries the link level and signal quality of the wireless interfaces via
-     * "cat /proc/net/wireless".
+     * Queries the link level and signal quality of the wireless interfaces via iwconfig.
      *
      * @param wirelessInterfaces a List with wireless interfaces
      * @throws RaspiQueryException if something goes wrong
@@ -361,20 +363,37 @@ public class RaspiQuery implements IQueryService {
     private void queryWlanInfo(
             List<NetworkInterfaceInformation> wirelessInterfaces)
             throws RaspiQueryException {
-        LOGGER.info("Querying wireless interfaces...");
+        for (NetworkInterfaceInformation nic :
+                wirelessInterfaces) {
+            WlanBean wlanBean = this.queryWirelessInterface(nic.getName());
+            if (wlanBean != null) {
+                LOGGER.info("Wireless stats for {}: {}", nic.getName(), wlanBean);
+                nic.setWlanInfo(wlanBean);
+            }
+        }
+    }
+
+
+    /**
+     * Tries to read the wireless interface signal strength using 'iwconfig' utility.
+     *
+     * @param interfaceName the interface name (e.g. 'wlan0')
+     * @return a {@link WlanBean} or null if parsing etc. failed
+     */
+    private WlanBean queryWirelessInterface(String interfaceName) throws RaspiQueryException {
+        LOGGER.info("Executing iwconfig for wireless interface '{}'...", interfaceName);
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
                 Session session;
                 try {
                     session = client.startSession();
-                    final String cmdString = "cat /proc/net/wireless";
+                    final String cmdString = "LC_ALL=C iwconfig " + interfaceName;
                     final Command cmd = session.exec(cmdString);
                     cmd.join(30, TimeUnit.SECONDS);
                     String output = IOUtils.readFully(cmd.getInputStream())
                             .toString();
-                    LOGGER.debug("Real output of /proc/net/wireless: \n{}",
-                            output);
-                    this.parseWlan(output, wirelessInterfaces);
+                    LOGGER.debug("Output of '{}': \n{}", cmdString, output);
+                    return this.parseIwconfigOutput(output);
                 } catch (IOException e) {
                     throw RaspiQueryException.createTransportFailure(hostname,
                             e);
@@ -389,57 +408,48 @@ public class RaspiQuery implements IQueryService {
         }
     }
 
-    private void parseWlan(String output,
-                           List<NetworkInterfaceInformation> wirelessInterfaces) {
-        final String[] lines = output.split("\n");
-        for (String line : lines) {
-            if (line.startsWith("Inter-") || line.startsWith(" face")) {
-                LOGGER.debug("Skipping header line: {}", line);
-                continue;
+    private WlanBean parseIwconfigOutput(String output) {
+        final Matcher linkQualityMatcher = IWCONFIG_LINK_PATTERN.matcher(output);
+        if (linkQualityMatcher.find()) {
+            String linkValue = linkQualityMatcher.group(1);
+            String linkMax = linkQualityMatcher.group(2);
+            final Double value = Double.valueOf(linkValue);
+            final Double maxValue = Double.valueOf(linkMax);
+            double percentageValue = 0.0;
+            if (maxValue != 100) {
+                // calculate percentage
+                percentageValue = (100 / maxValue) * value;
+                LOGGER.debug("Calculated link quality for {}/{} = {}%", value, maxValue, percentageValue);
+            } else {
+                // already percentage
+                percentageValue = value;
             }
-            final String[] cols = line.split("\\s+");
-            if (cols.length >= 11) {
-                LOGGER.debug("Parsing output line: {}", line);
-                // getting interface name
-                final String name = cols[1].replace(":", "");
-                LOGGER.debug("Parsed interface name: {}", name);
-                final String linkQuality = cols[3].replace(".", "");
-                LOGGER.debug("LINK QUALITY>>>{}<<<", linkQuality);
-                final String linkLevel = cols[4].replace(".", "");
-                LOGGER.debug("LINK LEVEL>>>{}<<<", linkLevel);
-                Integer linkQualityInt = null;
-                try {
-                    linkQualityInt = Integer.parseInt(linkQuality);
-                } catch (NumberFormatException e) {
-                    LOGGER.warn(
-                            "Could not parse link quality field for input: {}.",
-                            linkQuality);
-                }
-                Integer signalLevelInt = null;
-                try {
-                    signalLevelInt = Integer.parseInt(linkLevel);
-                } catch (Exception e) {
-                    LOGGER.warn(
-                            "Could not parse link level field for input: {}.",
-                            linkLevel);
-                }
-                LOGGER.debug(
-                        "WLAN status of {}: link quality {}, signal level {}.",
-                        new Object[]{name, linkQualityInt, signalLevelInt});
-                for (NetworkInterfaceInformation iface : wirelessInterfaces) {
-                    if (iface.getName().equals(name)) {
-                        final WlanBean wlanInfo = new WlanBean();
-                        wlanInfo.setLinkQuality(linkQualityInt);
-                        wlanInfo.setSignalLevel(signalLevelInt);
-                        LOGGER.debug(
-                                "Adding wifi-status info to interface {}.",
-                                iface.getName());
-                        iface.setWlanInfo(wlanInfo);
-                    }
+            WlanBean wlanBean = new WlanBean();
+            wlanBean.setLinkQuality(Integer.valueOf((int) percentageValue));
+            Matcher signalLevelMatcher = IWCONFIG_LEVEL_DBM_PATTERN.matcher(output);
+            if (signalLevelMatcher.find()) {
+                // using a linear interpolation as described here:
+                // https://stackoverflow.com/questions/15797920/how-to-convert-wifi-signal-strength-from-quality-percent-to-rssi-dbm
+                Double dbmValue = Double.valueOf(signalLevelMatcher.group(1));
+                double min = 0;
+                double max = 100;
+                double signalLevelPercentage = Math.min(Math.max(2 * (dbmValue + 100), min), max);
+                LOGGER.debug("Calculated signal level for {} dBm: {} %", dbmValue, signalLevelPercentage);
+                wlanBean.setSignalLevel((int) signalLevelPercentage);
+            } else {
+                signalLevelMatcher = IWCONFIG_LEVEL_PERCENTAGE_PATTERN.matcher(output);
+                if (signalLevelMatcher.find()) {
+                    double signalLevelPercentage = Double.valueOf(signalLevelMatcher.group(1));
+                    wlanBean.setSignalLevel((int) signalLevelPercentage);
+                } else {
+                    LOGGER.error("No matcher for 'Signal level' matched the output of iwconfig:\n{}", output);
                 }
             }
+            return wlanBean;
+        } else {
+            LOGGER.error("Failed to parse 'iwconfig' output:\n{}", output);
+            return null;
         }
-
     }
 
     /**
