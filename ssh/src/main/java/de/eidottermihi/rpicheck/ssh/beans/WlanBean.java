@@ -51,4 +51,11 @@ public class WlanBean implements Serializable {
         this.signalLevel = signalLevel;
     }
 
+    @Override
+    public String toString() {
+        return "WlanBean{" +
+                "linkQuality=" + linkQuality +
+                ", signalLevel=" + signalLevel +
+                '}';
+    }
 }

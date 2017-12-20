@@ -1,0 +1,8 @@
+wlp2s0    IEEE 802.11bgn  ESSID:"FRITZ!Box 7430 GA"
+          Mode:Managed  Frequency:2.437 GHz  Access Point: E8:DF:70:4A:C6:E1
+          Bit Rate=78 Mb/s   Tx-Power=16 dBm
+          Retry short limit:7   RTS thr:off   Fragment thr:off
+          Power Management:on
+          Link Quality=66/100  Signal level=70/100
+          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+          Tx excessive retries:0  Invalid misc:94   Missed beacon:0
