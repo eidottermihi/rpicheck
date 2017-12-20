@@ -28,8 +28,9 @@ android {
 
     defaultConfig {
         applicationId "de.eidottermihi.raspicheck"
-        minSdkVersion 9
+        minSdkVersion 21
         targetSdkVersion 23
+        multiDexEnabled true
         versionName version
     }
 
