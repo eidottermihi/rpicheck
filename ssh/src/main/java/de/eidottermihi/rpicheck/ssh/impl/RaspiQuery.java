@@ -36,10 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.security.Provider;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -118,6 +120,18 @@ public class RaspiQuery implements IQueryService {
      * @param port ssh port to use (if null, default will be used)
      */
     public RaspiQuery(final String host, final String user, final Integer port) {
+        final Provider[] providers = Security.getProviders();
+        LOGGER.debug("Registered JCE providers...");
+        for (Provider prov : providers
+                ) {
+            LOGGER.debug("Provider: {} - {}", prov.getName(), prov.getInfo());
+        }
+        final Set<String> signatures = Security.getAlgorithms("signature");
+        LOGGER.debug("Availabe signatures...");
+        for (String sig : signatures
+                ) {
+            LOGGER.debug("Signature: {}", sig);
+        }
         if (Strings.isNullOrEmpty(host)) {
             throw new IllegalArgumentException("hostname should not be blank.");
         } else if (Strings.isNullOrEmpty(user)) {
