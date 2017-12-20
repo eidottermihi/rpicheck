@@ -337,8 +337,8 @@ public class RaspiQuery implements IQueryService {
                 interfaceBean.setIpAdress(this.queryIpAddress(interfaceBean
                         .getName()));
                 // check if interface is wireless (interface name starts with
-                // "wlan")
-                if (interfaceBean.getName().startsWith("wlan")) {
+                // "wl")
+                if (interfaceBean.getName().startsWith("wl")) {
                     // add to wireless interfaces list
                     wirelessInterfaces.add(interfaceBean);
                 }

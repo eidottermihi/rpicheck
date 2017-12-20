@@ -127,4 +127,33 @@ public class NetworkInterfacesTest extends AbstractMockedQueryTest {
         assertNull(eth0.getWlanInfo());
     }
 
+    @Test
+    public void wlan_systemd_interface_naming() throws RaspiQueryException {
+        sessionMocker.withCommand("ls -1 /sys/class/net", new CommandMocker()
+                .withResponse("lo\nwlp2s0").mock());
+        sessionMocker.withCommand("cat /sys/class/net/wlp2s0/carrier",
+                new CommandMocker().withResponse("1").mock());
+        sessionMocker.withCommand("ip -f inet addr show dev wlp2s0 | sed -n 2p",
+                new CommandMocker().withResponse("192.168.0.9").mock());
+        sessionMocker.withCommand("cat /proc/net/wireless", new CommandMocker()
+                .withResponse(
+                        "Inter-| sta-|   Quality        |   Discarded packets               | Missed | WE"
+                                + "\n"
+                                + " face | tus | link level noise |  nwid  crypt   frag  retry   misc | beacon | 22"
+                                + "\n"
+                                + " wlp2s0: 0000 100. 95. 0. 0 0 0 0 0 0\n").mock());
+        List<NetworkInterfaceInformation> interfaces = raspiQuery
+                .queryNetworkInformation();
+        assertEquals(1, interfaces.size());
+        NetworkInterfaceInformation wlan0 = interfaces.get(0);
+        assertEquals("wlp2s0", wlan0.getName());
+        assertEquals(true, wlan0.isHasCarrier());
+        assertEquals("192.168.0.9", wlan0.getIpAdress());
+        WlanBean wlanInfo = wlan0.getWlanInfo();
+        assertNotNull(wlanInfo);
+        assertEquals(100, wlanInfo.getLinkQuality().intValue());
+        assertEquals(95, wlanInfo.getSignalLevel().intValue());
+
+    }
+
 }
