@@ -6,14 +6,11 @@ import net.schmizz.sshj.common.SecurityUtils;
 import net.schmizz.sshj.transport.random.BouncyCastleRandom;
 import net.schmizz.sshj.transport.random.SingletonRandomFactory;
 
-/**
- * Created by Michael on 28.08.2017.
- */
-
-class SpongyCastleAndroidConfig extends AndroidConfig {
+public class SpongyCastleAndroidConfig extends AndroidConfig {
     public SpongyCastleAndroidConfig() {
         super();
         initKeyExchangeFactories(true);
+        initRandomFactory(true);
         initFileKeyProviderFactories(true);
     }
 }
