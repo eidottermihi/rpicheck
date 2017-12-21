@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+import de.eidottermihi.rpicheck.activity.helper.RaspiFilePickerActivity;
 import io.freefair.android.injection.app.InjectionAppCompatActivity;
 
 
@@ -46,7 +47,7 @@ public abstract class AbstractFileChoosingActivity extends InjectionAppCompatAct
      */
     public final void startFileChooser() {
         LOGGER.debug("Sending Intent to open FilePicker Activity.");
-        final Intent i = new Intent(this, FilePickerActivity.class);
+        final Intent i = new Intent(this, RaspiFilePickerActivity.class);
         // Set these depending on your use case. These are the defaults.
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
