@@ -59,6 +59,9 @@
 # slf4j
 -keep class org.slf4j.** { *; }
 -keep interface org.slf4j.** { *; }
+# no MDC loggin
+-dontwarn org.slf4j.MDC
+-dontwarn org.slf4j.MarkerFactory
 # guava
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn com.google.appengine.**
