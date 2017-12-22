@@ -5,20 +5,20 @@ sudo: required
 jdk:
   - oraclejdk8
 
-android:
-  components:
-    - tools # to get the new `repository-11.xml`
-    - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
-    - platform-tools
-    - build-tools-27.0.2
-    - android-24
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - extra
-    - add-on
+install:
+# Let's use the new command 'sdkmanager' to install Android SDK components
+- yes | sdkmanager --verbose "build-tools;27.0.2"
+- yes | sdkmanager --verbose "platform-tools"
+- yes | sdkmanager --verbose "tools"
+- yes | sdkmanager --verbose "platforms;android-24"
+- yes | sdkmanager --verbose "system-images;android-24;default;armeabi-v7a"
+- yes | sdkmanager --verbose "extras;android;m2repository"
+- yes | sdkmanager --verbose "extras;google;m2repository"
+
+# Check tools and dependencies installed
+- yes | sdkmanager --list
 
 before_script:
-  - android-update-sdk --components=sys-img-armeabi-v7a-android-24 --accept-licenses='android-sdk-license-[0-9a-f]{8}'
   - echo no | android create avd --force -n test -k "system-images;android-24;default;armeabi-v7a"
   - emulator -avd test -no-audio -no-window
   - android-wait-for-emulator
