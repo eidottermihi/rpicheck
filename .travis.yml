@@ -7,16 +7,16 @@ jdk:
 
 install:
 # Let's use the new command 'sdkmanager' to install Android SDK components
-- y | sdkmanager "build-tools;27.0.2" >/dev/null
-- y | sdkmanager "platform-tools" >/dev/null
-- y | sdkmanager "tools" >/dev/null
-- y | sdkmanager "platforms;android-24" >/dev/null
-- y | sdkmanager "system-images;android-24;default;armeabi-v7a" >/dev/null
-- y | sdkmanager "extras;android;m2repository" >/dev/null
-- y | sdkmanager "extras;google;m2repository" >/dev/null
+- echo y | sdkmanager "build-tools;27.0.2" >/dev/null
+- echo y | sdkmanager "platform-tools" >/dev/null
+- echo y | sdkmanager "tools" >/dev/null
+- echo y | sdkmanager "platforms;android-24" >/dev/null
+- echo y | sdkmanager "system-images;android-24;default;armeabi-v7a" >/dev/null
+- echo y | sdkmanager "extras;android;m2repository" >/dev/null
+- echo y | sdkmanager "extras;google;m2repository" >/dev/null
 
 # Check tools and dependencies installed
-- y | sdkmanager --list
+- echo y | sdkmanager --list
 
 before_script:
   - echo no | avdmanager create avd --force -n test -k "system-images;android-24;default;armeabi-v7a"
