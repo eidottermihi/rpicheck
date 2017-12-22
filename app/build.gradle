@@ -24,7 +24,7 @@ apply from: "gradle/release.gradle"
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '27.0.2'
 
     defaultConfig {
         applicationId "de.eidottermihi.raspicheck"
