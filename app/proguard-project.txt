@@ -22,30 +22,50 @@
 # Dont obfuscate
 -dontobfuscate
 
+-dontwarn com.google.errorprone.annotations.**
 # Libraries
 # SSHJ
 -keep class net.schmizz.** { *; }
 -keep interface net.schmizz.** { *; }
 -keep class com.jcraft.** { *; }
 -keep interface com.jcraft.** { *; }
+-keep class com.hierynomus.sshj.** { *; }
+-keep interface com.hierynomus.sshj.** { *; }
+-keep class djb.** { *; }
+-keep interface djb.** { *; }
+-keep class net.i2p.** { *; }
+-keep interface net.i2p.** { *; }
 -keep class org.spongycastle.** { *; }
 -keep interface org.spongycastle.** { *; }
+-keep class org.bouncycastle.** { *; }
+-keep interface org.bouncycastle.** { *; }
+-dontwarn org.ietf.**
 # were not using ldap
 -dontwarn org.spongycastle.jce.provider.X509LDAPCertStoreSpi
 -dontwarn org.spongycastle.x509.util.LDAPStoreHelper
+# no GssApi Auth
+-dontwarn javax.security.auth.**
+# no JNDI
+-dontwarn javax.naming.**
 # PrettyTime
 -keep class org.ocpsoft.prettytime.** { *; }
 -keep interface org.ocpsoft.prettytime.** { *; }
 # Logback
 -keep class ch.qos.logback.** { *; }
 -keep interface ch.qos.logback.** { *; }
+-dontwarn java.nio.file.**
 # we're not using remote logging
--dontwarn ch.qos.logback.core.net.*
+-dontwarn ch.qos.logback.core.net.**
 # slf4j
 -keep class org.slf4j.** { *; }
 -keep interface org.slf4j.** { *; }
 # guava
+-dontwarn com.google.j2objc.annotations.**
+-dontwarn com.google.appengine.**
+-dontwarn com.google.apphosting.**
+-dontwarn java.lang.ClassValue
 -dontwarn sun.misc.Unsafe
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
 # Submodule Libraries
 -keep class de.eidottermihi.rpicheck.ssh.** { *; }
