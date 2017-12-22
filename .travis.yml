@@ -5,15 +5,28 @@ sudo: required
 jdk:
   - oraclejdk8
 
+android:
+  components:
+    - tools
+    - tools
+    - platform-tools
+    - android-21
+    - android-24
+    - build-tools-27.0.2
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-21
+
+
 install:
 # Let's use the new command 'sdkmanager' to install Android SDK components
-- echo y | sdkmanager "build-tools;27.0.2" >/dev/null
-- echo y | sdkmanager "platform-tools" >/dev/null
-- echo y | sdkmanager "tools" >/dev/null
-- echo y | sdkmanager "platforms;android-21" >/dev/null
-- echo y | sdkmanager "system-images;android-21;default;armeabi-v7a" >/dev/null
-- echo y | sdkmanager "extras;android;m2repository" >/dev/null
-- echo y | sdkmanager "extras;google;m2repository" >/dev/null
+#- echo y | sdkmanager "build-tools;27.0.2" >/dev/null
+#- echo y | sdkmanager "platform-tools" >/dev/null
+#- echo y | sdkmanager "tools" >/dev/null
+#- echo y | sdkmanager "platforms;android-21" >/dev/null
+#- echo y | sdkmanager "system-images;android-21;default;armeabi-v7a" >/dev/null
+#- echo y | sdkmanager "extras;android;m2repository" >/dev/null
+#- echo y | sdkmanager "extras;google;m2repository" >/dev/null
 
 # Check tools and dependencies installed
 - echo y | sdkmanager --list
