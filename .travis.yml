@@ -8,8 +8,8 @@ jdk:
 android:
   components:
     - tools
-    - tools
     - platform-tools
+    - tools
     - android-21
     - android-24
     - build-tools-27.0.2
@@ -28,6 +28,8 @@ install:
 #- echo y | sdkmanager "extras;android;m2repository" >/dev/null
 #- echo y | sdkmanager "extras;google;m2repository" >/dev/null
 
+# update latest tools
+- echo y | sdkmanager tools
 # Check tools and dependencies installed
 - echo y | sdkmanager --list
 
