@@ -4,12 +4,7 @@ sudo: required
 
 jdk:
   - oraclejdk8
-env:
-  global:
-    - MALLOC_ARENA_MAX=2
-cache:
-  directories:
-  - $HOME/.m2   # gradle dependencies
+
 android:
   components:
     - tools # to get the new `repository-11.xml`
@@ -17,16 +12,17 @@ android:
     - platform-tools
     - build-tools-25.0.2
     - android-24
-    - sys-img-armeabi-v7a-android-21
     - extra-google-m2repository
     - extra-android-m2repository
     - extra
     - add-on
 
 before_script:
+  - android-update-sdk --components=sys-img-armeabi-v7a-android-21 --accept-licenses='android-sdk-license-[0-9a-f]{8}'
   - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
-  - emulator -avd test -no-skin -no-audio -no-window &
+  - emulator -avd test -no-audio -no-window
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
+
 script:
-  - ./gradlew build check connectedCheck --stacktrace
+  - ./gradlew clean assemble --stacktrace
