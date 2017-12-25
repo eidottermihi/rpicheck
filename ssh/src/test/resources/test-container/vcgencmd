@@ -1,0 +1,23 @@
+#!/bin/sh
+CMD="$1"
+PARAM="$2"
+if [ "$CMD" = "version" ]
+then
+    echo "Feb 14 2015 22:23:03"
+    echo "Copyright (c) 2012 Broadcom"
+    echo "version 7789db485409720b0e523a3d6b86b12ed56fd152 (clean) (release)"
+elif [ "$CMD" = "measure_temp" ]
+then
+    echo "temp=42.6'C"
+elif [ "$CMD" = "measure_clock" ] && [ "$PARAM" = "core" ];
+then
+    echo "frequency(1)=250000000"
+elif [ "$CMD" = "measure_clock" ] && [ "$PARAM" = "arm" ];
+then
+    echo "frequency(45)=700000000"
+elif [ "$CMD" = "measure_volts" ] && [ "$PARAM" = "core" ];
+then
+    echo "volt=1.20V"
+else
+    exit 0
+fi
