@@ -45,7 +45,11 @@ public class MemoryTest extends AbstractMockedQueryTest {
                 .getBytes());
         Assert.assertEquals(64700L * 1024, memoryBean.getTotalUsed()
                 .getBytes());
-        Assert.assertEquals(64700.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
+        Assert.assertEquals(64700.0 / 949328.0, memoryBean.getMemoryPercentageUsed(), 0.001);
+        Assert.assertEquals(102396.0 * 1024, memoryBean.getSwapMemory().getBytes(), 0.001);
+        Assert.assertEquals(102392.0 * 1024, memoryBean.getSwapFree().getBytes(), 0.001);
+        Assert.assertEquals(4.0 * 1024, memoryBean.getSwapUsed().getBytes(), 0.001);
+        Assert.assertEquals(4.0 / 102396.0, memoryBean.getSwapPercentageUsed(), 0.001 );
     }
 
     @Test
@@ -63,7 +67,7 @@ public class MemoryTest extends AbstractMockedQueryTest {
                 .getBytes());
         Assert.assertEquals(51304L * 1024, memoryBean.getTotalUsed()
                 .getBytes());
-        Assert.assertEquals(51304.0 / 949328.0, memoryBean.getPercentageUsed(), 0.001);
+        Assert.assertEquals(51304.0 / 949328.0, memoryBean.getMemoryPercentageUsed(), 0.001);
     }
 
     @Test

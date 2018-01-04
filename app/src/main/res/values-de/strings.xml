@@ -55,7 +55,7 @@
     <string name="system_header">System</string>
     <string name="uptime_started">Systemstart</string>
     <string name="average_load">Auslastung</string>
-    <string name="total_memory">RAM Gesamt</string>
+    <string name="total_memory">Arbeitsspeicher</string>
     <string name="free_memory">RAM Frei</string>
     <string name="cpu_serial">Seriennr.</string>
     <string name="ip_addr_label">IP-Adresse</string>
@@ -225,5 +225,6 @@
     <string name="pref_query_show_system_time_summaryOn">Systemzeit wird angezeigt.</string>
     <string name="pref_query_show_system_time_title">Zeige Systemzeit an</string>
     <string name="systemtime">Systemzeit</string>
+    <string name="total_swap">Auslagerungsdatei</string>
 
 </resources>

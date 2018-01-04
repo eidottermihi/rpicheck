@@ -128,8 +128,8 @@ public class MainActivity extends InjectionAppCompatActivity implements
     private TextView averageLoadText;
     @InjectView(R.id.totalMemoryText)
     private TextView totalMemoryText;
-    @InjectView(R.id.freeMemoryText)
-    private TextView freeMemoryText;
+    @InjectView(R.id.totalSwapText)
+    private TextView totalSwapText;
     @InjectView(R.id.cpuSerialText)
     private TextView serialNoText;
     @InjectView(R.id.distriText)
@@ -234,7 +234,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
         uptimeText.setText("");
         averageLoadText.setText("");
         totalMemoryText.setText("");
-        freeMemoryText.setText("");
+        totalSwapText.setText("");
         distriText.setText("");
         serialNoText.setText("");
         lastUpdateText.setText("");
@@ -271,11 +271,20 @@ public class MainActivity extends InjectionAppCompatActivity implements
         if (result.getStartup() != null) {
             uptimeText.setText(result.getStartup());
         }
-        if (result.getFreeMem() != null) {
-            freeMemoryText.setText(result.getFreeMem().humanReadableByteCount(false));
-        }
-        if (result.getTotalMem() != null) {
-            totalMemoryText.setText(result.getTotalMem().humanReadableByteCount(false));
+        if (result.getMemoryBean() != null) {
+            String format = "%s/%s (%s)";
+            String ram = String.format(format,
+                    result.getMemoryBean().getTotalUsed().humanReadableByteCount(false),
+                    result.getMemoryBean().getTotalMemory().humanReadableByteCount(false),
+                    SSHQueryTask.NUMBER_FORMAT.format(result.getMemoryBean().getMemoryPercentageUsed())
+            );
+            totalMemoryText.setText(ram);
+            String swap = String.format(format,
+                    result.getMemoryBean().getSwapUsed().humanReadableByteCount(false),
+                    result.getMemoryBean().getSwapMemory().humanReadableByteCount(false),
+                    SSHQueryTask.NUMBER_FORMAT.format(result.getMemoryBean().getSwapPercentageUsed())
+            );
+            totalSwapText.setText(swap);
         }
         serialNoText.setText(result.getSerialNo());
         distriText.setText(result.getDistri());

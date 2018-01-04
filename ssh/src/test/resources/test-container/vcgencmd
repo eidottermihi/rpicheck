@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 CMD="$1"
 PARAM="$2"
 if [ "$CMD" = "version" ]

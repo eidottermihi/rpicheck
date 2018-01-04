@@ -45,14 +45,12 @@ import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
  */
 public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(SSHQueryTask.class);
-    private static final NumberFormat NUMBER_FORMAT = NumberFormat
-            .getPercentInstance();
+    public static final NumberFormat NUMBER_FORMAT = NumberFormat.getPercentInstance();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SSHQueryTask.class);
 
     private final AsyncQueryDataUpdate delegate;
 
-    private IQueryService queryService;
     private LoadAveragePeriod loadAveragePeriod;
 
     public SSHQueryTask(AsyncQueryDataUpdate delegate,
@@ -71,7 +69,7 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
     @Override
     protected QueryBean doInBackground(String... params) {
         // create and do query
-        queryService = new RaspiQuery((String) params[0], (String) params[1],
+        IQueryService queryService = new RaspiQuery((String) params[0], (String) params[1],
                 Integer.parseInt(params[3]));
         final String pass = params[2];
         boolean hideRootProcesses = Boolean.parseBoolean(params[4]);
@@ -124,12 +122,7 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
             bean.setLastUpdate(Calendar.getInstance().getTime());
             bean.setStartup(new UptimeBean(uptime).getRunningPretty());
             bean.setAvgLoad(NUMBER_FORMAT.format(loadAvg));
-            if (memory.getErrorMessage() != null) {
-                bean.getErrorMessages().add(memory.getErrorMessage());
-            } else {
-                bean.setFreeMem(memory.getTotalFree());
-                bean.setTotalMem(memory.getTotalMemory());
-            }
+            bean.setMemoryBean(memory);
             bean.setSerialNo(serialNo);
             bean.setNetworkInfo(networkInformation);
             bean.setProcesses(processes);

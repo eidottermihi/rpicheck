@@ -111,7 +111,7 @@ public class WidgetUpdateTask extends AsyncTask<RaspberryDeviceBean, Void, Map<S
                 if (memoryBean != null && memoryBean.getErrorMessage() == null) {
                     result.put(KEY_MEM_USED, memoryBean.getTotalUsed().humanReadableByteCount(false));
                     result.put(KEY_MEM_TOTAL, memoryBean.getTotalMemory().humanReadableByteCount(false));
-                    result.put(KEY_MEM_USED_PERCENT, String.valueOf(memoryBean.getPercentageUsed()));
+                    result.put(KEY_MEM_USED_PERCENT, String.valueOf(memoryBean.getMemoryPercentageUsed()));
                 }
             }
             if (showLoad) {
