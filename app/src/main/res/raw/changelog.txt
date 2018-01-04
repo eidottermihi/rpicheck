@@ -19,6 +19,16 @@
     </style>
   </head>
   <body>
+$ 1.8.3
+  % Version 1.8.3
+  _ 2018-01-04
+  * Fixed WiFi signal quality/link level sometimes incorrect (thanks Kabuse, #155)
+  * Added support for systemd v197 style network interface names (thanks x2k13, #150)
+  * Added support for ED25519 SSH keys (you have to place private AND public key on your phone to make this work)
+  * Fixed unability to select hidden files as SSH keys (thanks ogarcia, #139)
+  * Added support for stronger encryption (like ED25519)
+  * Updated to latest version of SSHJ library
+  * Various translation updates
 $ 1.8.2
   % Version 1.8.2
   _ 2017-08-28
