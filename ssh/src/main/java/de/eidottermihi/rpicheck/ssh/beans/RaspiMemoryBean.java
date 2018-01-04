@@ -25,20 +25,29 @@ public class RaspiMemoryBean implements Serializable {
     private MemoryBean totalMemory;
     private MemoryBean totalUsed;
     private MemoryBean totalFree;
-    private float percentageUsed;
+    private float memoryPercentageUsed;
+    private MemoryBean swapMemory;
+    private MemoryBean swapUsed;
+    private MemoryBean swapFree;
+    private float swapPercentageUsed;
     private String errorMessage;
 
-    public RaspiMemoryBean(long totalMemory, long totalUsed) {
-        this.totalMemory = MemoryBean.from(Memory.KB, totalMemory);
-        this.totalUsed = MemoryBean.from(Memory.KB, totalUsed);
-        this.totalFree = MemoryBean.from(Memory.KB, totalMemory - totalUsed);
-        this.percentageUsed = ((float) totalUsed) / ((float) totalMemory);
+    public RaspiMemoryBean(long memoryTotal, long memoryUsed, long swapTotal, long swapUsed) {
+        this.totalMemory = MemoryBean.from(Memory.KB, memoryTotal);
+        this.totalUsed = MemoryBean.from(Memory.KB, memoryUsed);
+        this.totalFree = MemoryBean.from(Memory.KB, memoryTotal - memoryUsed);
+        this.memoryPercentageUsed = ((float) memoryUsed) / ((float) memoryTotal);
+        this.swapMemory = MemoryBean.from(Memory.KB, swapTotal);
+        this.swapUsed = MemoryBean.from(Memory.KB, swapUsed);
+        this.swapFree = MemoryBean.from(Memory.KB, swapTotal - swapUsed);
+        this.swapPercentageUsed = ((float) swapUsed / (float) swapTotal);
     }
 
     public RaspiMemoryBean(String string) {
         this.errorMessage = string;
     }
 
+    @Exported("totalMemory")
     public MemoryBean getTotalMemory() {
         return totalMemory;
     }
@@ -47,6 +56,7 @@ public class RaspiMemoryBean implements Serializable {
         this.totalMemory = totalMemory;
     }
 
+    @Exported("usedMemory")
     public MemoryBean getTotalUsed() {
         return totalUsed;
     }
@@ -55,6 +65,7 @@ public class RaspiMemoryBean implements Serializable {
         this.totalUsed = totalUsed;
     }
 
+    @Exported("freeMemory")
     public MemoryBean getTotalFree() {
         return totalFree;
     }
@@ -63,12 +74,13 @@ public class RaspiMemoryBean implements Serializable {
         this.totalFree = totalFree;
     }
 
-    public float getPercentageUsed() {
-        return percentageUsed;
+    @Exported("memoryPercentageUsed")
+    public float getMemoryPercentageUsed() {
+        return memoryPercentageUsed;
     }
 
-    public void setPercentageUsed(float percentageUsed) {
-        this.percentageUsed = percentageUsed;
+    public void setMemoryPercentageUsed(float memoryPercentageUsed) {
+        this.memoryPercentageUsed = memoryPercentageUsed;
     }
 
     public String getErrorMessage() {
@@ -79,4 +91,39 @@ public class RaspiMemoryBean implements Serializable {
         this.errorMessage = errorMessage;
     }
 
+    @Exported("totalSwap")
+    public MemoryBean getSwapMemory() {
+        return swapMemory;
+    }
+
+    public void setSwapMemory(MemoryBean swapMemory) {
+        this.swapMemory = swapMemory;
+    }
+
+    @Exported("usedSwap")
+    public MemoryBean getSwapUsed() {
+        return swapUsed;
+    }
+
+    public void setSwapUsed(MemoryBean swapUsed) {
+        this.swapUsed = swapUsed;
+    }
+
+    @Exported("freeSwap")
+    public MemoryBean getSwapFree() {
+        return swapFree;
+    }
+
+    public void setSwapFree(MemoryBean swapFree) {
+        this.swapFree = swapFree;
+    }
+
+    @Exported("swapPercentageUsed")
+    public float getSwapPercentageUsed() {
+        return swapPercentageUsed;
+    }
+
+    public void setSwapPercentageUsed(float swapPercentageUsed) {
+        this.swapPercentageUsed = swapPercentageUsed;
+    }
 }

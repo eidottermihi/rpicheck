@@ -26,6 +26,7 @@ import de.eidottermihi.rpicheck.ssh.beans.DiskUsageBean;
 import de.eidottermihi.rpicheck.ssh.beans.MemoryBean;
 import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
+import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
 import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
 
@@ -37,8 +38,7 @@ public class QueryBean implements Serializable {
     private Date lastUpdate;
     private String startup;
     private String avgLoad;
-    private MemoryBean totalMem;
-    private MemoryBean freeMem;
+    private RaspiMemoryBean memoryBean;
     private String serialNo;
     private List<DiskUsageBean> disks;
     private String distri;
@@ -89,24 +89,6 @@ public class QueryBean implements Serializable {
 
     public void setAvgLoad(String avgLoad) {
         this.avgLoad = avgLoad;
-    }
-
-    @Exported("totalMemory")
-    public MemoryBean getTotalMem() {
-        return totalMem;
-    }
-
-    public void setTotalMem(MemoryBean totalMem) {
-        this.totalMem = totalMem;
-    }
-
-    @Exported("freeMemory")
-    public MemoryBean getFreeMem() {
-        return freeMem;
-    }
-
-    public void setFreeMem(MemoryBean freeMem) {
-        this.freeMem = freeMem;
     }
 
     @Exported("serial")
@@ -178,15 +160,23 @@ public class QueryBean implements Serializable {
                 ", lastUpdate=" + lastUpdate +
                 ", startup='" + startup + '\'' +
                 ", avgLoad='" + avgLoad + '\'' +
-                ", totalMem=" + totalMem +
-                ", freeMem=" + freeMem +
                 ", serialNo='" + serialNo + '\'' +
                 ", disks=" + disks +
                 ", distri='" + distri + '\'' +
                 ", processes=" + processes +
                 ", systemtime='" + systemtime + '\'' +
+                ", memory='" + memoryBean + '\'' +
                 ", exception=" + exception +
                 ", errorMessages=" + errorMessages +
                 '}';
+    }
+
+    @Exported("memory")
+    public RaspiMemoryBean getMemoryBean(){
+        return this.memoryBean;
+    }
+
+    public void setMemoryBean(RaspiMemoryBean memoryBean) {
+        this.memoryBean = memoryBean;
     }
 }
