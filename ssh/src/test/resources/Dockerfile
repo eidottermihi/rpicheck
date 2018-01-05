@@ -28,4 +28,5 @@ RUN \
   chmod 755 /usr/bin/vcgencmd && \
   dos2unix /usr/bin/vcgencmd && \
   dos2unix /entrypoint.sh && \
+  chmod 777 /entrypoint.sh && \
   chown -R sshj:sshj /home/sshj
