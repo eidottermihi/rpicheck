@@ -24,6 +24,7 @@
               android:background="@drawable/appwidget_dark_bg"
               android:orientation="vertical"
               android:padding="@dimen/widget_margin"
+              android:theme="@style/Theme.rpiCheck.Dark"
     >
 
     <TextView
