@@ -68,7 +68,7 @@ before_script:
 
 script:
   # Run all device checks
-  - cd ${TRAVIS_BUILD_DIR}/${DIR} && ./gradlew build connectedCheck -PdisablePreDex --stacktrace
+  - cd ${TRAVIS_BUILD_DIR}/${DIR} && ./gradlew build connectedCheck -PdisablePreDex
 
 after_script:
   # Show tests and lint results
