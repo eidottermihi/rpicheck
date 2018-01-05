@@ -1,4 +1,11 @@
-FROM sickp/alpine-sshd:7.5
+FROM alpine:3.7
+ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 22
+COPY entrypoint.sh /entrypoint.sh
+
+RUN apk add --no-cache openssh \
+  && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
+  && echo "root:root" | chpasswd
 
 ADD id_rsa.pub /home/sshj/.ssh/authorized_keys
 
@@ -8,6 +15,7 @@ ADD test-container/vcgencmd /usr/bin/vcgencmd
 
 RUN \
   apk add --update bash && \
+  apk add --update dos2unix && \
   rm -rf /var/cache/apk/* \
 
 RUN \
@@ -18,4 +26,5 @@ RUN \
   chmod 600 /etc/ssh/ssh_host_ecdsa_key && \
   chmod 644 /etc/ssh/ssh_host_ecdsa_key.pub && \
   chmod 755 /usr/bin/vcgencmd && \
+  dos2unix /usr/bin/vcgencmd && \
   chown -R sshj:sshj /home/sshj
