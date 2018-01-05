@@ -27,4 +27,5 @@ RUN \
   chmod 644 /etc/ssh/ssh_host_ecdsa_key.pub && \
   chmod 755 /usr/bin/vcgencmd && \
   dos2unix /usr/bin/vcgencmd && \
+  dos2unix /entrypoint.sh && \
   chown -R sshj:sshj /home/sshj
