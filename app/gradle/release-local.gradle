@@ -2,7 +2,7 @@ def deployFolder = project.property("rpicheck.deploy.path")
 def deployableName = "raspicheck-${version}-release.apk"
 
 task copySignedReleaseApk(type: Copy) {
-    from "${project.buildDir}/outputs/apk/app-release.apk"
+    from "${project.buildDir}/outputs/apk/release/app-release.apk"
     into deployFolder
     rename { String filename ->
         deployableName
