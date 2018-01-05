@@ -19,6 +19,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/appwidget_dark_bg"
@@ -88,6 +89,7 @@
                 android:padding="1dp"
                 android:singleLine="true"
                 android:textSize="14sp"
+                tools:text="my pi"
                 />
 
             <TextView
