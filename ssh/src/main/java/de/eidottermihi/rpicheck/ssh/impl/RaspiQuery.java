@@ -375,13 +375,58 @@ public class RaspiQuery implements IQueryService {
     private void queryWlanInfo(
             List<NetworkInterfaceInformation> wirelessInterfaces)
             throws RaspiQueryException {
-        for (NetworkInterfaceInformation nic :
-                wirelessInterfaces) {
-            WlanBean wlanBean = this.queryWirelessInterface(nic.getName());
-            if (wlanBean != null) {
-                LOGGER.info("Wireless stats for {}: {}", nic.getName(), wlanBean);
-                nic.setWlanInfo(wlanBean);
+        // find path to to iwconfig executable
+        Optional<String> iwconfigPath = findPathToExecutable("iwconfig");
+        if(iwconfigPath.isPresent()){
+            for (NetworkInterfaceInformation nic :
+                    wirelessInterfaces) {
+                WlanBean wlanBean = this.queryWirelessInterface(nic.getName(), iwconfigPath.get());
+                if (wlanBean != null) {
+                    LOGGER.info("Wireless stats for {}: {}", nic.getName(), wlanBean);
+                    nic.setWlanInfo(wlanBean);
+                }
             }
+        }
+    }
+
+    /**
+     * Uses "whereis" to find path to the specified executable.
+     * @param executableBinary
+     * @return the first path
+     */
+    private Optional<String> findPathToExecutable(String executableBinary) throws RaspiQueryException {
+        if (client != null) {
+            if (client.isConnected() && client.isAuthenticated()) {
+                Session session;
+                try {
+                    session = client.startSession();
+                    session.allocateDefaultPTY();
+                    final String cmdString = "LC_ALL=C whereis " + executableBinary;
+                    final Command cmd = session.exec(cmdString);
+                    cmd.join(30, TimeUnit.SECONDS);
+                    String output = IOUtils.readFully(cmd.getInputStream())
+                            .toString();
+                    LOGGER.debug("Output of '{}': \n{}", cmdString, output);
+                    final String[] splitted = output.split("\\s");
+                    if(splitted.length >= 2) {
+                        String path = splitted[1].trim();
+                        LOGGER.debug("Path for '{}': {}", executableBinary, path);
+                        return Optional.of(path);
+                    } else {
+                        LOGGER.warn("Could not get path to executable '{}'. Output of '{}' was: {}", executableBinary, cmdString, output);
+                        return Optional.absent();
+                    }
+                } catch (IOException e) {
+                    throw RaspiQueryException.createTransportFailure(hostname,
+                            e);
+                }
+            } else {
+                throw new IllegalStateException(
+                        "You must establish a connection first.");
+            }
+        } else {
+            throw new IllegalStateException(
+                    "You must establish a connection first.");
         }
     }
 
@@ -390,16 +435,18 @@ public class RaspiQuery implements IQueryService {
      * Tries to read the wireless interface signal strength using 'iwconfig' utility.
      *
      * @param interfaceName the interface name (e.g. 'wlan0')
+     * @param iwconfigPath the path to iwconfig executable (e.g. '/sbin/iwconfig')
      * @return a {@link WlanBean} or null if parsing etc. failed
      */
-    private WlanBean queryWirelessInterface(String interfaceName) throws RaspiQueryException {
-        LOGGER.info("Executing iwconfig for wireless interface '{}'...", interfaceName);
+    private WlanBean queryWirelessInterface(String interfaceName, String iwconfigPath) throws RaspiQueryException {
+        LOGGER.info("Executing {} to query wireless interface '{}'...", iwconfigPath, interfaceName);
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
                 Session session;
                 try {
                     session = client.startSession();
-                    final String cmdString = "LC_ALL=C iwconfig " + interfaceName;
+                    session.allocateDefaultPTY();
+                    final String cmdString = "LC_ALL=C " + iwconfigPath + " " + interfaceName;
                     final Command cmd = session.exec(cmdString);
                     cmd.join(30, TimeUnit.SECONDS);
                     String output = IOUtils.readFully(cmd.getInputStream())
