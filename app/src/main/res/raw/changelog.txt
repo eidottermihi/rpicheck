@@ -19,6 +19,11 @@
     </style>
   </head>
   <body>
+$ 1.8.5
+  % Version 1.8.5
+  _ 2018-01-07
+  * Fixed wireless interfaces signal quality missing
+  * Updated chinese translation (thanks LJason77 for the PR)
 $ 1.8.4
   % Version 1.8.4
   _ 2018-01-05
