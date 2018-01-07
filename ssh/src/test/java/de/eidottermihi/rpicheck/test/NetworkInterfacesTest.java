@@ -110,7 +110,9 @@ public class NetworkInterfacesTest extends AbstractMockedQueryTest {
                 new CommandMocker().withResponse("1").mock());
         sessionMocker.withCommand("ip -f inet addr show dev wlp2s0 | sed -n 2p",
                 new CommandMocker().withResponse("192.168.0.9").mock());
-        sessionMocker.withCommand("LC_ALL=C iwconfig wlp2s0", new CommandMocker()
+        sessionMocker.withCommand("LC_ALL=C whereis iwconfig",
+                new CommandMocker().withResponse("vcgencmd: /sbin/iwconfig").mock());
+        sessionMocker.withCommand("LC_ALL=C /sbin/iwconfig wlp2s0", new CommandMocker()
                 .withResponse(iwconfigOutput).mock());
         List<NetworkInterfaceInformation> interfaces = raspiQuery
                 .queryNetworkInformation();
@@ -133,9 +135,11 @@ public class NetworkInterfacesTest extends AbstractMockedQueryTest {
                 .withResponse("lo\nwlp2s0").mock());
         sessionMocker.withCommand("cat /sys/class/net/wlp2s0/carrier",
                 new CommandMocker().withResponse("1").mock());
+        sessionMocker.withCommand("LC_ALL=C whereis iwconfig",
+                new CommandMocker().withResponse("vcgencmd: /sbin/iwconfig").mock());
         sessionMocker.withCommand("ip -f inet addr show dev wlp2s0 | sed -n 2p",
                 new CommandMocker().withResponse("192.168.0.9").mock());
-        sessionMocker.withCommand("LC_ALL=C iwconfig wlp2s0", new CommandMocker()
+        sessionMocker.withCommand("LC_ALL=C /sbin/iwconfig wlp2s0", new CommandMocker()
                 .withResponse(iwconfigOutput).mock());
         List<NetworkInterfaceInformation> interfaces = raspiQuery
                 .queryNetworkInformation();
