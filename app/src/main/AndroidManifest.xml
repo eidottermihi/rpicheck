@@ -3,7 +3,7 @@
     package="de.eidottermihi.raspicheck"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:versionCode="44">
+    android:versionCode="45">
 
     <!-- for SSH connection -->
     <uses-permission android:name="android.permission.INTERNET"/>
