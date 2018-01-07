@@ -86,8 +86,8 @@
 	<string name="network_header">网络</string>
 	<string name="network_interface">接口</string>
 	<string name="network_status">状态</string>
-	<string name="network_status_up">Up</string>
-	<string name="network_status_down">Down</string>
+	<string name="network_status_up">启用</string>
+	<string name="network_status_down">关闭</string>
 	<string name="network_signal">信号</string>
 	<string name="network_link">强度</string>
 	<string name="pref_group_about">关于</string>
@@ -223,5 +223,14 @@
 	<string name="share_body"># Information for Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nThis information has been queried with RasPi Check (version: %5$s) for Android.</string>
 	<string name="permission_private_key_error">读取私钥文件权限被拒绝，无法搜索。</string>
 	<string name="widget_no_read_permission">RasPi Check 没有权限访问外部存储，无法更新小部件。</string>
+	<string name="pref_query_show_system_time_title">显示系统时间</string>
+	<string name="pref_query_show_system_time_summaryOff">系统时间已隐藏。</string>
+	<string name="pref_query_show_system_time_summaryOn">系统时间已显示。</string>
+	<string name="systemtime">系统时间</string>
+	<string name="total_swap">交换内存</string>
+	<string name="label_cmd_timeout">超时（秒）</string>
+	<string name="timeout_hint_title">超时：</string>
+	<string name="timeout_hint_text">如果你的命令需要更长时间才能完成，请自定义超过 60 秒的默认超时时间。</string>
+	<string name="validation_msg_timeout">至少需要 1 秒</string>
 
 </resources>
