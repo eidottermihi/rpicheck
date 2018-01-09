@@ -9,4 +9,4 @@ task copySignedReleaseApk(type: Copy) {
     }
 }
 
-commitNewVersion.dependsOn copySignedReleaseApk
+tasks.increaseVersionCode.dependsOn copySignedReleaseApk
