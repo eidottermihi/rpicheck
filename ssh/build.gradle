@@ -12,7 +12,7 @@ dependencies {
     compile 'com.google.guava:guava:20.0'
     compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
     compile 'org.slf4j:slf4j-api:1.7.25'
-    compile 'com.hierynomus:sshj:0.23.1-SNAPSHOT'
+    compile 'com.hierynomus:sshj:0.23.0-ANDROID-COMPAT-SNAPSHOT'
     compile 'com.madgag.spongycastle:core:1.56.0.0'
     compile 'com.madgag.spongycastle:prov:1.56.0.0'
     compile 'com.madgag.spongycastle:bcpkix-jdk15on:1.56.0.0'
