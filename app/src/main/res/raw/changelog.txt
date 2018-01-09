@@ -19,8 +19,8 @@
     </style>
   </head>
   <body>
-$ 1.8.6-SNAPSHOT
-  % Version 1.8.6-SNAPSHOT
+$ 1.8.6
+  % Version 1.8.6
   _ 2018-01-09
   * Fixed publickey authentification not working with PKCS#8 Keyfiles
 $ 1.8.5

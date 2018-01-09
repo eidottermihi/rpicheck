@@ -401,19 +401,25 @@ public class RaspiQuery implements IQueryService {
                 try {
                     session = client.startSession();
                     session.allocateDefaultPTY();
-                    final String cmdString = "LC_ALL=C whereis " + executableBinary;
+                    final String cmdString = "LC_ALL=C /usr/bin/whereis " + executableBinary;
                     final Command cmd = session.exec(cmdString);
                     cmd.join(30, TimeUnit.SECONDS);
+                    final Integer exitStatus = cmd.getExitStatus();
                     String output = IOUtils.readFully(cmd.getInputStream())
                             .toString();
-                    LOGGER.debug("Output of '{}': \n{}", cmdString, output);
-                    final String[] splitted = output.split("\\s");
-                    if (splitted.length >= 2) {
-                        String path = splitted[1].trim();
-                        LOGGER.debug("Path for '{}': {}", executableBinary, path);
-                        return Optional.of(path);
+                    if (exitStatus == 0) {
+                        LOGGER.debug("Output of '{}': \n{}", cmdString, output);
+                        final String[] splitted = output.split("\\s");
+                        if (splitted.length >= 2) {
+                            String path = splitted[1].trim();
+                            LOGGER.debug("Path for '{}': {}", executableBinary, path);
+                            return Optional.of(path);
+                        } else {
+                            LOGGER.warn("Could not get path to executable '{}'. Output of '{}' was: {}", executableBinary, cmdString, output);
+                            return Optional.absent();
+                        }
                     } else {
-                        LOGGER.warn("Could not get path to executable '{}'. Output of '{}' was: {}", executableBinary, cmdString, output);
+                        LOGGER.warn("Can't find path to executable '{}', execution of '{}' failed with exit code {}, output: {}", executableBinary, cmdString, exitStatus, output);
                         return Optional.absent();
                     }
                 } catch (IOException e) {
