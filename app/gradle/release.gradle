@@ -4,15 +4,51 @@ release {
     tagTemplate = 'v${version}'
 }
 
-task increaseVersionCode << {
-    def manifestFile = file("src/main/AndroidManifest.xml")
-    def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
-    def manifestText = manifestFile.getText()
-    def matcher = pattern.matcher(manifestText)
-    matcher.find()
-    def versionCode = Integer.parseInt(matcher.group(1))
-    def manifestContent = matcher.replaceAll("versionCode=\"" + ++versionCode + "\"")
-    manifestFile.write(manifestContent)
+task increaseVersionCode {
+    doLast {
+        def manifestFile = file("src/main/AndroidManifest.xml")
+        def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+        def manifestText = manifestFile.getText()
+        def matcher = pattern.matcher(manifestText)
+        matcher.find()
+        def versionCode = Integer.parseInt(matcher.group(1))
+        def manifestContent = matcher.replaceAll("versionCode=\"" + ++versionCode + "\"")
+        manifestFile.write(manifestContent)
+    }
 }
 
 tasks.commitNewVersion.dependsOn increaseVersionCode
+
+if (project.hasProperty("rpicheck.keystore")
+        && new File(project.property("rpicheck.keystore")).exists()) {
+    // sign apk
+    android {
+        signingConfigs {
+            release {
+                storeFile file(project.property("rpicheck.keystore"))
+                storePassword project.property("rpicheck.keystore.password")
+                keyAlias project.property("rpicheck.keystore.key.alias")
+                keyPassword project.property("rpicheck.keystore.key.password")
+            }
+        }
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
+    };
+    // copy signed apk to local release apk folder
+    def deployFolder = project.property("rpicheck.deploy.path")
+    def deployableName = "raspicheck-${version}-release.apk"
+
+    task copySignedReleaseApk(type: Copy) {
+        from "${project.buildDir}/outputs/apk/release/app-release.apk"
+        into deployFolder
+        rename { String filename ->
+            deployableName
+        }
+    }
+
+    tasks.increaseVersionCode.dependsOn copySignedReleaseApk
+}
