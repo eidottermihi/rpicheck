@@ -6,5 +6,6 @@ license {
 
     ignoreFailures true
 
-    exclude "*.txt"
+    exclude "**/*.txt"
+    exclude "**/res/**/*.xml"
 }
