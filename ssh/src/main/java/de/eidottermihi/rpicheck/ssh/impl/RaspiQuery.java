@@ -22,6 +22,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
+import net.schmizz.sshj.AndroidConfig;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.ConnectionException;
@@ -1311,7 +1312,7 @@ public class RaspiQuery implements IQueryService {
      */
 
     public SSHClient newAndroidSSHClient() {
-        return new SSHClient(new SpongyCastleAndroidConfig());
+        return new SSHClient(new AndroidConfig());
     }
 
     @Override
