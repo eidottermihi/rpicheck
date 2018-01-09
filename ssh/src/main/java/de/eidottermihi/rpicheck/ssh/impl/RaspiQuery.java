@@ -378,20 +378,19 @@ public class RaspiQuery implements IQueryService {
             throws RaspiQueryException {
         // find path to to iwconfig executable
         Optional<String> iwconfigPath = findPathToExecutable("iwconfig");
-        if(iwconfigPath.isPresent()){
-            for (NetworkInterfaceInformation nic :
-                    wirelessInterfaces) {
-                WlanBean wlanBean = this.queryWirelessInterface(nic.getName(), iwconfigPath.get());
-                if (wlanBean != null) {
-                    LOGGER.info("Wireless stats for {}: {}", nic.getName(), wlanBean);
-                    nic.setWlanInfo(wlanBean);
-                }
+        for (NetworkInterfaceInformation nic :
+                wirelessInterfaces) {
+            WlanBean wlanBean = this.queryWirelessInterface(nic.getName(), iwconfigPath);
+            if (wlanBean != null) {
+                LOGGER.info("Wireless stats for {}: {}", nic.getName(), wlanBean);
+                nic.setWlanInfo(wlanBean);
             }
         }
     }
 
     /**
      * Uses "whereis" to find path to the specified executable.
+     *
      * @param executableBinary
      * @return the first path
      */
@@ -409,7 +408,7 @@ public class RaspiQuery implements IQueryService {
                             .toString();
                     LOGGER.debug("Output of '{}': \n{}", cmdString, output);
                     final String[] splitted = output.split("\\s");
-                    if(splitted.length >= 2) {
+                    if (splitted.length >= 2) {
                         String path = splitted[1].trim();
                         LOGGER.debug("Path for '{}': {}", executableBinary, path);
                         return Optional.of(path);
@@ -436,10 +435,101 @@ public class RaspiQuery implements IQueryService {
      * Tries to read the wireless interface signal strength using 'iwconfig' utility.
      *
      * @param interfaceName the interface name (e.g. 'wlan0')
-     * @param iwconfigPath the path to iwconfig executable (e.g. '/sbin/iwconfig')
+     * @param iwconfigPath  the path to iwconfig executable (e.g. '/sbin/iwconfig'), if available
      * @return a {@link WlanBean} or null if parsing etc. failed
      */
-    private WlanBean queryWirelessInterface(String interfaceName, String iwconfigPath) throws RaspiQueryException {
+    private WlanBean queryWirelessInterface(String interfaceName, Optional<String> iwconfigPath) throws RaspiQueryException {
+        if (iwconfigPath.isPresent()) {
+            return queryWirelessInterfaceWithIwconfig(interfaceName, iwconfigPath.get());
+        } else {
+            return queryWirelessInterfaceWithProcNetWireless(interfaceName);
+        }
+    }
+
+    /**
+     * Queries the link level and signal quality of the wireless interfaces via
+     * "cat /proc/net/wireless".
+     *
+     * @param interfaceName name of the wireless interface
+     * @throws RaspiQueryException if something goes wrong
+     */
+    private WlanBean queryWirelessInterfaceWithProcNetWireless(String interfaceName)
+            throws RaspiQueryException {
+        LOGGER.info("Querying wireless interface {} from /proc/net/wireless ...");
+        if (client != null) {
+            if (client.isConnected() && client.isAuthenticated()) {
+                Session session;
+                try {
+                    session = client.startSession();
+                    final String cmdString = "cat /proc/net/wireless";
+                    final Command cmd = session.exec(cmdString);
+                    cmd.join(30, TimeUnit.SECONDS);
+                    String output = IOUtils.readFully(cmd.getInputStream())
+                            .toString();
+                    LOGGER.debug("Real output of /proc/net/wireless: \n{}",
+                            output);
+                    return this.parseProcNetWireless(output, interfaceName);
+                } catch (IOException e) {
+                    throw RaspiQueryException.createTransportFailure(hostname,
+                            e);
+                }
+            } else {
+                throw new IllegalStateException(
+                        "You must establish a connection first.");
+            }
+        } else {
+            throw new IllegalStateException(
+                    "You must establish a connection first.");
+        }
+    }
+
+    private WlanBean parseProcNetWireless(String output, String interfaceName) {
+        final String[] lines = output.split("\n");
+        for (String line : lines) {
+            if (line.startsWith("Inter-") || line.startsWith(" face")) {
+                LOGGER.debug("Skipping header line: {}", line);
+                continue;
+            }
+            final String[] cols = line.split("\\s+");
+            if (cols.length >= 11) {
+                LOGGER.debug("Parsing output line: {}", line);
+                // getting interface name
+                final String name = cols[1].replace(":", "");
+                if (interfaceName.equalsIgnoreCase(name)) {
+                    final String linkQuality = cols[3].replace(".", "");
+                    LOGGER.debug("Signal quality '{}'", linkQuality);
+                    final String linkLevel = cols[4].replace(".", "");
+                    LOGGER.debug("Link level: '{}'", linkLevel);
+                    Integer linkQualityInt = null;
+                    try {
+                        linkQualityInt = Integer.parseInt(linkQuality);
+                    } catch (NumberFormatException e) {
+                        LOGGER.warn("Could not parse link quality field for input: {}.", linkQuality);
+                    }
+                    Integer signalLevelInt = null;
+                    try {
+                        signalLevelInt = Integer.parseInt(linkLevel);
+                    } catch (Exception e) {
+                        LOGGER.warn(
+                                "Could not parse link level field for input: {}.",
+                                linkLevel);
+                    }
+                    LOGGER.info(
+                            "WiFi status of {}: link quality {}, signal level {}.",
+                            new Object[]{name, linkQualityInt, signalLevelInt});
+                    final WlanBean wlanInfo = new WlanBean();
+                    wlanInfo.setLinkQuality(linkQualityInt);
+                    wlanInfo.setSignalLevel(signalLevelInt);
+                    LOGGER.debug("Adding wifi-status info to interface {}.", interfaceName);
+                    return wlanInfo;
+                }
+            }
+        }
+        LOGGER.warn("No line for interface '{}' present at /proc/net/wireless, no wifi signal quality available.", interfaceName);
+        return null;
+    }
+
+    private WlanBean queryWirelessInterfaceWithIwconfig(String interfaceName, String iwconfigPath) throws RaspiQueryException {
         LOGGER.info("Executing {} to query wireless interface '{}'...", iwconfigPath, interfaceName);
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
