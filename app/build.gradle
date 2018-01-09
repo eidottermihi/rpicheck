@@ -9,7 +9,8 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'net.researchgate.release'
-apply plugin: 'com.github.hierynomus.license-base'
+apply plugin: 'com.github.hierynomus.license'
+apply from: "$project.rootDir/gradle/license.gradle"
 
 if (project.hasProperty("rpicheck.keystore")
         && new File(project.property("rpicheck.keystore")).exists()) {
@@ -86,8 +87,9 @@ dependencies {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     }
 
-    license {
-        exclude "**/sheetrock/**"
-    }
 
+}
+
+license {
+    exclude "**/sheetrock/**"
 }
