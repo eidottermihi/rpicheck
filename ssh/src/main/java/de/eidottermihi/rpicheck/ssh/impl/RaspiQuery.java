@@ -29,6 +29,7 @@ import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Command;
 import net.schmizz.sshj.transport.TransportException;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
@@ -39,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.security.Provider;
 import java.security.Security;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -54,46 +54,19 @@ import de.eidottermihi.rpicheck.ssh.beans.NetworkInterfaceInformation;
 import de.eidottermihi.rpicheck.ssh.beans.ProcessBean;
 import de.eidottermihi.rpicheck.ssh.beans.RaspiMemoryBean;
 import de.eidottermihi.rpicheck.ssh.beans.VcgencmdBean;
-import de.eidottermihi.rpicheck.ssh.beans.WlanBean;
 
 /**
- * Simple API for querying a Raspberry Pi computer.
- *
- * @author Michael
- * @version <ul>
- *          <li>0.4.0 added sending commands</li>
- *          <li>0.3.3 added private/public key authentification</li>
- *          <li>0.3.2 fixed wlan parsing</li>
- *          <li>0.3.1 added halt commando, general bugfixing of path problems</li>
- *          <li>0.3.0 added mechanism to find vcgencmd path, refactored ip
- *          adress query to support other interfaces than eth0, added wlan
- *          status query</li>
- *          <li>0.2.1 added full path to vcgencmd (not in PATH in some
- *          distributions)</li>
- *          <li>0.2.0 reboot command</li>
- *          <li>0.1.5 beans serializable</li>
- *          <li>0.1.4 added process query</li>
- *          <li>0.1.3 minor changes (avg load as %, show data unit)</li>
- *          <li>0.1.2 added distribution name query</li>
- *          <li>0.1.1 added ip adress and disk usage query, changed UptimeBean
- *          avgLoad to String</li>
- *          <li>0.1.0 first alpha</li>
- *          </ul>
+ * Simple API for interacting with a Raspberry Pi computer over SSH.
  */
 public class RaspiQuery implements IQueryService {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(RaspiQuery.class);
 
-    public static final int FREQ_ARM = 0;
-    public static final int FREQ_CORE = 1;
+    private static final int FREQ_ARM = 0;
+    private static final int FREQ_CORE = 1;
 
-    private static final Pattern IPADDRESS_PATTERN = Pattern
-            .compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     private static final Pattern CPU_PATTERN = Pattern.compile("[0-9.]{4,}");
-    private static final Pattern IWCONFIG_LINK_PATTERN = Pattern.compile("Link Quality=([0-9]{1,3})\\/([0-9]{1,3})");
-    private static final Pattern IWCONFIG_LEVEL_DBM_PATTERN = Pattern.compile("Signal level=(.*)\\s(dBm)");
-    private static final Pattern IWCONFIG_LEVEL_PERCENTAGE_PATTERN = Pattern.compile("Signal level=([0-9]{1,3})\\/([0-9]{1,3})");
     private static final String DISK_USAGE_CMD = "LC_ALL=C df -h";
     private static final String DF_COMMAND_HEADER_START = "Filesystem";
     private static final String DISTRIBUTION_CMD = "cat /etc/*-release | grep PRETTY_NAME";
@@ -122,15 +95,13 @@ public class RaspiQuery implements IQueryService {
      */
     public RaspiQuery(final String host, final String user, final Integer port) {
         final Provider[] providers = Security.getProviders();
-        LOGGER.debug("Registered JCE providers...");
-        for (Provider prov : providers
-                ) {
+        LOGGER.debug("+++ Registered JCE providers +++");
+        for (Provider prov : providers) {
             LOGGER.debug("Provider: {} - {}", prov.getName(), prov.getInfo());
         }
         final Set<String> signatures = Security.getAlgorithms("signature");
-        LOGGER.debug("Availabe signatures...");
-        for (String sig : signatures
-                ) {
+        LOGGER.debug("+++ Availabe signatures +++");
+        for (String sig : signatures) {
             LOGGER.debug("Signature: {}", sig);
         }
         if (Strings.isNullOrEmpty(host)) {
@@ -138,7 +109,7 @@ public class RaspiQuery implements IQueryService {
         } else if (Strings.isNullOrEmpty(user)) {
             throw new IllegalArgumentException("username should not be blank.");
         } else {
-            LOGGER.info("New RaspiQuery for host: {}", host);
+            LOGGER.info("Initialiazed new RaspiQuery for host {} on port {}", host, port);
             this.hostname = host;
             this.username = user;
             if (port != null) {
@@ -154,7 +125,7 @@ public class RaspiQuery implements IQueryService {
      * @return the temperature in Celsius
      * @throws RaspiQueryException if something goes wrong
      */
-    private final Double queryCpuTemp(String vcgencmdPath)
+    private Double queryCpuTemp(String vcgencmdPath)
             throws RaspiQueryException {
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
@@ -164,20 +135,17 @@ public class RaspiQuery implements IQueryService {
                     final String cmdString = vcgencmdPath + " measure_temp";
                     final Command cmd = session.exec(cmdString);
                     cmd.join(30, TimeUnit.SECONDS);
-                    String output = IOUtils.readFully(cmd.getInputStream())
-                            .toString();
+                    String output = IOUtils.readFully(cmd.getInputStream()).toString();
                     return this.parseTemperature(output);
                 } catch (IOException e) {
                     throw RaspiQueryException.createTransportFailure(hostname,
                             e);
                 }
             } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
+                throw new IllegalStateException("You must establish a connection first.");
             }
         } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
+            throw new IllegalStateException("You must establish a connection first.");
         }
     }
 
@@ -189,7 +157,7 @@ public class RaspiQuery implements IQueryService {
      * @return the frequency in hz
      * @throws RaspiQueryException if something goes wrong
      */
-    private final long queryFreq(final int unit, final String vcgencmdPath)
+    private long queryFreq(final int unit, final String vcgencmdPath)
             throws RaspiQueryException {
         if (client != null) {
             if (client.isConnected() && client.isAuthenticated()) {
@@ -206,20 +174,17 @@ public class RaspiQuery implements IQueryService {
                     }
                     final Command cmd = session.exec(cmdString);
                     cmd.join(30, TimeUnit.SECONDS);
-                    String output = IOUtils.readFully(cmd.getInputStream())
-                            .toString();
+                    String output = IOUtils.readFully(cmd.getInputStream()).toString();
                     return this.parseFrequency(output);
                 } catch (IOException e) {
                     throw RaspiQueryException.createTransportFailure(hostname,
                             e);
                 }
             } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
+                throw new IllegalStateException("You must establish a connection first.");
             }
         } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
+            throw new IllegalStateException("You must establish a connection first.");
         }
     }
 
@@ -286,16 +251,13 @@ public class RaspiQuery implements IQueryService {
                         return Optional.absent();
                     }
                 } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
+                    throw RaspiQueryException.createTransportFailure(hostname, e);
                 }
             } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
+                throw new IllegalStateException("You must establish a connection first.");
             }
         } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
+            throw new IllegalStateException("You must establish a connection first.");
         }
     }
 
@@ -317,13 +279,8 @@ public class RaspiQuery implements IQueryService {
         final Integer exitStatus = cmd.getExitStatus();
         final String output = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase();
         LOGGER.debug("Path check output: {}", output);
-        if (exitStatus != null && exitStatus.equals(0)
-                && !output.contains("not found") && !output.contains("no such file or directory")) {
-            // vcgencmd was found
-            return true;
-        } else {
-            return false;
-        }
+        return exitStatus != null && exitStatus.equals(0)
+                && !output.contains("not found") && !output.contains("no such file or directory");
     }
 
     /*
@@ -334,437 +291,9 @@ public class RaspiQuery implements IQueryService {
     @Override
     public List<NetworkInterfaceInformation> queryNetworkInformation()
             throws RaspiQueryException {
-        List<NetworkInterfaceInformation> interfacesInfo = new ArrayList<NetworkInterfaceInformation>();
-        // 1. find all network interfaces (excluding loopback interface) and
-        // check carrier
-        List<String> interfaces = this.queryInterfaceList();
-        LOGGER.info("Available interfaces: {}", interfaces);
-        for (String interfaceName : interfaces) {
-            NetworkInterfaceInformation interfaceInfo = new NetworkInterfaceInformation();
-            interfaceInfo.setName(interfaceName);
-            // check carrier
-            interfaceInfo.setHasCarrier(this.checkCarrier(interfaceName));
-            interfacesInfo.add(interfaceInfo);
-        }
-        List<NetworkInterfaceInformation> wirelessInterfaces = new ArrayList<NetworkInterfaceInformation>();
-        // 2. for every interface with carrier check ip adress
-        for (NetworkInterfaceInformation interfaceBean : interfacesInfo) {
-            if (interfaceBean.isHasCarrier()) {
-                interfaceBean.setIpAdress(this.queryIpAddress(interfaceBean
-                        .getName()));
-                // check if interface is wireless (interface name starts with
-                // "wl")
-                if (interfaceBean.getName().startsWith("wl")) {
-                    // add to wireless interfaces list
-                    wirelessInterfaces.add(interfaceBean);
-                }
-            }
-        }
-        // 3. query signal level and link status of wireless interfaces
-        if (wirelessInterfaces.size() > 0) {
-            this.queryWlanInfo(wirelessInterfaces);
-        }
-        return interfacesInfo;
+        return QueryFactory.makeNetworkInformationQuery(client).run();
     }
 
-    /**
-     * Queries the link level and signal quality of the wireless interfaces via iwconfig.
-     *
-     * @param wirelessInterfaces a List with wireless interfaces
-     * @throws RaspiQueryException if something goes wrong
-     */
-    private void queryWlanInfo(
-            List<NetworkInterfaceInformation> wirelessInterfaces)
-            throws RaspiQueryException {
-        // find path to to iwconfig executable
-        Optional<String> iwconfigPath = findPathToExecutable("iwconfig");
-        for (NetworkInterfaceInformation nic :
-                wirelessInterfaces) {
-            WlanBean wlanBean = this.queryWirelessInterface(nic.getName(), iwconfigPath);
-            if (wlanBean != null) {
-                LOGGER.info("Wireless stats for {}: {}", nic.getName(), wlanBean);
-                nic.setWlanInfo(wlanBean);
-            }
-        }
-    }
-
-    /**
-     * Uses "whereis" to find path to the specified executable.
-     *
-     * @param executableBinary
-     * @return the first path
-     */
-    private Optional<String> findPathToExecutable(String executableBinary) throws RaspiQueryException {
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    session.allocateDefaultPTY();
-                    final String cmdString = "LC_ALL=C /usr/bin/whereis " + executableBinary;
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    final Integer exitStatus = cmd.getExitStatus();
-                    String output = IOUtils.readFully(cmd.getInputStream())
-                            .toString();
-                    if (exitStatus == 0) {
-                        LOGGER.debug("Output of '{}': \n{}", cmdString, output);
-                        final String[] splitted = output.split("\\s");
-                        if (splitted.length >= 2) {
-                            String path = splitted[1].trim();
-                            LOGGER.debug("Path for '{}': {}", executableBinary, path);
-                            return Optional.of(path);
-                        } else {
-                            LOGGER.warn("Could not get path to executable '{}'. Output of '{}' was: {}", executableBinary, cmdString, output);
-                            return Optional.absent();
-                        }
-                    } else {
-                        LOGGER.warn("Can't find path to executable '{}', execution of '{}' failed with exit code {}, output: {}", executableBinary, cmdString, exitStatus, output);
-                        return Optional.absent();
-                    }
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
-
-
-    /**
-     * Tries to read the wireless interface signal strength using 'iwconfig' utility.
-     *
-     * @param interfaceName the interface name (e.g. 'wlan0')
-     * @param iwconfigPath  the path to iwconfig executable (e.g. '/sbin/iwconfig'), if available
-     * @return a {@link WlanBean} or null if parsing etc. failed
-     */
-    private WlanBean queryWirelessInterface(String interfaceName, Optional<String> iwconfigPath) throws RaspiQueryException {
-        if (iwconfigPath.isPresent()) {
-            return queryWirelessInterfaceWithIwconfig(interfaceName, iwconfigPath.get());
-        } else {
-            return queryWirelessInterfaceWithProcNetWireless(interfaceName);
-        }
-    }
-
-    /**
-     * Queries the link level and signal quality of the wireless interfaces via
-     * "cat /proc/net/wireless".
-     *
-     * @param interfaceName name of the wireless interface
-     * @throws RaspiQueryException if something goes wrong
-     */
-    private WlanBean queryWirelessInterfaceWithProcNetWireless(String interfaceName)
-            throws RaspiQueryException {
-        LOGGER.info("Querying wireless interface {} from /proc/net/wireless ...");
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    final String cmdString = "cat /proc/net/wireless";
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    String output = IOUtils.readFully(cmd.getInputStream())
-                            .toString();
-                    LOGGER.debug("Real output of /proc/net/wireless: \n{}",
-                            output);
-                    return this.parseProcNetWireless(output, interfaceName);
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
-
-    private WlanBean parseProcNetWireless(String output, String interfaceName) {
-        final String[] lines = output.split("\n");
-        for (String line : lines) {
-            if (line.startsWith("Inter-") || line.startsWith(" face")) {
-                LOGGER.debug("Skipping header line: {}", line);
-                continue;
-            }
-            final String[] cols = line.split("\\s+");
-            if (cols.length >= 11) {
-                LOGGER.debug("Parsing output line: {}", line);
-                // getting interface name
-                final String name = cols[1].replace(":", "");
-                if (interfaceName.equalsIgnoreCase(name)) {
-                    final String linkQuality = cols[3].replace(".", "");
-                    LOGGER.debug("Signal quality '{}'", linkQuality);
-                    final String linkLevel = cols[4].replace(".", "");
-                    LOGGER.debug("Link level: '{}'", linkLevel);
-                    Integer linkQualityInt = null;
-                    try {
-                        linkQualityInt = Integer.parseInt(linkQuality);
-                    } catch (NumberFormatException e) {
-                        LOGGER.warn("Could not parse link quality field for input: {}.", linkQuality);
-                    }
-                    Integer signalLevelInt = null;
-                    try {
-                        signalLevelInt = Integer.parseInt(linkLevel);
-                    } catch (Exception e) {
-                        LOGGER.warn(
-                                "Could not parse link level field for input: {}.",
-                                linkLevel);
-                    }
-                    LOGGER.info(
-                            "WiFi status of {}: link quality {}, signal level {}.",
-                            new Object[]{name, linkQualityInt, signalLevelInt});
-                    final WlanBean wlanInfo = new WlanBean();
-                    wlanInfo.setLinkQuality(linkQualityInt);
-                    wlanInfo.setSignalLevel(signalLevelInt);
-                    LOGGER.debug("Adding wifi-status info to interface {}.", interfaceName);
-                    return wlanInfo;
-                }
-            }
-        }
-        LOGGER.warn("No line for interface '{}' present at /proc/net/wireless, no wifi signal quality available.", interfaceName);
-        return null;
-    }
-
-    private WlanBean queryWirelessInterfaceWithIwconfig(String interfaceName, String iwconfigPath) throws RaspiQueryException {
-        LOGGER.info("Executing {} to query wireless interface '{}'...", iwconfigPath, interfaceName);
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    session.allocateDefaultPTY();
-                    final String cmdString = "LC_ALL=C " + iwconfigPath + " " + interfaceName;
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    String output = IOUtils.readFully(cmd.getInputStream())
-                            .toString();
-                    LOGGER.debug("Output of '{}': \n{}", cmdString, output);
-                    return this.parseIwconfigOutput(output);
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
-
-    private WlanBean parseIwconfigOutput(String output) {
-        final Matcher linkQualityMatcher = IWCONFIG_LINK_PATTERN.matcher(output);
-        if (linkQualityMatcher.find()) {
-            String linkValue = linkQualityMatcher.group(1);
-            String linkMax = linkQualityMatcher.group(2);
-            final Double value = Double.valueOf(linkValue);
-            final Double maxValue = Double.valueOf(linkMax);
-            double percentageValue = 0.0;
-            if (maxValue != 100) {
-                // calculate percentage
-                percentageValue = (100 / maxValue) * value;
-                LOGGER.debug("Calculated link quality for {}/{} = {}%", value, maxValue, percentageValue);
-            } else {
-                // already percentage
-                percentageValue = value;
-            }
-            WlanBean wlanBean = new WlanBean();
-            wlanBean.setLinkQuality(Integer.valueOf((int) percentageValue));
-            Matcher signalLevelMatcher = IWCONFIG_LEVEL_DBM_PATTERN.matcher(output);
-            if (signalLevelMatcher.find()) {
-                // using a linear interpolation as described here:
-                // https://stackoverflow.com/questions/15797920/how-to-convert-wifi-signal-strength-from-quality-percent-to-rssi-dbm
-                Double dbmValue = Double.valueOf(signalLevelMatcher.group(1));
-                double min = 0;
-                double max = 100;
-                double signalLevelPercentage = Math.min(Math.max(2 * (dbmValue + 100), min), max);
-                LOGGER.debug("Calculated signal level for {} dBm: {} %", dbmValue, signalLevelPercentage);
-                wlanBean.setSignalLevel((int) signalLevelPercentage);
-            } else {
-                signalLevelMatcher = IWCONFIG_LEVEL_PERCENTAGE_PATTERN.matcher(output);
-                if (signalLevelMatcher.find()) {
-                    double signalLevelPercentage = Double.valueOf(signalLevelMatcher.group(1));
-                    wlanBean.setSignalLevel((int) signalLevelPercentage);
-                } else {
-                    LOGGER.error("No matcher for 'Signal level' matched the output of iwconfig:\n{}", output);
-                }
-            }
-            return wlanBean;
-        } else {
-            LOGGER.error("Failed to parse 'iwconfig' output:\n{}", output);
-            return null;
-        }
-    }
-
-    /**
-     * Queries the ip address of a network interface.
-     *
-     * @param name the interface name (eth0, wlan0, ...).
-     * @return the IP address
-     * @throws RaspiQueryException
-     */
-    private String queryIpAddress(String name) throws RaspiQueryException {
-        LOGGER.info("Querying ip address of interface: '{}'", name);
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    session.allocateDefaultPTY();
-                    final String cmdString = "ip -f inet addr show dev " + name
-                            + " | sed -n 2p";
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    final String output = IOUtils.readFully(
-                            cmd.getInputStream()).toString();
-                    LOGGER.debug("Output of ip query: {}", output);
-                    final Matcher m = IPADDRESS_PATTERN.matcher(output);
-                    if (m.find()) {
-                        final String ipAddress = m.group().trim();
-                        LOGGER.info("{} - IP address: {}.", name, ipAddress);
-                        return ipAddress;
-                    } else {
-                        LOGGER.error(
-                                "IP address pattern: No match found for output: {}.",
-                                output);
-                    }
-                    LOGGER.info(
-                            "'ip' command not available. Trying '/sbin/ifconfig' to get ip address of interface {}.",
-                            name);
-                    session = client.startSession();
-                    session.allocateDefaultPTY();
-                    final String ifConfigCmd = "/sbin/ifconfig " + name
-                            + " | grep \"inet addr\"";
-                    final Command ifCfgCmd = session.exec(ifConfigCmd);
-                    ifCfgCmd.join(30, TimeUnit.SECONDS);
-                    final String ifconfigOutput = IOUtils.readFully(
-                            ifCfgCmd.getInputStream()).toString();
-                    LOGGER.debug("Output of ifconfig query: {}.",
-                            ifconfigOutput);
-                    final Matcher m2 = IPADDRESS_PATTERN
-                            .matcher(ifconfigOutput);
-                    if (m2.find()) {
-                        final String ipAddress = m2.group().trim();
-                        LOGGER.info("{} - IP address: {}.", name, ipAddress);
-                        return ipAddress;
-                    } else {
-                        LOGGER.error(
-                                "IP address pattern: No match found for output: {}.",
-                                ifconfigOutput);
-                        LOGGER.error("Querying ip address failed. It seems like 'ip' and 'ifconfig' are not available.");
-                        return null;
-                    }
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
-
-    /**
-     * Checks if the specified interface has a carrier up and running via
-     * "cat /sys/class/net/[interface]/carrier".
-     *
-     * @param interfaceName the interface to check
-     * @return true, when the interface has a carrier up and running
-     * @throws RaspiQueryException if something goes wrong
-     */
-    private boolean checkCarrier(String interfaceName)
-            throws RaspiQueryException {
-        LOGGER.info("Checking carrier of {}...", interfaceName);
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    final String cmdString = "cat /sys/class/net/"
-                            + interfaceName + "/carrier";
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    final String output = IOUtils.readFully(
-                            cmd.getInputStream()).toString();
-                    if (output.contains("1")) {
-                        LOGGER.debug("{} has a carrier up and running.",
-                                interfaceName);
-                        return true;
-                    } else {
-                        LOGGER.debug("{} has no carrier.", interfaceName);
-                        return false;
-                    }
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
-
-    /**
-     * Queries which interfaces are available via "/sys/class/net". Loopback
-     * interfaces are excluded.
-     *
-     * @return a List with all interface names (eth0, wlan0,...).
-     * @throws RaspiQueryException if something goes wrong
-     */
-    private List<String> queryInterfaceList() throws RaspiQueryException {
-        LOGGER.info("Querying network interfaces...");
-        if (client != null) {
-            if (client.isConnected() && client.isAuthenticated()) {
-                Session session;
-                try {
-                    session = client.startSession();
-                    final String cmdString = "ls -1 /sys/class/net";
-                    final Command cmd = session.exec(cmdString);
-                    cmd.join(30, TimeUnit.SECONDS);
-                    final String output = IOUtils.readFully(
-                            cmd.getInputStream()).toString();
-                    final String[] lines = output.split("\n");
-                    final List<String> interfaces = new ArrayList<String>();
-                    for (String interfaceLine : lines) {
-                        if (!interfaceLine.startsWith("lo")) {
-                            LOGGER.debug("Found interface {}.", interfaceLine);
-                            interfaces.add(interfaceLine);
-                        }
-                    }
-                    return interfaces;
-                } catch (IOException e) {
-                    throw RaspiQueryException.createTransportFailure(hostname,
-                            e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
-            }
-        } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
-        }
-    }
 
     /*
      * (non-Javadoc)
@@ -793,12 +322,10 @@ public class RaspiQuery implements IQueryService {
                             e);
                 }
             } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
+                throw new IllegalStateException("You must establish a connection first.");
             }
         } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
+            throw new IllegalStateException("You must establish a connection first.");
         }
     }
 
@@ -856,12 +383,10 @@ public class RaspiQuery implements IQueryService {
                             e);
                 }
             } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
+                throw new IllegalStateException("You must establish a connection first.");
             }
         } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
+            throw new IllegalStateException("You must establish a connection first.");
         }
     }
 
@@ -880,8 +405,7 @@ public class RaspiQuery implements IQueryService {
                     session = client.startSession();
                     final Command cmd = session.exec(DISTRIBUTION_CMD);
                     cmd.join(30, TimeUnit.SECONDS);
-                    return this.parseDistribution(IOUtils
-                            .readFully(cmd.getInputStream()).toString().trim());
+                    return this.parseDistribution(IOUtils.readFully(cmd.getInputStream()).toString().trim());
                 } catch (IOException e) {
                     throw RaspiQueryException.createTransportFailure(hostname,
                             e);
@@ -897,7 +421,7 @@ public class RaspiQuery implements IQueryService {
     }
 
     @Override
-    public String querySystemtime() throws RaspiQueryException {
+    public final String querySystemtime() throws RaspiQueryException {
         return QueryFactory.makeSystemTimeQuery(client).run();
     }
 
@@ -915,12 +439,9 @@ public class RaspiQuery implements IQueryService {
                 Session session;
                 try {
                     session = client.startSession();
-                    final Command cmd = session
-                            .exec(showRootProcesses ? PROCESS_ALL
-                                    : PROCESS_NO_ROOT_CMD);
+                    final Command cmd = session.exec(showRootProcesses ? PROCESS_ALL : PROCESS_NO_ROOT_CMD);
                     cmd.join(30, TimeUnit.SECONDS);
-                    return this.parseProcesses(IOUtils
-                            .readFully(cmd.getInputStream()).toString().trim());
+                    return this.parseProcesses(IOUtils.readFully(cmd.getInputStream()).toString().trim());
                 } catch (IOException e) {
                     throw RaspiQueryException.createTransportFailure(hostname,
                             e);
@@ -1097,9 +618,7 @@ public class RaspiQuery implements IQueryService {
                 }
             } else {
                 LOGGER.error("Line[] length: {}", cols.size());
-                LOGGER.error(
-                        "Expcected another output of ps. Skipping line: {}",
-                        line);
+                LOGGER.error("Expcected another output of ps. Skipping line: {}", line);
             }
         }
         return processes;
@@ -1109,8 +628,7 @@ public class RaspiQuery implements IQueryService {
         final String[] split = output.trim().split("=");
         if (split.length >= 2) {
             final String distriWithApostroph = split[1];
-            final String distri = distriWithApostroph.replace("\"", "");
-            return distri;
+            return distriWithApostroph.replace("\"", "");
         } else {
             LOGGER.error("Could not parse distribution. Make sure 'cat /etc/*-release' works on your distribution.");
             LOGGER.error("Output of {}: \n{}", DISTRIBUTION_CMD, output);
@@ -1158,9 +676,7 @@ public class RaspiQuery implements IQueryService {
                 }
                 disks.add(new DiskUsageBean(filesystem, size, used, free, usedPercentage, mountpoint));
             } else {
-                LOGGER.warn(
-                        "Expected another output of df -h. Skipping line: {}",
-                        line);
+                LOGGER.warn("Expected another output of df -h. Skipping line: {}", line);
             }
         }
         LOGGER.debug("Disks: {}", disks);
@@ -1171,13 +687,11 @@ public class RaspiQuery implements IQueryService {
         final String[] splitted = output.trim().split("=");
         if (splitted.length >= 2) {
             final String voltsWithUnit = splitted[1];
-            final String volts = voltsWithUnit.substring(0,
-                    voltsWithUnit.length() - 1);
+            final String volts = voltsWithUnit.substring(0, voltsWithUnit.length() - 1);
             return Double.parseDouble(volts);
         } else {
             LOGGER.error("Could not parse cpu voltage.");
-            LOGGER.error("Output of 'vcgencmd measure_volts core': \n{}",
-                    output);
+            LOGGER.error("Output of 'vcgencmd measure_volts core': \n{}", output);
             return 0D;
         }
     }
@@ -1192,8 +706,7 @@ public class RaspiQuery implements IQueryService {
         final Matcher m = CPU_PATTERN.matcher(output);
         if (m.find()) {
             final String formatted = m.group().trim();
-            double temperature = Double.parseDouble(formatted);
-            return temperature;
+            return Double.parseDouble(formatted);
         } else {
             LOGGER.error("Could not parse cpu temperature.");
             LOGGER.error("Output of 'vcgencmd measure_temp': \n{}", output);
@@ -1215,8 +728,7 @@ public class RaspiQuery implements IQueryService {
                 formatted = Long.parseLong(splitted[1]);
             } catch (NumberFormatException e) {
                 LOGGER.error("Could not parse frequency.");
-                LOGGER.error(
-                        "Output of 'vcgencmd measure_clock [core/arm]': \n{}",
+                LOGGER.error("Output of 'vcgencmd measure_clock [core/arm]': \n{}",
                         output);
             }
         } else {
@@ -1234,10 +746,10 @@ public class RaspiQuery implements IQueryService {
      */
     @Override
     public final void connect(String password) throws RaspiQueryException {
-        LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
+        LOGGER.info("Connecting to host '{}' on port '{}'.", hostname, port);
         client = newAndroidSSHClient();
         LOGGER.info("Using no host key verification.");
-        client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
+        client.addHostKeyVerifier(new PromiscuousVerifier());
         try {
             client.connect(hostname, port);
             client.authPassword(username, password);
@@ -1247,8 +759,7 @@ public class RaspiQuery implements IQueryService {
         } catch (TransportException e) {
             throw RaspiQueryException.createTransportFailure(hostname, e);
         } catch (IOException e) {
-            throw RaspiQueryException
-                    .createConnectionFailure(hostname, port, e);
+            throw RaspiQueryException.createConnectionFailure(hostname, port, e);
         }
     }
 
@@ -1262,13 +773,13 @@ public class RaspiQuery implements IQueryService {
     @Override
     public final void connectWithPubKeyAuth(final String keyfilePath)
             throws RaspiQueryException {
-        LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
+        LOGGER.info("Connecting to host '{}' on port '{}'.", hostname, port);
         client = newAndroidSSHClient();
         LOGGER.info("Using no host key verification.");
-        client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
-        LOGGER.info("Using private/public key authentication.");
+        client.addHostKeyVerifier(new PromiscuousVerifier());
         try {
             client.connect(hostname, port);
+            LOGGER.info("Using private/public key authentication, keyfile: '{}'", keyfilePath);
             KeyProvider keyProvider = client.loadKeys(keyfilePath);
             client.authPublickey(username, keyProvider);
         } catch (UserAuthException e) {
@@ -1294,25 +805,22 @@ public class RaspiQuery implements IQueryService {
     @Override
     public void connectWithPubKeyAuthAndPassphrase(String path,
                                                    String privateKeyPass) throws RaspiQueryException {
-        LOGGER.info("Connecting to host: {} on port {}.", hostname, port);
+        LOGGER.info("Connecting to host '{}' on port '{}'.", hostname, port);
         client = newAndroidSSHClient();
         LOGGER.info("Using no host key verification.");
-        client.addHostKeyVerifier(new NoHostKeyVerifierImplementation());
-        LOGGER.info("Using private/public key authentification with passphrase.");
+        client.addHostKeyVerifier(new PromiscuousVerifier());
         try {
             client.connect(hostname, port);
         } catch (IOException e) {
-            throw RaspiQueryException
-                    .createConnectionFailure(hostname, port, e);
+            throw RaspiQueryException.createConnectionFailure(hostname, port, e);
         }
         try {
-            final KeyProvider keyProvider = client.loadKeys(path,
-                    privateKeyPass.toCharArray());
+            LOGGER.info("Using private/public key authentification with encrypted privatekey, keyfile: '{}'", path);
+            final KeyProvider keyProvider = client.loadKeys(path, privateKeyPass.toCharArray());
             client.authPublickey(username, keyProvider);
         } catch (UserAuthException e) {
             LOGGER.info("Authentification failed.", e);
-            throw RaspiQueryException.createAuthenticationFailure(hostname,
-                    username, e);
+            throw RaspiQueryException.createAuthenticationFailure(hostname, username, e);
         } catch (TransportException e) {
             throw RaspiQueryException.createTransportFailure(hostname, e);
         } catch (IOException e) {
@@ -1334,7 +842,8 @@ public class RaspiQuery implements IQueryService {
                             this.getHostname());
                     client.disconnect();
                 } catch (IOException e) {
-                    throw RaspiQueryException.createIOException(e);
+                    // dont throw, just log
+                    LOGGER.warn("Caught exception during disconnect: {}", e);
                 }
             }
         }
@@ -1378,13 +887,10 @@ public class RaspiQuery implements IQueryService {
                     final Command cmd = session.exec(command);
                     cmd.join(timeout, TimeUnit.SECONDS);
                     cmd.close();
-                    final String output = IOUtils.readFully(
-                            cmd.getInputStream()).toString();
-                    final String error = IOUtils
-                            .readFully(cmd.getErrorStream()).toString();
+                    final String output = IOUtils.readFully(cmd.getInputStream()).toString();
+                    final String error = IOUtils.readFully(cmd.getErrorStream()).toString();
                     final StringBuilder sb = new StringBuilder();
-                    final String out = sb.append(output).append(error)
-                            .toString();
+                    final String out = sb.append(output).append(error).toString();
                     LOGGER.debug("Output of '{}': {}", command, out);
                     session.close();
                     return out;
@@ -1393,12 +899,10 @@ public class RaspiQuery implements IQueryService {
                             e);
                 }
             } else {
-                throw new IllegalStateException(
-                        "You must establish a connection first.");
+                throw new IllegalStateException("You must establish a connection first.");
             }
         } else {
-            throw new IllegalStateException(
-                    "You must establish a connection first.");
+            throw new IllegalStateException("You must establish a connection first.");
         }
 
     }

@@ -23,6 +23,7 @@ $ 1.8.6
   % Version 1.8.6
   _ 2018-01-09
   * Fixed publickey authentification not working with PKCS#8 Keyfiles
+  * Use '/proc/net/wireless' as fallback for WiFi signal quality when 'iwconfig' is not available
 $ 1.8.5
   % Version 1.8.5
   _ 2018-01-07
