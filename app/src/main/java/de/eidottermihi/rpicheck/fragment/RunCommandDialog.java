@@ -136,7 +136,7 @@ public class RunCommandDialog extends DialogFragment {
             // ssh password
             putLine("Authenticating with password ...");
             final String pass = device.getPass();
-            new SSHCommandTask().execute(host, user, pass, port, sudoPass,
+            new SSHCommandTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, pass, port, sudoPass,
                     null, null, command.getCommand(), String.valueOf(command.getTimeout()));
         } else if (device.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY)) {
             putLine("Authenticating with private key ...");
@@ -145,7 +145,7 @@ public class RunCommandDialog extends DialogFragment {
             if (keyfilePath != null) {
                 final File privateKey = new File(keyfilePath);
                 if (privateKey.exists()) {
-                    new SSHCommandTask().execute(host, user, null, port,
+                    new SSHCommandTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, null, port,
                             sudoPass, keyfilePath, null, command.getCommand(), String.valueOf(command.getTimeout()));
                 } else {
                     putLine("ERROR - No keyfile was found on path " + keyfilePath);
@@ -161,7 +161,7 @@ public class RunCommandDialog extends DialogFragment {
                 final File privateKey = new File(keyfilePath);
                 if (privateKey.exists()) {
                     if (!Strings.isNullOrEmpty(this.passphrase)) {
-                        new SSHCommandTask().execute(host, user, null, port,
+                        new SSHCommandTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, null, port,
                                 sudoPass, keyfilePath, this.passphrase,
                                 command.getCommand(), String.valueOf(command.getTimeout()));
                     } else {
@@ -267,7 +267,6 @@ public class RunCommandDialog extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("didRun", this.didRun);
-
     }
 
 }

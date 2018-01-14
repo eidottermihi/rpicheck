@@ -629,7 +629,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
             if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PASSWORD)) {
                 final String pass = currentDevice.getPass();
                 if (pass != null) {
-                    new SSHShutdownTask(this).execute(host, user, pass, port, sudoPass, type, null, null);
+                    new SSHShutdownTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, pass, port, sudoPass, type, null, null);
                 } else {
                     Toast.makeText(this, R.string.no_password_specified, Toast.LENGTH_LONG).show();
                 }
@@ -645,7 +645,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
                     } else {
                         final File privateKey = new File(keyfilePath);
                         if (privateKey.exists()) {
-                            new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, null);
+                            new SSHShutdownTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, null, port, sudoPass, type, keyfilePath, null);
                         } else {
                             Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG);
                         }
@@ -656,7 +656,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
                 if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
                     if (!Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
                         final String passphrase = currentDevice.getKeyfilePass();
-                        new SSHShutdownTask(this).execute(host, user, null, port, sudoPass, type, keyfilePath, passphrase);
+                        new SSHShutdownTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, null, port, sudoPass, type, keyfilePath, passphrase);
                     } else {
                         final String dialogType = type.equals(Constants.TYPE_REBOOT) ? PassphraseDialog.SSH_SHUTDOWN : PassphraseDialog.SSH_HALT;
                         final DialogFragment passphraseDialog = new PassphraseDialog();
@@ -756,7 +756,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
                     showPullToRefreshHint();
                 }
                 // execute query in background
-                new SSHQueryTask(this, getLoadAveragePreference()).execute(host, user, pass, port, hideRoot.toString(), keyPath, keyPass);
+                new SSHQueryTask(this, getLoadAveragePreference()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, pass, port, hideRoot.toString(), keyPath, keyPass);
             }
         } else {
             // no network available
@@ -988,17 +988,18 @@ public class MainActivity extends InjectionAppCompatActivity implements
         if (type.equals(PassphraseDialog.SSH_QUERY)) {
             // connect
             final Boolean hideRoot = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, true);
-            new SSHQueryTask(this, getLoadAveragePreference()).execute(currentDevice.getHost(), currentDevice.getUser(), null,
+            new SSHQueryTask(this, getLoadAveragePreference()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                    currentDevice.getHost(), currentDevice.getUser(), null,
                     currentDevice.getPort() + "", hideRoot.toString(),
                     currentDevice.getKeyfilePath(), passphrase);
         } else if (type.equals(PassphraseDialog.SSH_SHUTDOWN)) {
-            new SSHShutdownTask(this).execute(currentDevice.getHost(),
+            new SSHShutdownTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentDevice.getHost(),
                     currentDevice.getUser(), null,
                     currentDevice.getPort() + "", currentDevice.getSudoPass(),
                     Constants.TYPE_REBOOT, currentDevice.getKeyfilePath(),
                     passphrase);
         } else if (type.equals(PassphraseDialog.SSH_HALT)) {
-            new SSHShutdownTask(this).execute(currentDevice.getHost(),
+            new SSHShutdownTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentDevice.getHost(),
                     currentDevice.getUser(), null,
                     currentDevice.getPort() + "", currentDevice.getSudoPass(),
                     Constants.TYPE_HALT, currentDevice.getKeyfilePath(),
