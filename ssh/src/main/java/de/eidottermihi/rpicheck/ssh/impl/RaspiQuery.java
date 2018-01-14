@@ -39,7 +39,6 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,14 +80,14 @@ public class RaspiQuery implements IQueryService {
     private static final String N_A = "n/a";
 
     private static final int DEFAULT_SSH_PORT = 22;
-
+    private static final String BOUNCY_CASTLE_PROVIDER_NAME = "BC";
     private SSHClient client;
     private String hostname;
     private String username;
     private int port = DEFAULT_SSH_PORT;
 
     static {
-        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        Security.removeProvider(BOUNCY_CASTLE_PROVIDER_NAME);
         Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
     }
 
