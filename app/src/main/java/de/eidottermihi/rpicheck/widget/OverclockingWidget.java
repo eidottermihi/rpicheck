@@ -133,9 +133,8 @@ public class OverclockingWidget extends AppWidgetProvider {
             this.deviceDb = new DeviceDbHelper(context);
         }
         // There may be multiple widgets active, so update all of them
-        final int N = appWidgetIds.length;
-        for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetIds[i], deviceDb, false);
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetId, deviceDb, false);
         }
     }
 

@@ -53,15 +53,15 @@ import de.eidottermihi.rpicheck.ssh.impl.RaspiQueryException;
  */
 public class WidgetUpdateTask extends AsyncTask<RaspberryDeviceBean, Void, Map<String, String>> {
 
-    public static final String STATUS = "status";
-    public static final String STATUS_ONLINE = "online";
-    public static final String STATUS_OFFLINE = "offline";
-    public static final String KEY_TEMP = "temp";
-    public static final String KEY_ARM_FREQ = "armFreq";
-    public static final String KEY_LOAD_AVG = "loadAvg";
-    public static final String KEY_MEM_USED = "memUsed";
-    public static final String KEY_MEM_TOTAL = "memTotal";
-    public static final String KEY_MEM_USED_PERCENT = "memUsedPercent";
+    private static final String STATUS = "status";
+    private static final String STATUS_ONLINE = "online";
+    private static final String STATUS_OFFLINE = "offline";
+    private static final String KEY_TEMP = "temp";
+    private static final String KEY_ARM_FREQ = "armFreq";
+    private static final String KEY_LOAD_AVG = "loadAvg";
+    private static final String KEY_MEM_USED = "memUsed";
+    private static final String KEY_MEM_TOTAL = "memTotal";
+    private static final String KEY_MEM_USED_PERCENT = "memUsedPercent";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WidgetUpdateTask.class);
 
@@ -74,7 +74,7 @@ public class WidgetUpdateTask extends AsyncTask<RaspberryDeviceBean, Void, Map<S
     private boolean useFahrenheit;
     private int appWidgetId;
 
-    public WidgetUpdateTask(Context context, RemoteViews widgetView, boolean showArm, boolean showTemp, boolean showMemory, boolean showLoad, boolean useFahrenheit, int appWidgetId) {
+    WidgetUpdateTask(Context context, RemoteViews widgetView, boolean showArm, boolean showTemp, boolean showMemory, boolean showLoad, boolean useFahrenheit, int appWidgetId) {
         this.context = context;
         this.widgetView = widgetView;
         this.showArm = showArm;
