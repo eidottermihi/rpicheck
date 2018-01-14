@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import org.slf4j.Logger;
@@ -147,10 +148,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
             if (logfilePath != null) {
                 File log = new File(logfilePath);
                 if (log.exists()) {
-                    final Intent intent = new Intent();
-                    intent.setDataAndType(Uri.fromFile(log), "text/plain");
-                    intent.setAction(android.content.Intent.ACTION_VIEW);
-                    startActivity(intent);
+                    final Intent openLogFileIntent = new Intent(Intent.ACTION_VIEW);
+                    Uri logfileUri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", log);
+                    openLogFileIntent.setDataAndType(logfileUri, "text/plain");
+                    openLogFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(openLogFileIntent);
                 } else {
                     Toast.makeText(this, "Log file does not exist.",
                             Toast.LENGTH_LONG).show();
