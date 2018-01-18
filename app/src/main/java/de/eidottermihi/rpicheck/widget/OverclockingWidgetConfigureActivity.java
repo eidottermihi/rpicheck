@@ -125,36 +125,12 @@ public class OverclockingWidgetConfigureActivity extends InjectionAppCompatActiv
                 " - TEMP: {} - ARM: {} - LOAD: {} - RAM: {}", updateInterval, onlyOnWifi, showTemp, showArm, showLoad, showMemory);
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putLong(PREF_PREFIX_KEY + appWidgetId, deviceId);
-        prefs.putInt(
-
-                prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval
-
-        );
-        prefs.putBoolean(
-
-                prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId), showTemp
-
-        );
-        prefs.putBoolean(
-
-                prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm
-
-        );
-        prefs.putBoolean(
-
-                prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad
-
-        );
-        prefs.putBoolean(
-
-                prefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory
-
-        );
-        prefs.putBoolean(
-
-                prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), onlyOnWifi
-
-        );
+        prefs.putInt(prefKey(PREF_UPDATE_INTERVAL_SUFFIX, appWidgetId), updateInterval);
+        prefs.putBoolean(prefKey(PREF_SHOW_TEMP_SUFFIX, appWidgetId), showTemp);
+        prefs.putBoolean(prefKey(PREF_SHOW_ARM_SUFFIX, appWidgetId), showArm);
+        prefs.putBoolean(prefKey(PREF_SHOW_LOAD_SUFFIX, appWidgetId), showLoad);
+        prefs.putBoolean(prefKey(PREF_SHOW_MEMORY_SUFFIX, appWidgetId), showMemory);
+        prefs.putBoolean(prefKey(PREF_UPDATE_ONLY_ON_WIFI, appWidgetId), onlyOnWifi);
         prefs.apply();
     }
 

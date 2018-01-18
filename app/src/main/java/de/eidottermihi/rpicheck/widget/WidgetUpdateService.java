@@ -23,8 +23,9 @@
  */
 package de.eidottermihi.rpicheck.widget;
 
-import android.app.IntentService;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,17 +39,12 @@ import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 /**
  * @author eidottermihi
  */
-public class WidgetUpdateService extends IntentService {
+public class WidgetUpdateService extends JobIntentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WidgetUpdateService.class);
 
-
-    public WidgetUpdateService() {
-        super("WidgetUpdateService");
-    }
-
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleWork(@NonNull Intent intent) {
         LoggingHelper.initLogging(getApplicationContext());
         int appWidgetId = intent.getIntExtra(EXTRA_APPWIDGET_ID,
                 INVALID_APPWIDGET_ID);
@@ -57,4 +53,5 @@ public class WidgetUpdateService extends IntentService {
             OverclockingWidget.updateAppWidget(getApplicationContext(), appWidgetId, new DeviceDbHelper(getApplicationContext()), true);
         }
     }
+
 }
