@@ -54,7 +54,7 @@ public class LoggingHelper {
      *
      * @param context application context
      */
-    public static synchronized void initLogging(Context context) {
+    public static void initLogging(Context context) {
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isDebugLogging = sharedPrefs.getBoolean(SettingsActivity.KEY_PREF_DEBUG_LOGGING, false);
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
