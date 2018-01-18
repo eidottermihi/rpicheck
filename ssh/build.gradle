@@ -2,26 +2,27 @@ plugins {
     id "java"
 }
 
-apply plugin: 'com.github.hierynomus.license'
+apply plugin: "com.github.hierynomus.license"
 apply from: "$project.rootDir/gradle/license.gradle"
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-    compile 'com.google.guava:guava:20.0'
-    compile 'org.ocpsoft.prettytime:prettytime:2.1.2.Final'
-    compile 'org.slf4j:slf4j-api:1.7.25'
-    compile 'com.hierynomus:sshj:0.23.0-ANDROID-COMPAT-SNAPSHOT'
-    compile 'com.madgag.spongycastle:core:1.56.0.0'
-    compile 'com.madgag.spongycastle:prov:1.56.0.0'
-    compile 'com.madgag.spongycastle:bcpkix-jdk15on:1.56.0.0'
-    compile 'com.madgag.spongycastle:bcpg-jdk15on:1.56.0.0'
+    compile "com.google.guava:guava:20.0"
+    compile "org.ocpsoft.prettytime:prettytime:2.1.2.Final"
+    compile "org.slf4j:slf4j-api:$rootProject.ext.slf4jVersion"
+    compile "com.hierynomus:sshj:0.23.0-ANDROID-COMPAT-SNAPSHOT"
+    compile "com.madgag.spongycastle:core:1.56.0.0"
+    compile "com.madgag.spongycastle:prov:1.56.0.0"
+    compile "com.madgag.spongycastle:bcpkix-jdk15on:1.56.0.0"
+    compile "com.madgag.spongycastle:bcpg-jdk15on:1.56.0.0"
 
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:1.9.5'
-    testCompile 'commons-io:commons-io:2.4'
+    testCompile "junit:junit:4.12"
+    testCompile "org.mockito:mockito-all:1.9.5"
+    testCompile "commons-io:commons-io:2.4"
+    testCompile "org.slf4j:slf4j-simple:$rootProject.ext.slf4jVersion"
 }
 
 license {
