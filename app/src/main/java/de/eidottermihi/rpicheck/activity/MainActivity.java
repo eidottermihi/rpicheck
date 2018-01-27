@@ -278,19 +278,23 @@ public class MainActivity extends InjectionAppCompatActivity implements
             uptimeText.setText(result.getStartup());
         }
         if (result.getMemoryBean() != null) {
-            String format = "%s/%s (%s)";
-            String ram = String.format(format,
-                    result.getMemoryBean().getTotalUsed().humanReadableByteCount(false),
-                    result.getMemoryBean().getTotalMemory().humanReadableByteCount(false),
-                    SSHQueryTask.NUMBER_FORMAT.format(result.getMemoryBean().getMemoryPercentageUsed())
-            );
-            totalMemoryText.setText(ram);
-            String swap = String.format(format,
-                    result.getMemoryBean().getSwapUsed().humanReadableByteCount(false),
-                    result.getMemoryBean().getSwapMemory().humanReadableByteCount(false),
-                    SSHQueryTask.NUMBER_FORMAT.format(result.getMemoryBean().getSwapPercentageUsed())
-            );
-            totalSwapText.setText(swap);
+            if (result.getMemoryBean().getErrorMessage() == null) {
+                String format = "%s/%s (%s)";
+                String ram = String.format(format,
+                        result.getMemoryBean().getTotalUsed().humanReadableByteCount(false),
+                        result.getMemoryBean().getTotalMemory().humanReadableByteCount(false),
+                        SSHQueryTask.NUMBER_FORMAT.format(result.getMemoryBean().getMemoryPercentageUsed())
+                );
+                totalMemoryText.setText(ram);
+                String swap = String.format(format,
+                        result.getMemoryBean().getSwapUsed().humanReadableByteCount(false),
+                        result.getMemoryBean().getSwapMemory().humanReadableByteCount(false),
+                        SSHQueryTask.NUMBER_FORMAT.format(result.getMemoryBean().getSwapPercentageUsed())
+                );
+                totalSwapText.setText(swap);
+            } else {
+                result.getErrorMessages().add(result.getMemoryBean().getErrorMessage());
+            }
         }
         serialNoText.setText(result.getSerialNo());
         distriText.setText(result.getDistri());
