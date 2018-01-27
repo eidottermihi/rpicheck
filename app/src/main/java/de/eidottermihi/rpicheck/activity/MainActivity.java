@@ -651,11 +651,11 @@ public class MainActivity extends InjectionAppCompatActivity implements
                         if (privateKey.exists()) {
                             new SSHShutdownTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, host, user, null, port, sudoPass, type, keyfilePath, null);
                         } else {
-                            Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG);
+                            Toast.makeText(this, "Cannot find keyfile at location: " + keyfilePath, Toast.LENGTH_LONG).show();
                         }
                     }
                 } else {
-                    Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG);
+                    Toast.makeText(this, "No keyfile specified!", Toast.LENGTH_LONG).show();
                 }
                 if (currentDevice.usesAuthentificationMethod(RaspberryDeviceBean.AUTH_PUBLIC_KEY_WITH_PASSWORD)) {
                     if (!Strings.isNullOrEmpty(currentDevice.getKeyfilePass())) {
