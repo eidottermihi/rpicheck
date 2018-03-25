@@ -216,7 +216,6 @@
     <string name="widget_no_read_permission">RasPi Check hat keine Berechtigung zum Lesen des privaten Schlüssels. Widget kann nicht aktualisiert werden.</string>
 
     <string name="label_cmd_timeout">Timeout in Sekunden</string>
-    <string name="timeout_hint_title">Timeout:</string>
     <string name="timeout_hint_text">Passe den Standard Timeout-Wert von 60 Sekunden an, wenn dein Befehl länger zur Durchführung benötigt.</string>
     <string name="validation_msg_timeout">Muss größer als 0 sein.</string>
     <string name="pref_query_show_system_time_summary">Zeige die Systemzeit deines Pis an.</string>
