@@ -94,7 +94,6 @@
     <string name="pref_dev_email">Entwickler kontaktieren</string>
     <string name="pref_rate_app">App bewerten</string>
     <string name="pref_rate_app_summary">Wenn dir RasPi Check gefällt, nimm dir bitte einen Moment Zeit es zu bewerten.</string>
-    <string name="pref_version">Version</string>
     <string name="shutdown_type_title">Herunterfahren</string>
     <string name="halt_success">Befehl zum Anhalten gesendet.</string>
     <string name="halt_fail">Anhalten fehlgeschlagen. Überprüfe deine Verbindung und das sudo Passwort.</string>
