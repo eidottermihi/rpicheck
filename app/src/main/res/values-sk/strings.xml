@@ -63,7 +63,6 @@
     <string name="reboot_fail">Reštart zlyhal. Prosím preverte, či ste zadali správne heslo pre sudo a či nemáte problémy so sieťou.</string>
     <string name="pref_frequency_unit_summary">Hz, MHz alebo GHz</string>
     <string name="pref_frequency_unit_title">jednotka frekvencie</string>
-    <string name="firmware_version">Firmware</string>
     <string name="network_header">sieť</string>
     <string name="network_interface">rozhranie</string>
     <string name="network_status">stav</string>

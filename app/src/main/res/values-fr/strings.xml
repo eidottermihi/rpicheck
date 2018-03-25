@@ -35,7 +35,6 @@
     <string name="distribution">Distribution</string>
     <string name="errormessages_dialog_title">Désolé...</string>
     <string name="exception_dialog_title">Oups !</string>
-    <string name="firmware_version">Firmware</string>
     <string name="free_memory">Ram libre</string>
     <string name="header_command">Commande</string>
     <string name="widget_update_interval_two_hours">2 heures</string>

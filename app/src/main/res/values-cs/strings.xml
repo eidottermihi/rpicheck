@@ -65,7 +65,6 @@
     <string name="reboot_fail">Rebootování selhalo. Zkontrolujte vaše připojení a sudo heslo.</string>
     <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
     <string name="pref_frequency_unit_title">Jednotky frekvence</string>
-    <string name="firmware_version">Firmware</string>
     <string name="network_header">Síť</string>
     <string name="network_interface">Rozhraní</string>
     <string name="network_status">Stav</string>
