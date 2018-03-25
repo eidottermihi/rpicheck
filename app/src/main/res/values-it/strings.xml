@@ -8,4 +8,17 @@
     <string name="core_temp">Temperature CORE</string>
     <string name="core_freq">Frequenza CORE</string>
     <string name="arm_freq">Frequenza ARM</string>
+    <string name="raspi_device_name_hint">Nome</string>
+    <string name="raspi_device_description_hint">Decrizione (opzionale)</string>
+    <string name="new_raspi_description">Descrizione aggiuntiva</string>
+    <string name="validation_msg_name">Il nome non può essere vuoto.</string>
+    <string name="validation_msg_host">L\'hostname non può essere vuoto.</string>
+    <string name="validation_msg_user">L\'username non può essere vuoto</string>
+    <string name="validation_msg_password">La password non può essere vuota.</string>
+    <string name="validation_msg_port">Porta non valida.</string>
+    <string name="new_raspi_continue">Prosegui</string>
+    <string name="new_raspi_text">Inserisci le informazioni del tuo Raspberry PI.</string>
+    <string name="new_raspi_auth_method">Metodo di autenticazione</string>
+    <string name="raspi_device_button_new">Salva</string>
+    <string name="action_save">Salva</string>
 </resources>
