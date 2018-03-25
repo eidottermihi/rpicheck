@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RasPi Check</string>
+    <string name="title_activity_main">RasPi Check</string>
+    <string name="title_activity_new_raspi">Aggiungi PI</string>
+    <string name="ssh_port">Porta SSH</string>
+    <string name="title_activity_settings">Importazioni</string>
+    <string name="core_temp">Temperature CORE</string>
+    <string name="core_freq">Frequenza CORE</string>
+    <string name="arm_freq">Frequenza ARM</string>
+</resources>
