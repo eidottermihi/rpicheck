@@ -54,4 +54,20 @@
     <string name="halt_fail">Spegnimento fallito. Verifica le impostazioni di connessione e la password di sudo.</string>
     <string name="shutdown_type_title">Opzioni di spegnimento</string>
     <string name="action_delete_raspi">Rimuovi PI</string>
+    <string name="action_new">Nuovo</string>
+    <string name="activity_title_new_command">Nuovo comando</string>
+    <string name="action_new_command">Nuovo Comando</string>
+    <string name="action_new_raspi">Nuovo PI</string>
+    <string name="label_cmd_name">Nome</string>
+    <string name="label_cmd_timeout">Timeout in secondi</string>
+    <string name="placeholder_hint_text">Puoi usare segnaposto come \'${my_secret}’. Possono essere sostituiti dal tuo imput quando stai effettivamente eseguendo il comando.</string>
+    <string name="placeholder_special_hint">Segnaposto speciali:</string>
+    <string name="timeout_hint_text">Personalizza il timeout di default (60 secondi) se il tuo comando richiede più tempo per completare.</string>
+    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Verrà automaticamente sostituito dalla date e ora corrente. Il formato deve essere un formato date/time valido (es. MM-dd-yyy).</string>
+    <string name="label_cmd_name_hint">es. \'reboot\'</string>
+    <string name="label_cmd_command_hint">es. \'shutdown now -r\'</string>
+    <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Verrà automaticamente sostituto da una proprietà del tuo PI. Le proprietà disponibili sono: name, host, user, pass, port, sudopass.</string>
+    <string name="command_context_delete">Elimina</string>
+    <string name="action_delete">Elimina</string>
+    <string name="command_context_run">Esegui</string>
 </resources>
