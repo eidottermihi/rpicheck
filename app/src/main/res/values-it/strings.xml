@@ -111,8 +111,6 @@
     <string name="permission_private_key_error">Impossibile leggere la primate key. Impossibile eseguire la query.</string>
     <string name="dialog_passphrase_needed">Passphrase necessaria</string>
     <string name="ssh_credentials">Credenziali SSH</string>
-    <string name="ssh_credentials">Credenziali SSH</string>
-    <string name="ssh_credentials">Credenziali SSH</string>
     <string name="no_hostname_specified">Hostname non specificato. Verifica le impostazioni.</string>
     <string name="no_username_specified">Username non specificato. Verifica le impostazioni.</string>
     <string name="no_password_specified">Password non specificata. Verifica le impostazioni.</string>
