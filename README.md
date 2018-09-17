@@ -6,7 +6,7 @@ Android app for checking your Raspberry Pi ® status.
 
 The goal of this Android app is to show the user the current system status of a running Raspberry Pi ®.
 
-To gather the information needed, RasPi Check uses a SSH connection (using a android-specific fork of [SSHJ](https://github.com/hierynomus/sshj)).
+RasPi Check uses a SSH connection (using [SSHJ](https://github.com/hierynomus/sshj)) to connect to your Raspberry Pi ® and queries the information using Linux utilities like `ps`, `df` or the [`/proc` virtual filesystem](https://www.tldp.org/LDP/Linux-Filesystem-Hierarchy/html/proc.html). 
 
 Download
 ------------
