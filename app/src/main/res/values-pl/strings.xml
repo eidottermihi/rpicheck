@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2017  RasPi Check Contributors
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+-->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="en">
+
+    <string name="app_name">RasPi Check</string>
+    <string name="title_activity_main">RasPi Check</string>
+    <string name="title_activity_new_raspi">Dodaj Pi</string>
+    <string name="title_activity_settings">Ustawienia</string>
+    <string name="core_temp">Temperarura rdzenia</string>
+    <string name="core_freq">Częstotliwość rdzenia</string>
+    <string name="arm_freq">Częstotliwość ARM</string>
+    <string name="core_volt">Napięcie rdzenia</string>
+    <string name="host">Nazwa hosta/IP</string>
+    <string name="user">Nazwa użytkownika</string>
+    <string name="password">Hasło</string>
+    <string name="ssh_credentials">Poświadczenia SSH</string>
+    <string name="no_connection">Włącz WiFi.</string>
+    <string name="no_hostname_specified">Nie podano nazwy hosta. Sprawdź ustawienia.</string>
+    <string name="no_username_specified">Nie podano nazwy użytkownika. Sprawdź ustawienia.</string>
+    <string name="no_password_specified">Nie określono hasła. Sprawdź ustawienia.</string>
+    <string name="raspi_device_name_hint">Nazwa</string>
+    <string name="raspi_device_host_hint">Nazwa hosta / IP</string>
+    <string name="raspi_device_user_hint">Nazwa użytkownika SSH</string>
+    <string name="raspi_device_password_hint">Hasło SSH</string>
+    <string name="raspi_device_description_hint">Opis (opcjonalnie)</string>
+    <string name="raspi_device_button_new">Zapisz</string>
+    <string name="pref_temp_scala_title">Skala temperatury</string>
+    <string name="pref_group_display_settings_title">Ustawienia wyświetlania</string>
+    <string name="last_update">Ostatnie odświeżanie</string>
+    <string name="no_device_available">Najpierw dodaj Raspberry Pi.</string>
+    <string name="new_raspi_text">Wprowadź informacje o urządzeniu Raspberry Pi.</string>
+    <string name="ssh_port">Port SSH</string>
+    <string name="new_raspi_description">Dodatkowy opis</string>
+    <string name="new_raspi_description_hint">Dodaj dodatkowy opis tutaj...</string>
+    <string name="overclocking_header">Podkręcanie</string>
+    <string name="system_header">System</string>
+    <string name="uptime_started">Uruchomiono</string>
+    <string name="average_load">Średnie obciążenie</string>
+    <string name="total_memory">Całkowita pamięć</string>
+    <string name="free_memory">Wolna pamięć</string>
+    <string name="cpu_serial">Numer seryjny</string>
+    <string name="ip_addr_label">Adres IP</string>
+    <string name="distribution">Dystrybucja</string>
+    <string name="disk_header_filesystem">System plików</string>
+    <string name="disk_header_size">Rozmiar</string>
+    <string name="disk_header">Użycie pamięci</string>
+    <string name="disk_header_avail">Dostępne</string>
+    <string name="disk_header_usedper">Używane%</string>
+    <string name="please_add_a_raspberry_pi">Dodaj Raspberry Pi.</string>
+    <string name="activity_title_edit_raspi">Edytuj Pi</string>
+    <string name="disk_header_mounted_on">Zamontowane na</string>
+    <string name="temperature_scala_summary">Skala temperatury (Celsius, Fahrenheit)</string>
+    <string name="process_header">Procesy</string>
+    <string name="header_command">Komenda</string>
+    <string name="pref_group_query_settings_title">Admin</string>
+    <string name="pref_query_hide_root_title">Ukryj procesy root</string>
+    <string name="pref_query_hide_root_summary">Sprawdź, czy chcesz ukryć procesy root.</string>
+    <string name="pref_query_hide_root_summaryOn">Nie pokazuje procesów root.</string>
+    <string name="pref_query_hide_root_summaryOff">Wszystkie procesy są pokazywane.</string>
+    <string name="new_raspi_minimum">Podaj co najmniej nazwę, host, nazwę użytkownika ssh i hasło.</string>
+    <string name="raspi_device_sudo_password_hint">hasło sudo</string>
+    <string name="sudo_password">Hasło Sudo</string>
+    <string name="reboot_success">Wysłano polecenie ponownego uruchomienia.</string>
+    <string name="reboot_fail">Ponowne uruchomienie się nie powiodło. Sprawdź ustawienia połączenia i hasło sudo.</string>
+    <string name="pref_frequency_unit_summary">Hz, MHz or GHz</string>
+    <string name="pref_frequency_unit_title">Jednostka częstotliwości</string>
+    <string name="firmware_version">Firmware</string>
+    <string name="network_header">Sieć</string>
+    <string name="network_interface">Interfejs</string>
+    <string name="network_status">Status</string>
+    <string name="network_status_up">Włączony</string>
+    <string name="network_status_down">Wyłączony</string>
+    <string name="network_signal">Sygnał</string>
+    <string name="network_link">Jakość</string>
+    <string name="pref_group_about">O aplikacji</string>
+    <string name="pref_github">Źródło / Lista problemów</string>
+    <string name="pref_dev_email">Kontakt z autorem</string>
+    <string name="pref_rate_app">Oceń aplikację</string>
+    <string name="pref_rate_app_summary">Jeśli lubisz aplikację RasPi Check, poświęć chwilę aby ją ocenić.</string>
+    <string name="pref_version">Wersja</string>
+    <string name="shutdown_type_title">Opcje wyłączania</string>
+    <string name="halt_success">Wysłano polecenie wstrzymania.</string>
+    <string name="halt_fail">Zatrzymanie się nie powiodło. Sprawdź ustawienia połączenia i hasło sudo.</string>
+    <string name="validation_msg_name">Nazwa nie może pozostać pusta.</string>
+    <string name="validation_msg_host">Nazwa hosta nie może pozostać pusta.</string>
+    <string name="validation_msg_user">Nazwa użytkownika nie może pozostać pusta.</string>
+    <string name="validation_msg_password">Hasło nie może pozostać puste.</string>
+    <string name="validation_msg_port">Nieprawidłowy port.</string>
+    <string name="update_successful">Pi pomyślnie zaktualizowane.</string>
+    <string name="new_pi_created">Pi utworzone.</string>
+    <string name="exception_dialog_title">Ups!</string>
+    <string name="authentication_failed">Uwierzytelnianie SSH się nie powiodło. Sprawdź swoje referencje.</string>
+    <string name="connection_failed">Nie można nawiązać połączenia. Sprawdź nazwę hosta i swoją sieć.</string>
+    <string name="errormessages_dialog_title">Przepraszamy...</string>
+    <string name="transport_exception">Wystąpił wyjątek transportu. Proszę spróbuj ponownie.</string>
+    <string name="unexpected_exception">Wystąpił nieoczekiwany wyjątek. Proszę spróbuj ponownie.</string>
+    <string name="exception_vcgencmd">Narzędzie \ 'vcgencmd \' nie zostało znalezione na twoim Pi. Upewnij się, że znajduje się on w katalogu \ '/ usr / bin \' lub \ '/ opt / vc / bin \', a twój użytkownik SSH znajduje się w grupie \ 'wideo \'.</string>
+    <string name="weird_exception">Coś poszło nie tak. Proszę spojrzeć na plik dziennika.</string>
+    <string name="changelog_full_title">Lista zmian</string>
+    <string name="changelog_title">Co nowego</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">więcej...</string>
+    <string name="pref_group_log">Logi</string>
+    <string name="pref_log_title">Wyświetl logi</string>
+    <string name="pref_log_title_summary">Wyświetla logi tej aplikacji</string>
+    <string name="pref_screen_about">O RasPi Check</string>
+    <string name="pref_screen_about_summary">Wersja, lista zmian, autor</string>
+    <string name="pref_changelog_title">Wyświetl listę zmian</string>
+    <string name="pref_changelog_title_summary">Wyświetla listę zmian tej aplikacji</string>
+    <string name="pref_debug_log_summary">Wydrukuj komunikaty debugowania do dziennika.</string>
+    <string name="pref_debug_log_summary_on">Włączono debugowanie logowania.</string>
+    <string name="pref_debug_log_summary_off">Wyłączono poziom debugowania logowania.</string>
+    <string name="pref_debug_log_title">Debuguj logowanie</string>
+    <string name="new_raspi_continue">Kontynuuj</string>
+    <string name="new_raspi_auth_method">Metoda uwierzytelnienia</string>
+    <string name="raspi_key_password_hint">Kluczowe hasło</string>
+    <string name="raspi_key_password_empty">Kluczowe hasło nie może pozostać puste.</string>
+    <string name="raspi_auth_keyfile_hint">Klucz prywatny (format PKCS8/OpenSSH)</string>
+    <string name="raspi_auth_button_keyfile">Wybierz plik klucza</string>
+    <string name="title_filedialog">Wybierz plik klucza</string>
+    <string name="no_keyfile_present">Wybierz istniejący plik klucza prywatnego.</string>
+    <string name="raspi_key_checkbox_text">Zawsze pytaj o hasło</string>
+    <string name="validation_msg_keyfile">Proszę wybrać plik klucza.</string>
+    <string name="validation_msg_key_passphrase">Kluczowe hasło nie może być puste.</string>
+    <string name="dialog_save_passphrase">Zapisz hasło</string>
+    <string name="dialog_passphrase_hint">Hasło</string>
+    <string name="dialog_passphrase_needed">Wymagane hasło</string>
+    <string name="dialog_passphrase_text">Wprowadź hasło dla klucza prywatnego.</string>
+    <string name="button_commands">Komendy</string>
+    <string name="activity_title_commands">Niestandardowe polecenia</string>
+    <string name="activity_title_new_command">Nowa komenda</string>
+    <string name="activity_title_edit_command">Edytuj komendę</string>
+    <string name="label_cmd_name">Nazwa</string>
+    <string name="label_cmd_name_hint">np. \'reboot\'</string>
+    <string name="label_cmd_command">Komenda</string>
+    <string name="label_cmd_command_hint">np. \'shutdown now -r\'</string>
+    <string name="label_cmd_show_output">Pokaż wynik</string>
+    <string name="validation_command_blank">Polecenie nie może pozostać puste.</string>
+    <string name="toast_command_updated">Komenda zaktualizowana!</string>
+    <string name="toast_command_saved">Komenda zapisana!</string>
+    <string name="command_context_edit">Edytuj</string>
+    <string name="command_context_delete">Usuń</string>
+    <string name="command_context_run">Uruchom</string>
+    <string name="run_cmd_dialog_title">Uruchamianie %1$s</string>
+
+    <string name="hint_pulltorefresh">Podpowiedź: możesz również odświeżyć, przesuwająć w dół po ekranie!</string>
+
+    <!-- ActionButton Strings -->
+
+    <string name="action_new">Nowe</string>
+    <string name="action_new_raspi">Nowe Pi</string>
+    <string name="action_new_command">Nowa komenda</string>
+
+    <string name="action_save">Zapisz</string>
+    <string name="action_save_raspi">Zapisz Pi</string>
+    <string name="action_save_command">Zapisz komendę</string>
+
+    <string name="action_edit">Edytuj</string>
+    <string name="action_edit_raspi">Edytuj Pi</string>
+    <string name="action_edit_command">Edytuj komendę</string>
+
+    <string name="action_delete">Usuń</string>
+    <string name="action_delete_raspi">Usuń Pi</string>
+    <string name="action_delete_command">Usuń komendę</string>
+
+    <string name="action_settings">Ustawienia</string>
+    <string name="action_shutdown">Wyłącz</string>
+    <string name="action_refresh">Odśwież</string>
+
+    <string name="title_placeholders">Placeholdery</string>
+    <string name="placeholders_button_ok">OK</string>
+    <string name="placeholder_hint_text">Możesz użyć symboli zastępczych takich jak \'${my_secret}\'. Zostaną one zastąpione przez twoje dane wejściowe, kiedy faktycznie uruchomisz polecenie.</string>
+    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Zostanie automatycznie zastąpiony aktualną datą / czasem. Format musi być prawidłowym formatem daty / czasu (np. MM-dd-yyy).</string>
+    <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Zostanie automatycznie zastąpiony właściwością twojego Pi. Dostępne właściwości to: name, host, user, pass, port, sudopass.</string>
+    <string name="placeholder_hint">Podpowiedź:</string>
+    <string name="placeholder_special_hint">Specjalny placeholder:</string>
+
+    <string name="pref_load_avg_summary">Okres czasu dla obliczenia średniego obciążenia.</string>
+    <string name="pref_load_avg_title">Średnie obciążenie</string>
+    <string name="widget_pi">Wybierz Raspberry Pi</string>
+    <string name="widget_configure_title">Skonfiguruj widżet</string>
+    <string name="widget_update_interval">Interwał aktualizacji</string>
+    <string name="widget_update_interval_error">Nieprawidłowy interwał aktualizacji.</string>
+    <string name="widget_key_pass_error">Musisz zapisać hasło pliku klucza, ponieważ widżety nie mogą go wyświetllać.</string>
+    <string name="widget_update_interval_zero">Musi być większy od zera.</string>
+    <string name="widget_update_interval_five_min">5 minut</string>
+    <string name="widget_update_interval_ten_min">10 minut</string>
+    <string name="widget_update_interval_thirty_min">30 minut</string>
+    <string name="widget_update_interval_one_hour">1 godzina</string>
+    <string name="widget_update_interval_two_hours">2 godziny</string>
+    <string name="widget_update_interval_eight_hours">8 godzin</string>
+    <string name="widget_update_interval_one_day">1 dzień</string>
+    <string name="widget_update_interval_custom">Niestandardowy interwał</string>
+    <string name="widget_update_interval_custom_text">Interwał aktualizacji (w minutach)</string>
+    <string name="widget_device_removed">Raspberry Pi dla tego widżetu została usunięta.</string>
+    <string name="used_memory">Używana pamięć</string>
+
+    <string name="widget_auto_update_yes">Tak</string>
+    <string name="widget_auto_update_wifi">Tylko na Wi-Fi</string>
+    <string name="widget_auto_update_no">Nie</string>
+    <string name="widget_auto_update">Automatyczne aktualizacje</string>
+    <string name="pref_facebook_summary">Bądź na bieżąco z RasPi Check</string>
+    <string name="widget_add_no_device">Najpierw musisz dodać Pi w aplikacji.</string>
+    <string name="action_share">Udostępnij</string>
+    <string name="share_body"># Informacje dla Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nTa informacja została sprawdzona przy pomocy RasPi Check (wersja: %5$s) na Androida.</string>
+    <string name="permission_private_key_error">Zezwolono na odczytanie odrzuconego pliku klucza prywatnego. Nie można wykonać zapytania.</string>
+    <string name="widget_no_read_permission">RasPi Check nie ma uprawnień dostępu do pamięci zewnętrznej. Nie można zaktualizować widżetu.</string>
+
+    <string name="label_cmd_timeout">Limit czasu w sekundach</string>
+    <string name="timeout_hint_title">Limit czasu:</string>
+    <string name="timeout_hint_text">Dostosuj domyślny limit czasu wynoszący 60 sekund, jeśli wykonanie polecenia zajmuje więcej czasu.</string>
+    <string name="validation_msg_timeout">musi wynosić co najmniej 1 sekundę</string>
+    <string name="pref_query_show_system_time_summary">Zaznacz aby pokazać czas systemowy.</string>
+    <string name="pref_query_show_system_time_summaryOff">Czas systemowy jest ukryty.</string>
+    <string name="pref_query_show_system_time_summaryOn">Czas systemowy jest pokazywany.</string>
+    <string name="pref_query_show_system_time_title">Pokaż czas systemowy</string>
+    <string name="systemtime">Czas systemowy</string>
+    <string name="total_swap">Pamięć Swap</string>
+
+</resources>
