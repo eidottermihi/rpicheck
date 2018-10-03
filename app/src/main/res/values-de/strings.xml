@@ -19,7 +19,6 @@
 
 -->
 <resources>
-
     <string name="app_name">RasPi Check</string>
     <string name="title_activity_main">RasPi Check</string>
     <string name="title_activity_new_raspi">Pi hinzufügen</string>

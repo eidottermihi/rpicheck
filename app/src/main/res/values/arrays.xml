@@ -18,10 +18,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 -->
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:locale="en" >
-
+<resources>
     <string-array name="temp_scales">
         <item>Celsius</item>
         <item>Fahrenheit</item>

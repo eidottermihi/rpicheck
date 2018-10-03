@@ -21,7 +21,6 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:locale="en">
-
     <string name="app_name">RasPi Check</string>
     <string name="title_activity_main">RasPi Check</string>
     <string name="title_activity_new_raspi">Add Pi</string>
