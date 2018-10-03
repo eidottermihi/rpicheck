@@ -20,7 +20,7 @@
 -->
 <resources
     xmlns:tools="http://schemas.android.com/tools"
-    tools:locale="en">
+    tools:locale="pl">
 
     <string name="app_name">RasPi Check</string>
     <string name="title_activity_main">RasPi Check</string>
@@ -114,7 +114,7 @@
     <string name="errormessages_dialog_title">Przepraszamy...</string>
     <string name="transport_exception">Wystąpił wyjątek transportu. Proszę spróbuj ponownie.</string>
     <string name="unexpected_exception">Wystąpił nieoczekiwany wyjątek. Proszę spróbuj ponownie.</string>
-    <string name="exception_vcgencmd">Narzędzie \ 'vcgencmd \' nie zostało znalezione na twoim Pi. Upewnij się, że znajduje się on w katalogu \ '/ usr / bin \' lub \ '/ opt / vc / bin \', a twój użytkownik SSH znajduje się w grupie \ 'wideo \'.</string>
+    <string name="exception_vcgencmd">Narzędzie \'vcgencmd\' nie zostało znalezione na twoim Pi. Upewnij się, że znajduje się on w katalogu \'/usr/bin\' lub \'/opt/vc/bin\', a twój użytkownik SSH znajduje się w grupie \'wideo\'.</string>
     <string name="weird_exception">Coś poszło nie tak. Proszę spojrzeć na plik dziennika.</string>
     <string name="changelog_full_title">Lista zmian</string>
     <string name="changelog_title">Co nowego</string>

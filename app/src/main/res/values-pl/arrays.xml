@@ -15,25 +15,11 @@
 -->
 <resources
     xmlns:tools="http://schemas.android.com/tools"
-    tools:locale="en" >
+    tools:locale="pl" >
 
     <string-array name="temp_scales">
         <item>Celcjusza</item>
         <item>Fahrenheita</item>
-    </string-array>
-    <string-array name="temp_scales_values" translatable="false">
-        <item>°C</item>
-        <item>°F</item>
-    </string-array>
-    <string-array name="pref_frequency_units" translatable="false">
-        <item>Hz</item>
-        <item>MHz</item>
-        <item>GHz</item>
-    </string-array>
-    <string-array name="pref_frequency_unit_values" translatable="false">
-        <item>Hz</item>
-        <item>MHz</item>
-        <item>GHz</item>
     </string-array>
     <string-array name="shutdown_options">
         <item>Uruchom ponownie</item>
@@ -44,30 +30,10 @@
         <item>prywatny klucz</item>
         <item>prywatny klucz i hasło</item>
     </string-array>
-    <string-array name="pref_load_avg_values" translatable="false">
-        <item>ONE_MINUTE</item>
-        <item>FIVE_MINUTES</item>
-        <item>FIFTEEN_MINUTES</item>
-    </string-array>
     <string-array name="pref_load_avg">
         <item>1 minuta</item>
         <item>5 minut</item>
         <item>15 minut</item>
-    </string-array>
-    <string-array name="widget_auto_updates" translatable="false">
-        <item>@string/widget_auto_update_yes</item>
-        <item>@string/widget_auto_update_wifi</item>
-        <item>@string/widget_auto_update_no</item>
-    </string-array>
-    <string-array name="widget_update_intervals" translatable="false">
-        <item>@string/widget_update_interval_five_min</item>
-        <item>@string/widget_update_interval_ten_min</item>
-        <item>@string/widget_update_interval_thirty_min</item>
-        <item>@string/widget_update_interval_one_hour</item>
-        <item>@string/widget_update_interval_two_hours</item>
-        <item>@string/widget_update_interval_eight_hours</item>
-        <item>@string/widget_update_interval_one_day</item>
-        <item>@string/widget_update_interval_custom</item>
     </string-array>
     <integer-array name="widget_update_intervals_values">
         <!-- corresponds to widget update intervals -->
