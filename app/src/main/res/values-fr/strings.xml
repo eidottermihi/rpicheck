@@ -6,7 +6,7 @@
     <string name="action_delete_raspi">Supprimer le Raspberry Pi</string>
     <string name="action_edit">Modifier</string>
     <string name="action_edit_command">Modifier la commande</string>
-    <string name="action_edit_raspi">Modifier le Rasppberry Pi</string>
+    <string name="action_edit_raspi">Modifier le Raspberry Pi</string>
     <string name="action_new">Nouveau</string>
     <string name="action_new_command">Nouvelle commande</string>
     <string name="action_new_raspi">Nouveau Raspberry Pi</string>
