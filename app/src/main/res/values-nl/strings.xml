@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2017  RasPi Check Contributors
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+-->
+<resources>
+    <string name="app_name">RasPi Check</string>
+    <string name="title_activity_main">RasPi Check</string>
+    <string name="title_activity_new_raspi">Pi toevoegen</string>
+    <string name="title_activity_settings">Instellingen</string>
+    <string name="core_temp">CORE-temperatuur</string>
+    <string name="core_freq">CORE-frequentie</string>
+    <string name="arm_freq">ARM-frequentie</string>
+    <string name="core_volt">CORE-spanning</string>
+    <string name="host">Hostnaam/IP</string>
+    <string name="user">Gebruiker</string>
+    <string name="password">Wachtwoord</string>
+    <string name="ssh_credentials">SSH-credentials</string>
+    <string name="no_connection">A.u.b. wifi aanzetten.</string>
+    <string name="no_hostname_specified">Geen hostnaam opgegeven. Controleer a.u.b. de instellingen.</string>
+    <string name="no_username_specified">Geen gebruikersnaam opgegeven. Controleer a.u.b. de instellingen.</string>
+    <string name="no_password_specified">Geen wachtwoord opgegeven. Controleer a.u.b. de instellingen.</string>
+    <string name="raspi_device_name_hint">Naam</string>
+    <string name="raspi_device_host_hint">Hostnaam / IP</string>
+    <string name="raspi_device_user_hint">SSH-gebruikersnaam</string>
+    <string name="raspi_device_password_hint">SSH-wachtwoord</string>
+    <string name="raspi_device_description_hint">Beschrijving (optioneel)</string>
+    <string name="raspi_device_button_new">Sla op</string>
+    <string name="pref_temp_scala_title">Temperatuurschaal</string>
+    <string name="temperature_scala_summary">Celsius, Fahrenheit</string>
+    <string name="pref_group_display_settings_title">Weergave</string>
+    <string name="last_update">Laatste update</string>
+    <string name="no_device_available">Voeg a.u.b. eerst een Raspberry Pi toe.</string>
+    <string name="new_raspi_text">Voer hier informatie in over Raspberry Pi-apparaat.</string>
+    <string name="ssh_port">SSH-poort</string>
+    <string name="new_raspi_description">Additionele beschrijving</string>
+    <string name="new_raspi_description_hint">Voer hier een additionele beschrijving in...</string>
+    <string name="overclocking_header">Overklokken</string>
+    <string name="system_header">Systeem</string>
+    <string name="uptime_started">Systeemstart</string>
+    <string name="average_load">Gemiddelde belasting</string>
+    <string name="total_memory">Totaal geheugen</string>
+    <string name="free_memory">Vrij geheugen</string>
+    <string name="cpu_serial">Serienummer</string>
+    <string name="ip_addr_label">IP-adres</string>
+    <string name="distribution">Distributie</string>
+    <string name="disk_header_filesystem">Bestandssysteem</string>
+    <string name="disk_header_size">Grootte</string>
+    <string name="disk_header">Gebruik</string>
+    <string name="disk_header_avail">Vrij</string>
+    <string name="disk_header_usedper">Gebruik%</string>
+    <string name="please_add_a_raspberry_pi">Voeg a.u.b. een Pi toe.</string>
+    <string name="activity_title_edit_raspi">Pi bewerken</string>
+    <string name="disk_header_mounted_on">Gemount op</string>
+    <string name="process_header">Processen</string>
+    <string name="header_command">Commando</string>
+    <string name="pref_group_query_settings_title">Query</string>
+    <string name="pref_query_hide_root_title">Verberg rootprocessen</string>
+    <string name="pref_query_hide_root_summary">Vink aan om rootprocessen te verbergen.</string>
+    <string name="pref_query_hide_root_summaryOn">Rootprocessen worden niet getoond.</string>
+    <string name="pref_query_hide_root_summaryOff">Alle processen worden getoond.</string>
+    <string name="new_raspi_minimum">A.u.b. tenminste naam, hostnaam, SSH-gebruiken en -wachtwoord opgeven.</string>
+    <string name="raspi_device_sudo_password_hint">Sudo-wachtwoord</string>
+    <string name="sudo_password">Sudo-wachtwoord</string>
+    <string name="reboot_success">Herstart is succesvol verstuurd.</string>
+    <string name="reboot_fail">Herstart versturen is mislukt. Controleer de instellingen van de verbinding en het sudo-wachtwoord.</string>
+    <string name="pref_frequency_unit_summary">Hz, MHz of GHz</string>
+    <string name="pref_frequency_unit_title">Eenheid van CPU-snelheid</string>
+    <string name="firmware_version">Firmware</string>
+    <string name="network_header">Netwerk</string>
+    <string name="network_interface">Interface</string>
+    <string name="network_status">Status</string>
+    <string name="network_status_up">Aan</string>
+    <string name="network_status_down">Uit</string>
+    <string name="network_signal">Signaal</string>
+    <string name="network_link">Kwaliteit</string>
+    <string name="pref_group_about">Over RasPi Check</string>
+    <string name="pref_github">Broncode / Issues</string>
+    <string name="pref_dev_email">Ontwikkelaar contacteren</string>
+    <string name="pref_rate_app">Beoordeel deze app</string>
+    <string name="pref_rate_app_summary">Als RasPi Check bevalt, neem een moment om deze te beoordelen.</string>
+    <string name="pref_version">Versie</string>
+    <string name="shutdown_type_title">Afsluiten</string>
+    <string name="halt_success">Afsluiten is succesvol verstuurd.</string>
+    <string name="halt_fail">Afsluiten versturen is mislukt. Controleer de instellingen van de verbinding en sudo-wachtwoord.</string>
+    <string name="validation_msg_name">Naam mag niet leeg zijn.</string>
+    <string name="validation_msg_host">Hostnaam mag niet leeg zijn.</string>
+    <string name="validation_msg_user">Gebruikersnaam mag niet leeg zijn.</string>
+    <string name="validation_msg_password">Wachtwoord mag niet leeg zijn.</string>
+    <string name="validation_msg_port">Geen geldige poort.</string>
+    <string name="update_successful">Update was succesvol.</string>
+    <string name="new_pi_created">Pi is toegevoegd.</string>
+    <string name="exception_dialog_title">Ojee!</string>
+    <string name="authentication_failed">SSH-authenticatie is mislukt. Controleer a.u.b. de instellingen.</string>
+    <string name="connection_failed">Kon geen verbinding opzetten. Controleer de credentials.</string>
+    <string name="errormessages_dialog_title">Excuses…</string>
+    <string name="transport_exception">De verbinding werd onverwacht verbroken. Probeer het nog eens.</string>
+    <string name="unexpected_exception">Een onverwachte fout is opgetreden. Probeer het nog eens.</string>
+    <string name="exception_vcgencmd">Het programma \'vcgencmd\' kon niet op de Pi gevonden worden. Ga na of het onder \'/usr/bin\' of \'/opt/vc/bin\' beschikbaar is voor de SSH-gebruiker in de groep \'video\'.</string>
+    <string name="weird_exception">Er ging iets mis. Bekijk a.u.b. het logbestand.</string>
+    <string name="changelog_full_title">Changelog</string>
+    <string name="changelog_title">Wat is nieuw</string>
+    <string name="changelog_ok_button">Oké</string>
+    <string name="changelog_show_full">Meer…</string>
+    <string name="pref_group_log">Log</string>
+    <string name="pref_log_title">Bekijk log</string>
+    <string name="pref_log_title_summary">Bekijk de logs van deze app</string>
+    <string name="pref_screen_about">Over RasPi Check</string>
+    <string name="pref_screen_about_summary">Versie, Changelog, Ontwikkelaar</string>
+    <string name="pref_changelog_title">Bekijk Changelog</string>
+    <string name="pref_changelog_title_summary">Bekijk Changelog van deze app.</string>
+    <string name="pref_debug_log_summary">Schrijf debugberichten naar de log.</string>
+    <string name="pref_debug_log_summary_on">Debugloggin is ingeschakeld.</string>
+    <string name="pref_debug_log_summary_off">Debuglogging is uitgeschakeld.</string>
+    <string name="pref_debug_log_title">Debuglogging</string>
+    <string name="new_raspi_continue">Verder</string>
+    <string name="new_raspi_auth_method">Authenticatiemethode</string>
+    <string name="raspi_key_password_hint">Wachtwoordzin sleutel</string>
+    <string name="raspi_key_password_empty">De wachtwoordzin van de sleutel mag niet leeg zijn.</string>
+    <string name="raspi_auth_keyfile_hint">Privésleutel (PKCS8/OpenSSH-formaat)</string>
+    <string name="raspi_auth_button_keyfile">Kies sleutelbestand</string>
+    <string name="title_filedialog">Kies sleutelbestand</string>
+    <string name="no_keyfile_present">Kies a.u.b. een bestaand bestand met privésleutel.</string>
+    <string name="raspi_key_checkbox_text">Altijd wachtwoordzin vragen</string>
+    <string name="validation_msg_keyfile">Kies a.u.b. een sleutelbestand.</string>
+    <string name="validation_msg_key_passphrase">Wachtwoordzin sleutel mag niet leeg zijn.</string>
+    <string name="dialog_save_passphrase">Sla wachtwoordzin op</string>
+    <string name="dialog_passphrase_hint">Wachtwoordzin</string>
+    <string name="dialog_passphrase_needed">Wachtwoordzin is verplicht.</string>
+    <string name="dialog_passphrase_text">Voer a.u.b. een wachtwoordzin in voor de privésleutel.</string>
+    <string name="button_commands">Commando's</string>
+    <string name="activity_title_commands">Maatwerkcommando's</string>
+    <string name="activity_title_new_command">Nieuw commando</string>
+    <string name="activity_title_edit_command">Commando bewerken</string>
+    <string name="label_cmd_name">Naam</string>
+    <string name="label_cmd_name_hint">Bijvoorbeeld \'reboot\'</string>
+    <string name="label_cmd_command">Commando</string>
+    <string name="label_cmd_command_hint">Bijvoorbeeld \'shutdown -r now\'</string>
+    <string name="label_cmd_show_output">Toon output</string>
+    <string name="validation_command_blank">Commando mag niet leeg zijn.</string>
+    <string name="toast_command_updated">Commando is bijgewerkt!</string>
+    <string name="toast_command_saved">Commando is opgeslagen!</string>
+    <string name="command_context_edit">Bewerk</string>
+    <string name="command_context_delete">Wis</string>
+    <string name="command_context_run">Run</string>
+    <string name="run_cmd_dialog_title">%1$s aan het runnen</string>
+    <string name="hint_pulltorefresh">Tip: ververs het scherm door naar beneden te swipen!</string>
+
+    <!-- ActionButton Strings -->
+
+    <string name="action_new">Nieuw</string>
+    <string name="action_new_raspi">Nieuwe Pi</string>
+    <string name="action_new_command">Nieuw commando</string>
+    <string name="action_save">Als op</string>
+    <string name="action_save_raspi">Sla Pi op</string>
+    <string name="action_save_command">Sla commando op</string>
+    <string name="action_edit">Bewerk</string>
+    <string name="action_edit_raspi">Bewerk Pi</string>
+    <string name="action_edit_command">Bewerk commando</string>
+    <string name="action_delete">Verwijder</string>
+    <string name="action_delete_raspi">Verwijder Pi</string>
+    <string name="action_delete_command">Verwijder commando</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="action_shutdown">Afsluiten</string>
+    <string name="action_refresh">Ververs</string>
+    <string name="title_placeholders">Plaatshouder</string>
+    <string name="placeholders_button_ok">Oké</string>
+    <string name="placeholder_hint_text">Plaatshouders zijn te gebruiken als bijvoorbeeld \'${my_secret}\'. Deze worden vervangen door de invoer wanneer het commando runt.</string>
+    <string name="placeholder_hint">Tip:</string>
+
+    <string name="pref_load_avg_summary">Tijdsperiode om gemiddelde belasting te berekenen.</string>
+    <string name="pref_load_avg_title">Tijdperiode gemiddelde belasting</string>
+    <string name="widget_pi">Kies RasPi</string>
+    <string name="widget_configure_title">Configureer widget</string>
+    <string name="widget_update_interval">Update-interval</string>
+    <string name="widget_update_interval_error">Geen geldig update-interval.</string>
+    <string name="widget_key_pass_error">Wachtwoordzin van sleutelbestand moet worden opgeslagen omdat widgets er niet naar kunnen vragen.</string>
+    <string name="widget_update_interval_zero">Moet groter dan 0 zijn.</string>
+    <string name="widget_update_interval_five_min">5 minuten</string>
+    <string name="widget_update_interval_ten_min">10 minuten</string>
+    <string name="widget_update_interval_thirty_min">30 minuten</string>
+    <string name="widget_update_interval_one_hour">1 uren</string>
+    <string name="widget_update_interval_two_hours">2 uren</string>
+    <string name="widget_update_interval_eight_hours">8 uren</string>
+    <string name="widget_update_interval_one_day">1 dag</string>
+    <string name="widget_update_interval_custom">Maatwerkinterval</string>
+    <string name="widget_update_interval_custom_text">Update-interval (in minuten)</string>
+    <string name="widget_device_removed">De Pi voor deze widget is verwijderd.</string>
+    <string name="widget_auto_update_no">Nee</string>
+    <string name="widget_auto_update_wifi">Alleen met wifi</string>
+    <string name="widget_auto_update_yes">Ja</string>
+    <string name="widget_auto_update">Automatisch actualiseren</string>
+    <string name="used_memory">Automatische updates</string>
+    <string name="pref_facebook_summary">Nieuws over RasPi Check op Facebook</string>
+    <string name="placeholder_non_prompting_date_hint_text">\'%{date(format)}\' - Word automatisch vervangen met actuele datum en tijd. Formaat moet een geldig datumtijdformaat zijn (bijvoorbeeld dd.MM.yyyy).</string>
+    <string name="placeholder_non_prompting_pi_hint_text">\'%{pi.property}\' - Wordt automatisch vervangen met een eigenschap van de Pi. Beschikbare eigenschappen zijn: name, host, user, pass, port, sudopass.</string>
+    <string name="placeholder_special_hint">Tip:</string>
+    <string name="widget_add_no_device">Er moet eerst een Pi aan de app worden toegevoegd.</string>
+    <string name="action_share">Delen</string>
+    <string name="share_body"># Informatie over Pi \'%1$s\' - %2$s - %3$s\n\n%4$s\n\nDeze informatie was met RasPi Check (Versie: %5$s) voor Android opgevraagd.</string>
+    <string name="permission_private_key_error">Rechten om privésleutel te lezen zijn geweigerd. Kan query niet runnen.</string>
+    <string name="widget_no_read_permission">RasPi Check heeft geen rechten om externe opslag te lezen. Widget kan niet geüpdatet worden.</string>
+
+    <string name="label_cmd_timeout">Time-out in seconden</string>
+    <string name="timeout_hint_title">Time-out:</string>
+    <string name="timeout_hint_text">Pas de standaard time-out van 60 seconden aan als het commando er langer over doet om te runnen.</string>
+    <string name="validation_msg_timeout">Moet groter zijn dan 0.</string>
+    <string name="pref_query_show_system_time_summary">Vink aan om systeemtijd te tonen.</string>
+    <string name="pref_query_show_system_time_summaryOff">Systeemtijd wordt verborgen.</string>
+    <string name="pref_query_show_system_time_summaryOn">Systeemtijd wordt getoond.</string>
+    <string name="pref_query_show_system_time_title">Toon systeemtijd</string>
+    <string name="systemtime">Systeemtijd</string>
+    <string name="total_swap">Swapgeheugen</string>
+
+</resources>
