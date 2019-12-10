@@ -59,7 +59,7 @@ dependencies {
     implementation "io.freefair.android-colors:material:1.2.0"
     implementation "io.freefair.android-injection:injection:1.0.0-rc3"
     implementation "io.freefair.android-util:preference:1.1.1"
-    implementation "com.android.support:design:28.0.3"
+    implementation "com.android.support:design:28.0.0"
     implementation "org.ocpsoft.prettytime:prettytime:2.1.2.Final"
     implementation "org.slf4j:slf4j-api:$rootProject.ext.slf4jVersion"
     implementation("com.github.tony19:logback-android-classic:1.1.1-6") {
