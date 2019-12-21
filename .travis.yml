@@ -3,8 +3,6 @@ language: bash
 # ignored on non-linux platforms, but bionic is required for nested virtualization
 dist: bionic
 
-jdk: oraclejdk8
-
 services:
  - docker
 
@@ -30,12 +28,18 @@ env:
     - EMU_FLAVOR=default # use google_apis flavor if no default flavor emulator
     - ABI=x86_64
     - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
+    - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
+    - JDK="1.8"
     - ANDROID_HOME=${HOME}/android-sdk
     - ANDROID_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
     - TOOLS=${ANDROID_HOME}/tools # PATH order matters, exists more than one emulator script
     - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
 before_install:
+  # Set up JDK 8 for Android SDK - Java is universally needed: codacy, unit tests, emulators
+  - curl "${GRAVIS}.install-jdk-travis.sh" --output ~/.install-jdk-travis.sh
+  - export TARGET_JDK="${JDK}"
+  - source ~/.install-jdk-travis.sh
   - wget -q "${ANDROID_TOOLS_URL}" -O android-sdk-tools.zip
   - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
   - rm android-sdk-tools.zip
