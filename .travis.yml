@@ -1,44 +1,49 @@
-language: android
-
-sudo: required
-
-jdk: oraclejdk8
+sudo: true
+language: bash
+# ignored on non-linux platforms, but bionic is required for nested virtualization
+dist: bionic
 
 services:
  - docker
 
 before_cache:
-  - rm -f ${TRAVIS_BUILD_DIR}/gradle/caches/modules-2/modules-2.lock # Avoid to repack it due locks
-  - rm -f ${TRAVIS_BUILD_DIR}/gradle/caches/3.3/classAnalysis/classAnalysis.lock
-  - rm -f ${TRAVIS_BUILD_DIR}/gradle/caches/3.3/jarSnapshots/jarSnapshots.lock
-
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - ${TRAVIS_BUILD_DIR}/gradle/caches/
-    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
-
-android:
-  components:
-    - tools
-    - build-tools-27.0.3
-    - platform-tools
-    - tools
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
 
 env:
   global:
     - API=21 # Android API level 21 by default
-    - TAG=default # Google APIs by default, alternatively use default
-    - ABI=armeabi-v7a # ARM ABI v7a by default
-    - QEMU_AUDIO_DRV=none # Disable emulator audio to avoid warning
-    - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle" # Change location for Gradle Wrapper and cache
-    - ANDROID_HOME=/usr/local/android-sdk # Depends on the cookbooks version used in the VM
+    - EMU_FLAVOR=default # use google_apis flavor if no default flavor emulator
+    - ABI=x86_64
+    - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
+    - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
+    - JDK="1.8"
+    - ANDROID_HOME=${HOME}/android-sdk
+    - ANDROID_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
     - TOOLS=${ANDROID_HOME}/tools # PATH order matters, exists more than one emulator script
     - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
-    - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
 
 before_install:
-  - export EMULATOR="system-images;android-${API};${TAG};${ABI}" # Used to install/create emulator
-  - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
+  # Set up JDK 8 for Android SDK - Java is universally needed: codacy, unit tests, emulators
+  - curl "${GRAVIS}.install-jdk-travis.sh" --output ~/.install-jdk-travis.sh
+  - export TARGET_JDK="${JDK}"
+  - source ~/.install-jdk-travis.sh
+  - wget -q "${ANDROID_TOOLS_URL}" -O android-sdk-tools.zip
+  - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
+  - rm android-sdk-tools.zip
+  - echo 'count=0' > ~/.android/repositories.cfg # avoid harmless sdkmanager warning
+  - yes | sdkmanager --licenses >/dev/null # accept all sdkmanager warnings
+  - echo y | sdkmanager --no_https "platform-tools" >/dev/null
+  - echo y | sdkmanager --no_https "tools" >/dev/null # A second time per Travis docs, gets latest versions
+  - echo y | sdkmanager --no_https "build-tools;28.0.3" >/dev/null # Implicit gradle dependency - gradle drives changes
+  - echo y | sdkmanager --no_https "platforms;android-28" >/dev/null # We need the API of the current compileSdkVersion from gradle.properties
+
+  - export EMULATOR="system-images;android-${API};${EMU_FLAVOR};${ABI}" # Used to install/create emulator
   - docker build -t rpicheck/test-sshd ./ssh/src/test/resources/
   - docker run -d -p 127.0.0.1:2222:22 rpicheck/test-sshd
 
@@ -46,23 +51,33 @@ install:
   # List and delete unnecessary components to free space
   - sdkmanager --list || true
   # Update sdk tools to latest version and install/update components
-  - echo yes | sdkmanager "tools" >/dev/null
-  - echo yes | sdkmanager "platforms;android-27" >/dev/null # Latest platform required by SDK tools
+  - echo yes | sdkmanager "platforms;android-28" >/dev/null # Latest platform required by SDK tools
   - echo yes | sdkmanager "platforms;android-${API}" >/dev/null # Android platform required by emulator
   - echo yes | sdkmanager "extras;android;m2repository" >/dev/null
   - echo yes | sdkmanager "extras;google;m2repository" >/dev/null
   - echo yes | sdkmanager "emulator" >/dev/null   # latest emulator
   - echo yes | sdkmanager "$EMULATOR"  >/dev/null # Install emulator system image
+  # Set up KVM on linux for hardware acceleration. Manually here so it only happens for emulator tests, takes ~30s
+  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends install bridge-utils libpulse0 libvirt-bin qemu-kvm virtinst ubuntu-vm-builder
+  - sudo adduser $USER libvirt
+  - sudo adduser $USER kvm
   # Check components status
   - sdkmanager --list || true
   - echo $PATH
 
 before_script:
   # Create and start emulator
-  - echo no | avdmanager create avd -n acib -k "$EMULATOR" -f --abi "$ABI" --tag "$TAG"
-  - emulator -avd acib -no-window -camera-back none -camera-front none -engine classic &
+  - echo no | avdmanager create avd --force -n test -k "$EMULATOR" -c 10M
+  - |
+    EMU_PARAMS="-verbose -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048"
+    EMU_COMMAND="emulator"
+    # This double "sudo" monstrosity is used to have Travis execute the
+    # emulator with its new group permissions and help preserve the rule
+    # of least privilege.
+    sudo -E sudo -u $USER -E bash -c "${ANDROID_HOME}/emulator/${EMU_COMMAND} -avd test ${AUDIO} ${EMU_PARAMS} &"
   # Wait for emulator fully-booted and disable animations
-  - android-wait-for-emulator
+  - sudo chmod a+x ./tools/android-wait-for-emulator.sh
+  - ./tools/android-wait-for-emulator.sh
   - adb shell input keyevent 82 &
 
 
