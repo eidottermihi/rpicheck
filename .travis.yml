@@ -15,13 +15,6 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
-android:
-  components:
-    - tools
-    - build-tools-28.0.3
-    - platform-tools
-    - tools
-
 env:
   global:
     - API=21 # Android API level 21 by default
