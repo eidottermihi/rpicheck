@@ -143,8 +143,8 @@
     <string name="dialog_passphrase_hint">Wachtwoordzin</string>
     <string name="dialog_passphrase_needed">Wachtwoordzin is verplicht.</string>
     <string name="dialog_passphrase_text">Voer a.u.b. een wachtwoordzin in voor de privésleutel.</string>
-    <string name="button_commands">Commando's</string>
-    <string name="activity_title_commands">Maatwerkcommando's</string>
+    <string name="button_commands">Commando\'s</string>
+    <string name="activity_title_commands">Maatwerkcommando\'s</string>
     <string name="activity_title_new_command">Nieuw commando</string>
     <string name="activity_title_edit_command">Commando bewerken</string>
     <string name="label_cmd_name">Naam</string>
