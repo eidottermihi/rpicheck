@@ -17,7 +17,7 @@ dependencies {
     compile "com.madgag.spongycastle:bcpkix-jdk15on:1.56.0.0"
     compile "com.madgag.spongycastle:bcpg-jdk15on:1.56.0.0"
 
-    compile "com.hierynomus:sshj:0.26.0"
+    compile "com.hierynomus:sshj:0.29.0"
     compile "org.bouncycastle:bcprov-jdk15on:1.57"
     compile "org.bouncycastle:bcpkix-jdk15on:1.57"
     compile "com.jcraft:jzlib:1.1.3"
