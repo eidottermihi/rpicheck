@@ -31,7 +31,7 @@ public class MemoryBean implements Serializable {
     private long bytes;
 
     private MemoryBean(long bytes) {
-        this.setBytes(bytes);
+        this.bytes = bytes;
     }
 
     public static MemoryBean from(Memory scale, long data) {
