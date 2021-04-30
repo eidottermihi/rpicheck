@@ -46,7 +46,11 @@ public class RaspiMemoryBean implements Serializable {
         this.swapMemory = MemoryBean.from(Memory.KB, swapTotal);
         this.swapUsed = MemoryBean.from(Memory.KB, swapUsed);
         this.swapFree = MemoryBean.from(Memory.KB, swapTotal - swapUsed);
-        this.swapPercentageUsed = ((float) swapUsed / (float) swapTotal);
+        if (swapTotal != 0) {
+            this.swapPercentageUsed = ((float) swapUsed / (float) swapTotal);
+        } else {
+            this.swapPercentageUsed = 0;
+        }
     }
 
     public RaspiMemoryBean(String string) {
