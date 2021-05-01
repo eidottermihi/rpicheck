@@ -120,6 +120,8 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
             bean.setDisks(queryService.queryDiskUsage());
             publishProgress(90);
             bean.setDistri(queryService.queryDistributionName());
+            publishProgress(92);
+            bean.setKernelVer(queryService.queryKernelVersion());
             publishProgress(95);
             bean.setSystemtime(queryService.querySystemtime());
             queryService.disconnect();

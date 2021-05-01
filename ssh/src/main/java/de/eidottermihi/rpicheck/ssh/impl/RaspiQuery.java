@@ -75,6 +75,7 @@ public class RaspiQuery implements IQueryService {
     private static final String DISK_USAGE_CMD = "LC_ALL=C df -h";
     private static final String DF_COMMAND_HEADER_START = "Filesystem";
     private static final String DISTRIBUTION_CMD = "cat /etc/*-release | grep PRETTY_NAME";
+    private static final String KERNEL_CMD = "uname -r";
     private static final String PROCESS_NO_ROOT_CMD = "ps -U root -u root -N";
     private static final String PROCESS_ALL = "ps -A";
     private static final String N_A = "n/a";
@@ -392,6 +393,37 @@ public class RaspiQuery implements IQueryService {
             }
         } else {
             throw new IllegalStateException("You must establish a connection first.");
+        }
+    }
+
+    /**
+     * Queries the kernel version
+     *
+     * @return the kernel version
+     * @throws RaspiQueryException if something goes wrong
+     */
+    @Override
+    public String queryKernelVersion() throws RaspiQueryException {
+        LOGGER.info("Querying kernel version...");
+        if (client != null) {
+            if (client.isConnected() && client.isAuthenticated()) {
+                Session session;
+                try {
+                    session = client.startSession();
+                    final Command cmd = session.exec(KERNEL_CMD);
+                    cmd.join(30, TimeUnit.SECONDS);
+                    return IOUtils.readFully(cmd.getInputStream()).toString().trim();
+                } catch (IOException e) {
+                    throw RaspiQueryException.createTransportFailure(hostname,
+                            e);
+                }
+            } else {
+                throw new IllegalStateException(
+                        "You must establish a connection first.");
+            }
+        } else {
+            throw new IllegalStateException(
+                    "You must establish a connection first.");
         }
     }
 

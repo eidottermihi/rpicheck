@@ -109,6 +109,14 @@ public interface IQueryService {
             throws RaspiQueryException;
 
     /**
+     * Queries the kernel version
+     *
+     * @return the kernel version
+     * @throws RaspiQueryException if something goes wrong
+     */
+    public abstract String queryKernelVersion() throws RaspiQueryException;
+
+    /**
      * Queries the distribution name.
      *
      * @return the distribution name

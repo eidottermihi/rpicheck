@@ -48,10 +48,17 @@ public class QueryBean implements Serializable {
     private String serialNo;
     private List<DiskUsageBean> disks;
     private String distri;
+    private String kernelVer;
     private List<ProcessBean> processes;
     private String systemtime;
     private RaspiQueryException exception;
     private List<String> errorMessages;
+
+
+    @Exported("kernelVersion")
+    public String getKernelVer() { return kernelVer; }
+
+    public void setKernelVer(String kernelVer) { this.kernelVer = kernelVer; }
 
     @Exported("vcgencmd")
     public VcgencmdBean getVcgencmdInfo() {
@@ -166,12 +173,13 @@ public class QueryBean implements Serializable {
                 ", lastUpdate=" + lastUpdate +
                 ", startup='" + startup + '\'' +
                 ", avgLoad='" + avgLoad + '\'' +
+                ", memoryBean=" + memoryBean +
                 ", serialNo='" + serialNo + '\'' +
                 ", disks=" + disks +
                 ", distri='" + distri + '\'' +
+                ", kernelVer='" + kernelVer + '\'' +
                 ", processes=" + processes +
                 ", systemtime='" + systemtime + '\'' +
-                ", memory='" + memoryBean + '\'' +
                 ", exception=" + exception +
                 ", errorMessages=" + errorMessages +
                 '}';
