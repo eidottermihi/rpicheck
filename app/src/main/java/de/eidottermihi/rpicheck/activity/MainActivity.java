@@ -140,6 +140,8 @@ public class MainActivity extends InjectionAppCompatActivity implements
     private TextView serialNoText;
     @InjectView(R.id.distriText)
     private TextView distriText;
+    @InjectView(R.id.kernelText)
+    private TextView kernelText;
     @InjectView(R.id.systemtimeText)
     private TextView systemtimeText;
     @InjectView(R.id.systemtimeLayout)
@@ -298,6 +300,7 @@ public class MainActivity extends InjectionAppCompatActivity implements
         }
         serialNoText.setText(result.getSerialNo());
         distriText.setText(result.getDistri());
+        kernelText.setText(result.getKernelVer());
         // update tables
         updateNetworkTable(result);
         updateDiskTable(result);
