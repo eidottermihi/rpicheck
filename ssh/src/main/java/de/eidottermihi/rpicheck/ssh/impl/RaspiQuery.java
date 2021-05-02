@@ -77,7 +77,7 @@ public class RaspiQuery implements IQueryService {
     private static final String DISTRIBUTION_CMD = "cat /etc/*-release | grep PRETTY_NAME";
     private static final String KERNEL_CMD = "cat /proc/version|cut -f 3 -d \" \"";
     private static final String ARCHITECTURE_CMD = "(uname -m;echo \" \"; getconf LONG_BIT; echo \"bit\")|tr -d '\\n'";
-    private static final String MODEL_CMD = "cat /proc/cpuinfo |grep 'Model'|cut -f 2 -d \":\"";
+    private static final String MODEL_CMD = "cat /sys/firmware/devicetree/base/model";
     private static final String PROCESS_NO_ROOT_CMD = "ps -U root -u root -N";
     private static final String PROCESS_ALL = "ps -A";
     private static final String N_A = "n/a";
