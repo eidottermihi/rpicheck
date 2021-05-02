@@ -192,7 +192,7 @@ public class QueryBean implements Serializable {
                 ", lastUpdate=" + lastUpdate +
                 ", startup='" + startup + '\'' +
                 ", avgLoad='" + avgLoad + '\'' +
-                ", memoryBean=" + memoryBean +
+                ", memory=" + memoryBean +
                 ", serialNo='" + serialNo + '\'' +
                 ", disks=" + disks +
                 ", distri='" + distri + '\'' +
