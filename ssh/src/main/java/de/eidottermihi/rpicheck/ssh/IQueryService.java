@@ -81,7 +81,6 @@ public interface IQueryService {
      */
     public abstract double queryLoadAverage(LoadAveragePeriod timePeriod)
             throws RaspiQueryException;
-
     /**
      * Queries the cpu serial.
      *
@@ -89,6 +88,22 @@ public interface IQueryService {
      * @throws RaspiQueryException if something goes wrong
      */
     public abstract String queryCpuSerial() throws RaspiQueryException;
+
+    /**
+     * Queries the raspberry pi model.
+     *
+     * @return the raspberry pi model
+     * @throws RaspiQueryException if something goes wrong
+     */
+    public abstract String queryModel() throws RaspiQueryException;
+
+    /**
+     * Queries the cpu architecture.
+     *
+     * @return the cpu architecture
+     * @throws RaspiQueryException if something goes wrong
+     */
+    public abstract String queryCpuArchitecture() throws RaspiQueryException;
 
     /**
      * Query memory information.
@@ -107,6 +122,14 @@ public interface IQueryService {
      */
     public abstract List<DiskUsageBean> queryDiskUsage()
             throws RaspiQueryException;
+
+    /**
+     * Queries the kernel version
+     *
+     * @return the kernel version
+     * @throws RaspiQueryException if something goes wrong
+     */
+    public abstract String queryKernelVersion() throws RaspiQueryException;
 
     /**
      * Queries the distribution name.

@@ -108,9 +108,13 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
             final Double uptime = queryService.queryUptime();
             publishProgress(60);
             RaspiMemoryBean memory = queryService.queryMemoryInformation();
+            publishProgress(65);
+            bean.setModel(queryService.queryModel());
             publishProgress(70);
             String serialNo = queryService.queryCpuSerial();
             publishProgress(72);
+            bean.setArchitecture(queryService.queryCpuArchitecture());
+            publishProgress(75);
             List<ProcessBean> processes = queryService
                     .queryProcesses(!hideRootProcesses);
             publishProgress(80);
@@ -120,6 +124,8 @@ public class SSHQueryTask extends AsyncTask<String, Integer, QueryBean> {
             bean.setDisks(queryService.queryDiskUsage());
             publishProgress(90);
             bean.setDistri(queryService.queryDistributionName());
+            publishProgress(92);
+            bean.setKernelVer(queryService.queryKernelVersion());
             publishProgress(95);
             bean.setSystemtime(queryService.querySystemtime());
             queryService.disconnect();

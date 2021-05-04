@@ -48,10 +48,27 @@ public class QueryBean implements Serializable {
     private String serialNo;
     private List<DiskUsageBean> disks;
     private String distri;
+    private String kernelVer;
+    private String architecture;
+    private String model;
     private List<ProcessBean> processes;
     private String systemtime;
     private RaspiQueryException exception;
     private List<String> errorMessages;
+
+    @Exported("model")
+    public String getModel() { return model; }
+    public void setModel(String model) { this.model = model; }
+
+    @Exported("kernelVersion")
+    public String getKernelVer() { return kernelVer; }
+
+    public void setKernelVer(String kernelVer) { this.kernelVer = kernelVer; }
+
+    @Exported("architecture")
+    public String getArchitecture() { return architecture; }
+
+    public void setArchitecture(String architecture) { this.architecture = architecture; }
 
     @Exported("vcgencmd")
     public VcgencmdBean getVcgencmdInfo() {
@@ -158,6 +175,15 @@ public class QueryBean implements Serializable {
         this.systemtime = systemtime;
     }
 
+    @Exported("memory")
+    public RaspiMemoryBean getMemoryBean(){
+        return this.memoryBean;
+    }
+
+    public void setMemoryBean(RaspiMemoryBean memoryBean) {
+        this.memoryBean = memoryBean;
+    }
+
     @Override
     public String toString() {
         return "QueryBean{" +
@@ -166,23 +192,17 @@ public class QueryBean implements Serializable {
                 ", lastUpdate=" + lastUpdate +
                 ", startup='" + startup + '\'' +
                 ", avgLoad='" + avgLoad + '\'' +
+                ", memory=" + memoryBean +
                 ", serialNo='" + serialNo + '\'' +
                 ", disks=" + disks +
                 ", distri='" + distri + '\'' +
+                ", kernelVer='" + kernelVer + '\'' +
+                ", architecture='" + architecture + '\'' +
+                ", model='" + model + '\'' +
                 ", processes=" + processes +
                 ", systemtime='" + systemtime + '\'' +
-                ", memory='" + memoryBean + '\'' +
                 ", exception=" + exception +
                 ", errorMessages=" + errorMessages +
                 '}';
-    }
-
-    @Exported("memory")
-    public RaspiMemoryBean getMemoryBean(){
-        return this.memoryBean;
-    }
-
-    public void setMemoryBean(RaspiMemoryBean memoryBean) {
-        this.memoryBean = memoryBean;
     }
 }
