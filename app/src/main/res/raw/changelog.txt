@@ -19,6 +19,12 @@
     </style>
   </head>
   <body>
+$ 1.8.14
+  % Version 1.8.14
+  _ 2021-04-05
+  * Updated to latest SSHJ and BouncyCastle libraries
+  * Added model, architecture and kernel queries (by KevinSJ)
+  * Fixed bug in swap usage percentage when swap is disabled (by PtilopsisLeucotis)
 $ 1.8.12
   % Version 1.8.12
   _ 2018-10-03
