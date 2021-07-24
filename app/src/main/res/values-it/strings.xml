@@ -117,7 +117,7 @@
     <string name="pref_screen_about_summary">Versione, changelog, sviluppatore</string>
     <string name="pref_changelog_title">Visualizza changelog</string>
     <string name="pref_rate_app">Valuta l\'app</string>
-    <string name="pref_github">Sorgemto / Issue Tracker</string>
+    <string name="pref_github">Sorgente / Issue Tracker</string>
     <string name="pref_dev_email">Contatta lo sviluppatore</string>
     <string name="changelog_full_title">Changelog</string>
     <string name="network_link">Qualità</string>
@@ -133,7 +133,7 @@
     <string name="title_placeholders">Segnaposti</string>
     <string name="update_successful">PI aggioranto con successo.</string>
     <string name="new_pi_created">PI creato.</string>
-    <string name="permission_private_key_error">Impossibile leggere la primate key. Impossibile eseguire la query.</string>
+    <string name="permission_private_key_error">Impossibile leggere la chiave primaria. Impossibile eseguire la query.</string>
     <string name="dialog_passphrase_needed">Passphrase necessaria</string>
     <string name="ssh_credentials">Credenziali SSH</string>
     <string name="no_hostname_specified">Hostname non specificato. Verifica le impostazioni.</string>
@@ -153,8 +153,8 @@
     <string name="authentication_failed">Autenticazione SSH fallita. Per favore verifica le credenziali.</string>
     <string name="connection_failed">Impossibile stabilire una connessione. Per favore verifica l\'hostname e la tua rete.</string>
     <string name="errormessages_dialog_title">Scusa...</string>
-    <string name="transport_exception">Eccezione di trasposto. Per favore riprova nuovamnte.</string>
-    <string name="unexpected_exception">Eccezione inaspettata. Per favore riprova nuovamnte.</string>
+    <string name="transport_exception">Eccezione di trasposto. Per favore riprova nuovamente.</string>
+    <string name="unexpected_exception">Eccezione inaspettata. Per favore riprova nuovamente.</string>
     <string name="weird_exception">E\' accaduto qualcosa di inaspettato. Per favore verifica il log.</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">altro...</string>
