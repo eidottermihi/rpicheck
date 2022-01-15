@@ -41,6 +41,7 @@ import java.io.File;
 
 import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.ExportSettings;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import io.freefair.android.preference.AppCompatPreferenceActivity;
 import sheetrock.panda.changelog.ChangeLog;
@@ -62,6 +63,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
     public static final String KEY_PREF_DEBUG_LOGGING = "pref_debug_log";
     public static final String KEY_PREF_QUERY_SHOW_SYSTEM_TIME = "pref_query_show_system_time";
 
+    public static final String KEY_EXPORT_ALL = "export_all";
+    public static final String KEY_IMPORT_ALL = "import_all";
+
     private static final String KEY_PREF_LOG = "pref_log";
     private static final String KEY_PREF_CHANGELOG = "pref_changelog";
     private static final String KEY_PREF_LOAD_AVG_PERIOD = "pref_load_avg";
@@ -74,11 +78,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        // adding preference listener to log / changelog
+        // adding preference listener to log / changelog / export / import
         Preference prefLog = findPreference(KEY_PREF_LOG);
         prefLog.setOnPreferenceClickListener(this);
         Preference prefChangelog = findPreference(KEY_PREF_CHANGELOG);
         prefChangelog.setOnPreferenceClickListener(this);
+        Preference prefExport = findPreference(KEY_EXPORT_ALL);
+        prefExport.setOnPreferenceClickListener(this);
+        Preference prefImport = findPreference(KEY_IMPORT_ALL);
+        prefImport.setOnPreferenceClickListener(this);
 
         findPreference("pref_app_version").setSummary(BuildConfig.VERSION_NAME);
 
@@ -166,6 +174,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
             clickHandled = true;
             ChangeLog cl = new ChangeLog(this);
             cl.getFullLogDialog().show();
+        } else if (preference.getKey().equals(KEY_EXPORT_ALL)) {
+            Toast.makeText(this, "export clicked",
+                    Toast.LENGTH_LONG).show();
+            LOGGER.trace("export clicked");
+            ExportSettings exportSettings = new ExportSettings();
+            exportSettings.ExportAll();
+        } else if (preference.getKey().equals(KEY_IMPORT_ALL)) {
+            Toast.makeText(this, "import clicked",
+                    Toast.LENGTH_LONG).show();
+            LOGGER.trace("import clicked");
         }
         return clickHandled;
     }

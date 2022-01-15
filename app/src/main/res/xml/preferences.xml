@@ -71,6 +71,16 @@
             android:summaryOn="@string/pref_query_show_system_time_summaryOn"
             android:title="@string/pref_query_show_system_time_title"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="Settings [hardcoded text]">
+        <Preference
+            android:key="export_all"
+            android:summary="Export all settings and devices into a file."
+            android:title="Export"/>
+        <Preference
+            android:key="import_all"
+            android:summary="Import all settings and devices from a file."
+            android:title="Import"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_log">
         <Preference
             android:key="pref_log"
