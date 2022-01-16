@@ -23,10 +23,10 @@
         <activity
             android:name="de.eidottermihi.rpicheck.activity.MainActivity"
             android:label="@string/title_activity_main"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -91,7 +91,8 @@
             android:theme="@style/FilePickerTheme">
         </activity>
 
-        <receiver android:name="de.eidottermihi.rpicheck.widget.OverclockingWidget">
+        <receiver android:name="de.eidottermihi.rpicheck.widget.OverclockingWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -101,7 +102,8 @@
                 android:resource="@xml/overclocking_widget_info"/>
         </receiver>
 
-        <activity android:name="de.eidottermihi.rpicheck.widget.OverclockingWidgetConfigureActivity">
+        <activity android:name="de.eidottermihi.rpicheck.widget.OverclockingWidgetConfigureActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
