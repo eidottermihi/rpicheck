@@ -9,16 +9,16 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-    api "com.google.guava:guava:20.0"
-    api "org.ocpsoft.prettytime:prettytime:2.1.2.Final"
-    api "org.slf4j:slf4j-api:$rootProject.ext.slf4jVersion"
+    implementation "com.google.guava:guava:20.0"
+    implementation "org.ocpsoft.prettytime:prettytime:2.1.2.Final"
+    implementation "org.slf4j:slf4j-api:$rootProject.ext.slf4jVersion"
 
-    api "com.hierynomus:sshj:0.31.0"
-    api "org.bouncycastle:bcprov-jdk15on:1.68"
-    api "org.bouncycastle:bcpkix-jdk15on:1.68"
-    api "org.bouncycastle:bcpg-jdk15on:1.68"
-    api "com.jcraft:jzlib:1.1.3"
-    api "net.i2p.crypto:eddsa:0.3.0"
+    implementation "com.hierynomus:sshj:0.31.0"
+    implementation "org.bouncycastle:bcprov-jdk15on:1.68"
+    implementation "org.bouncycastle:bcpkix-jdk15on:1.68"
+    implementation "org.bouncycastle:bcpg-jdk15on:1.68"
+    implementation "com.jcraft:jzlib:1.1.3"
+    implementation "net.i2p.crypto:eddsa:0.3.0"
     // end quick fix dependencies
 
     testImplementation "junit:junit:4.12"
