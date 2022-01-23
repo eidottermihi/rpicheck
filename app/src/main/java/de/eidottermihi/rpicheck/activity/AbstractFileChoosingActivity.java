@@ -23,6 +23,7 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 
@@ -65,16 +66,16 @@ public abstract class AbstractFileChoosingActivity extends InjectionAppCompatAct
 
     /**
      * Same as above but for choosing a directory
+     * @param mBaseContext
      */
-    public final void startDirChooser() {
+    public final void startDirChooser(Context mBaseContext) {
         LOGGER.debug("Sending Intent from startDirChooser to open FilePicker Activity.");
-        final Intent i = new Intent(this, RaspiFilePickerActivity.class);
+        final Intent i = new Intent(mBaseContext, RaspiFilePickerActivity.class);
         // Set these depending on your use case. These are the defaults.
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
         i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
         i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-        LOGGER.debug("putextra done");
         startActivityForResult(i, REQUEST_CODE_LOAD_FILE);
     }
 

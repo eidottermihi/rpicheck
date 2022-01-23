@@ -175,17 +175,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
             ChangeLog cl = new ChangeLog(this);
             cl.getFullLogDialog().show();
         } else if (preference.getKey().equals(KEY_EXPORT_ALL)) {
-            Toast.makeText(this, "export clicked",
-                    Toast.LENGTH_LONG).show();
-            LOGGER.trace("export clicked");
+            LOGGER.debug("Export was clicked.");
+            //ToDo
+            // [ ]Find out how to make the constructor properly create ExportSettings so that context
+            // and 'android.app.ActivityThread.getApplicationThread()' aren't throwing null object reference errors.
+            // [X]Fix Export not getting context
             ExportSettings exportSettings = new ExportSettings();
-            exportSettings.ExportAll();
+            exportSettings.ExportAll(this);
+            clickHandled = true;
+            Toast.makeText(this, "Export successful!",
+                    Toast.LENGTH_LONG).show();
         } else if (preference.getKey().equals(KEY_IMPORT_ALL)) {
+            LOGGER.debug("Import was clicked.");
+            clickHandled = true;
             Toast.makeText(this, "import clicked",
                     Toast.LENGTH_LONG).show();
-            LOGGER.trace("import clicked");
+            //ToDo Create import class
         }
         return clickHandled;
     }
-
 }
