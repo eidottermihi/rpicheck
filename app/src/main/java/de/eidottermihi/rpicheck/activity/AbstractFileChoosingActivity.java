@@ -66,12 +66,10 @@ public abstract class AbstractFileChoosingActivity extends InjectionAppCompatAct
 
     /**
      * Same as above but for choosing a directory
-     * @param mBaseContext
      */
-    public final void startDirChooser(Context mBaseContext) {
+    public final void startDirChooser() {
         LOGGER.debug("Sending Intent from startDirChooser to open FilePicker Activity.");
-        final Intent i = new Intent(mBaseContext, RaspiFilePickerActivity.class);
-        // Set these depending on your use case. These are the defaults.
+        final Intent i = new Intent(this, RaspiFilePickerActivity.class);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
         i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);

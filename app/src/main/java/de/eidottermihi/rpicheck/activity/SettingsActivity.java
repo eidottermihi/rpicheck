@@ -34,6 +34,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ import java.io.File;
 import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.helper.ExportSettings;
+import de.eidottermihi.rpicheck.activity.helper.ImportSettings;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import io.freefair.android.preference.AppCompatPreferenceActivity;
 import sheetrock.panda.changelog.ChangeLog;
@@ -188,9 +190,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
         } else if (preference.getKey().equals(KEY_IMPORT_ALL)) {
             LOGGER.debug("Import was clicked.");
             clickHandled = true;
-            Toast.makeText(this, "import clicked",
-                    Toast.LENGTH_LONG).show();
-            //ToDo Create import class
+            //ToDo Fix the same stuff as above!
+            ImportSettings importSettings = new ImportSettings();
+            final Boolean allClear = importSettings.ImportAll(this);
+            if (allClear) {
+                Toast.makeText(this, "Import successful!",
+                        Toast.LENGTH_LONG).show();
+                //Reopen the app to make the changes visible, inspired by this great answer: https://stackoverflow.com/a/39484617
+                Intent reopenIntent = new Intent(this, MainActivity.class);
+                finishAffinity();
+                startActivity(reopenIntent);
+            }else{
+                Toast.makeText(this, "Something went wrong during the import!",
+                        Toast.LENGTH_LONG).show();
+            }
         }
         return clickHandled;
     }

@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.rpicheck.activity.AbstractFileChoosingActivity;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
@@ -56,7 +57,7 @@ public class ExportSettings extends AbstractFileChoosingActivity {
     private String fileName;
     private Context mBaseContext;
 
-    //Couldn't come up with any better names,
+    //Couldn't come up with any better names
     public void ExportAll(Context baseContext) {
         LOGGER.debug("ExportAll sucessfully called");
         this.mBaseContext = baseContext;
@@ -76,10 +77,10 @@ public class ExportSettings extends AbstractFileChoosingActivity {
          */
          //startDirChooser(mBaseContext);
         this.filePath = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
-        export();
+        doExport();
     }
 
-    private void export() {
+    private void doExport() {
         //I briefly skimmed over how andOTP handles backups, which solidified my decision to use JSON and maybe add encryption at a later date.
         LOGGER.debug("Export successfully called with filePath: {}", filePath);
         //This first exports all settings of the app and then every device into a json file, which includes passwords but no keyfiles
@@ -105,6 +106,9 @@ public class ExportSettings extends AbstractFileChoosingActivity {
         userSettings.put("freq_unit", freq_unit);
         userSettings.put("debug_log", debug_log);
         userSettings.put("sys_time", sys_time);
+        //Adding the version code just in case something changes in the future and
+        //it has to be imported differently (or throw out an "too old" error).
+        userSettings.put("version_code", BuildConfig.VERSION_CODE);
         LOGGER.debug(userSettings.toJSONString());
 
         JSONArray devices = new JSONArray();
@@ -121,10 +125,11 @@ public class ExportSettings extends AbstractFileChoosingActivity {
                 device.put("passwd", deviceBean.getPass());
                 device.put("sudo_passwd", deviceBean.getSudoPass());
                 device.put("ssh_port", deviceBean.getPort());
-                //getCreatedAt and getModifiedAt returns an Java Date, which JSON does not like.
-                //I think just storing it as an String should be fine, when importing I just have to convert it back.
-                device.put("created_at", String.valueOf(deviceBean.getCreatedAt()));
-                device.put("modified_at", String.valueOf(deviceBean.getModifiedAt()));
+                //getCreatedAt() and getModifiedAt() returns an Java Date, which JSON does not like.
+                //Originally intended to save it as a string, but because I can't
+                //import it through DeviceDbHelper I'll leave it out.
+                //device.put("created_at", String.valueOf(deviceBean.getCreatedAt()));
+                //device.put("modified_at", String.valueOf(deviceBean.getModifiedAt()));
                 device.put("serial", deviceBean.getSerial());
                 device.put("auth_method", deviceBean.getAuthMethod());
                 device.put("keyfile_path", deviceBean.getKeyfilePath());
@@ -141,7 +146,7 @@ public class ExportSettings extends AbstractFileChoosingActivity {
         fullJSON.add(devices);
 
         //Write file
-        this.fileName = "testFile.json";
+        this.fileName = "rpicheck_export.json";
         File exportFile = new File(filePath, fileName);
 
         try (FileWriter writer = new FileWriter(exportFile, false)) {
@@ -159,7 +164,7 @@ public class ExportSettings extends AbstractFileChoosingActivity {
             final String filePath = data.getData().getPath();
             LOGGER.debug("Selected path: {}", filePath);
             this.filePath = filePath;
-            export();
+            doExport();
         }
     }
 }
