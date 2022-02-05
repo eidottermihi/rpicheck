@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -39,8 +40,10 @@ import org.json.simple.JSONArray;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 import de.eidottermihi.raspicheck.BuildConfig;
+import de.eidottermihi.raspicheck.R;
 import de.eidottermihi.rpicheck.activity.AbstractFileChoosingActivity;
 import de.eidottermihi.rpicheck.db.DeviceDbHelper;
 import de.eidottermihi.rpicheck.db.RaspberryDeviceBean;
@@ -51,15 +54,15 @@ import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_FREQUE
 import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_DEBUG_LOGGING;
 import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_QUERY_SHOW_SYSTEM_TIME;
 
+@SuppressWarnings("unchecked")
 public class ExportSettings extends AbstractFileChoosingActivity {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportSettings.class);
     private String filePath;
-    private String fileName;
     private Context mBaseContext;
+    private String errorString = null;
 
     //Couldn't come up with any better names
-    public void ExportAll(Context baseContext) {
-        LOGGER.debug("ExportAll sucessfully called");
+    public String ExportAll(Context baseContext) {
         this.mBaseContext = baseContext;
 
         /*Calling the function for choosing the folder here causes an
@@ -78,88 +81,125 @@ public class ExportSettings extends AbstractFileChoosingActivity {
          //startDirChooser(mBaseContext);
         this.filePath = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
         doExport();
+
+        return errorString;
     }
 
     private void doExport() {
-        //I briefly skimmed over how andOTP handles backups, which solidified my decision to use JSON and maybe add encryption at a later date.
-        LOGGER.debug("Export successfully called with filePath: {}", filePath);
-        //This first exports all settings of the app and then every device into a json file, which includes passwords but no keyfiles
+        LOGGER.info("Export called with filePath: {}", filePath);
+        //I briefly skimmed over how andOTP handles backups, which solidified my decision to use
+        // JSON and maybe add encryption at a later date because of the passwords.
         DeviceDbHelper deviceDb;
         RaspberryDeviceBean deviceBean;
         JSONArray fullJSON = new JSONArray();
-        Integer i = 1;
+        //This first exports all SharedPreferences of the app, then every device and then all commands
+        // into a json file, which includes passwords but no keyfiles, only their path.
 
-        //This causes the same java.lang.NullPointerException as above if
-        //'this' instead of 'mBaseContext' is supplied
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mBaseContext);
         String temp_scale = prefs.getString(KEY_PREF_TEMPERATURE_SCALE, null);
         Boolean hide_root = (prefs.getBoolean(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, false));
         String freq_unit = prefs.getString(KEY_PREF_FREQUENCY_UNIT, null);
         Boolean debug_log = (prefs.getBoolean(KEY_PREF_DEBUG_LOGGING, false));
         Boolean sys_time = (prefs.getBoolean(KEY_PREF_QUERY_SHOW_SYSTEM_TIME, false));
-        //LOGGER.debug("temp_scale:"+temp_scale+"|hide_root:"+String.valueOf(hide_root)+ "|freq_unit:"+
-        //        freq_unit+"|debug_log:"+String.valueOf(debug_log)+"|sys_time:"+String.valueOf(sys_time));
-
         JSONObject userSettings = new JSONObject();
         userSettings.put("temp_scale", temp_scale);
         userSettings.put("hide_root", hide_root);
         userSettings.put("freq_unit", freq_unit);
         userSettings.put("debug_log", debug_log);
         userSettings.put("sys_time", sys_time);
+        /*
+        Was considering using the KEY variables as the keys for the JSON, but any change would
+        have made the JSON unusable so I'll stick with hardcoded names. Code stays here just in case.
+        Maybe make the keys "global" variables?
+        userSettings.put(KEY_PREF_TEMPERATURE_SCALE, temp_scale);
+        userSettings.put(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, hide_root);
+        userSettings.put(KEY_PREF_FREQUENCY_UNIT, freq_unit);
+        userSettings.put(KEY_PREF_DEBUG_LOGGING, debug_log);
+        userSettings.put(KEY_PREF_QUERY_SHOW_SYSTEM_TIME, sys_time);
+         */
         //Adding the version code just in case something changes in the future and
         //it has to be imported differently (or throw out an "too old" error).
         userSettings.put("version_code", BuildConfig.VERSION_CODE);
-        LOGGER.debug(userSettings.toJSONString());
+
 
         JSONArray devices = new JSONArray();
         deviceDb = new DeviceDbHelper(mBaseContext);
-        while(true) {
-            deviceBean = deviceDb.read(i);
-            if (deviceBean != null) {
-                JSONObject device = new JSONObject();
-                device.put("_id", deviceBean.getId());
-                device.put("name", deviceBean.getName());
-                device.put("description", deviceBean.getDescription());
-                device.put("host", deviceBean.getHost());
-                device.put("user", deviceBean.getUser());
-                device.put("passwd", deviceBean.getPass());
-                device.put("sudo_passwd", deviceBean.getSudoPass());
-                device.put("ssh_port", deviceBean.getPort());
-                //getCreatedAt() and getModifiedAt() returns an Java Date, which JSON does not like.
-                //Originally intended to save it as a string, but because I can't
-                //import it through DeviceDbHelper I'll leave it out.
-                //device.put("created_at", String.valueOf(deviceBean.getCreatedAt()));
-                //device.put("modified_at", String.valueOf(deviceBean.getModifiedAt()));
-                device.put("serial", deviceBean.getSerial());
-                device.put("auth_method", deviceBean.getAuthMethod());
-                device.put("keyfile_path", deviceBean.getKeyfilePath());
-                device.put("keyfile_pass", deviceBean.getKeyfilePass());
-                LOGGER.debug(device.toJSONString());
-                devices.add(device);
-            } else {
-                break;
-            }
-            i++;
+        Cursor deviceCursor = deviceDb.getFullDeviceCursor();
+        boolean cursorEnded = deviceCursor.moveToFirst();
+        while (cursorEnded) {
+            deviceBean = deviceDb.read(deviceCursor.getLong(0));
+
+            JSONObject device = new JSONObject();
+            device.put("_id", deviceBean.getId());
+            device.put("name", deviceBean.getName());
+            device.put("description", deviceBean.getDescription());
+            device.put("host", deviceBean.getHost());
+            device.put("user", deviceBean.getUser());
+            device.put("passwd", deviceBean.getPass());
+            device.put("sudo_passwd", deviceBean.getSudoPass());
+            device.put("ssh_port", deviceBean.getPort());
+            /*getCreatedAt() and getModifiedAt() returns an Java Date, which JSON does not like.
+              Originally intended to save it as a string, but because I can't
+              import it through DeviceDbHelper I'll leave it out.
+              device.put("created_at", String.valueOf(deviceBean.getCreatedAt()));
+              device.put("modified_at", String.valueOf(deviceBean.getModifiedAt()));*/
+            device.put("serial", deviceBean.getSerial());
+            device.put("auth_method", deviceBean.getAuthMethod());
+            device.put("keyfile_path", deviceBean.getKeyfilePath());
+            device.put("keyfile_pass", deviceBean.getKeyfilePass());
+            devices.add(device);
+
+            cursorEnded = deviceCursor.moveToNext();
         }
+        deviceCursor.close();
+
+        JSONArray commands = new JSONArray();
+        Cursor commandCursor = deviceDb.getFullCommandCursor();
+        cursorEnded = commandCursor.moveToFirst();
+        while (cursorEnded) {
+            JSONObject command = new JSONObject();
+            //_id is not needed as it's an autoincrement field in the DB
+            //command.put("_id", commandCursor.getInt(0));
+            command.put("name", commandCursor.getString(1));
+            command.put("command", commandCursor.getString(2));
+            //noinspection SimplifiableConditionalExpression
+            command.put("flag_output", commandCursor.getInt(3) == 1 ? true : false);
+            command.put("timeout", commandCursor.getInt(4));
+            commands.add(command);
+
+            cursorEnded = commandCursor.moveToNext();
+        }
+        commandCursor.close();
 
         fullJSON.add(userSettings);
         fullJSON.add(devices);
+        fullJSON.add(commands);
 
         //Write file
-        this.fileName = "rpicheck_export.json";
+        String fileName = "rpicheck_export.json";
+        int fileNumber = 1;
         File exportFile = new File(filePath, fileName);
+        //Append a number to the name instead of overwriting old exports.
+        // Kinda brute-force but even at 1.000.000 files it takes just takes 20 seconds (emulator).
+        while(exportFile.exists()) {
+            fileName = "rpicheck_export("+ fileNumber +").json";
+            exportFile = new File(filePath, fileName);
+            fileNumber += 1;
+        }
 
         try (FileWriter writer = new FileWriter(exportFile, false)) {
             writer.write(fullJSON.toJSONString());
             writer.flush();
+            LOGGER.info("File \"{}\" successfully saved at \"{}\"", fileName, filePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            this.errorString = mBaseContext.getResources().getString(R.string.err_ioexception);
+            LOGGER.error(e.toString());
+            LOGGER.debug(Arrays.toString(e.getStackTrace()));
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        LOGGER.debug("onActivityResult called");
         if (requestCode == REQUEST_CODE_LOAD_FILE && resultCode == Activity.RESULT_OK) {
             final String filePath = data.getData().getPath();
             LOGGER.debug("Selected path: {}", filePath);

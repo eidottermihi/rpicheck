@@ -34,7 +34,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,31 +176,34 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
             ChangeLog cl = new ChangeLog(this);
             cl.getFullLogDialog().show();
         } else if (preference.getKey().equals(KEY_EXPORT_ALL)) {
-            LOGGER.debug("Export was clicked.");
-            //ToDo
-            // [ ]Find out how to make the constructor properly create ExportSettings so that context
-            // and 'android.app.ActivityThread.getApplicationThread()' aren't throwing null object reference errors.
-            // [X]Fix Export not getting context
-            ExportSettings exportSettings = new ExportSettings();
-            exportSettings.ExportAll(this);
             clickHandled = true;
-            Toast.makeText(this, "Export successful!",
-                    Toast.LENGTH_LONG).show();
+            //ToDo:
+            // Find out how to properly create ExportSettings so that context and
+            // 'android.app.ActivityThread.getApplicationThread()' aren't throwing null object reference errors.
+            ExportSettings exportSettings = new ExportSettings();
+            final String allClear = exportSettings.ExportAll(this);
+            if (allClear == null) {
+                Toast.makeText(this, this.getResources().getString(R.string.export_success),
+                        Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(this, allClear,
+                        Toast.LENGTH_LONG).show();
+            }
         } else if (preference.getKey().equals(KEY_IMPORT_ALL)) {
-            LOGGER.debug("Import was clicked.");
             clickHandled = true;
             //ToDo Fix the same stuff as above!
             ImportSettings importSettings = new ImportSettings();
-            final Boolean allClear = importSettings.ImportAll(this);
-            if (allClear) {
-                Toast.makeText(this, "Import successful!",
+            final String allClear = importSettings.ImportAll(this);
+            if (allClear == null) {
+                LOGGER.debug("Import successful");
+                Toast.makeText(this, this.getResources().getString(R.string.import_success),
                         Toast.LENGTH_LONG).show();
                 //Reopen the app to make the changes visible, inspired by this great answer: https://stackoverflow.com/a/39484617
                 Intent reopenIntent = new Intent(this, MainActivity.class);
                 finishAffinity();
                 startActivity(reopenIntent);
             }else{
-                Toast.makeText(this, "Something went wrong during the import!",
+                Toast.makeText(this, allClear,
                         Toast.LENGTH_LONG).show();
             }
         }

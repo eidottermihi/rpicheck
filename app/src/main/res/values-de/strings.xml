@@ -166,6 +166,11 @@
     <string name="command_context_run">Ausführen</string>
     <string name="run_cmd_dialog_title">%1$s ausführen</string>
     <string name="hint_pulltorefresh">Hinweis: Du kannst auch aktualisieren, indem du den Bildschirm nach unten ziehst!</string>
+    <string name="pref_group_import_export">Import / Export</string>
+    <string name="pref_import_export_export">Export</string>
+    <string name="pref_import_export_import">Import</string>
+    <string name="pref_import_export_export_summary">Exportiere alle Einstellungen, Geräte und Befehle in eine Datei.</string>
+    <string name="pref_import_export_import_summary">Importiere alle Einstellungen, Geräte und Befehle aus einer Datei.</string>
 
     <!-- ActionButton Strings -->
 
@@ -233,4 +238,36 @@
     <string name="systemtime">Systemzeit</string>
     <string name="total_swap">Auslagerungsdatei</string>
 
+
+
+    <!-- Export/Import Strings
+         Null also means empty strings in the naming of this
+    -->
+    <string name="import_err_null_nan_port">Fehler: SSH-Port fehlt oder ist keine Zahl!</string>
+    <string name="import_err_null_ip">Fehler: Hostname / IP fehlt!</string>
+    <string name="import_err_null_ssh_user">Fehler: SSH Benutzername fehlt!</string>
+    <string name="import_err_null_auth_method">Fehler: Authentifizierungsmethode fehlt!</string>
+    <string name="import_err_invalid_auth_method">Fehler: Ungültige Authentifizierungsmethode!</string>
+    <string name="import_err_invalid_port">Fehler: Ungültiger Port!</string>
+    <string name="import_err_null_ssh_pass">Fehler: SSH Passwort fehlt!</string>
+    <string name="import_err_null_key_path">Fehler: Schlüsseldatei-Pfad fehlt!</string>
+    <string name="import_err_null_key_pass">Fehler: Passwort der Schlüsseldatei fehlt!</string>
+    <string name="import_err_invalid_temp_scale">Fehler: Die Temperaturskala hat einen ungültigen Wert!</string>
+    <string name="import_err_null_temp_scale">Fehler: Temperaturskala fehlt!</string>
+    <string name="import_err_invalid_freq_unit">Fehler: Die Frequenz-Einheit hat einen ungültigen Wert!</string>
+    <string name="import_err_null_freq_unit">Fehler: Frequenz-Einheit fehlt!</string>
+    <string name="err_file_not_found">Fehler: Datei nicht gefunden!</string>
+    <string name="err_ioexception">Fehler: IOException!</string>
+    <string name="import_err_json_parse">Fehler: Konnte Datei nicht parsen!</string>
+    <string name="err_exception">Fehler: Etwas is falschgelaufen! Das Debug-Protokoll enthält weitere Informationen.</string>
+    <string name="import_err_null_nan_timeout">Fehler: Timeout-Wert eines Befehls fehlt oder ist keine Zahl!</string>
+    <string name="import_err_null_command_name">Fehler: Befehlsname fehlt!</string>
+    <string name="import_err_null_command">Fehler: Befehl fehlt!</string>
+    <string name="import_err_null_device_name">Fehler: Gerätename fehlt</string>
+    <string name="import_err_null_nabool_flag_output">Fehler: Befehlsausgabe-Einstellung fehlt oder ist kein Boolean!</string>
+    <string name="import_success">Import erfolgreich!</string>
+    <string name="export_success">Export erfolgreich!</string>
+    <string name="import_err_null_hide_root">Fehler: Verstecke root Prozesse fehlt!</string>
+    <string name="import_err_null_debug_log">Fehler: Debug Protokollierung fehlt!</string>
+    <string name="import_err_null_sys_time">Fehler: Zeige Systemzeit an fehlt!</string>
 </resources>
