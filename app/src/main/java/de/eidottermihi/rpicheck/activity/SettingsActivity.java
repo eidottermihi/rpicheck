@@ -41,8 +41,8 @@ import java.io.File;
 
 import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
-import de.eidottermihi.rpicheck.activity.helper.ExportSettings;
-import de.eidottermihi.rpicheck.activity.helper.ImportSettings;
+import de.eidottermihi.rpicheck.activity.helper.ExportHelper;
+import de.eidottermihi.rpicheck.activity.helper.ImportHelper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import io.freefair.android.preference.AppCompatPreferenceActivity;
 import sheetrock.panda.changelog.ChangeLog;
@@ -64,8 +64,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
     public static final String KEY_PREF_DEBUG_LOGGING = "pref_debug_log";
     public static final String KEY_PREF_QUERY_SHOW_SYSTEM_TIME = "pref_query_show_system_time";
 
-    public static final String KEY_EXPORT_ALL = "export_all";
-    public static final String KEY_IMPORT_ALL = "import_all";
+    public static final String KEY_EXPORT_ALL = "export";
+    public static final String KEY_IMPORT_ALL = "import";
 
     private static final String KEY_PREF_LOG = "pref_log";
     private static final String KEY_PREF_CHANGELOG = "pref_changelog";
@@ -178,10 +178,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
         } else if (preference.getKey().equals(KEY_EXPORT_ALL)) {
             clickHandled = true;
             //ToDo:
-            // Find out how to properly create ExportSettings so that context and
+            // Find out how to properly create ExportHelper so that context and
             // 'android.app.ActivityThread.getApplicationThread()' aren't throwing null object reference errors.
-            ExportSettings exportSettings = new ExportSettings();
-            final String allClear = exportSettings.ExportAll(this);
+            ExportHelper exportHelper = new ExportHelper();
+            final String allClear = exportHelper.ExportAll(this);
             if (allClear == null) {
                 Toast.makeText(this, this.getResources().getString(R.string.export_success),
                         Toast.LENGTH_LONG).show();
@@ -192,8 +192,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
         } else if (preference.getKey().equals(KEY_IMPORT_ALL)) {
             clickHandled = true;
             //ToDo Fix the same stuff as above!
-            ImportSettings importSettings = new ImportSettings();
-            final String allClear = importSettings.ImportAll(this);
+            ImportHelper importHelper = new ImportHelper();
+            final String allClear = importHelper.ImportAll(this);
             if (allClear == null) {
                 LOGGER.debug("Import successful");
                 Toast.makeText(this, this.getResources().getString(R.string.import_success),

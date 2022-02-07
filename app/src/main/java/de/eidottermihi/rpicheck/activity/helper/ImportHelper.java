@@ -57,13 +57,13 @@ import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_FREQUE
 import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_DEBUG_LOGGING;
 import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_QUERY_SHOW_SYSTEM_TIME;
 
-public class ImportSettings extends AbstractFileChoosingActivity {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImportSettings.class);
+public class ImportHelper extends AbstractFileChoosingActivity {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImportHelper.class);
     private String filePath;
     private Context mBaseContext;
     private String errorString = null;
 
-    //Couldn't come up with any better names
+    //Couldn't come up with any better names for the methods
     public String ImportAll(Context baseContext) {
         this.mBaseContext = baseContext;
 
@@ -76,8 +76,8 @@ public class ImportSettings extends AbstractFileChoosingActivity {
           return mBase.getPackageName()
           I know that now but still have no clue how to fix this.
 
-          Ok so passing the base context of SettingsActivity.java fixing the context problems,
-          but now I get 'java.lang.NullPointerException: Attempt to invoke virtual method 'android.app.ActivityThread$ApplicationThread android.app.ActivityThread.getApplicationThread()' on a null object reference'
+          Ok so passing the base context of SettingsActivity.java fixing the context problems, but now I get
+          'java.lang.NullPointerException: Attempt to invoke virtual method 'android.app.ActivityThread$ApplicationThread android.app.ActivityThread.getApplicationThread()' on a null object reference'
           which I don't think I can fix. At least SharedPreferences works with the mBaseContext workaround.
          */
         //startFileChooser();
@@ -167,7 +167,8 @@ public class ImportSettings extends AbstractFileChoosingActivity {
                         }
                         break;
                     case RaspberryDeviceBean.AUTH_PUBLIC_KEY:
-                        //ToDo Maybe just default it to some system-path (like Downloads or Documents) with a warning if it's missing?
+                        //ToDo Maybe just default it to some system-path (like Downloads or Documents)
+                        // with a warning if it's missing/empty as it's not essential?
                         if (keyfile_path.isEmpty()) {
                             LOGGER.error("Keyfile path is empty in device {}", i);
                             this.errorString = mBaseContext.getResources().getString(R.string.import_err_null_key_path);
@@ -198,15 +199,13 @@ public class ImportSettings extends AbstractFileChoosingActivity {
                 LOGGER.debug("Validating command {}", i);
                 JSONObject commandJSON = (JSONObject) commandJson.get(i);
                 //_id can be hardcoded because it is never needed for the creation of a command.
-                String name = Strings.nullToEmpty((String) commandJSON.get("name"));
-                if (name.isEmpty()) {
+                if (Strings.nullToEmpty((String) commandJSON.get("name")).isEmpty()) {
                     LOGGER.error("Name is empty in command {}", i);
                     this.errorString = mBaseContext.getResources().getString(R.string.import_err_null_command_name);
                     return;
                 }
 
-                String command = Strings.nullToEmpty((String) commandJSON.get("command"));
-                if (command.isEmpty()) {
+                if (Strings.nullToEmpty((String) commandJSON.get("command")).isEmpty()) {
                     LOGGER.error("Command is empty in command {}", i);
                     this.errorString = mBaseContext.getResources().getString(R.string.import_err_null_command);
                     return;
@@ -286,6 +285,7 @@ public class ImportSettings extends AbstractFileChoosingActivity {
 
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mBaseContext);
             SharedPreferences.Editor prefEdit = prefs.edit();
+
             prefEdit.putString(KEY_PREF_TEMPERATURE_SCALE, (String) settingsJson.get("temp_scale"));
             //noinspection ConstantConditions
             prefEdit.putBoolean(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, (Boolean) settingsJson.get("hide_root"));
@@ -294,20 +294,12 @@ public class ImportSettings extends AbstractFileChoosingActivity {
             prefEdit.putBoolean(KEY_PREF_DEBUG_LOGGING, (Boolean) settingsJson.get("debug_log"));
             //noinspection ConstantConditions
             prefEdit.putBoolean(KEY_PREF_QUERY_SHOW_SYSTEM_TIME, (Boolean) settingsJson.get("sys_time"));
-            /*
-            Was considering using the KEY variables as the keys for the JSON, but any change would
-            have made the JSON unusable so I'll stick with hardcoded names. Code stays here just in case.
-            Maybe make the keys "global" variables?
-            prefEdit.putString(KEY_PREF_TEMPERATURE_SCALE, (String) settingsJson.get(KEY_PREF_TEMPERATURE_SCALE));
-            prefEdit.putBoolean(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, (Boolean) settingsJson.get(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES));
-            prefEdit.putString(KEY_PREF_FREQUENCY_UNIT, (String) settingsJson.get(KEY_PREF_FREQUENCY_UNIT));
-            prefEdit.putBoolean(KEY_PREF_DEBUG_LOGGING, (Boolean) settingsJson.get(KEY_PREF_DEBUG_LOGGING));
-            prefEdit.putBoolean(KEY_PREF_QUERY_SHOW_SYSTEM_TIME, (Boolean) settingsJson.get(KEY_PREF_QUERY_SHOW_SYSTEM_TIME));
-             */
+
             prefEdit.apply();
 
             //ToDo Maybe make wiping all data optional via a dialog asking the user?
             //  Shouldn't need any change except for an if around the wipeAllData call.
+            //Note: wipeAllData does not reset autoincrement fields back to 1.
             deviceDb.wipeAllData();
 
             for (int i = 0; i < deviceJson.size(); i++) {

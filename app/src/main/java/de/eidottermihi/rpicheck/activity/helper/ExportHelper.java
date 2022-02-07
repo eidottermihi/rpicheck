@@ -55,13 +55,13 @@ import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_DEBUG_
 import static de.eidottermihi.rpicheck.activity.SettingsActivity.KEY_PREF_QUERY_SHOW_SYSTEM_TIME;
 
 @SuppressWarnings("unchecked")
-public class ExportSettings extends AbstractFileChoosingActivity {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExportSettings.class);
+public class ExportHelper extends AbstractFileChoosingActivity {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportHelper.class);
     private String filePath;
     private Context mBaseContext;
     private String errorString = null;
 
-    //Couldn't come up with any better names
+    //Couldn't come up with any better names for the methods
     public String ExportAll(Context baseContext) {
         this.mBaseContext = baseContext;
 
@@ -74,8 +74,8 @@ public class ExportSettings extends AbstractFileChoosingActivity {
           return mBase.getPackageName()
           I know that now but still have no clue how to fix this.
 
-          Ok so passing the base context of SettingsActivity.java fixing the context problems,
-          but now I get 'java.lang.NullPointerException: Attempt to invoke virtual method 'android.app.ActivityThread$ApplicationThread android.app.ActivityThread.getApplicationThread()' on a null object reference'
+          Ok so passing the base context of SettingsActivity.java fixing the context problems, but now I get
+          'java.lang.NullPointerException: Attempt to invoke virtual method 'android.app.ActivityThread$ApplicationThread android.app.ActivityThread.getApplicationThread()' on a null object reference'
           which I don't think I can fix. At least SharedPreferences works with the mBaseContext workaround.
          */
          //startDirChooser(mBaseContext);
@@ -88,35 +88,23 @@ public class ExportSettings extends AbstractFileChoosingActivity {
     private void doExport() {
         LOGGER.info("Export called with filePath: {}", filePath);
         //I briefly skimmed over how andOTP handles backups, which solidified my decision to use
-        // JSON and maybe add encryption at a later date because of the passwords.
+        // JSON and maybe add encryption at a later date because of the passwords/maybe keyfiles.
         DeviceDbHelper deviceDb;
         RaspberryDeviceBean deviceBean;
         JSONArray fullJSON = new JSONArray();
+
         //This first exports all SharedPreferences of the app, then every device and then all commands
         // into a json file, which includes passwords but no keyfiles, only their path.
-
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mBaseContext);
-        String temp_scale = prefs.getString(KEY_PREF_TEMPERATURE_SCALE, null);
-        Boolean hide_root = (prefs.getBoolean(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, false));
-        String freq_unit = prefs.getString(KEY_PREF_FREQUENCY_UNIT, null);
-        Boolean debug_log = (prefs.getBoolean(KEY_PREF_DEBUG_LOGGING, false));
-        Boolean sys_time = (prefs.getBoolean(KEY_PREF_QUERY_SHOW_SYSTEM_TIME, false));
         JSONObject userSettings = new JSONObject();
-        userSettings.put("temp_scale", temp_scale);
-        userSettings.put("hide_root", hide_root);
-        userSettings.put("freq_unit", freq_unit);
-        userSettings.put("debug_log", debug_log);
-        userSettings.put("sys_time", sys_time);
-        /*
-        Was considering using the KEY variables as the keys for the JSON, but any change would
-        have made the JSON unusable so I'll stick with hardcoded names. Code stays here just in case.
-        Maybe make the keys "global" variables?
-        userSettings.put(KEY_PREF_TEMPERATURE_SCALE, temp_scale);
-        userSettings.put(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, hide_root);
-        userSettings.put(KEY_PREF_FREQUENCY_UNIT, freq_unit);
-        userSettings.put(KEY_PREF_DEBUG_LOGGING, debug_log);
-        userSettings.put(KEY_PREF_QUERY_SHOW_SYSTEM_TIME, sys_time);
-         */
+        userSettings.put("temp_scale", prefs.getString(KEY_PREF_TEMPERATURE_SCALE, null));
+        userSettings.put("hide_root", prefs.getBoolean(KEY_PREF_QUERY_HIDE_ROOT_PROCESSES, false));
+        userSettings.put("freq_unit", prefs.getString(KEY_PREF_FREQUENCY_UNIT, null));
+        userSettings.put("debug_log", prefs.getBoolean(KEY_PREF_DEBUG_LOGGING, false));
+        userSettings.put("sys_time", prefs.getBoolean(KEY_PREF_QUERY_SHOW_SYSTEM_TIME, false));
+        /*Was considering using the KEY variables as the keys for the JSON, but any change would
+          have made the JSON unusable so I'll stick with hardcoded names.*/
+
         //Adding the version code just in case something changes in the future and
         //it has to be imported differently (or throw out an "too old" error).
         userSettings.put("version_code", BuildConfig.VERSION_CODE);
@@ -125,8 +113,8 @@ public class ExportSettings extends AbstractFileChoosingActivity {
         JSONArray devices = new JSONArray();
         deviceDb = new DeviceDbHelper(mBaseContext);
         Cursor deviceCursor = deviceDb.getFullDeviceCursor();
-        boolean cursorEnded = deviceCursor.moveToFirst();
-        while (cursorEnded) {
+        boolean cursorNotEnded = deviceCursor.moveToFirst();
+        while (cursorNotEnded) {
             deviceBean = deviceDb.read(deviceCursor.getLong(0));
 
             JSONObject device = new JSONObject();
@@ -149,25 +137,25 @@ public class ExportSettings extends AbstractFileChoosingActivity {
             device.put("keyfile_pass", deviceBean.getKeyfilePass());
             devices.add(device);
 
-            cursorEnded = deviceCursor.moveToNext();
+            cursorNotEnded = deviceCursor.moveToNext();
         }
         deviceCursor.close();
 
         JSONArray commands = new JSONArray();
         Cursor commandCursor = deviceDb.getFullCommandCursor();
-        cursorEnded = commandCursor.moveToFirst();
-        while (cursorEnded) {
+        cursorNotEnded = commandCursor.moveToFirst();
+        while (cursorNotEnded) {
             JSONObject command = new JSONObject();
             //_id is not needed as it's an autoincrement field in the DB
             //command.put("_id", commandCursor.getInt(0));
             command.put("name", commandCursor.getString(1));
             command.put("command", commandCursor.getString(2));
-            //noinspection SimplifiableConditionalExpression
+            //noinspection SimplifiableConditionalExpression took this from CursorHelper.java
             command.put("flag_output", commandCursor.getInt(3) == 1 ? true : false);
             command.put("timeout", commandCursor.getInt(4));
             commands.add(command);
 
-            cursorEnded = commandCursor.moveToNext();
+            cursorNotEnded = commandCursor.moveToNext();
         }
         commandCursor.close();
 

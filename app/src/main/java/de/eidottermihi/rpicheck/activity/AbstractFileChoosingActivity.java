@@ -23,7 +23,6 @@
  */
 package de.eidottermihi.rpicheck.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 

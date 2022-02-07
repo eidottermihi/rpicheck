@@ -73,11 +73,11 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_import_export">
         <Preference
-            android:key="export_all"
+            android:key="export"
             android:summary="@string/pref_import_export_export_summary"
             android:title="@string/pref_import_export_export"/>
         <Preference
-            android:key="import_all"
+            android:key="import"
             android:summary="@string/pref_import_export_import_summary"
             android:title="@string/pref_import_export_import"/>
     </PreferenceCategory>
