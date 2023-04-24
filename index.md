@@ -9,7 +9,7 @@ To gather the information needed, RasPi Check uses a SSH connection (using a and
 
 Download
 ------------
-RasPi Check is available for free at [Google Play](https://play.google.com/store/apps/details?id=de.eidottermihi.raspicheck).
+RasPi Check is available for free at [F-Droid](https://f-droid.org/repository/browse/?fdid=de.eidottermihi.raspicheck) and at [Google Play](https://play.google.com/store/apps/details?id=de.eidottermihi.raspicheck).
 
 
 Issue Tracker
