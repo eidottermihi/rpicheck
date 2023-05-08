@@ -21,6 +21,10 @@ The goal of this Android app is to show the user the current system status of a 
 
 RasPi Check uses a SSH connection (using [SSHJ](https://github.com/hierynomus/sshj)) to connect to your Raspberry Pi ® and queries the information using Linux utilities like `ps`, `df` or the [`/proc` virtual filesystem](https://www.tldp.org/LDP/Linux-Filesystem-Hierarchy/html/proc.html). This app also works on other SBCs via [fake_vcgencmd](https://github.com/clach04/fake_vcgencmd), e.g. when running [Armbian](https://www.armbian.com).
 
+|   |   |   |
+|---|---|---|
+![01-rpicheck.png](metadata/en-US/phoneScreenshots/01-rpicheck.png) | ![02-rpicheck.png](metadata/en-US/phoneScreenshots/02-rpicheck.png) | ![03-rpicheck.png](metadata/en-US/phoneScreenshots/03-rpicheck.png)
+
 
 Download
 ------------
