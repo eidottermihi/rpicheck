@@ -16,6 +16,11 @@ RasPi Check is available for free at [F-Droid](https://f-droid.org/repository/br
 
 If you find any bugs and glitches please open an [issue here](https://github.com/eidottermihi/rpicheck/issues).
 
+
+|   |   |   |
+|---|---|---|
+![01-rpicheck.png](01-rpicheck.png) | ![02-rpicheck.png](02-rpicheck.png) | ![03-rpicheck.png](03-rpicheck.png)
+
 ## Contributing
 
 Feel free to fork and open up pull requests!
