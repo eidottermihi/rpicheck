@@ -71,6 +71,16 @@
             android:summaryOn="@string/pref_query_show_system_time_summaryOn"
             android:title="@string/pref_query_show_system_time_title"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_group_import_export">
+        <Preference
+            android:key="export"
+            android:summary="@string/pref_import_export_export_summary"
+            android:title="@string/pref_import_export_export"/>
+        <Preference
+            android:key="import"
+            android:summary="@string/pref_import_export_import_summary"
+            android:title="@string/pref_import_export_import"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_log">
         <Preference
             android:key="pref_log"

@@ -41,6 +41,8 @@ import java.io.File;
 
 import de.eidottermihi.raspicheck.BuildConfig;
 import de.eidottermihi.raspicheck.R;
+import de.eidottermihi.rpicheck.activity.helper.ExportHelper;
+import de.eidottermihi.rpicheck.activity.helper.ImportHelper;
 import de.eidottermihi.rpicheck.activity.helper.LoggingHelper;
 import io.freefair.android.preference.AppCompatPreferenceActivity;
 import sheetrock.panda.changelog.ChangeLog;
@@ -62,6 +64,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
     public static final String KEY_PREF_DEBUG_LOGGING = "pref_debug_log";
     public static final String KEY_PREF_QUERY_SHOW_SYSTEM_TIME = "pref_query_show_system_time";
 
+    public static final String KEY_EXPORT_ALL = "export";
+    public static final String KEY_IMPORT_ALL = "import";
+
     private static final String KEY_PREF_LOG = "pref_log";
     private static final String KEY_PREF_CHANGELOG = "pref_changelog";
     private static final String KEY_PREF_LOAD_AVG_PERIOD = "pref_load_avg";
@@ -74,11 +79,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        // adding preference listener to log / changelog
+        // adding preference listener to log / changelog / export / import
         Preference prefLog = findPreference(KEY_PREF_LOG);
         prefLog.setOnPreferenceClickListener(this);
         Preference prefChangelog = findPreference(KEY_PREF_CHANGELOG);
         prefChangelog.setOnPreferenceClickListener(this);
+        Preference prefExport = findPreference(KEY_EXPORT_ALL);
+        prefExport.setOnPreferenceClickListener(this);
+        Preference prefImport = findPreference(KEY_IMPORT_ALL);
+        prefImport.setOnPreferenceClickListener(this);
 
         findPreference("pref_app_version").setSummary(BuildConfig.VERSION_NAME);
 
@@ -166,8 +175,38 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
             clickHandled = true;
             ChangeLog cl = new ChangeLog(this);
             cl.getFullLogDialog().show();
+        } else if (preference.getKey().equals(KEY_EXPORT_ALL)) {
+            clickHandled = true;
+            //ToDo:
+            // Find out how to properly create ExportHelper so that context and
+            // 'android.app.ActivityThread.getApplicationThread()' aren't throwing null object reference errors.
+            ExportHelper exportHelper = new ExportHelper();
+            final String allClear = exportHelper.ExportAll(this);
+            if (allClear == null) {
+                Toast.makeText(this, this.getResources().getString(R.string.export_success),
+                        Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(this, allClear,
+                        Toast.LENGTH_LONG).show();
+            }
+        } else if (preference.getKey().equals(KEY_IMPORT_ALL)) {
+            clickHandled = true;
+            //ToDo Fix the same stuff as above!
+            ImportHelper importHelper = new ImportHelper();
+            final String allClear = importHelper.ImportAll(this);
+            if (allClear == null) {
+                LOGGER.debug("Import successful");
+                Toast.makeText(this, this.getResources().getString(R.string.import_success),
+                        Toast.LENGTH_LONG).show();
+                //Reopen the app to make the changes visible, inspired by this great answer: https://stackoverflow.com/a/39484617
+                Intent reopenIntent = new Intent(this, MainActivity.class);
+                finishAffinity();
+                startActivity(reopenIntent);
+            }else{
+                Toast.makeText(this, allClear,
+                        Toast.LENGTH_LONG).show();
+            }
         }
         return clickHandled;
     }
-
 }

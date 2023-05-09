@@ -182,6 +182,12 @@
 
     <string name="hint_pulltorefresh">Just a hint: You can also refresh by pulling the screen to the bottom!</string>
 
+    <string name="pref_group_import_export">Import / Export</string>
+    <string name="pref_import_export_export">Export</string>
+    <string name="pref_import_export_export_summary">Export all settings, devices and commands into a file.</string>
+    <string name="pref_import_export_import">Import</string>
+    <string name="pref_import_export_import_summary">Import all settings, devices and commands from a file.</string>
+
     <!-- ActionButton Strings -->
 
     <string name="action_new">New</string>
@@ -262,4 +268,39 @@
     <string name="systemtime">System time</string>
     <string name="total_swap">Swap memory</string>
 
+    <!-- Export/Import Strings
+         Null also means empty strings in the naming of this
+    -->
+
+    <string name="import_err_null_nan_port">Error: SSH-Port missing or not a number!</string>
+    <string name="import_err_null_device_name">Error: Device name is missing!</string>
+    <string name="import_err_null_ip">Error: Hostname / IP is missing!</string>
+    <string name="import_err_null_ssh_user">Error: SSH username is missing!</string>
+    <string name="import_err_null_auth_method">Error: Authentication method is missing!</string>
+    <string name="import_err_invalid_port">Error: Invalid port number!</string>
+    <string name="import_err_null_ssh_pass">Error: SSH password is missing!</string>
+    <string name="import_err_null_key_path">Error: Keyfile path is missing!</string>
+    <string name="import_err_null_key_pass">Error: Keyfile password is missing!</string>
+    <string name="import_err_invalid_auth_method">Error: Invalid Authentication method!</string>
+    <string name="import_err_invalid_temp_scale">Error: Temperature scale has an invalid value!</string>
+    <string name="import_err_null_temp_scale">Error: Temperature scale is missing!</string>
+    <string name="import_err_invalid_freq_unit">Error: Frequency unit has an invalid value!</string>
+    <string name="import_err_null_freq_unit">Error: Frequency unit is missing!</string>
+    <string name="import_err_json_parse">Error: Could not parse the file!</string>
+
+    <string name="import_err_null_command_name">Error: Command name is missing!</string>
+    <string name="import_err_null_command">Error: Command is missing!</string>
+    <string name="import_err_null_nabool_flag_output">Error: Output flag of a command is missing or not a boolean!</string>
+    <string name="import_err_null_nan_timeout">Error: Timeout duration of a command is missing or not a number!</string>
+
+    <string name="import_success">Import successful!</string>
+    <string name="export_success">Export successful!</string>
+
+
+    <string name="err_file_not_found">Error: File not found!</string>
+    <string name="err_ioexception">Error: IOException!</string>
+    <string name="err_exception">Error: Something went wrong. Debug log contains further information.</string>
+    <string name="import_err_null_hide_root">Error: Hide root processes is missing!</string>
+    <string name="import_err_null_debug_log">Error: Debug logging is missing!</string>
+    <string name="import_err_null_sys_time">Error: Show system time is missing!</string>
 </resources>

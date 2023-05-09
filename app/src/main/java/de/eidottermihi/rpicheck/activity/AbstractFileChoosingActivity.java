@@ -52,7 +52,7 @@ public abstract class AbstractFileChoosingActivity extends InjectionAppCompatAct
      * Sends an Intent to FilePickerActivity.
      */
     public final void startFileChooser() {
-        LOGGER.debug("Sending Intent to open FilePicker Activity.");
+        LOGGER.debug("Sending Intent from startFileChooser to open FilePicker Activity.");
         final Intent i = new Intent(this, RaspiFilePickerActivity.class);
         // Set these depending on your use case. These are the defaults.
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
@@ -60,6 +60,19 @@ public abstract class AbstractFileChoosingActivity extends InjectionAppCompatAct
         i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
         i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
 
+        startActivityForResult(i, REQUEST_CODE_LOAD_FILE);
+    }
+
+    /**
+     * Same as above but for choosing a directory
+     */
+    public final void startDirChooser() {
+        LOGGER.debug("Sending Intent from startDirChooser to open FilePicker Activity.");
+        final Intent i = new Intent(this, RaspiFilePickerActivity.class);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
+        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
+        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
         startActivityForResult(i, REQUEST_CODE_LOAD_FILE);
     }
 
